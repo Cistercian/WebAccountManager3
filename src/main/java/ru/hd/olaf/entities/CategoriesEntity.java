@@ -3,10 +3,10 @@ package ru.hd.olaf.entities;
 import javax.persistence.*;
 
 /**
- * Created by d.v.hozyashev on 11.04.2017.
+ * Created by Olaf on 11.04.2017.
  */
 @Entity
-@Table(name = "categories", schema = "hdb", catalog = "")
+@Table(name = "categories", schema = "web_account_db", catalog = "")
 public class CategoriesEntity {
     private Integer id;
     private Integer parentId;

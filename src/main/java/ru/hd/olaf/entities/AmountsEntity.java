@@ -2,13 +2,13 @@ package ru.hd.olaf.entities;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.sql.Date;
 
 /**
- * Created by d.v.hozyashev on 11.04.2017.
+ * Created by Olaf on 11.04.2017.
  */
 @Entity
-@Table(name = "amounts", schema = "hdb", catalog = "")
+@Table(name = "amounts", schema = "web_account_db", catalog = "")
 public class AmountsEntity {
     private int id;
     private int categoryId;
@@ -58,7 +58,6 @@ public class AmountsEntity {
     }
 
     @Basic
-    @Temporal(TemporalType.DATE)
     @Column(name = "date", nullable = false)
     public Date getDate() {
         return date;

@@ -11,6 +11,8 @@ import java.util.List;
  */
 public class Application {
     public static void main(String[] args) {
+
+
         GenericXmlApplicationContext ctx = new GenericXmlApplicationContext();
         ctx.load("classpath:spring-config.xml"); //move from src.main.java to src.main.resources
         ctx.refresh();

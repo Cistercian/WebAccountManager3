@@ -1,4 +1,6 @@
-USE hdb;
+CREATE DATABASE `web_account_db` CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+USE web_account_db;
 DROP TABLE IF EXISTS amounts;
 CREATE TABLE amounts (
 ID INT NOT NULL AUTO_INCREMENT
@@ -10,7 +12,7 @@ ID INT NOT NULL AUTO_INCREMENT
 , PRIMARY KEY (id)
 );
 
-USE hdb;
+USE web_account_db;
 DROP TABLE IF EXISTS categories;
 CREATE TABLE categories (
 ID INT NOT NULL AUTO_INCREMENT
@@ -20,6 +22,10 @@ ID INT NOT NULL AUTO_INCREMENT
 , type TINYINT(1) DEFAULT 0
 , PRIMARY KEY (id)
 );
+
+INSERT INTO categories
+(parent_id, name, details, type)
+VALUES (1, 'name2', 'details2', 1);
 
 http://javastudy.ru/spring-data-jpa/spring-data-jpa-helloworld/
 http://javastudy.ru/interview/jee-spring-questions-answers/

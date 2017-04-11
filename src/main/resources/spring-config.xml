@@ -30,9 +30,9 @@
     <!-- Datasource. Источник данных - база MySQL -->
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver" />
-        <property name="url" value="jdbc:mysql://localhost:3306/hdb" />
+        <property name="url" value="jdbc:mysql://localhost:3306/web_account_db" />
         <property name="username" value="root" />
-        <property name="password" value="1234" />
+        <property name="password" value="4ynk639O" />
     </bean>
 
     <!--Activates various annotations to be detected in bean classes: Spring's @Required and @Autowired and so on-->
