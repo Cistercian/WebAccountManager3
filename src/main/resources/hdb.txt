@@ -22,3 +22,4 @@ ID INT NOT NULL AUTO_INCREMENT
 );
 
 http://javastudy.ru/spring-data-jpa/spring-data-jpa-helloworld/
+http://javastudy.ru/interview/jee-spring-questions-answers/
