@@ -1,0 +1,22 @@
+USE hdb;
+DROP TABLE IF EXISTS amounts;
+CREATE TABLE amounts (
+ID INT NOT NULL AUTO_INCREMENT
+, category_id INT NOT NULL
+, name VARCHAR(40) NOT NULL
+, price DECIMAL(6, 2) NOT NULL DEFAULT 0
+, date DATE NOT NULL
+, details VARCHAR(256)
+, PRIMARY KEY (id)
+);
+
+USE hdb;
+DROP TABLE IF EXISTS categories;
+CREATE TABLE categories (
+ID INT NOT NULL AUTO_INCREMENT
+, parent_id INT
+, name VARCHAR(40) NOT NULL
+, details VARCHAR(256)
+, type TINYINT(1) DEFAULT 0
+, PRIMARY KEY (id)
+);

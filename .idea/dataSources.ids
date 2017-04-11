@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="dataSourceStorage">
+  <data-source name="MySQL - hdb@localhost" uuid="7b6171ce-b725-4026-bd6f-b2e088e9541a">
+    <database-info product="MySQL" version="5.7.17-log" jdbc-version="4.0" driver-name="MySQL Connector Java" driver-version="mysql-connector-java-5.1.40 ( Revision: 402933ef52cad9aa82624e80acbea46e3a701ce6 )">
+      <extra-name-characters>#@</extra-name-characters>
+      <identifier-quote-string>`</identifier-quote-string>
+    </database-info>
+    <case-sensitivity plain-identifiers="lower" quoted-identifiers="lower"/>
+    <database-model serializer="dbm" rdbms="MYSQL" format-version="2.4">
+      <schema id="1" name="hdb"/>
+      <table id="2" parent="1" name="amounts"/>
+      <table id="3" parent="1" name="categories"/>
+      <table id="4" parent="1" name="contact"/>
+      <column id="5" parent="2" name="ID">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+      </column>
+      <column id="6" parent="2" name="category_id">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+      </column>
+      <column id="7" parent="2" name="name">
+        <mandatory>1</mandatory>
+        <data-type>varchar(40)</data-type>
+      </column>
+      <column id="8" parent="2" name="price">
+        <mandatory>1</mandatory>
+        <data-type>decimal(6,2)</data-type>
+        <default-expression>&apos;0.00&apos;</default-expression>
+      </column>
+      <column id="9" parent="2" name="date">
+        <mandatory>1</mandatory>
+        <data-type>date</data-type>
+      </column>
+      <column id="10" parent="2" name="details">
+        <data-type>varchar(256)</data-type>
+      </column>
+      <key id="11" parent="2" name="PRIMARY">
+        <columns>ID</columns>
+        <primary>1</primary>
+      </key>
+      <column id="12" parent="3" name="ID">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+      </column>
+      <column id="13" parent="3" name="parent_id">
+        <data-type>int(11)</data-type>
+      </column>
+      <column id="14" parent="3" name="name">
+        <mandatory>1</mandatory>
+        <data-type>varchar(40)</data-type>
+      </column>
+      <column id="15" parent="3" name="details">
+        <data-type>varchar(256)</data-type>
+      </column>
+      <column id="16" parent="3" name="type">
+        <data-type>tinyint(1)</data-type>
+        <default-expression>&apos;0&apos;</default-expression>
+      </column>
+      <key id="17" parent="3" name="PRIMARY">
+        <columns>ID</columns>
+        <primary>1</primary>
+      </key>
+      <column id="18" parent="4" name="ID">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+      </column>
+      <column id="19" parent="4" name="first_name">
+        <mandatory>1</mandatory>
+        <data-type>varchar(60)</data-type>
+      </column>
+      <column id="20" parent="4" name="last_name">
+        <mandatory>1</mandatory>
+        <data-type>varchar(40)</data-type>
+      </column>
+      <column id="21" parent="4" name="birth_date">
+        <data-type>date</data-type>
+      </column>
+      <column id="22" parent="4" name="version">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+        <default-expression>&apos;0&apos;</default-expression>
+      </column>
+      <index id="23" parent="4" name="UQ_CONTACT_1">
+        <columns>first_name
+last_name</columns>
+        <desc-columns></desc-columns>
+        <unique>1</unique>
+      </index>
+      <key id="24" parent="4" name="PRIMARY">
+        <columns>ID</columns>
+        <primary>1</primary>
+      </key>
+      <key id="25" parent="4" name="UQ_CONTACT_1">
+        <columns>first_name
+last_name</columns>
+        <underlying-index>UQ_CONTACT_1</underlying-index>
+      </key>
+    </database-model>
+  </data-source>
+</component>
