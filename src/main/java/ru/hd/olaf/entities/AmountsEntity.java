@@ -2,7 +2,7 @@ package ru.hd.olaf.entities;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.sql.Date;
+import java.util.Date;
 
 /**
  * Created by d.v.hozyashev on 11.04.2017.
@@ -58,6 +58,7 @@ public class AmountsEntity {
     }
 
     @Basic
+    @Temporal(TemporalType.DATE)
     @Column(name = "date", nullable = false)
     public Date getDate() {
         return date;

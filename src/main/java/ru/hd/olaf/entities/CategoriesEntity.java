@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "categories", schema = "hdb", catalog = "")
 public class CategoriesEntity {
-    private int id;
+    private Integer id;
     private Integer parentId;
     private String name;
     private String details;
@@ -16,11 +16,11 @@ public class CategoriesEntity {
 
     @Id
     @Column(name = "ID", nullable = false)
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -88,5 +88,16 @@ public class CategoriesEntity {
         result = 31 * result + (details != null ? details.hashCode() : 0);
         result = 31 * result + (type != null ? type.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "CategoriesEntity{" +
+                "id=" + id +
+                ", parentId=" + parentId +
+                ", name='" + name + '\'' +
+                ", details='" + details + '\'' +
+                ", type=" + type +
+                '}';
     }
 }
