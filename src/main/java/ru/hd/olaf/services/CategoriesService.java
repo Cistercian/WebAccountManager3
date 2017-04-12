@@ -1,5 +1,8 @@
 package ru.hd.olaf.services;
 
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import ru.hd.olaf.entities.CategoriesEntity;
 
 import java.util.List;

@@ -2,23 +2,16 @@ package ru.hd.olaf.services.impl;
 
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.hd.olaf.entities.CategoriesEntity;
-import ru.hd.olaf.repository.ContactRepository;
-import ru.hd.olaf.services.CategoriesService;
 
 import java.util.List;
 
 /**
  * Created by d.v.hozyashev on 11.04.2017.
  */
-@Service("jpaCategoriesService")
-@Repository
-@Transactional
-public class CategoriesServiceImpl implements CategoriesService {
-
+@Service
+public class CategoriesServiceImpl {
     @Autowired
     private ContactRepository contactRepository;
 

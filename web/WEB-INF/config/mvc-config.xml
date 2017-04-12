@@ -12,8 +12,7 @@
 
     <!-- context:component-scan This tag will scan @Component, @Repository, @Service, @Controller
          and also resolves @Autowired and @Qualifier -->
-    <context:component-scan base-package="ru.hd.olaf.repository" />
-
+    <context:component-scan base-package="ru.hd.olaf" />
     <!--
         mvc:annotation-driven configures Spring MVC annotations
         Support for validating @Controller inputs with @Valid, if a JSR-303 Provider is present on the classpath.
@@ -21,6 +20,8 @@
         from @RequestMapping or @ExceptionHandler methods.
      -->
     <mvc:annotation-driven/>
+
+
 
     <!--org.springframework.web.servlet.PageNotFound.noHandlerFound No mapping found
     for HTTP request with URI [/jdbcUpdate/user/username/user@javastudy.ru/enabled/resources/css/bootstrap.css]

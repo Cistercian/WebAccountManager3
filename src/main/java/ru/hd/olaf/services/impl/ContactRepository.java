@@ -1,8 +1,6 @@
-package ru.hd.olaf.repository;
+package ru.hd.olaf.services.impl;
 
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
 import ru.hd.olaf.entities.CategoriesEntity;
 
 import java.util.List;

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import ru.hd.olaf.entities.CategoriesEntity;
-import ru.hd.olaf.repository.ContactRepository;
+import ru.hd.olaf.services.CategoriesService;
 import ru.hd.olaf.services.impl.CategoriesServiceImpl;
 
 import java.util.List;
@@ -19,12 +19,12 @@ import java.util.List;
 public class Controller {
 
     @Autowired
-    private CategoriesServiceImpl jpaCategoriesService;
+    private CategoriesServiceImpl jpaCategoriesService1;
 
     @RequestMapping(value = "/getAllCategories", method = RequestMethod.GET)
     public ModelAndView selectAllCategories() {
         System.out.println("Controller selectAllCategories() is called");
-        List<CategoriesEntity> categories = Lists.newArrayList(jpaCategoriesService.findAll());
+        List<CategoriesEntity> categories = Lists.newArrayList(jpaCategoriesService1.findAll());
         return new ModelAndView("/index.jsp", "resultObject", categories);
     }
 }
