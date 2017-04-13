@@ -7,7 +7,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-gb" lang="en-gb" dir="ltr">
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>WebAccountManager</title>
 
@@ -54,8 +54,18 @@
         $(document).ready(function () {
             $.ajax({
                 url: './getAllCategoriesInJson',
-                success: function(data) {
-                    alert(data);
+                success: function (data) {
+                    $.each(data, function(index, category) {
+                        var value = Math.floor((Math.random() * 100) + 1);
+                        $('#categoriesProgressBar').append(
+                                "\<div class=\"progress progress-striped active\"\> " +
+                                "\<div class=\"progress-bar progress-bar-success\" role=\"progressbar\" " +
+                                "aria-valuenow=\"" + value + "\"" +
+                        " aria - valuemin =\"0\" aria-valuemax=\"100\" style=\"width: " + value + "%\"\> " +
+                        category.name +
+                        "\<\/ div \> " +
+                        "\<\/ div \> ");
+                    });
                 }
             });
         });
@@ -145,31 +155,14 @@
 
     <div class="container">
         <div class="row">
-            <div class="col-sm-6 wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="300ms">
-                <div class="progress progress-striped active">
-                    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40"
-                         aria-valuemin="0" aria-valuemax="100" style="width: 40%">
-                        category_name1
-                    </div>
-                </div>
-                <div class="progress progress-striped active">
-                    <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="20" aria-valuemin="0"
-                         aria-valuemax="100" style="width: 20%">
-                        category_name2
-                    </div>
-                </div>
-                <div class="progress progress-striped active">
-                    <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="60"
-                         aria-valuemin="0" aria-valuemax="100" style="width: 60%">
-                        category_name3
-                    </div>
-                </div>
-                <div class="progress progress-striped active">
-                    <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="80"
-                         aria-valuemin="0" aria-valuemax="100" style="width: 80%">
-                        category_name4
-                    </div>
-                </div>
+            <div class="col-sm-6 wow fadeInDown" id="categoriesProgressBar" data-wow-duration="1000ms"
+                 data-wow-delay="300ms">
+                <%--<div class="progress progress-striped active">--%>
+                    <%--<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40"--%>
+                         <%--aria-valuemin="0" aria-valuemax="100" style="width: 40%">--%>
+                        <%--category_name1--%>
+                    <%--</div>--%>
+                <%--</div>--%>
             </div><!--/.col-sm-6-->
             <div class="col-sm-6 wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="600ms">
                 <c:if test="${not empty resultObject}">
