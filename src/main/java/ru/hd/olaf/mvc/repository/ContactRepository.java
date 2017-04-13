@@ -1,4 +1,4 @@
-package ru.hd.olaf.services.impl;
+package ru.hd.olaf.mvc.repository;
 
 import org.springframework.data.repository.CrudRepository;
 import ru.hd.olaf.entities.CategoriesEntity;

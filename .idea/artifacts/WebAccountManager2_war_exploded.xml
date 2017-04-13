@@ -1,12 +1,10 @@
 <component name="ArtifactManager">
   <artifact type="exploded-war" name="WebAccountManager2:war exploded">
-    <output-path>$PROJECT_DIR$/out/artifacts/WebAccountManager2_war_exploded</output-path>
+    <output-path>C:/1/java/out</output-path>
     <root id="root">
-      <element id="javaee-facet-resources" facet="WebAccountManager2/web/Web" />
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
           <element id="module-output" name="WebAccountManager2" />
-          <element id="jpa-descriptors" facet="WebAccountManager2/jpa/JPA" />
         </element>
         <element id="directory" name="lib">
           <element id="library" level="project" name="Maven: mysql:mysql-connector-java:5.1.34" />
@@ -42,8 +40,12 @@
           <element id="library" level="project" name="Maven: org.springframework:spring-web:4.3.7.RELEASE" />
           <element id="library" level="project" name="Maven: javax.servlet:jstl:1.2" />
           <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.7.13" />
+          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-core:2.4.3" />
+          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.4.3" />
+          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.4.0" />
         </element>
       </element>
+      <element id="javaee-facet-resources" facet="WebAccountManager2/web/Web" />
     </root>
   </artifact>
 </component>

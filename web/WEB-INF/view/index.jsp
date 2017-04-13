@@ -1,304 +1,229 @@
 <!DOCTYPE html>
 
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-<html>
-  <head>
-    <title>Javastudy.ru MVC_HTML5_Angular</title>
-    <spring:url value="resources/css/bootstrap.css" var="bootstrap"/>
-    <spring:url value="/resources/css/modern-business.css" var="startertemplate"/>
-    <link href="${bootstrap}" rel="stylesheet" />
-    <link href="${startertemplate}" rel="stylesheet" />
-  </head>
-  <body>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-gb" lang="en-gb" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>WebAccountManager</title>
 
-  <!-- Navigation -->
-  <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <!-- Bootstrap -->
+    <!-- Spring injections -->
+    <spring:url value="resources/css/bootstrap.min.css" var="bootstrapmin"/>
+    <spring:url value="resources/css/font-awesome.min.css" var="fontawesomemin"/>
+    <spring:url value="resources/css/font-awesome.css" var="fontawesome"/>
+    <spring:url value="resources/css/animate.css" var="animate"/>
+    <spring:url value="resources/css/style.css" var="style"/>
+
+    <link rel="stylesheet" href="${bootstrapmin}">
+    <link rel="stylesheet" href="${fontawesomemin}">
+    <link rel="stylesheet" href="${fontawesome}">
+    <link rel="stylesheet" href="${animate}">
+    <link rel="stylesheet" href="${style}">
+    <!-- =======================================================
+        Theme Name: Anyar
+        Theme URL: https://bootstrapmade.com/anyar-free-multipurpose-one-page-bootstrap-theme/
+        Author: BootstrapMade
+        Author URL: https://bootstrapmade.com
+    ======================================================= -->
+
+    <!-- Spring injections -->
+    <spring:url value="/resources/js/jquery.js" var="jquery"/>
+    <spring:url value="/resources/js/bootstrap.min.js" var="bootstrapmin"/>
+    <spring:url value="/resources/js/wow.min.js" var="wowmin"/>
+    <spring:url value="/resources/js/jquery.easing.min.js" var="jqueryeasingmin"/>
+    <spring:url value="/resources/js/jquery.isotope.min.js" var="jqueryisotopemin"/>
+    <spring:url value="/resources/js/functions.js" var="functions"/>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="${jquery}"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="${bootstrapmin}"></script>
+    <script src="${wowmin}"></script>
+    <script src="${jqueryeasingmin}"></script>
+    <script src="${jqueryisotopemin}"></script>
+    <script src="${functions}"></script>
+    <script src="https://maps.google.com/maps/api/js?sensor=true"></script>
+
+    <!-- тестовое обращение к контроллеру -->
+    <script language="javascript" type="text/javascript">
+        $(document).ready(function () {
+            $.ajax({
+                url: './getAllCategoriesInJson',
+                success: function(data) {
+                    alert(data);
+                }
+            });
+        });
+    </script>
+
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                            data-target=".navbar-collapse.collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <div class="navbar-brand">
+                        <a href="index.html"><h1>Web Account Manager</h1></a>
+                    </div>
+                </div>
+
+                <div class="navbar-collapse collapse">
+                    <div class="menu">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation"><a href="#home" class="active">Home</a></li>
+                            <li role="presentation"><a href="#about">Statistics</a></li>
+                            <li role="presentation"><a href="#services">Edit</a></li>
+                            <li role="presentation"><a href="#contact">Contact</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<div id="home">
+    <div class="slider">
+        <div class="">
+            <div id="about-slider">
+                <div id="carousel-slider" class="carousel slide" data-ride="carousel">
+                    <!-- Indicators -->
+                    <ol class="carousel-indicators visible-xs">
+                        <li data-target="#carousel-slider" data-slide-to="0" class="active"></li>
+                        <li data-target="#carousel-slider" data-slide-to="1"></li>
+                        <li data-target="#carousel-slider" data-slide-to="2"></li>
+                    </ol>
+
+                    <div class="carousel-inner">
+                        <div class="item active">
+                            <img src="/resources/img/carousel_1.jpg" class="img-responsive" alt="">
+                        </div>
+                        <div class="item">
+                            <img src="/resources/img/carousel_2.jpg" class="img-responsive" alt="">
+                        </div>
+                        <div class="item">
+                            <img src="/resources/img/carousel_3.jpg" class="img-responsive" alt="">
+                        </div>
+                    </div>
+
+                    <a class="left carousel-control hidden-xs" href="#carousel-slider" data-slide="prev">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a class=" right carousel-control hidden-xs" href="#carousel-slider" data-slide="next">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </div> <!--/#carousel-slider-->
+            </div><!--/#about-slider-->
+        </div>
+    </div>
+</div>
+
+<section id="about">
     <div class="container">
-      <!-- Brand and toggle get grouped for better mobile display -->
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="index.html">Start Bootstrap</a>
-      </div>
-      <!-- Collect the nav links, forms, and other content for toggling -->
-      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-        <ul class="nav navbar-nav navbar-right">
-          <li>
-            <a href="about.html">About</a>
-          </li>
-          <li>
-            <a href="services.html">Lessons</a>
-          </li>
-          <li>
-            <a href="contact.html">Contact</a>
-          </li>
-          <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Tutorial<b class="caret"></b></a>
-            <ul class="dropdown-menu">
-              <li>
-                <a href="portfolio-1-col.html">Lesson 1</a>
-              </li>
-              <li>
-                <a href="portfolio-2-col.html">Lesson 2</a>
-              </li>
-              <li>
-                <a href="portfolio-3-col.html">Lesson 3</a>
-              </li>
-              <li>
-                <a href="portfolio-4-col.html">Lesson 5</a>
-              </li>
-              <li>
-                <a href="portfolio-item.html">Lesson 5</a>
-              </li>
-            </ul>
-          </li>
-          <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Blog <b class="caret"></b></a>
-            <ul class="dropdown-menu">
-              <li>
-                <a href="blog-home-1.html">Blog Home 1</a>
-              </li>
-              <li>
-                <a href="blog-home-2.html">Blog Home 2</a>
-              </li>
-              <li>
-                <a href="blog-post.html">Blog Post</a>
-              </li>
-            </ul>
-          </li>
-          <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Other Pages <b class="caret"></b></a>
-            <ul class="dropdown-menu">
-              <li>
-                <a href="full-width.html">Full Width Page</a>
-              </li>
-              <li>
-                <a href="sidebar.html">Sidebar Page</a>
-              </li>
-              <li>
-                <a href="faq.html">FAQ</a>
-              </li>
-              <li>
-                <a href="404.html">404</a>
-              </li>
-              <li>
-                <a href="pricing.html">Pricing Table</a>
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </div>
-      <!-- /.navbar-collapse -->
-    </div>
-    <!-- /.container -->
-  </nav>
-
-  <!-- Header Carousel -->
-  <header id="myCarousel" class="carousel slide">
-    <!-- Indicators -->
-    <ol class="carousel-indicators">
-      <li data-target="#myCarousel" data-slide-to="0" class=""></li>
-      <li data-target="#myCarousel" data-slide-to="1" class="active"></li>
-      <li data-target="#myCarousel" data-slide-to="2"></li>
-    </ol>
-
-    <!-- Wrapper for slides -->
-    <div class="carousel-inner">
-      <div class="item">
-        <div class="fill" style="background-image:url('http://placehold.it/1900x1080&amp;text=Slide One');"></div>
-        <div class="carousel-caption">
-          <h2>Caption 1</h2>
+        <div class="center">
+            <div class="col-md-6 col-md-offset-3">
+                <h2>Statistics</h2>
+                <hr>
+                <p class="lead">Общая статистика</p>
+            </div>
         </div>
-      </div>
-      <div class="item active">
-        <div class="fill" style="background-image:url('http://placehold.it/1900x1080&amp;text=Slide Two');"></div>
-        <div class="carousel-caption">
-          <h2>Caption 2</h2>
-        </div>
-      </div>
-      <div class="item">
-        <div class="fill" style="background-image:url('http://placehold.it/1900x1080&amp;text=Slide Three');"></div>
-        <div class="carousel-caption">
-          <h2>Caption 3</h2>
-        </div>
-      </div>
     </div>
 
-    <!-- Controls -->
-    <a class="left carousel-control" href="#myCarousel" data-slide="prev">
-      <span class="icon-prev"></span>
-    </a>
-    <a class="right carousel-control" href="#myCarousel" data-slide="next">
-      <span class="icon-next"></span>
-    </a>
-  </header>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6 wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="300ms">
+                <div class="progress progress-striped active">
+                    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40"
+                         aria-valuemin="0" aria-valuemax="100" style="width: 40%">
+                        category_name1
+                    </div>
+                </div>
+                <div class="progress progress-striped active">
+                    <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="20" aria-valuemin="0"
+                         aria-valuemax="100" style="width: 20%">
+                        category_name2
+                    </div>
+                </div>
+                <div class="progress progress-striped active">
+                    <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="60"
+                         aria-valuemin="0" aria-valuemax="100" style="width: 60%">
+                        category_name3
+                    </div>
+                </div>
+                <div class="progress progress-striped active">
+                    <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="80"
+                         aria-valuemin="0" aria-valuemax="100" style="width: 80%">
+                        category_name4
+                    </div>
+                </div>
+            </div><!--/.col-sm-6-->
+            <div class="col-sm-6 wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="600ms">
+                <c:if test="${not empty resultObject}">
+                    Result:
+                    <c:if test="${resultObject !='true' and resultObject != 'false'}">
+                        <p>${resultObject}</p>
+                    </c:if>
+                </c:if>
+            </div>
+        </div><!--/.row-->
+    </div><!--/.container-->
+</section><!--/#about-->
 
-  <!-- Page Content -->
-  <div class="container">
-
-    <!-- Marketing Icons Section -->
-    <div class="row">
-      <div class="col-lg-12">
-        <h1 class="page-header">
-          Welcome to Modern Business
-        </h1>
-
-        <c:if test="${not empty resultObject}">
-          Result:
-          <c:if test="${resultObject !='true' and resultObject != 'false'}">
-            <p>${resultObject}</p>
-          </c:if>
-        </c:if>
-
-      </div>
-      <div class="col-md-4">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <h4><i class="fa fa-fw fa-check"></i> Bootstrap v3.2.0</h4>
-          </div>
-          <div class="panel-body">
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque, optio corporis quae nulla aspernatur in alias at numquam rerum ea excepturi expedita tenetur assumenda voluptatibus eveniet incidunt dicta nostrum quod?</p>
-            <a href="#" class="btn btn-default">Learn More</a>
-          </div>
+<div id="services">
+    <div class="container">
+        <div class="center">
+            <div class="col-md-6 col-md-offset-3">
+                <h2>Edit</h2>
+                <hr>
+                <p class="lead">Слайд редактирования сущностей БД</p>
+            </div>
         </div>
-      </div>
-      <div class="col-md-4">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <h4><i class="fa fa-fw fa-gift"></i> Free &amp; Open Source</h4>
-          </div>
-          <div class="panel-body">
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque, optio corporis quae nulla aspernatur in alias at numquam rerum ea excepturi expedita tenetur assumenda voluptatibus eveniet incidunt dicta nostrum quod?</p>
-            <a href="#" class="btn btn-default">Learn More</a>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <h4><i class="fa fa-fw fa-compass"></i> Easy to Use</h4>
-          </div>
-          <div class="panel-body">
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque, optio corporis quae nulla aspernatur in alias at numquam rerum ea excepturi expedita tenetur assumenda voluptatibus eveniet incidunt dicta nostrum quod?</p>
-            <a href="#" class="btn btn-default">Learn More</a>
-          </div>
-        </div>
-      </div>
     </div>
-    <!-- /.row -->
-
-    <!-- Portfolio Section -->
-    <div class="row">
-      <div class="col-lg-12">
-        <h2 class="page-header">Portfolio Heading</h2>
-      </div>
-      <div class="col-md-4 col-sm-6">
-        <a href="portfolio-item.html">
-          <img class="img-responsive img-portfolio img-hover" src="http://placehold.it/700x450" alt="">
-        </a>
-      </div>
-      <div class="col-md-4 col-sm-6">
-        <a href="portfolio-item.html">
-          <img class="img-responsive img-portfolio img-hover" src="http://placehold.it/700x450" alt="">
-        </a>
-      </div>
-      <div class="col-md-4 col-sm-6">
-        <a href="portfolio-item.html">
-          <img class="img-responsive img-portfolio img-hover" src="http://placehold.it/700x450" alt="">
-        </a>
-      </div>
-      <div class="col-md-4 col-sm-6">
-        <a href="portfolio-item.html">
-          <img class="img-responsive img-portfolio img-hover" src="http://placehold.it/700x450" alt="">
-        </a>
-      </div>
-      <div class="col-md-4 col-sm-6">
-        <a href="portfolio-item.html">
-          <img class="img-responsive img-portfolio img-hover" src="http://placehold.it/700x450" alt="">
-        </a>
-      </div>
-      <div class="col-md-4 col-sm-6">
-        <a href="portfolio-item.html">
-          <img class="img-responsive img-portfolio img-hover" src="http://placehold.it/700x450" alt="">
-        </a>
-      </div>
-    </div>
-    <!-- /.row -->
-
-    <!-- Features Section -->
-    <div class="row">
-      <div class="col-lg-12">
-        <h2 class="page-header">Modern Business Features</h2>
-      </div>
-      <div class="col-md-6">
-        <p>The Modern Business template by Start Bootstrap includes:</p>
-        <ul>
-          <li><strong>Bootstrap v3.2.0</strong>
-          </li>
-          <li>jQuery v1.11.0</li>
-          <li>Font Awesome v4.1.0</li>
-          <li>Working PHP contact form with validation</li>
-          <li>Unstyled page elements for easy customization</li>
-          <li>17 HTML pages</li>
-        </ul>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, omnis doloremque non cum id reprehenderit, quisquam totam aspernatur tempora minima unde aliquid ea culpa sunt. Reiciendis quia dolorum ducimus unde.</p>
-      </div>
-      <div class="col-md-6">
-        <img class="img-responsive" src="http://placehold.it/700x450" alt="">
-      </div>
-    </div>
-    <!-- /.row -->
-
-    <hr>
-
-    <!-- Call to Action Section -->
-    <div class="well">
-      <div class="row">
-        <div class="col-md-8">
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Molestias, expedita, saepe, vero rerum deleniti beatae veniam harum neque nemo praesentium cum alias asperiores commodi.</p>
+    <div class="container">
+        <div class="text-center">
+            <div class="col-md-3 wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="300ms">
+                <img src="/resources/img/services/services1.png">
+                <h3>Fully Responsive</h3>
+            </div>
         </div>
-        <div class="col-md-4">
-          <a class="btn btn-lg btn-default btn-block" href="#">Call to Action</a>
-        </div>
-      </div>
     </div>
+</div>
 
-    <hr>
-
-    <!-- Footer -->
-    <footer>
-      <div class="row">
-        <div class="col-lg-12">
-          <p>Copyright © Your Website 2014</p>
+<div>
+</div>
+<div class="sub-footer">
+    <div class="container">
+        <div class="col-md-6 ">
+            <div class="copyright text-right">
+                &copy; Anyar Theme. All Rights Reserved.
+                <div class="credits">
+                    <!--
+                        All the links in the footer should remain intact.
+                        You can delete the links only if you purchased the pro version.
+                        Licensing information: https://bootstrapmade.com/license/
+                        Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/buy/?theme=Anyar
+                    -->
+                    <a href="https://bootstrapmade.com/">Bootstrap Themes</a> by <a
+                        href="https://bootstrapmade.com/">BootstrapMade</a>
+                </div>
+            </div>
         </div>
-      </div>
-    </footer>
+    </div>
+</div>
 
-  </div>
-  <!-- /.container -->
-
-  <!-- jQuery -->
-  <script src="/resources/js/jquery.js"></script>
-
-  <!-- Bootstrap Core JavaScript -->
-  <script src="/resources/js/bootstrap.min.js"></script>
-
-  <!-- Script to Activate the Carousel -->
-  <script>
-    $('.carousel').carousel({
-      interval: 5000 //changes the speed
-    })
-  </script>
-
-
-
-
-  </body>
+</body>
 </html>

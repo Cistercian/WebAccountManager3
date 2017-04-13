@@ -6,25 +6,37 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import ru.hd.olaf.entities.CategoriesEntity;
-import ru.hd.olaf.services.CategoriesService;
-import ru.hd.olaf.services.impl.CategoriesServiceImpl;
+import ru.hd.olaf.mvc.repository.ContactRepository;
 
 import java.util.List;
 
 /**
  * Created by Olaf on 11.04.2017.
  */
-
 @org.springframework.stereotype.Controller
 public class Controller {
 
     @Autowired
-    private CategoriesServiceImpl jpaCategoriesService1;
+    private ContactRepository jpaCategoriesService1;
 
     @RequestMapping(value = "/getAllCategories", method = RequestMethod.GET)
     public ModelAndView selectAllCategories() {
         System.out.println("Controller selectAllCategories() is called");
         List<CategoriesEntity> categories = Lists.newArrayList(jpaCategoriesService1.findAll());
-        return new ModelAndView("/index.jsp", "resultObject", categories);
+        printData(categories);
+        return new ModelAndView("index", "resultObject", categories);
+    }
+
+//    @RequestMapping(value = "/getAllCategoriesInJson", method = RequestMethod.GET, produces = "application/json")
+//    public @ResponseBody  CategoriesEntity getAllCategoriesInJson() {
+//        System.out.println("Controller getAllCategoriesInJson() is called");
+//        List<CategoriesEntity> categories = Lists.newArrayList(jpaCategoriesService1.findAll());
+//        return categories.get(0);
+//    }
+
+    private void printData(List<CategoriesEntity> list) {
+        for (CategoriesEntity category : list) {
+            System.out.println(category);
+        }
     }
 }
