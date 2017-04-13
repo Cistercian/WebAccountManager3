@@ -30,7 +30,6 @@ public class Controller {
         return new ModelAndView("index", "resultObject", categories);
     }
 
-    //@RequestMapping(value = "/getAllCategoriesInJson", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequestMapping(value = "/getAllCategoriesInJson", method = RequestMethod.GET)
     public @ResponseBody List<CategoriesEntity> getAllCategoriesInJson() {
         System.out.println("Controller getAllCategoriesInJson() is called");
