@@ -55,16 +55,16 @@
             $.ajax({
                 url: './getAllCategoriesInJson',
                 success: function (data) {
-                    $.each(data, function(index, category) {
+                    $.each(data, function (index, category) {
                         var value = Math.floor((Math.random() * 100) + 1);
                         $('#categoriesProgressBar').append(
                                 "\<div class=\"progress progress-striped active\"\> " +
                                 "\<div class=\"progress-bar progress-bar-success\" role=\"progressbar\" " +
                                 "aria-valuenow=\"" + value + "\"" +
-                        " aria - valuemin =\"0\" aria-valuemax=\"100\" style=\"width: " + value + "%\"\> " +
-                        category.name +
-                        "\<\/ div \> " +
-                        "\<\/ div \> ");
+                                " aria - valuemin =\"0\" aria-valuemax=\"100\" style=\"width: " + value + "%\"\> " +
+                                category.name +
+                                "\<\/ div \> " +
+                                "\<\/ div \> ");
                     });
                 }
             });
@@ -158,10 +158,10 @@
             <div class="col-sm-6 wow fadeInDown" id="categoriesProgressBar" data-wow-duration="1000ms"
                  data-wow-delay="300ms">
                 <%--<div class="progress progress-striped active">--%>
-                    <%--<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40"--%>
-                         <%--aria-valuemin="0" aria-valuemax="100" style="width: 40%">--%>
-                        <%--category_name1--%>
-                    <%--</div>--%>
+                <%--<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40"--%>
+                <%--aria-valuemin="0" aria-valuemax="100" style="width: 40%">--%>
+                <%--category_name1--%>
+                <%--</div>--%>
                 <%--</div>--%>
             </div><!--/.col-sm-6-->
             <div class="col-sm-6 wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="600ms">
@@ -192,8 +192,92 @@
                 <img src="/resources/img/services/services1.png">
                 <h3>Fully Responsive</h3>
             </div>
+
+            <%--<form role="form" class="contactForm wow fadeInDown"--%>
+                  <%--data-wow-duration="1000ms" data-wow-delay="300ms" modelAttribute="amounts">--%>
+                <div class="col-md-6 col-sm-6 col-xs-12 left">
+                    <div class="form-group">
+                        <div class="btn-group">
+                            <button class="btn btn-large dropdown-toggle" data-toggle="dropdown">Amount Category<span
+                                    class="caret"></span></button>
+                            <ul class="dropdown-menu">
+                                <li><h5>Category 1</h5></li>
+                                <li><a href="#">category2</a></li>
+                                <li><a href="#">category3</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#">create new</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="number" name="categoryId" class="form-control form" id="amountCatId"
+                               path="categoryId"
+                               placeholder="amountCatId" data-rule="minlen:5" data-msg="Please enter at least 5 chars"/>
+                        <div class="validation"></div>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="name" class="form-control form" id="AmountName"
+                               path="name"
+                               placeholder="Amount Name" data-rule="minlen:5" data-msg="Please enter at least 5 chars"/>
+                        <div class="validation"></div>
+                    </div>
+                    <div class="form-group">
+                        <input type="number" class="form-control" name="price" id="AmountPrice"
+                               path="price"
+                               placeholder="Amount price" data-rule="number" data-msg="Please enter a valid price"/>
+                        <div class="validation"></div>
+                    </div>
+                    <div class="form-group">
+                        <input type="date" class="form-control" name="amountsDate" id="amountsDate"
+                               path="amountsDate"
+                               placeholder="Amount Name" data-rule="minlen:5" data-msg="Please enter at least 5 chars"/>
+                        <div class="validation"></div>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="details" id="amountDetails" placeholder="details"
+                               path="details"
+                               data-rule="minlen:8" data-msg="Please enter at least 8 chars of subject"/>
+                        <div class="validation"></div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-12 left">
+                    <!-- Button -->
+                    <button type="submit" id="submitAmmount" name="submitAmmount"
+                            class="btn btn-large" onclick="Save();return false;">CREATE
+                    </button>
+
+                    <script language="javascript" type="text/javascript">
+                        function Save() {
+                            $.ajax({
+                                type: "POST",
+                                url: './amounts/add',
+                                data: {
+                                    'categoryId=': document.getElementById('amountCatId').value,
+                                    'name=': document.getElementById('AmountName').value,
+                                    'price=': document.getElementById('AmountPrice').value,
+                                    'amountsDate=': document.getElementById('amountsDate').value,
+                                    'details=': document.getElementById('amountDetails').value,
+                                    'submitAmmount=': document.getElementById('amountDetails').value
+                                },
+                                success: function (data) {
+                                    alert(data);
+                                }
+                            });
+                        };
+                    </script>
+
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-12 right">
+                    <button type="submit" id="cancelAmount" name="cancelAmount"
+                            class="btn btn-large">CANCEL
+                    </button>
+                </div>
+            <%--</form>--%>
         </div>
     </div>
+
+
 </div>
 
 <div>

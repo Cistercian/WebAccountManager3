@@ -2,28 +2,30 @@ package ru.hd.olaf.entities;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.sql.Date;
+import java.util.Date;
+
 
 /**
  * Created by Olaf on 11.04.2017.
  */
 @Entity
 @Table(name = "amounts", schema = "web_account_db", catalog = "")
-public class AmountsEntity {
-    private int id;
+public class Amounts {
+    private Integer id;
     private int categoryId;
     private String name;
     private BigDecimal price;
-    private Date date;
+    private Date amountsDate;
     private String details;
 
     @Id
     @Column(name = "ID", nullable = false)
-    public int getId() {
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -59,12 +61,13 @@ public class AmountsEntity {
 
     @Basic
     @Column(name = "date", nullable = false)
-    public Date getDate() {
-        return date;
+    @Temporal(TemporalType.DATE)
+    public Date getAmountsDate() {
+        return amountsDate;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setAmountsDate(Date amountsDate) {
+        this.amountsDate = amountsDate;
     }
 
     @Basic
@@ -82,13 +85,13 @@ public class AmountsEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        AmountsEntity that = (AmountsEntity) o;
+        Amounts that = (Amounts) o;
 
         if (id != that.id) return false;
         if (categoryId != that.categoryId) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
         if (price != null ? !price.equals(that.price) : that.price != null) return false;
-        if (date != null ? !date.equals(that.date) : that.date != null) return false;
+        if (amountsDate != null ? !amountsDate.equals(that.amountsDate) : that.amountsDate != null) return false;
         if (details != null ? !details.equals(that.details) : that.details != null) return false;
 
         return true;
@@ -100,8 +103,20 @@ public class AmountsEntity {
         result = 31 * result + categoryId;
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (price != null ? price.hashCode() : 0);
-        result = 31 * result + (date != null ? date.hashCode() : 0);
+        result = 31 * result + (amountsDate != null ? amountsDate.hashCode() : 0);
         result = 31 * result + (details != null ? details.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Amounts{" +
+                "id=" + id +
+                ", categoryId=" + categoryId +
+                ", name='" + name + '\'' +
+                ", price=" + price +
+                ", date=" + amountsDate +
+                ", details='" + details + '\'' +
+                '}';
     }
 }

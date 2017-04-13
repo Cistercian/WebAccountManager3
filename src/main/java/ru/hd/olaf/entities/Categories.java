@@ -7,7 +7,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "categories", schema = "web_account_db", catalog = "")
-public class CategoriesEntity {
+public class Categories {
     private Integer id;
     private Integer parentId;
     private String name;
@@ -16,6 +16,7 @@ public class CategoriesEntity {
 
     @Id
     @Column(name = "ID", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Integer getId() {
         return id;
     }
@@ -69,7 +70,7 @@ public class CategoriesEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        CategoriesEntity that = (CategoriesEntity) o;
+        Categories that = (Categories) o;
 
         if (id != that.id) return false;
         if (parentId != null ? !parentId.equals(that.parentId) : that.parentId != null) return false;
@@ -92,7 +93,7 @@ public class CategoriesEntity {
 
     @Override
     public String toString() {
-        return "CategoriesEntity{" +
+        return "Categories{" +
                 "id=" + id +
                 ", parentId=" + parentId +
                 ", name='" + name + '\'' +
