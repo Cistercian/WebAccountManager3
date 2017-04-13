@@ -2,9 +2,12 @@ package ru.hd.olaf.mvc.controller;
 
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import ru.hd.olaf.entities.CategoriesEntity;
 import ru.hd.olaf.mvc.repository.ContactRepository;
 
@@ -27,12 +30,13 @@ public class Controller {
         return new ModelAndView("index", "resultObject", categories);
     }
 
-//    @RequestMapping(value = "/getAllCategoriesInJson", method = RequestMethod.GET, produces = "application/json")
-//    public @ResponseBody  CategoriesEntity getAllCategoriesInJson() {
-//        System.out.println("Controller getAllCategoriesInJson() is called");
-//        List<CategoriesEntity> categories = Lists.newArrayList(jpaCategoriesService1.findAll());
-//        return categories.get(0);
-//    }
+    //@RequestMapping(value = "/getAllCategoriesInJson", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/getAllCategoriesInJson", method = RequestMethod.GET)
+    public @ResponseBody List<CategoriesEntity> getAllCategoriesInJson() {
+        System.out.println("Controller getAllCategoriesInJson() is called");
+        List<CategoriesEntity> categories = Lists.newArrayList(jpaCategoriesService1.findAll());
+        return categories;
+    }
 
     private void printData(List<CategoriesEntity> list) {
         for (CategoriesEntity category : list) {

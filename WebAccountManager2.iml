@@ -85,5 +85,7 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.servlet:javax.servlet-api:3.1.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.servlet.jsp:jsp-api:2.2" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.13" level="project" />
+    <orderEntry type="library" name="Maven: org.codehaus.jackson:jackson-mapper-asl:1.9.10" level="project" />
+    <orderEntry type="library" name="Maven: org.codehaus.jackson:jackson-core-asl:1.9.10" level="project" />
   </component>
 </module>
