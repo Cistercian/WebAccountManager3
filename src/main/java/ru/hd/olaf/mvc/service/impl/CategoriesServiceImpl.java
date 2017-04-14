@@ -7,6 +7,8 @@ import ru.hd.olaf.entities.Categories;
 import ru.hd.olaf.mvc.repository.CategoriesRepository;
 import ru.hd.olaf.mvc.service.CategoriesService;
 
+import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -21,4 +23,9 @@ public class CategoriesServiceImpl implements CategoriesService {
     public List<Categories> getAll() {
         return Lists.newArrayList(categoriesRepository.findAll());
     }
+
+    public Categories getById(int id) {
+        return categoriesRepository.findOne(id);
+    }
+
 }

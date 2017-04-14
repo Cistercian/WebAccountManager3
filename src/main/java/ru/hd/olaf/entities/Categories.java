@@ -1,6 +1,10 @@
 package ru.hd.olaf.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by Olaf on 11.04.2017.
@@ -13,6 +17,17 @@ public class Categories {
     private String name;
     private String details;
     private Byte type;
+
+    public Categories() {
+    }
+
+    public Categories(Integer id, Integer parentId, String name, String details, Byte type) {
+        this.id = id;
+        this.parentId = parentId;
+        this.name = name;
+        this.details = details;
+        this.type = type;
+    }
 
     @Id
     @Column(name = "ID", nullable = false)
@@ -63,6 +78,27 @@ public class Categories {
 
     public void setType(Byte type) {
         this.type = type;
+    }
+
+    private Set<Amounts> amounts = new HashSet<Amounts>();
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "categoryId", cascade = CascadeType.ALL, orphanRemoval = false)
+    @JsonBackReference
+    public Set<Amounts> getAmounts() {
+        return amounts;
+    }
+
+    public void setAmounts(Set<Amounts> amounts) {
+        this.amounts = amounts;
+    }
+
+    public void addAmounts(Amounts amounts) {
+        amounts.setCategoryId(this);
+        this.amounts.add(amounts);
+    }
+
+    public void removeAmounts(Amounts amounts) {
+        this.amounts.remove(amounts);
     }
 
     @Override

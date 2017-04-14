@@ -9,10 +9,10 @@ import java.util.Date;
  * Created by Olaf on 11.04.2017.
  */
 @Entity
-@Table(name = "amounts", schema = "web_account_db", catalog = "")
+@Table(name = "amounts", schema = "web_account_db")
 public class Amounts {
     private Integer id;
-    private int categoryId;
+    private Categories categoryId;
     private String name;
     private BigDecimal price;
     private Date amountsDate;
@@ -29,13 +29,13 @@ public class Amounts {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "category_id", nullable = false)
-    public int getCategoryId() {
+    @ManyToOne()
+    @JoinColumn(name = "category_id")
+    public Categories getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(int categoryId) {
+    public void setCategoryId(Categories categoryId) {
         this.categoryId = categoryId;
     }
 
@@ -85,22 +85,21 @@ public class Amounts {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Amounts that = (Amounts) o;
+        Amounts amounts = (Amounts) o;
 
-        if (id != that.id) return false;
-        if (categoryId != that.categoryId) return false;
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (price != null ? !price.equals(that.price) : that.price != null) return false;
-        if (amountsDate != null ? !amountsDate.equals(that.amountsDate) : that.amountsDate != null) return false;
-        if (details != null ? !details.equals(that.details) : that.details != null) return false;
+        if (id != null ? !id.equals(amounts.id) : amounts.id != null) return false;
+        if (categoryId != null ? !categoryId.equals(amounts.categoryId) : amounts.categoryId != null) return false;
+        if (name != null ? !name.equals(amounts.name) : amounts.name != null) return false;
+        if (price != null ? !price.equals(amounts.price) : amounts.price != null) return false;
+        if (amountsDate != null ? !amountsDate.equals(amounts.amountsDate) : amounts.amountsDate != null) return false;
+        return details != null ? details.equals(amounts.details) : amounts.details == null;
 
-        return true;
     }
 
     @Override
     public int hashCode() {
-        int result = id;
-        result = 31 * result + categoryId;
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (categoryId != null ? categoryId.hashCode() : 0);
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (price != null ? price.hashCode() : 0);
         result = 31 * result + (amountsDate != null ? amountsDate.hashCode() : 0);

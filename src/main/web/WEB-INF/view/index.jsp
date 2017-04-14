@@ -53,16 +53,25 @@
     <script language="javascript" type="text/javascript">
         $(document).ready(function () {
             $.ajax({
-                url: './getAllCategoriesInJson',
+                url: './getSumByCategory',
                 success: function (data) {
-                    $.each(data, function (index, category) {
-                        var value = Math.floor((Math.random() * 100) + 1);
+                    var styles = ['success', 'info', 'warning', 'danger'];
+                    var curNumStyle = -1;
+                    var maxPrice = 0;
+
+                    $.each(data, function (index, value) {
+                        <!-- нормализуем суммы -->
+                        if (maxPrice == 0) maxPrice = index;
+                        normalPrice = index * 100 / maxPrice;
+                        <!-- меняем цвет баров -->
+                        curNumStyle = curNumStyle < 4 ? curNumStyle + 1 : 0;
+
                         $('#categoriesProgressBar').append(
                                 "\<div class=\"progress progress-striped active\"\> " +
-                                "\<div class=\"progress-bar progress-bar-success\" role=\"progressbar\" " +
-                                "aria-valuenow=\"" + value + "\"" +
-                                " aria - valuemin =\"0\" aria-valuemax=\"100\" style=\"width: " + value + "%\"\> " +
-                                category.name +
+                                "\<div class=\"progress-bar progress-bar-" + styles[curNumStyle] + "\" role=\"progressbar\" " +
+                                "aria-valuenow=\"" + index + "\"" +
+                                " aria - valuemin =\"0\" aria-valuemax=\"100\" style=\"width: " + normalPrice + "%\"\> " +
+                                value +
                                 "\<\/ div \> " +
                                 "\<\/ div \> ");
                     });
@@ -249,19 +258,18 @@
 
                     <script language="javascript" type="text/javascript">
                         function Save() {
+                            var data = {'categoryId' : document.getElementById('amountCatId').value,
+                                    'name' : document.getElementById('AmountName').value,
+                                    'price' : document.getElementById('AmountPrice').value,
+                                    'amountsDate' : document.getElementById('amountsDate').value,
+                                    'details' : document.getElementById('amountDetails').value,
+                                    'submitAmmount' : document.getElementById('amountDetails').value};
                             $.ajax({
                                 type: "POST",
                                 url: './amounts/add',
-                                data: {
-                                    'categoryId=': document.getElementById('amountCatId').value,
-                                    'name=': document.getElementById('AmountName').value,
-                                    'price=': document.getElementById('AmountPrice').value,
-                                    'amountsDate=': document.getElementById('amountsDate').value,
-                                    'details=': document.getElementById('amountDetails').value,
-                                    'submitAmmount=': document.getElementById('amountDetails').value
-                                },
+                                data: data,
                                 success: function (data) {
-                                    alert(data);
+//                                    alert(data);
                                 }
                             });
                         };

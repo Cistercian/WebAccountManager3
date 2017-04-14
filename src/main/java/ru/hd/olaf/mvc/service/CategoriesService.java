@@ -2,6 +2,8 @@ package ru.hd.olaf.mvc.service;
 
 import ru.hd.olaf.entities.Categories;
 
+import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -10,5 +12,6 @@ import java.util.List;
 public interface CategoriesService {
 
     List<Categories> getAll();
+    Categories getById(int id);
 
 }

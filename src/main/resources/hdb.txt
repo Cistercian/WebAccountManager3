@@ -35,3 +35,26 @@ INSERT INTO amounts (category_id, name, price, date, details)
 
 http://javastudy.ru/spring-data-jpa/spring-data-jpa-helloworld/
 http://javastudy.ru/interview/jee-spring-questions-answers/
+
+USE web_account_db;
+DROP TABLE IF EXISTS amounts;
+CREATE TABLE amounts (
+ID INT NOT NULL AUTO_INCREMENT
+, category_id INT
+, name VARCHAR(40)
+, price DECIMAL(10, 2) DEFAULT 0
+, date DATE
+, details VARCHAR(256)
+, PRIMARY KEY (id)
+);
+
+USE web_account_db;
+DROP TABLE IF EXISTS categories;
+CREATE TABLE categories (
+ID INT NOT NULL AUTO_INCREMENT
+, parent_id INT
+, name VARCHAR(40)
+, details VARCHAR(256)
+, type TINYINT(1) DEFAULT 0
+, PRIMARY KEY (id)
+);
