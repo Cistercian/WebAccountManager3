@@ -8,9 +8,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import ru.hd.olaf.entities.Amounts;
 import ru.hd.olaf.entities.Categories;
+import ru.hd.olaf.mvc.repository.CategoriesRepository;
 import ru.hd.olaf.mvc.service.AmountsService;
 import ru.hd.olaf.mvc.service.CategoriesService;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -19,7 +21,7 @@ import java.util.*;
  * Created by Olaf on 11.04.2017.
  */
 @org.springframework.stereotype.Controller
-public class Controller {
+public class IndexController {
     @Autowired
     private CategoriesService categoriesService;
     @Autowired
@@ -53,30 +55,6 @@ public class Controller {
         }
 
         return amounts;
-    }
-
-    @RequestMapping(params = {"categoryId", "name", "price", "amountsDate", "details", "submitAmmount"}, value = "/amounts/add", method = RequestMethod.POST)
-    public String addAmount(@RequestParam(value = "categoryId") Integer categoryId,
-                            @RequestParam(value = "name") String name,
-                            @RequestParam(value = "price") BigDecimal price,
-                            @RequestParam(value = "amountsDate") Date amountsDate,
-                            @RequestParam(value = "details") String details,
-                            @RequestParam(value = "submitAmmount") String submitAmmount) {
-        System.out.println("Controller addAmount() is called");
-
-        Amounts amounts = new Amounts();
-
-        Categories categories = categoriesService.getById(categoryId);
-        amounts.setCategoryId(categories);
-
-        amounts.setName(name);
-        amounts.setPrice(price);
-        amounts.setAmountsDate(amountsDate);
-        amounts.setDetails(details);
-
-        //categories.addAmounts(amounts);
-        amountsService.addAmount(amounts);
-        return "index";
     }
 
     @RequestMapping(value = "/getAmounts", method = RequestMethod.GET)

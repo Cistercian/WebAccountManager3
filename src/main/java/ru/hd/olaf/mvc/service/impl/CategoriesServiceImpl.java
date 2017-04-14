@@ -10,6 +10,8 @@ import ru.hd.olaf.mvc.service.CategoriesService;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Created by Olaf on 13.04.2017.
@@ -20,6 +22,10 @@ public class CategoriesServiceImpl implements CategoriesService {
     @Autowired
     CategoriesRepository categoriesRepository;
 
+    public Categories add(Categories category) {
+        return categoriesRepository.save(category);
+    }
+
     public List<Categories> getAll() {
         return Lists.newArrayList(categoriesRepository.findAll());
     }
@@ -28,4 +34,14 @@ public class CategoriesServiceImpl implements CategoriesService {
         return categoriesRepository.findOne(id);
     }
 
+    public Map<Integer, String> getIdAndName() {
+        Map<Integer, String> map = new HashMap<Integer, String>();
+        List<Categories> categories = getAll();
+
+        for(Categories category : categories) {
+            map.put(category.getId(), category.getName());
+        }
+
+        return map;
+    }
 }

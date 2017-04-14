@@ -21,8 +21,7 @@ public class Categories {
     public Categories() {
     }
 
-    public Categories(Integer id, Integer parentId, String name, String details, Byte type) {
-        this.id = id;
+    public Categories(Integer parentId, String name, String details, Byte type) {
         this.parentId = parentId;
         this.name = name;
         this.details = details;

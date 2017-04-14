@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public interface AmountsService {
 
-    Amounts addAmount(Amounts amounts);
+    Amounts add(Amounts amounts);
     List<Amounts> getAll();
     Map<Categories, BigDecimal> getSumByCategory();
     List<Amounts> getListByCategory();

@@ -22,7 +22,7 @@ public class AmountsServiceImpl implements AmountsService {
     @Autowired
     private AmountsRepository amountsRepository;
 
-    public Amounts addAmount(Amounts amounts) {
+    public Amounts add(Amounts amounts) {
         return amountsRepository.save(amounts);
     }
 
