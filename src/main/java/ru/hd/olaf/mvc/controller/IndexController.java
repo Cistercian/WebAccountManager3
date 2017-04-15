@@ -1,18 +1,16 @@
 package ru.hd.olaf.mvc.controller;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
-import ru.hd.olaf.entities.Amounts;
-import ru.hd.olaf.entities.Categories;
-import ru.hd.olaf.mvc.repository.CategoriesRepository;
-import ru.hd.olaf.mvc.service.AmountsService;
-import ru.hd.olaf.mvc.service.CategoriesService;
+import ru.hd.olaf.entities.Amount;
+import ru.hd.olaf.entities.Category;
+import ru.hd.olaf.mvc.service.AmountService;
+import ru.hd.olaf.mvc.service.CategoryService;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -23,44 +21,31 @@ import java.util.*;
 @org.springframework.stereotype.Controller
 public class IndexController {
     @Autowired
-    private CategoriesService categoriesService;
+    private CategoryService categoryService;
     @Autowired
-    private AmountsService amountsService;
+    private AmountService amountService;
 
-    @RequestMapping(value = "/getAllCategories", method = RequestMethod.GET)
-    public ModelAndView selectAllCategories() {
-        System.out.println("Controller selectAllCategories() is called");
-        List<Categories> categories = Lists.newArrayList(categoriesService.getAll());
-        printData(categories);
-        return new ModelAndView("index", "resultObject", categories);
+    @RequestMapping(value = "/getAllCategoriesWithTotalSum", method = RequestMethod.GET)
+    public @ResponseBody Map<Category, BigDecimal> getAllCategoriesWithTotalSum() {
+        System.out.println("Controller getAllCategoriesWithTotalSum() is called");
+        return categoryService.getAllWithTotalSum();
     }
 
-    @RequestMapping(value = "/getAllCategoriesInJson", method = RequestMethod.GET)
-    public
-    @ResponseBody
-    List<Categories> getAllCategoriesInJson() {
-        System.out.println("Controller getAllCategoriesInJson() is called");
-        List<Categories> categories = Lists.newArrayList(categoriesService.getAll());
-        return categories;
-    }
+    @RequestMapping(value = "/getAmountsByCategoryId", params = {"categoryId"}, method = RequestMethod.GET)
+    public @ResponseBody List<Amount> getAmountsByCategoryId(@RequestParam(value = "categoryId") Integer categoryId){
+        System.out.println("Controller getAmountsByCategoryId() is called");
+        Category category = categoryService.getById(categoryId);
 
-    @RequestMapping(value = "/getSumByCategory", method = RequestMethod.GET)
-    public @ResponseBody Map<BigDecimal, String> getAmountsByCategory() {
-
-        Map<Categories, BigDecimal> map = amountsService.getSumByCategory();
-        Map<BigDecimal, String> amounts = new TreeMap<BigDecimal, String>(Collections.reverseOrder());
-
-        for (Map.Entry<Categories, BigDecimal> entry : map.entrySet()) {
-            amounts.put(entry.getValue(), entry.getKey().getName());
-        }
+        List<Amount> amounts = amountService.getAllByCategoryId(category);
+        printData(amounts);
 
         return amounts;
     }
 
     @RequestMapping(value = "/getAmounts", method = RequestMethod.GET)
-    public @ResponseBody List<Amounts> getAmounts() {
+    public @ResponseBody List<Amount> getAmounts() {
         System.out.println("Controller getAmounts() is called");
-        return amountsService.getAll();
+        return amountService.getAll();
     }
 
     private <T> void printData(List<T> list) {

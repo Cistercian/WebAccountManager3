@@ -1,5 +1,7 @@
 package ru.hd.olaf.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -10,9 +12,9 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "amounts", schema = "web_account_db")
-public class Amounts {
+public class Amount {
     private Integer id;
-    private Categories categoryId;
+    private Category categoryId;
     private String name;
     private BigDecimal price;
     private Date amountsDate;
@@ -31,11 +33,12 @@ public class Amounts {
 
     @ManyToOne()
     @JoinColumn(name = "category_id")
-    public Categories getCategoryId() {
+    @JsonBackReference
+    public Category getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(Categories categoryId) {
+    public void setCategoryId(Category categoryId) {
         this.categoryId = categoryId;
     }
 
@@ -85,14 +88,14 @@ public class Amounts {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Amounts amounts = (Amounts) o;
+        Amount amount = (Amount) o;
 
-        if (id != null ? !id.equals(amounts.id) : amounts.id != null) return false;
-        if (categoryId != null ? !categoryId.equals(amounts.categoryId) : amounts.categoryId != null) return false;
-        if (name != null ? !name.equals(amounts.name) : amounts.name != null) return false;
-        if (price != null ? !price.equals(amounts.price) : amounts.price != null) return false;
-        if (amountsDate != null ? !amountsDate.equals(amounts.amountsDate) : amounts.amountsDate != null) return false;
-        return details != null ? details.equals(amounts.details) : amounts.details == null;
+        if (id != null ? !id.equals(amount.id) : amount.id != null) return false;
+        if (categoryId != null ? !categoryId.equals(amount.categoryId) : amount.categoryId != null) return false;
+        if (name != null ? !name.equals(amount.name) : amount.name != null) return false;
+        if (price != null ? !price.equals(amount.price) : amount.price != null) return false;
+        if (amountsDate != null ? !amountsDate.equals(amount.amountsDate) : amount.amountsDate != null) return false;
+        return details != null ? details.equals(amount.details) : amount.details == null;
 
     }
 
@@ -109,7 +112,7 @@ public class Amounts {
 
     @Override
     public String toString() {
-        return "Amounts{" +
+        return "Amount{" +
                 "id=" + id +
                 ", categoryId=" + categoryId +
                 ", name='" + name + '\'' +

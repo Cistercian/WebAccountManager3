@@ -11,17 +11,17 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "categories", schema = "web_account_db", catalog = "")
-public class Categories {
+public class Category {
     private Integer id;
     private Integer parentId;
     private String name;
     private String details;
     private Byte type;
 
-    public Categories() {
+    public Category() {
     }
 
-    public Categories(Integer parentId, String name, String details, Byte type) {
+    public Category(Integer parentId, String name, String details, Byte type) {
         this.parentId = parentId;
         this.name = name;
         this.details = details;
@@ -79,25 +79,25 @@ public class Categories {
         this.type = type;
     }
 
-    private Set<Amounts> amounts = new HashSet<Amounts>();
+    private Set<Amount> amounts = new HashSet<Amount>();
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "categoryId", cascade = CascadeType.ALL, orphanRemoval = false)
     @JsonBackReference
-    public Set<Amounts> getAmounts() {
+    public Set<Amount> getAmounts() {
         return amounts;
     }
 
-    public void setAmounts(Set<Amounts> amounts) {
+    public void setAmounts(Set<Amount> amounts) {
         this.amounts = amounts;
     }
 
-    public void addAmounts(Amounts amounts) {
-        amounts.setCategoryId(this);
-        this.amounts.add(amounts);
+    public void addAmounts(Amount amount) {
+        amount.setCategoryId(this);
+        this.amounts.add(amount);
     }
 
-    public void removeAmounts(Amounts amounts) {
-        this.amounts.remove(amounts);
+    public void removeAmounts(Amount amount) {
+        this.amounts.remove(amount);
     }
 
     @Override
@@ -105,7 +105,7 @@ public class Categories {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Categories that = (Categories) o;
+        Category that = (Category) o;
 
         if (id != that.id) return false;
         if (parentId != null ? !parentId.equals(that.parentId) : that.parentId != null) return false;
@@ -128,7 +128,7 @@ public class Categories {
 
     @Override
     public String toString() {
-        return "Categories{" +
+        return "Category{" +
                 "id=" + id +
                 ", parentId=" + parentId +
                 ", name='" + name + '\'' +

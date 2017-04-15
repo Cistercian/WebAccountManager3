@@ -17,7 +17,7 @@
             success: function (data) {
 
                 $.each(data, function (categoryId, categoryName) {
-                    $('#dropdown-menu-amounts').append(
+                    $('#dropdown-menu-amount').append(
                             "\<li>\<a id=\"" + categoryId + "\" onclick=\"setCategoryId(" + categoryId + ", '" + categoryName +
                             "');return false;\">" + categoryName + "\<\/a>\<\/li>");
                 });
@@ -51,13 +51,13 @@
             </div>
 
             <%--<form role="form" class="contactForm wow fadeInDown"--%>
-            <%--data-wow-duration="1000ms" data-wow-delay="300ms" modelAttribute="amounts">--%>
+            <%--data-wow-duration="1000ms" data-wow-delay="300ms" modelAttribute="amount">--%>
             <div class="col-md-6 col-sm-6 col-xs-12 left">
                 <div class="form-group">
                     <div class="btn-group">
                         <button class="btn btn-large dropdown-toggle" data-toggle="dropdown" id="dropdownBtnAmounts">Select Category
                             <span class="caret"></span></button>
-                        <ul class="dropdown-menu" id="dropdown-menu-amounts">
+                        <ul class="dropdown-menu" id="dropdown-menu-amount">
                             <li><a onclick="setCategoryId(-1, 'Select Category');return false;">select category</a></li>
                             <li class="divider"></li>);
                         </ul>

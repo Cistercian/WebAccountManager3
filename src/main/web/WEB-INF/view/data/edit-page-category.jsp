@@ -59,7 +59,7 @@
     </div>
     <div class="container">
         <div class="text-center" class="contactForm wow fadeInDown" data-wow-duration="1000ms"
-             data-wow-delay="300ms" modelAttribute="amounts">
+             data-wow-delay="300ms" modelAttribute="amount">
 
             <div class="col-md-6 col-sm-6 col-xs-12 left">
                 <div class="form-group">

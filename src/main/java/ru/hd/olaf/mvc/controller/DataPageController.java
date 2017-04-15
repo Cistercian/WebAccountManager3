@@ -4,10 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import ru.hd.olaf.entities.Amounts;
-import ru.hd.olaf.entities.Categories;
-import ru.hd.olaf.mvc.service.AmountsService;
-import ru.hd.olaf.mvc.service.CategoriesService;
+import ru.hd.olaf.entities.Amount;
+import ru.hd.olaf.entities.Category;
+import ru.hd.olaf.mvc.service.AmountService;
+import ru.hd.olaf.mvc.service.CategoryService;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -21,13 +21,13 @@ import java.util.Map;
 public class DataPageController {
 
     @Autowired
-    private CategoriesService categoriesService;
+    private CategoryService categoryService;
     @Autowired
-    private AmountsService amountsService;
+    private AmountService amountService;
 
     @RequestMapping(value = "/edit-page/getCategoriesIdAndName", method = RequestMethod.GET)
     public @ResponseBody Map<Integer, String> getCategoriesIdAndName() {
-        return categoriesService.getIdAndName();
+        return categoryService.getIdAndName();
     }
 
     @RequestMapping(params = {"categoryId", "name", "price", "amountsDate", "details", "submitAmmount"}, value = "/edit-page-amount/addAmounts", method = RequestMethod.POST)
@@ -39,16 +39,16 @@ public class DataPageController {
                             @RequestParam(value = "submitAmmount") String submitAmmount) {
         System.out.println("Controller add()_amount is called");
 
-        Categories categories = categoriesService.getById(categoryId);
-        Amounts amounts = new Amounts();
+        Category category = categoryService.getById(categoryId);
+        Amount amount = new Amount();
 
-        amounts.setCategoryId(categories);
-        amounts.setName(name);
-        amounts.setPrice(price);
-        amounts.setAmountsDate(amountsDate);
-        amounts.setDetails(details);
+        amount.setCategoryId(category);
+        amount.setName(name);
+        amount.setPrice(price);
+        amount.setAmountsDate(amountsDate);
+        amount.setDetails(details);
 
-        amountsService.add(amounts);
+        amountService.add(amount);
         return "index";
     }
 
@@ -59,14 +59,14 @@ public class DataPageController {
                             @RequestParam(value = "type") Byte type) {
         System.out.println("Controller add()_category is called");
 
-        Categories category = null;
-        category = id == -1 ? new Categories() : categoriesService.getById(id);
+        Category category = null;
+        category = id == -1 ? new Category() : categoryService.getById(id);
 
         category.setType(type);
         category.setName(name);
         category.setDetails(details);
 
-        categoriesService.add(category);
+        categoryService.add(category);
         return "index";
     }
 
