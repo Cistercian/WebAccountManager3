@@ -132,10 +132,6 @@
         return value;
     }
     ;
-    //-------------
-    //- PIE CHART -
-    //-------------
-    // Get context with jQuery - using jQuery's .get() method.
     function drawChartOfTypes(data, elementId) {
 
         var pieChartCanvas = $('#' + elementId).get(0).getContext('2d');
@@ -193,11 +189,8 @@
             '<\%if(segments[i].label){' +
             '%>\<\%=segments[i].label%>\<\%}%></li>\<\%}%></ul>'
         };
-        //Create pie or douhnut chart
-        // You can switch between pie and douhnut using the method below.
         pieChart.Doughnut(PieData, pieOptions);
-    }
-    ;
+    };
 </script>
 
 <div id="home">
