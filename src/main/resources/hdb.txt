@@ -23,15 +23,15 @@ ID INT NOT NULL AUTO_INCREMENT
 , PRIMARY KEY (id)
 );
 
-INSERT INTO categories (parent_id, name, details, type) VALUES (0, 'name1', 'details1', 0);
-INSERT INTO categories (parent_id, name, details, type) VALUES (1, 'name2', 'details2', 1);
+INSERT INTO categories (parent_id, name, details, type) VALUES (0, 'Категория 1', 'Описание 1', 0);
+INSERT INTO categories (parent_id, name, details, type) VALUES (1, 'Категория 2', 'Описание 2', 1);
 
 INSERT INTO amount (category_id, name, price, date, details)
-    VALUES (1, 'name1', 100, CURDATE(), "details1");
+    VALUES (1, 'товар 1', 100, CURDATE(), "details1");
 INSERT INTO amount (category_id, name, price, date, details)
-    VALUES (2, 'name2', 10000, CURDATE(), "details2");
+    VALUES (2, 'товар 2', 500, CURDATE(), "details2");
 INSERT INTO amount (category_id, name, price, date, details)
-    VALUES (1, 'name3', 100, CURDATE(), "details3");
+    VALUES (1, 'товар 3', 100, CURDATE(), "details3");
 
 http://javastudy.ru/spring-data-jpa/spring-data-jpa-helloworld/
 http://javastudy.ru/interview/jee-spring-questions-answers/

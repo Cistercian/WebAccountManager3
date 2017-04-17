@@ -63,4 +63,13 @@
     <jpa:repositories base-package="ru.hd.olaf.mvc.repository" entity-manager-factory-ref="emf"
                       transaction-manager-ref="transactionManager"/>
 
+    <!-- Файл с настройками безопасности -->
+    <import resource="security-config.xml" />
+
+    <bean id="messageSource"
+          class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="basename" value="classpath:messages" />
+        <property name="defaultEncoding" value="UTF-8" />
+    </bean>
+
 </beans>
