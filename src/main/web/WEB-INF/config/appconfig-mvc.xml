@@ -11,10 +11,6 @@
 	   http://www.springframework.org/schema/context/spring-context-3.0.xsd
 ">
 
-    <!-- context:component-scan This tag will scan @Component, @Repository, @Service, @Controller
-         and also resolves @Autowired and @Qualifier -->
-    <context:component-scan base-package="ru.hd.olaf" />
-    <context:annotation-config/>
     <!--
         mvc:annotation-driven configures Spring MVC annotations
         Support for validating @Controller inputs with @Valid, if a JSR-303 Provider is present on the classpath.
@@ -23,6 +19,16 @@
         <mvc:annotation-driven/>
      -->
     <mvc:annotation-driven />
+
+    <!-- Static Resources Configuration (get access to static sources such as CSS and JavaScript files) -->
+    <mvc:resources mapping="/resources/**" location="/resources/" />
+
+
+    <!-- context:component-scan This tag will scan @Component, @Repository, @Service, @Controller
+         and also resolves @Autowired and @Qualifier -->
+    <!--<context:component-scan base-package="ru.hd.olaf" />-->
+    <!--<context:annotation-config/>-->
+
 
 
     <!--org.springframework.web.servlet.PageNotFound.noHandlerFound No mapping found
@@ -45,9 +51,16 @@
     <mvc:view-controller path="/edit-page-amount.html" view-name="/data/edit-page-amount"/>
     <mvc:view-controller path="/edit-page-category.html" view-name="/data/edit-page-category"/>
     <mvc:view-controller path="/login.html" view-name="/login/login"/>
+    <mvc:view-controller path="/registraion.html" view-name="/login/registration"/>
 
-    <!-- Static Resources Configuration (get access to static sources such as CSS and JavaScript files) -->
-    <mvc:resources mapping="/resources/**" location="/resources/" />
-
-
+    <bean id="messageSource"
+          class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="basenames">
+            <list>
+                <value>classpath:validation</value>
+                <value>classpath:messages</value>
+            </list>
+        </property>
+        <property name="defaultEncoding" value="UTF-8" />
+    </bean>
 </beans>

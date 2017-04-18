@@ -1,5 +1,7 @@
 package ru.hd.olaf.mvc.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.web.bind.WebDataBinder;
@@ -10,6 +12,7 @@ import ru.hd.olaf.mvc.service.AmountService;
 import ru.hd.olaf.mvc.service.CategoryService;
 
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
@@ -25,6 +28,8 @@ public class DataPageController {
     @Autowired
     private AmountService amountService;
 
+    private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
+
     @RequestMapping(value = "/edit-page/getCategoriesIdAndName", method = RequestMethod.GET)
     public @ResponseBody Map<Integer, String> getCategoriesIdAndName() {
         return categoryService.getIdAndName();
@@ -36,7 +41,8 @@ public class DataPageController {
                             @RequestParam(value = "price") BigDecimal price,
                             @RequestParam(value = "amountsDate") Date amountsDate,
                             @RequestParam(value = "details") String details,
-                            @RequestParam(value = "submitAmmount") String submitAmmount) {
+                            @RequestParam(value = "submitAmmount") String submitAmmount,
+                            Principal principal) {
         System.out.println("Controller add()_amount is called");
 
         Category category = categoryService.getById(categoryId);
@@ -49,6 +55,10 @@ public class DataPageController {
         amount.setDetails(details);
 
         amountService.add(amount);
+
+        logger.debug(String.format("Controller: %s, called function: %s. User: %s",
+                DataPageController.class.getSimpleName(), "addAmount", principal.getName()));
+
         return "index";
     }
 

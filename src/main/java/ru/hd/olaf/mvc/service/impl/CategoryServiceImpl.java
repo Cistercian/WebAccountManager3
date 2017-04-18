@@ -7,6 +7,7 @@ import ru.hd.olaf.entities.Amount;
 import ru.hd.olaf.entities.Category;
 import ru.hd.olaf.mvc.repository.CategoryRepository;
 import ru.hd.olaf.mvc.service.CategoryService;
+import ru.hd.olaf.mvc.service.SecurityService;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -18,7 +19,10 @@ import java.util.*;
 public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
-    CategoryRepository categoryRepository;
+    private CategoryRepository categoryRepository;
+
+    @Autowired
+    private SecurityService securityService;
 
     public Category add(Category category) {
         return categoryRepository.save(category);
@@ -44,7 +48,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     public Map<Category, BigDecimal> getAllWithTotalSum() {
-        List<Category> categories = Lists.newArrayList(getAll());
+        List<Category> categories = Lists.newArrayList(getAllByCurrentUser());
         Map<Category, BigDecimal> nonSortedMap = new HashMap<Category, BigDecimal>();
         for (Category category : categories) {
 
@@ -75,5 +79,9 @@ public class CategoryServiceImpl implements CategoryService {
 
             return i2.compareTo(i1);
         }
+    }
+
+    public List<Category> getAllByCurrentUser() {
+        return categoryRepository.findByUserId(securityService.findLoggedUser());
     }
 }

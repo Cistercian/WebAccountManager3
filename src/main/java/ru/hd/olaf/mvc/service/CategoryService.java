@@ -12,6 +12,7 @@ import java.util.Map;
 public interface CategoryService {
 
     List<Category> getAll();
+    List<Category> getAllByCurrentUser();
     Category getById(int id);
     Map<Integer,String> getIdAndName();
     Category add(Category category);

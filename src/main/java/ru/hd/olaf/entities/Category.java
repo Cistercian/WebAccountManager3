@@ -10,13 +10,14 @@ import java.util.Set;
  * Created by Olaf on 11.04.2017.
  */
 @Entity
-@Table(name = "categories", schema = "web_account_db", catalog = "")
+@Table(name = "categories", schema = "web_account_db")
 public class Category {
     private Integer id;
     private Integer parentId;
     private String name;
     private String details;
     private Byte type;
+    private User userId;
 
     public Category() {
     }
@@ -80,7 +81,6 @@ public class Category {
     }
 
     private Set<Amount> amounts = new HashSet<Amount>();
-
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "categoryId", cascade = CascadeType.ALL, orphanRemoval = false)
     @JsonBackReference
     public Set<Amount> getAmounts() {
@@ -98,6 +98,17 @@ public class Category {
 
     public void removeAmounts(Amount amount) {
         this.amounts.remove(amount);
+    }
+
+    @ManyToOne()
+    @JoinColumn(name = "user_id")
+    @JsonBackReference
+    public User getUserId() {
+        return userId;
+    }
+
+    public void setUserId(User userId) {
+        userId = userId;
     }
 
     @Override

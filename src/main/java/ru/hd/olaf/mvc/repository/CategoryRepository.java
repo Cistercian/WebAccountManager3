@@ -2,6 +2,7 @@ package ru.hd.olaf.mvc.repository;
 
 import org.springframework.data.repository.CrudRepository;
 import ru.hd.olaf.entities.Category;
+import ru.hd.olaf.entities.User;
 
 import java.util.List;
 
@@ -11,4 +12,5 @@ import java.util.List;
 public interface CategoryRepository extends CrudRepository<Category, Integer>{
     List<Category> findByParentId(Integer parentId);
     List<Category> findByName(String name);
+    List<Category> findByUserId(User user);
 }

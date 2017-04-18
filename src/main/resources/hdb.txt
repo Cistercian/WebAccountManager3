@@ -1,46 +1,11 @@
 CREATE DATABASE `web_account_db` CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 USE web_account_db;
-DROP TABLE IF EXISTS amount;
-CREATE TABLE amount (
-ID INT NOT NULL AUTO_INCREMENT
-, category_id INT NOT NULL
-, name VARCHAR(40) NOT NULL
-, price DECIMAL(6, 2) NOT NULL DEFAULT 0
-, date DATE NOT NULL
-, details VARCHAR(256)
-, PRIMARY KEY (id)
-);
-
-USE web_account_db;
-DROP TABLE IF EXISTS categories;
-CREATE TABLE categories (
-ID INT NOT NULL AUTO_INCREMENT
-, parent_id INT
-, name VARCHAR(40) NOT NULL
-, details VARCHAR(256)
-, type TINYINT(1) DEFAULT 0
-, PRIMARY KEY (id)
-);
-
-INSERT INTO categories (parent_id, name, details, type) VALUES (0, 'Категория 1', 'Описание 1', 0);
-INSERT INTO categories (parent_id, name, details, type) VALUES (1, 'Категория 2', 'Описание 2', 1);
-
-INSERT INTO amount (category_id, name, price, date, details)
-    VALUES (1, 'товар 1', 100, CURDATE(), "details1");
-INSERT INTO amount (category_id, name, price, date, details)
-    VALUES (2, 'товар 2', 500, CURDATE(), "details2");
-INSERT INTO amount (category_id, name, price, date, details)
-    VALUES (1, 'товар 3', 100, CURDATE(), "details3");
-
-http://javastudy.ru/spring-data-jpa/spring-data-jpa-helloworld/
-http://javastudy.ru/interview/jee-spring-questions-answers/
-
-USE web_account_db;
-DROP TABLE IF EXISTS amount;
-CREATE TABLE amount (
+DROP TABLE IF EXISTS amounts;
+CREATE TABLE amounts (
 ID INT NOT NULL AUTO_INCREMENT
 , category_id INT
+, user_id INT
 , name VARCHAR(40)
 , price DECIMAL(10, 2) DEFAULT 0
 , date DATE
@@ -53,8 +18,35 @@ DROP TABLE IF EXISTS categories;
 CREATE TABLE categories (
 ID INT NOT NULL AUTO_INCREMENT
 , parent_id INT
+, user_id INT
 , name VARCHAR(40)
 , details VARCHAR(256)
 , type TINYINT(1) DEFAULT 0
 , PRIMARY KEY (id)
 );
+DROP TABLE IF EXISTS users;
+CREATE TABLE `users` (
+  ID INT NOT NULL AUTO_INCREMENT,
+  `username` varchar(50) NOT NULL,
+  `password` varchar(100) NOT NULL,
+  `full_name` varchar(100) NOT NULL,
+  `role` varchar(50) NOT NULL,
+  `enabled` tinyint(1) NOT NULL,
+  PRIMARY KEY (id)
+);
+
+INSERT INTO categories (parent_id, user_id, name, details, type) VALUES (0, 1, 'Категория 1', 'Описание 1', 0);
+INSERT INTO categories (parent_id, user_id, name, details, type) VALUES (1, 1, 'Категория 2', 'Описание 2', 1);
+
+INSERT INTO amounts (category_id, user_id, name, price, date, details)
+    VALUES (1, 1, 'товар 1', 100, CURDATE(), "details1");
+INSERT INTO amounts (category_id, user_id, name, price, date, details)
+    VALUES (2, 1, 'товар 2', 500, CURDATE(), "details2");
+INSERT INTO amounts (category_id, user_id, name, price, date, details)
+    VALUES (1, 1, 'товар 3', 100, CURDATE(), "details3");
+
+http://javastudy.ru/spring-data-jpa/spring-data-jpa-helloworld/
+http://javastudy.ru/interview/jee-spring-questions-answers/
+Spring Security 4 + view
+https://github.com/hellokoding/registration-login-spring-xml-maven-jsp-mysql
+https://hellokoding.com/registration-and-login-example-with-spring-xml-configuration-maven-jsp-and-mysql/

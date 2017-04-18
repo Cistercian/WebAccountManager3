@@ -19,6 +19,7 @@ public class Amount {
     private BigDecimal price;
     private Date amountsDate;
     private String details;
+    private User userId;
 
     @Id
     @Column(name = "ID", nullable = false)
@@ -40,6 +41,17 @@ public class Amount {
 
     public void setCategoryId(Category categoryId) {
         this.categoryId = categoryId;
+    }
+
+    @ManyToOne()
+    @JoinColumn(name = "user_id")
+    @JsonBackReference
+    public User getUserId() {
+        return userId;
+    }
+
+    public void setUserId(User userId) {
+        this.userId = userId;
     }
 
     @Basic
