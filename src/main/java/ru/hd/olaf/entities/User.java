@@ -10,7 +10,7 @@ import java.util.Set;
  * Created by d.v.hozyashev on 18.04.2017.
  */
 @Entity
-@Table(name = "users", schema = "web_account_db", catalog = "")
+@Table(name = "users", schema = "web_account_db")
 public class User {
     private Integer id;
     private String username;
@@ -138,5 +138,20 @@ public class User {
         result = 31 * result + (role != null ? role.hashCode() : 0);
         result = 31 * result + (int) enabled;
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", passwordConfirm='" + passwordConfirm + '\'' +
+                ", fullName='" + fullName + '\'' +
+                ", role='" + role + '\'' +
+                ", enabled=" + enabled +
+                ", categories=" + categories +
+                ", amounts=" + amounts +
+                '}';
     }
 }

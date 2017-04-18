@@ -12,10 +12,13 @@
 
 <script language="javascript" type="text/javascript">
     $(document).ready(function () {
+        $.ajaxSetup({
+            headers:
+            { 'X-CSRF-TOKEN': document.getElementById('_csrf_token').value }
+        });
         $.ajax({
             url: './edit-page/getCategoriesIdAndName',
             success: function (data) {
-
                 $.each(data, function (categoryId, categoryName) {
                     $('#dropdown-menu-amount').append(
                             "\<li>\<a id=\"" + categoryId + "\" onclick=\"setCategoryId(" + categoryId + ", '" + categoryName +
@@ -54,6 +57,7 @@
             <%--data-wow-duration="1000ms" data-wow-delay="300ms" modelAttribute="amount">--%>
             <div class="col-md-6 col-sm-6 col-xs-12 left">
                 <div class="form-group">
+                    <input id="_csrf_token" type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
                     <div class="btn-group">
                         <button class="btn btn-large dropdown-toggle" data-toggle="dropdown" id="dropdownBtnAmounts">Select Category
                             <span class="caret"></span></button>

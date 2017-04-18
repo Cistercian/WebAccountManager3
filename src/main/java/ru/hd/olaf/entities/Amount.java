@@ -126,11 +126,12 @@ public class Amount {
     public String toString() {
         return "Amount{" +
                 "id=" + id +
-                ", categoryId=" + categoryId +
+                //", categoryId=" + categoryId +
                 ", name='" + name + '\'' +
                 ", price=" + price +
-                ", date=" + amountsDate +
+                ", amountsDate=" + amountsDate +
                 ", details='" + details + '\'' +
+                //", userId=" + userId +
                 '}';
     }
 }

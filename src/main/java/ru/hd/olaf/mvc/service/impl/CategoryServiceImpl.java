@@ -1,6 +1,8 @@
 package ru.hd.olaf.mvc.service.impl;
 
 import com.google.common.collect.Lists;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.hd.olaf.entities.Amount;
@@ -24,6 +26,8 @@ public class CategoryServiceImpl implements CategoryService {
     @Autowired
     private SecurityService securityService;
 
+    private static final Logger logger = LoggerFactory.getLogger(CategoryServiceImpl.class);
+
     public Category add(Category category) {
         return categoryRepository.save(category);
     }
@@ -36,9 +40,9 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.findOne(id);
     }
 
-    public Map<Integer, String> getIdAndName() {
+    public Map<Integer, String> getIdAndNameByCurrentUser() {
         Map<Integer, String> map = new HashMap<Integer, String>();
-        List<Category> categories = getAll();
+        List<Category> categories = getAllByCurrentUser();
 
         for(Category category : categories) {
             map.put(category.getId(), category.getName());
@@ -82,6 +86,8 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     public List<Category> getAllByCurrentUser() {
+        logger.debug(String.format("current User = %s", securityService.findLoggedUser().getUsername()));
+
         return categoryRepository.findByUserId(securityService.findLoggedUser());
     }
 }

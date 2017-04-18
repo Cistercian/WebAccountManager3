@@ -2,6 +2,8 @@ package ru.hd.olaf.mvc.controller;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.web.bind.WebDataBinder;
@@ -25,27 +27,24 @@ public class IndexController {
     @Autowired
     private AmountService amountService;
 
+    private static final Logger logger = LoggerFactory.getLogger(IndexController.class);
+
     @RequestMapping(value = "/getAllCategoriesWithTotalSum", method = RequestMethod.GET)
     public @ResponseBody Map<Category, BigDecimal> getAllCategoriesWithTotalSum() {
-        System.out.println("Controller getAllCategoriesWithTotalSum() is called");
+        logger.debug(String.format("called function: %s",
+                "getAllCategoriesWithTotalSum"));
         return categoryService.getAllWithTotalSum();
     }
 
     @RequestMapping(value = "/getAmountsByCategoryId", params = {"categoryId"}, method = RequestMethod.GET)
     public @ResponseBody List<Amount> getAmountsByCategoryId(@RequestParam(value = "categoryId") Integer categoryId){
-        System.out.println("Controller getAmountsByCategoryId() is called");
+        logger.debug(String.format("called %s", "getAmountsByCategoryId"));
         Category category = categoryService.getById(categoryId);
 
         List<Amount> amounts = amountService.getAllByCategoryId(category);
         printData(amounts);
 
         return amounts;
-    }
-
-    @RequestMapping(value = "/getAmounts", method = RequestMethod.GET)
-    public @ResponseBody List<Amount> getAmounts() {
-        System.out.println("Controller getAmounts() is called");
-        return amountService.getAll();
     }
 
     private <T> void printData(List<T> list) {

@@ -108,7 +108,7 @@ public class Category {
     }
 
     public void setUserId(User userId) {
-        userId = userId;
+        this.userId = userId;
     }
 
     @Override
@@ -145,6 +145,8 @@ public class Category {
                 ", name='" + name + '\'' +
                 ", details='" + details + '\'' +
                 ", type=" + type +
+                //", userId=" + userId +
+                //", amounts=" + amounts +
                 '}';
     }
 }

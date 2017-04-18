@@ -1,8 +1,11 @@
 package ru.hd.olaf.mvc.service.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -25,18 +28,34 @@ public class SecurityServiceImpl implements SecurityService {
     @Autowired
     private UserRepository userRepository;
 
+    private static final Logger logger = LoggerFactory.getLogger(SecurityServiceImpl.class);
+
     public String findLoggedUsername() {
-        Object userDetails = SecurityContextHolder.getContext().getAuthentication().getDetails();
-        if (userDetails instanceof UserDetails) {
-            return ((UserDetails) userDetails).getUsername();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        //TODO: Exception
+        if (null == auth) {
+            throw new RuntimeException("NotFoundException: current auth");
         }
 
-        return null;
+        Object principal = auth.getPrincipal();
+        String username = "";
+
+        if (principal instanceof UserDetails) {
+            username = ((UserDetails) principal).getUsername();
+        } else {
+            username = principal.toString();
+        }
+
+        return username;
     }
 
     public User findLoggedUser() {
         String userName = findLoggedUsername();
-        if (null == userName) userName = "demoUser";
+        if (null == userName || "anonymousUser".equalsIgnoreCase(userName)) userName = "demoUser";
+
+        logger.debug(String.format("%s(): userName = %s, context:%s",
+                "findLoggedUser", userName, SecurityContextHolder.getContext().toString()));
 
         //TODO: UserNotFoundException?
         return userRepository.findByUsername(userName);

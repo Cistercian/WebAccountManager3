@@ -12,6 +12,10 @@
 
 <script language="javascript" type="text/javascript">
     $(document).ready(function () {
+        $.ajaxSetup({
+            headers:
+            { 'X-CSRF-TOKEN': document.getElementById('_csrf_token').value }
+        });
         refreshPage();
     });
 
@@ -63,6 +67,7 @@
 
             <div class="col-md-6 col-sm-6 col-xs-12 left">
                 <div class="form-group">
+                    <input id="_csrf_token" type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
                     <div class="btn-group">
                         <button class="btn btn-large dropdown-toggle" data-toggle="dropdown" id="dropdownBtnCategory" value="-1">
                             Create New

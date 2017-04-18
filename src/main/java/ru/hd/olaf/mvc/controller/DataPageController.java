@@ -10,6 +10,7 @@ import ru.hd.olaf.entities.Amount;
 import ru.hd.olaf.entities.Category;
 import ru.hd.olaf.mvc.service.AmountService;
 import ru.hd.olaf.mvc.service.CategoryService;
+import ru.hd.olaf.mvc.service.SecurityService;
 
 import java.math.BigDecimal;
 import java.security.Principal;
@@ -27,12 +28,14 @@ public class DataPageController {
     private CategoryService categoryService;
     @Autowired
     private AmountService amountService;
+    @Autowired
+    private SecurityService securityService;
 
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
     @RequestMapping(value = "/edit-page/getCategoriesIdAndName", method = RequestMethod.GET)
     public @ResponseBody Map<Integer, String> getCategoriesIdAndName() {
-        return categoryService.getIdAndName();
+        return categoryService.getIdAndNameByCurrentUser();
     }
 
     @RequestMapping(params = {"categoryId", "name", "price", "amountsDate", "details", "submitAmmount"}, value = "/edit-page-amount/addAmounts", method = RequestMethod.POST)
@@ -41,9 +44,7 @@ public class DataPageController {
                             @RequestParam(value = "price") BigDecimal price,
                             @RequestParam(value = "amountsDate") Date amountsDate,
                             @RequestParam(value = "details") String details,
-                            @RequestParam(value = "submitAmmount") String submitAmmount,
-                            Principal principal) {
-        System.out.println("Controller add()_amount is called");
+                            @RequestParam(value = "submitAmmount") String submitAmmount) {
 
         Category category = categoryService.getById(categoryId);
         Amount amount = new Amount();
@@ -53,11 +54,12 @@ public class DataPageController {
         amount.setPrice(price);
         amount.setAmountsDate(amountsDate);
         amount.setDetails(details);
+        amount.setUserId(securityService.findLoggedUser());
 
         amountService.add(amount);
 
-        logger.debug(String.format("Controller: %s, called function: %s. User: %s",
-                DataPageController.class.getSimpleName(), "addAmount", principal.getName()));
+        logger.debug(String.format("called function: %s. User: %s",
+                "addAmount", securityService.findLoggedUsername()));
 
         return "index";
     }
@@ -75,6 +77,10 @@ public class DataPageController {
         category.setType(type);
         category.setName(name);
         category.setDetails(details);
+        category.setUserId(securityService.findLoggedUser());
+
+        logger.debug(String.format("called function: %s. User: %s. CategoryEntity: %s",
+                "addCategory", securityService.findLoggedUsername(), category));
 
         categoryService.add(category);
         return "index";

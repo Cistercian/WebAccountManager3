@@ -14,7 +14,7 @@ public interface CategoryService {
     List<Category> getAll();
     List<Category> getAllByCurrentUser();
     Category getById(int id);
-    Map<Integer,String> getIdAndName();
+    Map<Integer,String> getIdAndNameByCurrentUser();
     Category add(Category category);
     Map<Category, BigDecimal> getAllWithTotalSum();
 }

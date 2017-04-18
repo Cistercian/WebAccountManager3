@@ -6,18 +6,19 @@
 		http://www.springframework.org/schema/security
 		http://www.springframework.org/schema/security/spring-security.xsd">
 
-    <http auto-config="true">
-        <intercept-url pattern="/" access="hasRole('ROLE_USER')"/>
-        <intercept-url pattern="/index" access="hasRole('ROLE_USER')"/>
-        <form-login login-page="/login" default-target-url="/index" authentication-failure-url="/login?error" username-parameter="username" password-parameter="password"/>
-        <logout logout-success-url="/login?logout" />
-    </http>
-
     <authentication-manager alias="authenticationManager">
         <authentication-provider user-service-ref="userDetailsServiceImpl">
             <password-encoder ref="encoder"></password-encoder>
         </authentication-provider>
     </authentication-manager>
+
+    <http auto-config="true">
+        <intercept-url pattern="/" access="hasRole('ROLE_USER')"/>
+        <intercept-url pattern="/index" access="hasRole('ROLE_USER')"/>
+        <form-login login-page="/login" default-target-url="/index" authentication-failure-url="/login?error" username-parameter="username" password-parameter="password"/>
+        <logout logout-success-url="/login?logout" />
+        <remember-me/>
+    </http>
 
     <beans:bean id="userDetailsServiceImpl" class="ru.hd.olaf.mvc.service.impl.UserDetailsServiceImpl"></beans:bean>
 
