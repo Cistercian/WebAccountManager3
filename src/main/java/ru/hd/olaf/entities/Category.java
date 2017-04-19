@@ -81,7 +81,7 @@ public class Category {
     }
 
     private Set<Amount> amounts = new HashSet<Amount>();
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "categoryId", cascade = CascadeType.ALL, orphanRemoval = false)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "categoryId", cascade = CascadeType.REMOVE, orphanRemoval = false)
     @JsonBackReference
     public Set<Amount> getAmounts() {
         return amounts;

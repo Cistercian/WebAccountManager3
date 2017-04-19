@@ -15,16 +15,6 @@
         $.ajaxSetup({
             headers: {'X-CSRF-TOKEN': document.getElementById('_csrf_token').value}
         });
-        $.ajax({
-            url: '/page-amount/getCategoriesIdAndName',
-            success: function (data) {
-                $.each(data, function (categoryId, categoryName) {
-                    $('#dropdownCategories').append(
-                            "\<li>\<a id=\"" + categoryId + "\" onclick=\"setCategoryId(" + categoryId + ", '" + categoryName +
-                            "');return false;\">" + categoryName + "\<\/a>\<\/li>");
-                });
-            }
-        });
     });
 
     function setCategoryId(categoryId, categoryName) {
@@ -97,12 +87,29 @@
                 <div class="row">
                     <div class="col-md-10">
                         <button id="btnCategories" class="btn-default btn-lg btn-block dropdown-toggle"
-                                data-toggle="dropdown"><spring:message code="label.page-amount.selectCategory" />
+                                data-toggle="dropdown" value="${categoryId}">
+                                <c:choose>
+                                    <c:when test="${not empty categoryName}">
+                                        ${categoryName}
+                                    </c:when>
+                                    <c:otherwise>
+                                        <spring:message code="label.page-amount.selectCategory" />
+                                    </c:otherwise>
+                                </c:choose>
+
                             <span class="caret"></span>
                         </button>
                         <ul id="dropdownCategories" class="dropdown-menu">
                             <li><a onclick="setCategoryId(-1, 'Select Category');return false;"><spring:message code="label.page-amount.selectCategory" /></a></li>
                             <li class="divider"></li>
+                            <c:forEach items="${categories}" var="map">
+                                    <%--${entry.key}<br>--%>
+                                    <%--${entry.value}<br>--%>
+                                    <li><a id='${map.key}' onclick="setCategoryId('${map.key}', '${map.value}');
+                                    return false;">${map.value}</a></li>
+                            </c:forEach>
+
+
                         </ul>
                     </div>
                     <div class="col-md-2">
@@ -126,7 +133,7 @@
                     <div class="col-md-6 col-md-offset-6">
                         <div class="btn-group">
                             <button id="btnNew" type="submit" name="btnNew"
-                                    class="btn btn-default btn-lg " onclick="return false;"><spring:message code="label.page-amount.btnNew" />
+                                    class="btn btn-default btn-lg " onclick="location.href='/page-amount.html'"><spring:message code="label.page-amount.btnNew" />
                             </button>
                         </div>
                         <div class="btn-group">
@@ -141,7 +148,7 @@
                         </div>
                         <div class="btn-group">
                             <button id="btnCancel" type="submit" name="btnCancel"
-                                    class="btn btn-default btn-lg "><spring:message code="label.page-amount.btnCancel" />
+                                    class="btn btn-default btn-lg " onclick="location.reload();"><spring:message code="label.page-amount.btnCancel" />
                             </button>
                         </div>
                         <script language="javascript" type="text/javascript">
@@ -151,7 +158,7 @@
                                     'categoryId': document.getElementById('btnCategories').value,
                                     'name': document.getElementById('name').value,
                                     'price': document.getElementById('price').value,
-                                    'amountsDate': document.getElementById('date').value,
+                                    'date': document.getElementById('date').value,
                                     'details': document.getElementById('details').value,
                                     'submitAmmount': '' //TODO: ??
                                 };
@@ -160,7 +167,7 @@
                                     url: '/page-amount/amount/save',
                                     data: data,
                                     success: function (data) {
-                                        //                                    alert(data); TODO: modal?
+                                        //                                    alert(data); TODO: modal?  charset?
                                     }
                                 });
 
@@ -190,7 +197,8 @@
                                 $('#modalFooter').append(
                                         "<button type='button' class='btn btn-default' data-dismiss='modal' " +
                                         "onclick='location.href=\"/page-amount/amount/" +
-                                        document.getElementById('id').value + "/delete\";'>" +
+                                        document.getElementById('id').value + "/delete\";" +
+                                        "location.href=\"/index.html#home\";'>" +                   //TODO: refactoring!!!
                                         "<spring:message code="label.page-amount.modal.btnYes" />" +
                                         "</button>" +
                                         "<button type='button' class='btn btn-primary' " +

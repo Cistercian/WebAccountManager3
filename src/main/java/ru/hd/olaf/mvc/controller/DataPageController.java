@@ -33,17 +33,32 @@ public class DataPageController {
 
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
+    @RequestMapping(value = "/page-amount", method = RequestMethod.GET)
+    public ModelAndView getPageAmount(){
+        logger.debug(String.format("function: %s.", "getPageAmount"));
+
+        ModelAndView modelAndView = new ModelAndView("/data/page-amount");
+
+        Map<Integer, String> categories = categoryService.getIdAndNameByCurrentUser();
+        modelAndView.addObject("categories", categories);
+
+        logger.debug(String.format("Map 'categories' for injecting: %s.", categories.toString()));
+
+        return modelAndView;
+    }
+
     @RequestMapping(value = "/page-amount/getCategoriesIdAndName", method = RequestMethod.GET)
     public @ResponseBody Map<Integer, String> getCategoriesIdAndName() {
         return categoryService.getIdAndNameByCurrentUser();
     }
 
-    @RequestMapping(params = {"id", "categoryId", "name", "price", "amountsDate", "details", "submitAmmount"}, value = "/page-amount/amount/save", method = RequestMethod.POST)
+    @RequestMapping(params = {"id", "categoryId", "name", "price", "date", "details", "submitAmmount"},
+            value = "/page-amount/amount/save", method = RequestMethod.POST)
     public String saveAmount(@RequestParam(value = "id") Integer id,
                             @RequestParam(value = "categoryId") Integer categoryId,
                             @RequestParam(value = "name") String name,
                             @RequestParam(value = "price") BigDecimal price,
-                            @RequestParam(value = "amountsDate") Date amountsDate,
+                            @RequestParam(value = "date") Date amountsDate,
                             @RequestParam(value = "details") String details,
                             @RequestParam(value = "submitAmmount") String submitAmmount) {
 
@@ -85,9 +100,16 @@ public class DataPageController {
         modelAndView.addObject("price", amount.getPrice());
         modelAndView.addObject("details", amount.getDetails());
         modelAndView.addObject("id", amount.getId());
+        modelAndView.addObject("categoryId", amount.getCategoryId().getId());
+        modelAndView.addObject("categoryName", amount.getCategoryId().getName());
 
         logger.debug(String.format("Amount: %s",
                 amount));
+
+        Map<Integer, String> categories = categoryService.getIdAndNameByCurrentUser();
+        modelAndView.addObject("categories", categories);
+
+        logger.debug(String.format("Map 'categories' for injecting: %s.", categories.toString()));
 
         return modelAndView;
     }
