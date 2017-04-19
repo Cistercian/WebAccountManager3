@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import ru.hd.olaf.entities.Amount;
 import ru.hd.olaf.entities.Category;
 import ru.hd.olaf.mvc.service.AmountService;
@@ -13,7 +14,6 @@ import ru.hd.olaf.mvc.service.CategoryService;
 import ru.hd.olaf.mvc.service.SecurityService;
 
 import java.math.BigDecimal;
-import java.security.Principal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
@@ -33,13 +33,14 @@ public class DataPageController {
 
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
-    @RequestMapping(value = "/edit-page/getCategoriesIdAndName", method = RequestMethod.GET)
+    @RequestMapping(value = "/page-amount/getCategoriesIdAndName", method = RequestMethod.GET)
     public @ResponseBody Map<Integer, String> getCategoriesIdAndName() {
         return categoryService.getIdAndNameByCurrentUser();
     }
 
-    @RequestMapping(params = {"categoryId", "name", "price", "amountsDate", "details", "submitAmmount"}, value = "/edit-page-amount/addAmounts", method = RequestMethod.POST)
-    public String addAmount(@RequestParam(value = "categoryId") Integer categoryId,
+    @RequestMapping(params = {"id", "categoryId", "name", "price", "amountsDate", "details", "submitAmmount"}, value = "/page-amount/amount/save", method = RequestMethod.POST)
+    public String saveAmount(@RequestParam(value = "id") Integer id,
+                            @RequestParam(value = "categoryId") Integer categoryId,
                             @RequestParam(value = "name") String name,
                             @RequestParam(value = "price") BigDecimal price,
                             @RequestParam(value = "amountsDate") Date amountsDate,
@@ -47,7 +48,14 @@ public class DataPageController {
                             @RequestParam(value = "submitAmmount") String submitAmmount) {
 
         Category category = categoryService.getById(categoryId);
-        Amount amount = new Amount();
+        Amount amount;
+        try {
+            amount = amountService.getById(id);
+        } catch (Exception e) {
+            logger.debug(String.format("function: %s. Not found amount, reson:",
+                    "saveAmount", e.getMessage()));
+            amount = new Amount();
+        }
 
         amount.setCategoryId(category);
         amount.setName(name);
@@ -58,13 +66,51 @@ public class DataPageController {
 
         amountService.add(amount);
 
-        logger.debug(String.format("called function: %s. User: %s",
-                "addAmount", securityService.findLoggedUsername()));
+        logger.debug(String.format("function: %s. User: %s, Amount=%s",
+                "saveAmount", securityService.findLoggedUsername(), amount));
 
         return "index";
     }
 
-    @RequestMapping(params = {"id", "name", "details", "type"}, value = "/edit-page/addCategory", method = RequestMethod.POST)
+    @RequestMapping(value = "/page-amount/amount/{id}/display", method = RequestMethod.GET)
+    public ModelAndView displayAmount(@PathVariable("id") int id){
+        logger.debug(String.format("%s. id: %d",
+                "displayAmount()", id));
+        //TODO: NPE
+        Amount amount = amountService.getById(id);
+
+        ModelAndView modelAndView = new ModelAndView("/data/page-amount");
+        modelAndView.addObject("name", amount.getName());
+        modelAndView.addObject("date", amount.getAmountsDate());
+        modelAndView.addObject("price", amount.getPrice());
+        modelAndView.addObject("details", amount.getDetails());
+        modelAndView.addObject("id", amount.getId());
+
+        logger.debug(String.format("Amount: %s",
+                amount));
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/page-amount/amount/{id}/delete", method = RequestMethod.GET)
+    public String deleteAmount(@PathVariable("id") int id){
+        logger.debug(String.format("%s. id: %d",
+                "deleteAmount()", id));
+        //TODO: NPE
+        Amount amount = amountService.getById(id);
+
+        logger.debug(String.format("Amount: %s",
+                amount));
+
+        String result = amountService.delete(id);
+
+        logger.debug(String.format("Result: %s",
+                result));
+
+        return "index";
+    }
+
+    @RequestMapping(params = {"id", "name", "details", "type"}, value = "/page-amount/addCategory", method = RequestMethod.POST)
     public String addCategory(@RequestParam(value = "id") Integer id,
                             @RequestParam(value = "name") String name,
                             @RequestParam(value = "details") String details,

@@ -15,4 +15,6 @@ public interface AmountService {
     Amount add(Amount amount);
     List<Amount> getAll();
     List<Amount> getAllByCategoryId(Category categoryId);
+    Amount getById(int id);
+    String delete(Integer id);
 }

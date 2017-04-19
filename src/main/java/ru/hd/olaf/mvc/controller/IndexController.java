@@ -29,6 +29,7 @@ public class IndexController {
 
     private static final Logger logger = LoggerFactory.getLogger(IndexController.class);
 
+    @CrossOrigin
     @RequestMapping(value = "/getAllCategoriesWithTotalSum", method = RequestMethod.GET)
     public @ResponseBody Map<Category, BigDecimal> getAllCategoriesWithTotalSum() {
         logger.debug(String.format("called function: %s",

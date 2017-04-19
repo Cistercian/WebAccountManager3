@@ -38,4 +38,17 @@ public class AmountServiceImpl implements AmountService {
 
         return amounts;
     }
+
+    public Amount getById(int id) {
+        return amountRepository.findOne(id);
+    }
+
+    public String delete(Integer id) {
+        try {
+            amountRepository.delete(id);
+            return "delete successfully";
+        } catch (Exception e) {
+            return "delete was not coplited";
+        }
+    }
 }

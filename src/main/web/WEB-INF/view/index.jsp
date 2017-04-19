@@ -80,16 +80,17 @@
             dataType: 'json',
             success: function (data) {
                 //удаляем прежние amount
-                $('[id^="amountBarId"]').each(function () {
-                    $(this).parent().remove();
+                $('[id^="modalCategoryBody"]').each(function () {
+                    $(this).empty();
                 });
-                $('[id^="sumAmountId"]').each(function () {
-                    $(this).remove();
-                });
+                //рисуем структуру вывода данных
+                $('#modalCategoryBody').append(
+                        "<div id='modalDropDown'" +
+                        "</div>");
 
                 var styles = ['success', 'info', 'warning', 'danger'];
                 var curNumStyle = 2;
-                var maxPrice = $('#categoryBarId' + categoryId).children().attr('aria-valuenow');
+                var maxPrice = 0;
 
                 data.forEach(function (amount, index, data) {
                     var amountId = amount.id;
@@ -97,26 +98,36 @@
                     var amountPrice = amount.price;
 
                     <!-- нормализуем суммы -->
+                    if (maxPrice == 0) maxPrice = amountPrice;
                     normalPrice = amountPrice * 100 / maxPrice;
                     <!-- меняем цвет баров -->
                     curNumStyle = curNumStyle < 4 ? curNumStyle + 1 : 0;
 
                     <!-- добавляем прогресс бар -->
-                    $('#divBarCategoryId' + categoryId).append(
-                            "\<div class=\"progress progress-striped active\"\> " +
-                            "\<div id='amountBarId" + amountId + "' class=\"progress-bar progress-bar-" + styles[curNumStyle] + "\" role=\"progressbar\" " +
-                            "aria-valuenow=\"" + amountPrice + "\"" +
-                            " aria - valuemin =\"0\" aria-valuemax=\"100\" style=\"width: " + normalPrice + "%\" > " + amountName +
-                            "</div> " +
-                            "</div> ");
-                    <!-- добавляем сумму к бару -->
-                    $('#divSumCategoryId' + categoryId).append(
-                            "<h2 id='sumAmountId'" + amountId + ">" + amountPrice + "</h2>");
+                    $('#modalDropDown').append(
+                            "<li>" +
+                            "<a href='./page-amount/amount/" + amountId + "/display'>" +
+                            "<div>" +
+                            "<p>" +
+                            "<strong id='barName" + amountId + "'>" + amountName +"</strong>" +
+                            "<strong id='barSum" + amountId + "' class='pull-right text-muted'>" + amountPrice + "</strong>" +
+                            "</p>" +
+                            "<div class='progress progress-striped active'>" +
+                            "<div class='progress-bar progress-bar-" + styles[curNumStyle] +"' role='progressbar' aria-valuenow='" + amountPrice + "'" +
+                            "aria-valuemin='0' aria-valuemax='100' style='width: " + normalPrice + "%'>" +
+                            "<span class='sr-only'>" + amountPrice + "</span>" +
+                            "</div>" +
+                            "</div>" +
+                            "</div>" +
+                            "</a>" +
+                            "</li>" +
+                            "<li class='divider'></li>");
                 });
+                //показываем модальное окно
+                $('#modalCategory').modal('show');
             }
         });
-    }
-    ;
+    };
     //парсинг переданной строки и возврат значения пары формата key=value
     function getValue(string, key) {
         var array = string.split(', ');
@@ -192,6 +203,26 @@
         pieChart.Doughnut(PieData, pieOptions);
     };
 </script>
+<!-- modal panel -->
+<div id="modalCategory" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalCategorylabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 id="mpdalcategoryTitle" class="modal-title">Category info</h4>
+            </div>
+            <div id="modalCategoryBody" class="modal-body">
+                Loading data...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
 
 <div id="home">
     <div class="slider">

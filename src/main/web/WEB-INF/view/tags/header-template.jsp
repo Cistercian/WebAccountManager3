@@ -20,11 +20,11 @@
 
     <!-- Bootstrap -->
     <!-- Spring injections -->
-    <spring:url value="resources/css/bootstrap.min.css" var="bootstrapmin"/>
-    <spring:url value="resources/css/font-awesome.min.css" var="fontawesomemin"/>
-    <spring:url value="resources/css/font-awesome.css" var="fontawesome"/>
-    <spring:url value="resources/css/animate.css" var="animate"/>
-    <spring:url value="resources/css/style.css" var="style"/>
+    <spring:url value="/resources/css/bootstrap.min.css" var="bootstrapmin"/>
+    <spring:url value="/resources/css/font-awesome.min.css" var="fontawesomemin"/>
+    <spring:url value="/resources/css/font-awesome.css" var="fontawesome"/>
+    <spring:url value="/resources/css/animate.css" var="animate"/>
+    <spring:url value="/resources/css/style.css" var="style"/>
 
     <link rel="stylesheet" href="${bootstrapmin}">
     <link rel="stylesheet" href="${fontawesomemin}">
@@ -71,7 +71,7 @@
                         <span class="icon-bar"></span>
                     </button>
                     <div class="navbar-brand">
-                        <a href="index.html"><h1>Web Account Manager</h1></a>
+                        <a href="/index.html#home"><h1>Web Account Manager</h1></a>
                     </div>
                 </div>
 
@@ -81,7 +81,7 @@
                             <li role="presentation"><a href="/index.html#home" class="active">Home</a></li>
                             <li role="presentation"><a href="#about">Statistics</a></li>
                             <li role="presentation"><a href="#services">Edit</a></li>
-                            <li role="presentation"><a href="/edit-page-amount.html">Edit Amounts</a></li>
+                            <li role="presentation"><a href="/page-amount.html">Edit Amounts</a></li>
                             <li role="presentation"><a href="/edit-page-category.html">Edit Categories</a></li>
                         </ul>
                     </div>
