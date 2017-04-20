@@ -49,7 +49,8 @@
                             "\<div class=\"progress-bar progress-bar-" + styles[curNumStyle] + "\" role=\"progressbar\" " +
                             "aria-valuenow=\"" + sum + "\"" +
                             " aria - valuemin =\"0\" aria-valuemax=\"100\" style=\"width: " + normalPrice + "%\" " +
-                            " onclick='drawBarsAmountsByCategoryId(" + categoryId + "); return false;'\> " + categoryName +
+                                //" onclick='drawBarsAmountsByCategoryId(" + categoryId + "); return false;'\> " + categoryName +
+                            " onclick='drawBarsByParentId(" + categoryId + "); return false;'\> " + categoryName +
                             "</div> " +
                             "</div> ");
 
@@ -69,53 +70,52 @@
             }
         });
     });
-    //функция постройки баров по таблице amounts
-    function drawBarsAmountsByCategoryId(categoryId) {
+    function drawBarsByParentId(categoryId) {
         $.ajax({
-            url: 'http://localhost:8080/getAmountsByCategoryId',
+            url: 'http://localhost:8080/getContentByCategoryId',
             type: "GET",
             data: {
                 'categoryId': categoryId
             },
             dataType: 'json',
             success: function (data) {
-                //удаляем прежние amount
-                $('[id^="modalCategoryBody"]').each(function () {
-                    $(this).empty();
-                });
-                //рисуем структуру вывода данных
-                $('#modalCategoryBody').append(
-                        "<div id='modalDropDown'" +
-                        "</div>");
-
+                ClearModal();
+                //данные для стилей прогресс баров
                 var styles = ['success', 'info', 'warning', 'danger'];
-                var curNumStyle = 2;
+                var curNumStyle = -1;
                 var maxPrice = 0;
 
-                data.forEach(function (amount, index, data) {
-                    var amountId = amount.id;
-                    var amountName = 'Amount: ' + amount.name;
-                    var amountPrice = amount.price;
+                data.forEach(function (barData, index, data) {
+                    var classId = barData.id;
+                    var classType = barData.className;
+                    var className = barData.name;
+                    var classPrice = barData.sum;
 
                     <!-- нормализуем суммы -->
-                    if (maxPrice == 0) maxPrice = amountPrice;
-                    normalPrice = amountPrice * 100 / maxPrice;
+                    if (maxPrice == 0) maxPrice = classPrice;
+                    normalPrice = classPrice * 100 / maxPrice;
                     <!-- меняем цвет баров -->
                     curNumStyle = curNumStyle < 4 ? curNumStyle + 1 : 0;
 
                     <!-- добавляем прогресс бар -->
                     $('#modalDropDown').append(
                             "<li>" +
-                            "<a href='./page-amount/amount/" + amountId + "/display'>" +
+                            (classType == 'Amount' ?
+                            "<a href='./page-amount/amount/" + classId + "/display'>" :
+                            "<a href='./page-category/" + classId + "'>") +
                             "<div>" +
                             "<p>" +
-                            "<strong id='barName" + amountId + "'>" + amountName +"</strong>" +
-                            "<strong id='barSum" + amountId + "' class='pull-right text-muted'>" + amountPrice + "</strong>" +
+                            "<strong id='barName" + classId + "' value='" + className + "'>" +
+                            classType + ": " + className + "</strong>" +
+                            "<strong id='barSum" + classId + "' class='pull-right text-muted' value='" + className +
+                            "'>" + classPrice + " руб." + "</strong>" +
                             "</p>" +
                             "<div class='progress progress-striped active'>" +
-                            "<div class='progress-bar progress-bar-" + styles[curNumStyle] +"' role='progressbar' aria-valuenow='" + amountPrice + "'" +
-                            "aria-valuemin='0' aria-valuemax='100' style='width: " + normalPrice + "%'>" +
-                            "<span class='sr-only'>" + amountPrice + "</span>" +
+                            "<div class='progress-bar progress-bar-" + styles[curNumStyle] + "' role='progressbar'" +
+                            " aria-valuenow='" + classPrice + "'" +
+                            "aria-valuemin='0' aria-valuemax='100' style='width: " + normalPrice + "%' " +
+                            "value='" + className + "'>" +
+                            "<span class='sr-only'>" + classPrice + "</span>" +
                             "</div>" +
                             "</div>" +
                             "</div>" +
@@ -127,7 +127,18 @@
                 $('#modalCategory').modal('show');
             }
         });
-    };
+    }
+    ;
+    function ClearModal() {
+        //удаляем прежние amount
+        $('[id^="modalCategoryBody"]').each(function () {
+            $(this).empty();
+        });
+        //рисуем структуру вывода данных
+        $('#modalCategoryBody').append(
+                "<div id='modalDropDown'" +
+                "</div>");
+    }
     //парсинг переданной строки и возврат значения пары формата key=value
     function getValue(string, key) {
         var array = string.split(', ');
@@ -201,10 +212,12 @@
             '%>\<\%=segments[i].label%>\<\%}%></li>\<\%}%></ul>'
         };
         pieChart.Doughnut(PieData, pieOptions);
-    };
+    }
+    ;
 </script>
 <!-- modal panel -->
-<div id="modalCategory" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalCategorylabel" aria-hidden="true">
+<div id="modalCategory" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalCategorylabel"
+     aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -268,7 +281,8 @@
             <form id="logoutForm" method="POST" action="${contextPath}/logout">
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             </form>
-            <h2>Welcome ${pageContext.request.userPrincipal.name} | <a onclick="document.forms['logoutForm'].submit()">Logout</a></h2>
+            <h2>Welcome ${pageContext.request.userPrincipal.name} | <a onclick="document.forms['logoutForm'].submit()">Logout</a>
+            </h2>
         </c:if>
     </div>
     <div class="container">

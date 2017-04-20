@@ -49,9 +49,11 @@
     <mvc:view-controller path="/about.html" view-name="/about/about"/>
     <mvc:view-controller path="/jdbc.html" view-name="/jdbc/jdbc"/>
     <mvc:view-controller path="/page-amount.html" view-name="/data/page-amount"/>
-    <mvc:view-controller path="/edit-page-category.html" view-name="/data/edit-page-category"/>
+    <mvc:view-controller path="/page-category.html" view-name="/data/page-category"/>
     <mvc:view-controller path="/login.html" view-name="/login/login"/>
     <mvc:view-controller path="/registraion.html" view-name="/login/registration"/>
+
+    <mvc:view-controller path="/edit-page-category.html" view-name="/data/edit-page-category"/>
 
     <bean id="messageSource"
           class="org.springframework.context.support.ReloadableResourceBundleMessageSource">

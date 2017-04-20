@@ -30,7 +30,8 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 id="mpdalcategoryTitle" class="modal-title"><spring:message code="label.page-amount.modal.title" /></h4>
+                <h4 id="mpdalcategoryTitle" class="modal-title">
+                    <spring:message code="label.page-category.modal.title" /></h4>
             </div>
             <div id="modalBody" class="modal-body">
                 Loading data...
@@ -48,75 +49,88 @@
         <div class="form-group">
             <input id="_csrf_token" type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
             <input id="id" type="hidden"  name="id" value="${id}"/>
-            <section id='sectionAmount'>
+            <section id='section'>
                 <div class='page-header'>
-                    <h2><spring:message code="label.page-amount.title" /></h2>
+                    <h2><spring:message code="label.page-category.title" /></h2>
                 </div>
                 <div class="row">
-                    <div class="col-md-2"><h4><strong><spring:message code="label.page-amount.date" /></strong></h4>
+                    <div class="col-md-12"><h4><strong><spring:message code="label.page-category.parentName" /></strong></h4>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-2">
-                        <input id="date" type="date" class="form-control input-lg" name="date"
-                            path="date" placeholder="Amount Date" data-rule="minlen:5"
-                            data-msg="Please enter at least 5 chars"
-                            value='${date}' />
-                        <div class="validation"></div>
+                    <div class="col-md-12">
+                        <button id="btnCategories" class="btn-default btn-lg btn-block dropdown-toggle"
+                                data-toggle="dropdown" value="${parentId}">
+                            <c:choose>
+                                <c:when test="${not empty parentName}">
+                                    ${parentName}
+                                </c:when>
+                                <c:otherwise>
+                                    <spring:message code="label.page-category.selectCategory" />
+                                </c:otherwise>
+                            </c:choose>
+                            <span class="caret"></span>
+                        </button>
+                        <ul id="dropdownCategories" class="dropdown-menu">
+                            <li><a onclick="setCategoryId(-1, 'Select Category');return false;">
+                                <spring:message code="label.page-category.selectCategory" /></a></li>
+                            <li class="divider"></li>
+                            <c:forEach items="${categories}" var="map">
+                                <li><a id='${map.key}' onclick="setCategoryId('${map.key}', '${map.value}');
+                                        return false;">${map.value}</a></li>
+                            </c:forEach>
+                        </ul>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-12"><h4><strong><spring:message code="label.page-amount.name" /></strong></h4>
+                    <div class="col-md-12"><h4><strong>
+                        <spring:message code="label.page-category.name" />
+                    </strong></h4>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
                         <input id="name" type="text" name="name" class="form-control form input-lg"
-                               path="name" placeholder="Amount Name" data-rule="minlen:5"
+                               path="name" placeholder="Name" data-rule="minlen:5"
                                data-msg="Please enter at least 5 chars"
                                value='${name}'/>
                         <div class="validation"></div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-10"><h4><strong><spring:message code="label.page-amount.category" /></strong></h4>
-                    </div>
-                    <div class="col-md-2"><h4><strong><spring:message code="label.page-amount.price" /></strong></h4>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-10">
-                        <button id="btnCategories" class="btn-default btn-lg btn-block dropdown-toggle"
-                                data-toggle="dropdown" value="${categoryId}">
-                                <c:choose>
-                                    <c:when test="${not empty categoryName}">
-                                        ${categoryName}
-                                    </c:when>
-                                    <c:otherwise>
-                                        <spring:message code="label.page-amount.selectCategory" />
-                                    </c:otherwise>
-                                </c:choose>
-                            <span class="caret"></span>
-                        </button>
-                        <ul id="dropdownCategories" class="dropdown-menu">
-                            <li><a onclick="setCategoryId(-1, 'Select Category');return false;"><spring:message code="label.page-amount.selectCategory" /></a></li>
-                            <li class="divider"></li>
-                            <c:forEach items="${categories}" var="map">
-                                    <li><a id='${map.key}' onclick="setCategoryId('${map.key}', '${map.value}');
-                                    return false;">${map.value}</a></li>
-                            </c:forEach>
-                        </ul>
-                    </div>
-                    <div class="col-md-2">
-                        <input id="price" type="number" class="form-control input-lg" name="price"
-                               path="price" placeholder="Amount price" data-rule="number"
-                               data-msg="Please enter a valid price"
-                               value='${price}'/>
-                        <div class="validation"></div>
+                    <div class="col-md-4"><h4><strong>
+                        <spring:message code="label.page-category.type" />
+                    </strong></h4>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-12"><h4><strong><spring:message code="label.page-amount.details" /></strong></h4>
+                    <div class="col-md-4 col-md-offset-2">
+                        <div class="radio">
+                            <label>
+                                <input id="typeIncome" type="radio" name="optionsRadios"  value="income"
+                                <c:if test="${not empty typeIncome}">
+                                    checked=true
+                                </c:if>
+                                >
+                                <spring:message code="label.page-category.typeIncome" />
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input id="typeExpense" type="radio" name="optionsRadios" value="expence"
+                                <c:if test="${empty typeIncome}">
+                                       checked=true
+                                </c:if>
+                                >
+                                <spring:message code="label.page-category.typeExpence" />
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12"><h4><strong>
+                        <spring:message code="label.page-category.details" />
+                    </strong></h4>
                     </div>
                 </div>
                 <div class="row">
@@ -128,39 +142,44 @@
                     <div class="col-md-6 col-md-offset-6">
                         <div class="btn-group">
                             <button id="btnNew" type="submit" name="btnNew"
-                                    class="btn btn-default btn-lg " onclick="location.href='/page-amount.html'"><spring:message code="label.page-amount.btnNew" />
+                                    class="btn btn-default btn-lg " onclick="location.href='/page-category.html'">
+                                <spring:message code="label.page-category.btnNew" />
                             </button>
                         </div>
                         <div class="btn-group">
                             <button id="btnDelete" type="submit" name="btnDelete"
-                                    class="btn btn-default btn-lg " onclick="Delete();return false;"><spring:message code="label.page-amount.btnDelete" />
+                                    class="btn btn-default btn-lg " onclick="Delete();return false;">
+                                <spring:message code="label.page-category.btnDelete" />
                             </button>
                         </div>
                         <div class="btn-group">
                             <button id="btnOk" type="submit" name="btnOk"
-                                    class="btn btn-default btn-lg " onclick="Save();return false;"><spring:message code="label.page-amount.btnOk" />
+                                    class="btn btn-default btn-lg " onclick="Save();return false;">
+                                <spring:message code="label.page-category.btnOk" />
                             </button>
                         </div>
                         <div class="btn-group">
                             <button id="btnCancel" type="submit" name="btnCancel"
-                                    class="btn btn-default btn-lg " onclick="location.reload();"><spring:message code="label.page-amount.btnCancel" />
+                                    class="btn btn-default btn-lg " onclick="location.reload();">
+                                <spring:message code="label.page-category.btnCancel" />
                             </button>
                         </div>
                         <script language="javascript" type="text/javascript">
                             function Save() {
+                                var type = $('#typeIncome').prop('checked') ? 0 : 1;
+
                                 var data = {
-                                    'id': document.getElementById('id').value,
-                                    'categoryId': document.getElementById('btnCategories').value,
-                                    'name': document.getElementById('name').value,
-                                    'price': document.getElementById('price').value,
-                                    'date': document.getElementById('date').value,
-                                    'details': document.getElementById('details').value,
-                                    'submitAmmount': '' //TODO: ??
+                                    'id': $('#id').val(),
+                                    'parentId': $('#btnCategories').val(),
+                                    'name': $('#name').val(),
+                                    'type': type,
+                                    'details': $('#details').val(),
                                 };
                                 $.ajax({
                                     type: "POST",
-                                    url: '/page-amount/save',
+                                    url: '/page-category/save',
                                     data: data,
+                                    dataType: 'application/json; charset=utf-8',
                                     success: function (data) {
                                         //                                    alert(data); TODO: modal?  charset?
                                     }
@@ -169,16 +188,16 @@
                                 //Modal panel
                                 ClearModalPanel();
                                 $('#modalBody').append(
-                                        "<h4><strong><spring:message code="label.page-amount.modal.textSave" /></strong></h4>"
+                                        "<h4><strong><spring:message code="label.page-category.modal.textSave" /></strong></h4>"
                                 );
                                 $('#modalFooter').append(
                                         "<button type='button' class='btn btn-default' data-dismiss='modal' " +
-                                        "onclick='location.href=\"/page-amount.html\";'>" +
-                                        "<spring:message code="label.page-amount.modal.btnYes" />" +
+                                        "onclick='location.href=\"/page-category.html\";'>" +
+                                        "<spring:message code="label.page-category.modal.btnYes" />" +
                                         "</button>" +
                                         "<button type='button' class='btn btn-primary' " +
                                         "onclick='location.href=\"/index.html#home\";'>" +
-                                        "<spring:message code="label.page-amount.modal.btnNo" />" +
+                                        "<spring:message code="label.page-category.modal.btnNo" />" +
                                         "</button>" +
                                         ""
                                 );
@@ -187,34 +206,41 @@
                             function Delete(){
                                 ClearModalPanel();
                                 $('#modalBody').append(
-                                        "<h4><strong><spring:message code="label.page-amount.modal.textDelete" /></strong></h4>"
+                                        "<h4><strong><spring:message code="label.page-category.modal.textDelete" /></strong></h4>"
                                 );
                                 $('#modalFooter').append(
                                         "<button type='button' class='btn btn-default' data-dismiss='modal' " +
                                         "onclick='SendDeleteQuery();'>" +
-                                        "<spring:message code="label.page-amount.modal.btnYes" />" +
+                                        "<spring:message code="label.page-category.modal.btnYes" />" +
                                         "</button>" +
                                         "<button type='button' class='btn btn-primary' " +
                                         "data-dismiss='modal'>" +
-                                        "<spring:message code="label.page-amount.modal.btnNo" />" +
+                                        "<spring:message code="label.page-category.modal.btnNo" />" +
                                         "</button>" +
                                         ""
                                 );
                                 $('#modal').modal('show');
                             };
                             function SendDeleteQuery() {
-                                var id = document.getElementById('id').value;
+                                var id = $('#id').val();
                                 if (id != '') {
                                     $.ajax({
                                         type: "POST",
-                                        url: '/page-amount/amount/delete',
+                                        url: '/page-category/delete',
                                         data: {id},
+                                        dataType: 'text',
                                         success: function (data) {
-                                            location.href="/index.html";
+                                            var response = $.parseJSON(data);
+                                            ShowModal(response.message, "location.href='/index.html'");
+                                        },
+                                        error: function(data){
+                                            var response = $.parseJSON(data);
+                                            ShowModal("Что-то пошло не так." + data + ": " + response.message);
                                         }
                                     });
                                 } else {
-                                    ShowError('Ошибка удаления: не найдено поле id записи.');
+                                    ShowModal('Ошибка удаления: не найдено поле id записи.',
+                                        'return false;');
                                 }
                             };
                             function ClearModalPanel(){
@@ -225,13 +251,14 @@
                                     $(this).empty();
                                 });
                             }
-                            function ShowError(message){
+                            function ShowModal(message, onclick){
                                 ClearModalPanel();
                                 $('#modalBody').append(
                                         "<h4><strong>" + message + "</strong></h4>"
                                 );
                                 $('#modalFooter').append(
-                                        "<button type='button' class='btn btn-default' data-dismiss='modal' >" +
+                                        "<button type='button' class='btn btn-default' data-dismiss='modal' " +
+                                        "onclick=" + onclick + ">" +
                                         "Ok" +
                                         "</button>"
                                 );

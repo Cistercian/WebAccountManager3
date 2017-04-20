@@ -22,7 +22,7 @@ import java.util.Map;
  * Created by Olaf on 14.04.2017.
  */
 @org.springframework.stereotype.Controller
-public class DataPageController {
+public class AmountController {
 
     @Autowired
     private CategoryService categoryService;
@@ -53,7 +53,7 @@ public class DataPageController {
     }
 
     @RequestMapping(params = {"id", "categoryId", "name", "price", "date", "details", "submitAmmount"},
-            value = "/page-amount/amount/save", method = RequestMethod.POST)
+            value = "/page-amount/save", method = RequestMethod.POST)
     public String saveAmount(@RequestParam(value = "id") Integer id,
                             @RequestParam(value = "categoryId") Integer categoryId,
                             @RequestParam(value = "name") String name,
@@ -114,8 +114,8 @@ public class DataPageController {
         return modelAndView;
     }
 
-    @RequestMapping(value = "/page-amount/amount/{id}/delete", method = RequestMethod.GET)
-    public String deleteAmount(@PathVariable("id") int id){
+    @RequestMapping(params = {"id"}, value = "/page-amount/amount/delete", method = RequestMethod.POST)
+    public String deleteAmount(@RequestParam(value = "id") Integer id){
         logger.debug(String.format("%s. id: %d",
                 "deleteAmount()", id));
         //TODO: NPE
@@ -129,28 +129,6 @@ public class DataPageController {
         logger.debug(String.format("Result: %s",
                 result));
 
-        return "index";
-    }
-
-    @RequestMapping(params = {"id", "name", "details", "type"}, value = "/page-amount/addCategory", method = RequestMethod.POST)
-    public String addCategory(@RequestParam(value = "id") Integer id,
-                            @RequestParam(value = "name") String name,
-                            @RequestParam(value = "details") String details,
-                            @RequestParam(value = "type") Byte type) {
-        System.out.println("Controller add()_category is called");
-
-        Category category = null;
-        category = id == -1 ? new Category() : categoryService.getById(id);
-
-        category.setType(type);
-        category.setName(name);
-        category.setDetails(details);
-        category.setUserId(securityService.findLoggedUser());
-
-        logger.debug(String.format("called function: %s. User: %s. CategoryEntity: %s",
-                "addCategory", securityService.findLoggedUsername(), category));
-
-        categoryService.add(category);
         return "index";
     }
 

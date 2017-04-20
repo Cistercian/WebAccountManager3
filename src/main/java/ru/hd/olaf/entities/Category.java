@@ -13,7 +13,7 @@ import java.util.Set;
 @Table(name = "categories", schema = "web_account_db")
 public class Category {
     private Integer id;
-    private Integer parentId;
+    private Category parentId;
     private String name;
     private String details;
     private Byte type;
@@ -22,7 +22,7 @@ public class Category {
     public Category() {
     }
 
-    public Category(Integer parentId, String name, String details, Byte type) {
+    public Category(Category parentId, String name, String details, Byte type) {
         this.parentId = parentId;
         this.name = name;
         this.details = details;
@@ -40,13 +40,14 @@ public class Category {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "parent_id", nullable = true)
-    public Integer getParentId() {
+    @ManyToOne()
+    @JoinColumn(name = "parent_id")
+    @JsonBackReference
+    public Category getParentId() {
         return parentId;
     }
 
-    public void setParentId(Integer parentId) {
+    public void setParentId(Category parentId) {
         this.parentId = parentId;
     }
 
@@ -130,7 +131,6 @@ public class Category {
     @Override
     public int hashCode() {
         int result = id;
-        result = 31 * result + (parentId != null ? parentId.hashCode() : 0);
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (details != null ? details.hashCode() : 0);
         result = 31 * result + (type != null ? type.hashCode() : 0);
@@ -141,12 +141,9 @@ public class Category {
     public String toString() {
         return "Category{" +
                 "id=" + id +
-                ", parentId=" + parentId +
                 ", name='" + name + '\'' +
                 ", details='" + details + '\'' +
                 ", type=" + type +
-                //", userId=" + userId +
-                //", amounts=" + amounts +
                 '}';
     }
 }

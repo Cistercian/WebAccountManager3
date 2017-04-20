@@ -28,7 +28,7 @@ public class AmountServiceImpl implements AmountService {
         return Lists.newArrayList(amountRepository.findAll());
     }
 
-    public List<Amount> getAllByCategoryId(Category categoryId){
+    public List<Amount> getByCategory(Category categoryId){
         List<Amount> amounts = amountRepository.findByCategoryId(categoryId);
         Collections.sort(amounts, new Comparator<Amount>() {
             public int compare(Amount o1, Amount o2) {

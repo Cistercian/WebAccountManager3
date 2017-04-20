@@ -1,7 +1,5 @@
 package ru.hd.olaf.mvc.controller;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +10,8 @@ import ru.hd.olaf.entities.Amount;
 import ru.hd.olaf.entities.Category;
 import ru.hd.olaf.mvc.service.AmountService;
 import ru.hd.olaf.mvc.service.CategoryService;
+import ru.hd.olaf.mvc.service.ReportService;
+import ru.hd.olaf.util.json.BarEntity;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -26,26 +26,39 @@ public class IndexController {
     private CategoryService categoryService;
     @Autowired
     private AmountService amountService;
+    @Autowired
+    private ReportService reportService;
 
     private static final Logger logger = LoggerFactory.getLogger(IndexController.class);
 
     @CrossOrigin
     @RequestMapping(value = "/getAllCategoriesWithTotalSum", method = RequestMethod.GET)
-    public @ResponseBody Map<Category, BigDecimal> getAllCategoriesWithTotalSum() {
-        logger.debug(String.format("called function: %s",
-                "getAllCategoriesWithTotalSum"));
+    public
+    @ResponseBody
+    Map<Category, BigDecimal> getAllCategoriesWithTotalSum() {
+        logger.debug(String.format("Function %s", "getAllCategoriesWithTotalSum"));
         return categoryService.getAllWithTotalSum();
     }
 
     @RequestMapping(value = "/getAmountsByCategoryId", params = {"categoryId"}, method = RequestMethod.GET)
-    public @ResponseBody List<Amount> getAmountsByCategoryId(@RequestParam(value = "categoryId") Integer categoryId){
-        logger.debug(String.format("called %s", "getAmountsByCategoryId"));
+    public
+    @ResponseBody
+    List<Amount> getAmountsByCategoryId(@RequestParam(value = "categoryId") Integer categoryId) {
+        logger.debug(String.format("Function %s", "getAmountsByCategoryId"));
         Category category = categoryService.getById(categoryId);
 
-        List<Amount> amounts = amountService.getAllByCategoryId(category);
+        List<Amount> amounts = amountService.getByCategory(category);
         printData(amounts);
 
         return amounts;
+    }
+
+    @RequestMapping(value = "/getContentByCategoryId", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<BarEntity> getCategoryContentByCategoryId(@RequestParam(value = "categoryId") Integer categoryId){
+        logger.debug(String.format("Function %s, id: %d", "getCategoryContentByCategoryId", categoryId));
+        return reportService.getCategoryContentById(categoryId);
     }
 
     private <T> void printData(List<T> list) {

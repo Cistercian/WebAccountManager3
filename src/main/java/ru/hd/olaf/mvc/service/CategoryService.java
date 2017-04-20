@@ -11,10 +11,16 @@ import java.util.Map;
  */
 public interface CategoryService {
 
+    Category getById(int id);
+
     List<Category> getAll();
     List<Category> getAllByCurrentUser();
-    Category getById(int id);
+    List<Category> getByParentId(Category parentId);
+
     Map<Integer,String> getIdAndNameByCurrentUser();
-    Category add(Category category);
     Map<Category, BigDecimal> getAllWithTotalSum();
+    Map<Category, BigDecimal> getCategoryPrice(List<Category> categories);
+
+    Category add(Category category);
+    String delete(Integer id);
 }

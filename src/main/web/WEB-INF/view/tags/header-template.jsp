@@ -82,7 +82,7 @@
                             <li role="presentation"><a href="#about">Statistics</a></li>
                             <li role="presentation"><a href="#services">Edit</a></li>
                             <li role="presentation"><a href="/page-amount.html">Edit Amounts</a></li>
-                            <li role="presentation"><a href="/edit-page-category.html">Edit Categories</a></li>
+                            <li role="presentation"><a href="/page-category.html">Edit Categories</a></li>
                         </ul>
                     </div>
                 </div>
