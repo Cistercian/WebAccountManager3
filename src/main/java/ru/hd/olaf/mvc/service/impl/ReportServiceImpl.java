@@ -107,9 +107,7 @@ public class ReportServiceImpl implements ReportService {
 
         logger.debug(String.format("Sorted list:"));
         for (BarEntity barEntity : barEntities){
-
             logger.debug(String.format("%s", barEntity));
-            logger.debug(String.format("%s", barEntity.getSum().toString()));
         }
 
         return barEntities;

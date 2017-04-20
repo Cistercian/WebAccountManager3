@@ -75,11 +75,11 @@ public class LoginController {
         return "/login/login";
     }
 
-    @RequestMapping(value = {"/", "/index"}, method = RequestMethod.GET)
-    public String welcome(Model model) {
-        logger.debug(String.format("Controller: %s, called function: %s",
-                LoginController.class.getSimpleName(), "welcome"));
-
-        return "index";
-    }
+//    @RequestMapping(value = {"/", "/index"}, method = RequestMethod.GET)
+//    public String welcome(Model model) {
+//        logger.debug(String.format("Controller: %s, called function: %s",
+//                LoginController.class.getSimpleName(), "welcome"));
+//
+//        return "index";
+//    }
 }

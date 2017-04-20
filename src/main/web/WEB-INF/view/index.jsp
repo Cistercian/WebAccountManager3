@@ -12,63 +12,65 @@
 <!-- обращение к контроллеру -->
 <script language="javascript" type="text/javascript">
     $(document).ready(function () {
-        $.ajax({
-            url: 'http://localhost:8080/getAllCategoriesWithTotalSum',
-            dataType: 'json',
-            success: function (data) {
-                //данные для стилей прогресс баров
-                var styles = ['success', 'info', 'warning', 'danger'];
-                var curNumStyle = -1;
-                var maxPrice = 0;
+        drawChartOfTypes("<spring:message code='label.index.chart.income.label' />=${sumIncome},<spring:message code='label.index.chart.expense.label' />=${sumExpense}", "typeChart");
 
-                //данные для диаграммы доход/расход
-                var totalIncome = 0;
-                var totalExpense = 0;
-
-                $.each(data, function (category, sum) {
-                    //считываем данные категории
-                    category = category.replace(/Category|{|}/g, '');
-                    var categoryName = 'Category: ' + getValue(category, 'name');
-                    var categoryId = getValue(category, 'id');
-
-                    <!-- нормализуем суммы -->
-                    if (maxPrice == 0) maxPrice = sum;
-                    normalPrice = sum * 100 / maxPrice;
-                    <!-- меняем цвет баров -->
-                    curNumStyle = curNumStyle < 4 ? curNumStyle + 1 : 0;
-
-                    $('#categoriesProgressBar').append(
-                            "<div id='divBarCategoryId" + categoryId + "' class='col-sm-10'>" +
-                            "</div> " +
-                            "<div id='divSumCategoryId" + categoryId + "' class='col-sm-2'> " +
-                            "</div>");
-
-                    <!-- добавляем прогресс бар -->
-                    $('#divBarCategoryId' + categoryId).append(
-                            "\<div id='categoryBarId" + categoryId + "' class=\"progress progress-striped active\"\> " +
-                            "\<div class=\"progress-bar progress-bar-" + styles[curNumStyle] + "\" role=\"progressbar\" " +
-                            "aria-valuenow=\"" + sum + "\"" +
-                            " aria - valuemin =\"0\" aria-valuemax=\"100\" style=\"width: " + normalPrice + "%\" " +
-                                //" onclick='drawBarsAmountsByCategoryId(" + categoryId + "); return false;'\> " + categoryName +
-                            " onclick='drawBarsByParentId(" + categoryId + "); return false;'\> " + categoryName +
-                            "</div> " +
-                            "</div> ");
-
-                    <!-- добавляем сумму к бару -->
-                    $('#divSumCategoryId' + categoryId).append(
-                            "<h2>" + sum + "</h2>");
-
-                    <!-- суммируем данные по расходу/доходу -->
-                    if (getValue(category, 'type') == '0') totalIncome += sum;
-                    else totalExpense += sum;
-                });
-                <!-- рисуем диграмму доход/расход -->
-                drawChartOfTypes('Income=' + totalIncome + ',' + 'Expense=' + totalExpense, 'typeChart');
-                <!-- заполняем итоговые данные доход/расход -->
-                $('#textTotalIncome').text('Income: ' + totalIncome + ' руб.');
-                $('#textTotalExpense').text('Expense: ' + totalExpense + ' руб.');
-            }
-        });
+//        $.ajax({
+//            url: 'http://localhost:8080/getAllCategoriesWithTotalSum',
+//            dataType: 'json',
+//            success: function (data) {
+//                //данные для стилей прогресс баров
+//                var styles = ['success', 'info', 'warning', 'danger'];
+//                var curNumStyle = -1;
+//                var maxPrice = 0;
+//
+//                //данные для диаграммы доход/расход
+//                var totalIncome = 0;
+//                var totalExpense = 0;
+//
+//                $.each(data, function (category, sum) {
+//                    //считываем данные категории
+//                    category = category.replace(/Category|{|}/g, '');
+//                    var categoryName = 'Category: ' + getValue(category, 'name');
+//                    var categoryId = getValue(category, 'id');
+//
+//                    <!-- нормализуем суммы -->
+//                    if (maxPrice == 0) maxPrice = sum;
+//                    normalPrice = sum * 100 / maxPrice;
+//                    <!-- меняем цвет баров -->
+//                    curNumStyle = curNumStyle < 4 ? curNumStyle + 1 : 0;
+//
+//                    $('#categoriesProgressBar').append(
+//                            "<div id='divBarCategoryId" + categoryId + "' class='col-sm-10'>" +
+//                            "</div> " +
+//                            "<div id='divSumCategoryId" + categoryId + "' class='col-sm-2'> " +
+//                            "</div>");
+//
+//                    <!-- добавляем прогресс бар -->
+//                    $('#divBarCategoryId' + categoryId).append(
+//                            "\<div id='categoryBarId" + categoryId + "' class=\"progress progress-striped active\"\> " +
+//                            "\<div class=\"progress-bar progress-bar-" + styles[curNumStyle] + "\" role=\"progressbar\" " +
+//                            "aria-valuenow=\"" + sum + "\"" +
+//                            " aria - valuemin =\"0\" aria-valuemax=\"100\" style=\"width: " + normalPrice + "%\" " +
+//                                //" onclick='drawBarsAmountsByCategoryId(" + categoryId + "); return false;'\> " + categoryName +
+//                            " onclick='drawBarsByParentId(" + categoryId + "); return false;'\> " + categoryName +
+//                            "</div> " +
+//                            "</div> ");
+//
+//                    <!-- добавляем сумму к бару -->
+//                    $('#divSumCategoryId' + categoryId).append(
+//                            "<h2>" + sum + "</h2>");
+//
+//                    <!-- суммируем данные по расходу/доходу -->
+//                    if (getValue(category, 'type') == '0') totalIncome += sum;
+//                    else totalExpense += sum;
+//                });
+//                <!-- рисуем диграмму доход/расход -->
+//                drawChartOfTypes('Income=' + totalIncome + ',' + 'Expense=' + totalExpense, 'typeChart');
+//                <!-- заполняем итоговые данные доход/расход -->
+//                $('#textTotalIncome').text('Income: ' + totalIncome + ' руб.');
+//                $('#textTotalExpense').text('Expense: ' + totalExpense + ' руб.');
+//            }
+//        });
     });
     function drawBarsByParentId(categoryId) {
         $.ajax({
@@ -123,6 +125,14 @@
                             "</li>" +
                             "<li class='divider'></li>");
                 });
+                $('#modalDropDown').append(
+                        "<div class='row'>" +
+                            "<div class='col-md-12'><h4><strong>" +
+                                "ИТОГО " + $('#categoryBarSum' + categoryId).attr('value') + " руб." +
+                            "</strong></h4>" +
+                            "</div>" +
+                        "</div>"
+                );
                 //показываем модальное окно
                 $('#modalCategory').modal('show');
             }
@@ -140,20 +150,20 @@
                 "</div>");
     }
     //парсинг переданной строки и возврат значения пары формата key=value
-    function getValue(string, key) {
-        var array = string.split(', ');
-        var value;
-        array.forEach(function (pair, index, array) {
-            var arrayPair = pair.split('=');
-            if (arrayPair[0] == key) {
-                value = arrayPair[1];
-                return '';
-            }
-        });
-        value = value.replace(/'/g, '');
-        return value;
-    }
-    ;
+//    function getValue(string, key) {
+//        var array = string.split(', ');
+//        var value;
+//        array.forEach(function (pair, index, array) {
+//            var arrayPair = pair.split('=');
+//            if (arrayPair[0] == key) {
+//                value = arrayPair[1];
+//                return '';
+//            }
+//        });
+//        value = value.replace(/'/g, '');
+//        return value;
+//    }
+//    ;
     function drawChartOfTypes(data, elementId) {
 
         var pieChartCanvas = $('#' + elementId).get(0).getContext('2d');
@@ -287,10 +297,10 @@
     </div>
     <div class="container">
         <div class="center">
-            <div class="col-md-6 col-md-offset-3">
-                <h2>Statistics</h2>
+            <div class="col-md-12">
+                <h2><spring:message code="label.index.title" /></h2>
                 <hr>
-                <p class="lead">Общая статистика</p>
+                <p class="lead"><spring:message code="label.index.details" /></p>
             </div>
         </div>
     </div>
@@ -299,51 +309,120 @@
         <div class="row">
             <div class="col-sm-6 wow fadeInDown " data-wow-duration="1000ms"
                  data-wow-delay="300ms">
-                <h2>Income/Expense</h2>
+                <h2><spring:message code="label.index.chartIncomeExpense.title" /></h2>
                 <canvas id="typeChart" style="height:250px"></canvas>
             </div>
             <div class="col-sm-6 wow fadeInDown " data-wow-duration="1000ms"
                  data-wow-delay="300ms">
-                <h2>Summary info</h2>
-                <h2 id="textTotalIncome">Deposit: 1000</h2>
-                <h2 id="textTotalExpense">Credit: 1000</h2>
-                <h2>Today: 15/04/2017</h2>
+                <h2><spring:message code="label.index.total.title" /></h2>
+                <h2 id="textTotalIncome"><spring:message code="label.index.total.income" />
+                    <c:if test="${not empty sumIncome}">
+                        <strong>${sumIncome}</strong>
+                    </c:if>
+                </h2>
+                <h2 id="textTotalExpense"><spring:message code="label.index.total.expense" />
+                    <c:if test="${not empty sumExpense}">
+                        <strong>${sumExpense}</strong>
+                    </c:if>
+                </h2>
+                <h2><spring:message code="label.index.total.date" />
+                    <c:if test="${not empty curDate}">
+                        <strong>${curDate}</strong>
+                    </c:if>
+                </h2>
             </div>
-
         </div>
     </div>
     <div class="container">
         <div class="row wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="300ms">
-            <h2>Category info</h2>
-            <div class="col-sm-12 wow fadeInDown " id="categoriesProgressBar" data-wow-duration="1000ms"
-                 data-wow-delay="300ms">
+            <h2><spring:message code="label.index.categories.title" /></h2>
+            <div class="col-sm-12" id="categoryBars">
+                <div id="dropDownCategoryBarsIncome">
+                <h3><spring:message code="label.index.categoryBars.income" /></h3>
+                <c:set var="styles" value="${['success', 'info', 'warning', 'danger']}" scope="page" />
+                <c:set var="step" value="-1" scope="page"/>
+
+                <c:forEach items="${categories}" var="map">
+                    <c:if test="${map.key.getType() == 0}">
+
+                        <c:set var="classId" value="${map.key.getId()}" />
+                        <c:set var="className" value="${map.key.getName()}" />
+                        <c:set var="classPrice" value="${map.value}" />
+                        <c:set var="normalPrice" value="${classPrice * 100 / maxIncome}" />
+
+                        <c:set var="step" value="${step + 1}" scope="page"/>
+                        <li>
+                            <a onclick="drawBarsByParentId(${classId})">
+                                <div>
+                                    <p>
+                                        <h4><strong id="categoryBarName${map.key.getId()}" value="${className}">
+                                            ${className}
+                                        </strong></h4>
+                                        <h4><strong id="categoryBarSum${classId}" class="pull-right text-muted"
+                                        value="${classPrice}">
+                                            ${classPrice} руб.
+                                        </strong></h4>
+                                    </p>
+                                    <div class="progress progress-striped active">
+                                        <div class="progress-bar progress-bar-${styles[step]}" role="progressbar"
+                                             aria-valuenow="${classPrice}" aria-valuemin="0" aria-valuemax="100"
+                                             style="width: ${normalPrice}%" value="${className}">
+                                        <span class="sr-only">${classPrice}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class='divider'></li>
+                    </c:if>
+                </c:forEach>
+                </div>
+                <div id="dropDownCategoryBarsExpense">
+                    <h3><spring:message code="label.index.categoryBars.expense" /></h3>
+                    <c:set var="styles" value="${['success', 'info', 'warning', 'danger']}" scope="page" />
+                    <c:set var="step" value="-1" scope="page"/>
+
+                    <c:forEach items="${categories}" var="map">
+                        <c:if test="${map.key.getType() == 1}">
+
+                            <c:set var="classId" value="${map.key.getId()}" />
+                            <c:set var="className" value="${map.key.getName()}" />
+                            <c:set var="classPrice" value="${map.value}" />
+                            <c:set var="normalPrice" value="${classPrice * 100 / maxExpense}" />
+
+                            <c:set var="step" value="${step + 1}" scope="page"/>
+                            <li>
+                                <a onclick="drawBarsByParentId(${classId})">
+                                    <div>
+                                        <p>
+                                        <h4><strong id="categoryBarName${map.key.getId()}" value="${className}">
+                                                ${className}
+                                        </strong></h4>
+                                        <h4><strong id="categoryBarSum${classId}" class="pull-right text-muted"
+                                                    value="${classPrice}">
+                                                ${classPrice} руб.
+                                        </strong></h4>
+                                        </p>
+                                        <div class="progress progress-striped active">
+                                            <div class="progress-bar progress-bar-${styles[step]}" role="progressbar"
+                                                 aria-valuenow="${classPrice}" aria-valuemin="0" aria-valuemax="100"
+                                                 style="width: ${normalPrice}%" value="${className}">
+                                                <span class="sr-only">${classPrice}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class='divider'></li>
+                        </c:if>
+                    </c:forEach>
+                </div>
             </div>
         </div><!--/.row-->
     </div><!--/.container-->
 
 </section><!--/#about-->
 
-<div id="services">
-    <div class="container">
-        <div class="center">
-            <div class="col-md-6 col-md-offset-3">
-                <h2>Edit</h2>
-                <hr>
-                <p class="lead">Слайд редактирования сущностей БД</p>
-            </div>
-        </div>
-    </div>
-    <div class="container">
-        <div class="text-center">
-            <div class="col-md-3 wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="300ms">
-                <img src="/resources/img/services/services1.png">
-                <h3>Fully Responsive</h3>
-            </div>
-        </div>
-    </div>
-</div>
-
 <jsp:include page="/WEB-INF/view/tags/footer-template.jsp"></jsp:include>
-
 </body>
 </html>

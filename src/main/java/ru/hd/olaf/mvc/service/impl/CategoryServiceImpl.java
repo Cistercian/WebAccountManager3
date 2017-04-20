@@ -52,7 +52,7 @@ public class CategoryServiceImpl implements CategoryService {
         return map;
     }
 
-    public Map<Category, BigDecimal> getAllWithTotalSum() {
+    public Map<Category, BigDecimal> getWithTotalSum() {
         List<Category> categories = Lists.newArrayList(getAllByCurrentUser());
 
         Map<Category, BigDecimal> nonSortedMap = getCategoryPrice(categories);

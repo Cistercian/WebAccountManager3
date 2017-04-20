@@ -10,53 +10,83 @@
       <schema id="1" name="web_account_db"/>
       <table id="2" parent="1" name="amounts"/>
       <table id="3" parent="1" name="categories"/>
-      <column id="4" parent="2" name="ID">
+      <table id="4" parent="1" name="users"/>
+      <column id="5" parent="2" name="ID">
         <mandatory>1</mandatory>
         <data-type>int(11)</data-type>
       </column>
-      <column id="5" parent="2" name="category_id">
-        <mandatory>1</mandatory>
+      <column id="6" parent="2" name="category_id">
         <data-type>int(11)</data-type>
       </column>
-      <column id="6" parent="2" name="name">
-        <mandatory>1</mandatory>
+      <column id="7" parent="2" name="user_id">
+        <data-type>int(11)</data-type>
+      </column>
+      <column id="8" parent="2" name="name">
         <data-type>varchar(40)</data-type>
       </column>
-      <column id="7" parent="2" name="price">
-        <mandatory>1</mandatory>
-        <data-type>decimal(6,2)</data-type>
+      <column id="9" parent="2" name="price">
+        <data-type>decimal(10,2)</data-type>
         <default-expression>&apos;0.00&apos;</default-expression>
       </column>
-      <column id="8" parent="2" name="date">
-        <mandatory>1</mandatory>
+      <column id="10" parent="2" name="date">
         <data-type>date</data-type>
       </column>
-      <column id="9" parent="2" name="details">
+      <column id="11" parent="2" name="details">
         <data-type>varchar(256)</data-type>
       </column>
-      <key id="10" parent="2" name="PRIMARY">
+      <key id="12" parent="2" name="PRIMARY">
         <columns>ID</columns>
         <primary>1</primary>
       </key>
-      <column id="11" parent="3" name="ID">
+      <column id="13" parent="3" name="ID">
         <mandatory>1</mandatory>
         <data-type>int(11)</data-type>
       </column>
-      <column id="12" parent="3" name="parent_id">
+      <column id="14" parent="3" name="parent_id">
         <data-type>int(11)</data-type>
       </column>
-      <column id="13" parent="3" name="name">
-        <mandatory>1</mandatory>
+      <column id="15" parent="3" name="user_id">
+        <data-type>int(11)</data-type>
+      </column>
+      <column id="16" parent="3" name="name">
         <data-type>varchar(40)</data-type>
       </column>
-      <column id="14" parent="3" name="details">
+      <column id="17" parent="3" name="details">
         <data-type>varchar(256)</data-type>
       </column>
-      <column id="15" parent="3" name="type">
+      <column id="18" parent="3" name="type">
         <data-type>tinyint(1)</data-type>
         <default-expression>&apos;0&apos;</default-expression>
       </column>
-      <key id="16" parent="3" name="PRIMARY">
+      <key id="19" parent="3" name="PRIMARY">
+        <columns>ID</columns>
+        <primary>1</primary>
+      </key>
+      <column id="20" parent="4" name="ID">
+        <mandatory>1</mandatory>
+        <data-type>int(11)</data-type>
+      </column>
+      <column id="21" parent="4" name="username">
+        <mandatory>1</mandatory>
+        <data-type>varchar(50)</data-type>
+      </column>
+      <column id="22" parent="4" name="password">
+        <mandatory>1</mandatory>
+        <data-type>varchar(100)</data-type>
+      </column>
+      <column id="23" parent="4" name="full_name">
+        <mandatory>1</mandatory>
+        <data-type>varchar(100)</data-type>
+      </column>
+      <column id="24" parent="4" name="role">
+        <mandatory>1</mandatory>
+        <data-type>varchar(50)</data-type>
+      </column>
+      <column id="25" parent="4" name="enabled">
+        <mandatory>1</mandatory>
+        <data-type>tinyint(1)</data-type>
+      </column>
+      <key id="26" parent="4" name="PRIMARY">
         <columns>ID</columns>
         <primary>1</primary>
       </key>
