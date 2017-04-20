@@ -393,8 +393,7 @@
                             <c:set var="step" value="${step + 1}" scope="page"/>
                             <li>
                                 <a onclick="drawBarsByParentId(${classId})">
-                                    <div>
-                                        <p>
+                                    <div class="row">
                                         <h4><strong id="categoryBarName${map.key.getId()}" value="${className}">
                                                 ${className}
                                         </strong></h4>
@@ -402,7 +401,6 @@
                                                     value="${classPrice}">
                                                 ${classPrice} руб.
                                         </strong></h4>
-                                        </p>
                                         <div class="progress progress-striped active">
                                             <div class="progress-bar progress-bar-${styles[step]}" role="progressbar"
                                                  aria-valuenow="${classPrice}" aria-valuemin="0" aria-valuemax="100"
@@ -413,7 +411,6 @@
                                     </div>
                                 </a>
                             </li>
-                            <li class='divider'></li>
                         </c:if>
                     </c:forEach>
                 </div>
