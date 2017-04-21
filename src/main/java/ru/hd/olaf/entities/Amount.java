@@ -20,6 +20,7 @@ public class Amount {
     private Date amountsDate;
     private String details;
     private User userId;
+    private Product productId;
 
     @Id
     @Column(name = "ID", nullable = false)
@@ -52,6 +53,17 @@ public class Amount {
 
     public void setUserId(User userId) {
         this.userId = userId;
+    }
+
+    @ManyToOne()
+    @JoinColumn(name = "product_id")
+    @JsonBackReference
+    public Product getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Product productId) {
+        this.productId = productId;
     }
 
     @Basic

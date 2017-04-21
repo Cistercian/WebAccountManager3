@@ -11,8 +11,6 @@ import java.util.Map;
  */
 public interface ReportService {
 
-    Map<Map<Integer, String>, BigDecimal> getCategoryContentByIdDepricate(Integer id);
-
     List<BarEntity> getCategoryContentById(Integer id);
 
 }

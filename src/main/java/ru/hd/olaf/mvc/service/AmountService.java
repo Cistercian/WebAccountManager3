@@ -2,6 +2,7 @@ package ru.hd.olaf.mvc.service;
 
 import ru.hd.olaf.entities.Amount;
 import ru.hd.olaf.entities.Category;
+import ru.hd.olaf.entities.Product;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -12,9 +13,14 @@ import java.util.Map;
  */
 public interface AmountService {
 
-    Amount add(Amount amount);
+    Amount getById(int id);
     List<Amount> getAll();
     List<Amount> getByCategory(Category categoryId);
-    Amount getById(int id);
+    List<Amount> getByProduct(Product product);
+    List<Amount> getByCategoryAndProduct(Category category, Product product);
+
+    Amount add(Amount amount);
     String delete(Integer id);
+
+    BigDecimal getSumByCategoryAndProduct(Category category, Product product);
 }

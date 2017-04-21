@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.hd.olaf.entities.Amount;
 import ru.hd.olaf.entities.Category;
+import ru.hd.olaf.entities.Product;
 import ru.hd.olaf.mvc.service.AmountService;
 import ru.hd.olaf.mvc.service.CategoryService;
+import ru.hd.olaf.mvc.service.ProductService;
 import ru.hd.olaf.mvc.service.ReportService;
 import ru.hd.olaf.util.MapComparatorByValue;
 import ru.hd.olaf.util.json.BarEntity;
@@ -24,60 +26,23 @@ import java.util.*;
 public class ReportServiceImpl implements ReportService {
 
     @Autowired
-    CategoryService categoryService;
+    private CategoryService categoryService;
     @Autowired
-    AmountService amountService;
+    private AmountService amountService;
+    @Autowired
+    private ProductService productService;
 
     private static final Logger logger = LoggerFactory.getLogger(ReportServiceImpl.class);
-
-    public Map<Map<Integer, String>, BigDecimal> getCategoryContentByIdDepricate(Integer id) {
-        Category parent = categoryService.getById(id);
-
-        List<Amount> amounts = amountService.getByCategory(parent);
-        //собираем таблицу дочерняя категория-сумма по ней.
-        Map<Category, BigDecimal> categoryPrices=
-                categoryService.getCategoryPrice(categoryService.getByParentId(parent));
-        //инициализируем выходную мапу
-        Map<Map<Integer, String>, BigDecimal> content = new HashMap<Map<Integer, String>, BigDecimal>();
-
-        //агрегация данных по дочерним категориям
-        for (Map.Entry<Category, BigDecimal> entry : categoryPrices.entrySet()) {
-            Map<Integer, String> key = new HashMap<Integer, String>();
-            key.put(entry.getKey().getId(), entry.getKey().getClass().getSimpleName());
-
-            content.put(key, new BigDecimal(entry.getValue().toString()));
-        }
-
-        //агрегация данных по amounts
-        for (Amount amount : amounts) {
-            Map<Integer, String> key = new HashMap<Integer, String>();
-            key.put(amount.getId(), amount.getClass().getSimpleName());
-
-            content.put(key, new BigDecimal(amount.getPrice().toString()));
-        }
-
-        //сортировка выходной мапы по убыванию значения
-        MapComparatorByValue comparatorByValue = new MapComparatorByValue(content);
-
-        Map<Map<Integer, String>, BigDecimal> sortedContent =
-                new TreeMap<Map<Integer, String>, BigDecimal>(comparatorByValue);
-
-        sortedContent.putAll(content);
-
-        return sortedContent;
-    }
 
     public List<BarEntity> getCategoryContentById(Integer id) {
         logger.debug(String.format("Function %s", "getCategoryContentById"));
 
         List<BarEntity> barEntities = new ArrayList<BarEntity>();
-        Category parent = categoryService.getById(id);
+        Category category = categoryService.getById(id);
 
-        //собираем данные по таблице amount
-        List<Amount> amounts = amountService.getByCategory(parent);
         //собираем данные по таблице categories
         Map<Category, BigDecimal> categoryPrices=
-                categoryService.getCategoryPrice(categoryService.getByParentId(parent));
+                categoryService.getCategoryPrice(categoryService.getByParentId(category));
 
         //агрегируем данные
         for (Map.Entry<Category, BigDecimal> entry : categoryPrices.entrySet()) {
@@ -89,15 +54,25 @@ public class ReportServiceImpl implements ReportService {
 
             barEntities.add(barEntity);
         }
-        for (Amount amount : amounts) {
-            BarEntity barEntity = new BarEntity(
-                    amount.getClass().getSimpleName(),
-                    amount.getId(),
-                    new BigDecimal(amount.getPrice().toString()),
-                    amount.getName());
 
-            barEntities.add(barEntity);
+        //собираем данные по таблице amount с группировкой по Product
+        //TODO: query?
+        List<Product> products = productService.getAll();
+        for (Product product : products) {
+
+            BigDecimal sumAmounts = amountService.getSumByCategoryAndProduct(category, product);
+            if (sumAmounts.compareTo(new BigDecimal("0")) > 0) {
+                BarEntity barEntity = new BarEntity(
+                        product.getClass().getSimpleName(),
+                        product.getId(),
+                        sumAmounts,
+                        product.getName());
+
+                barEntities.add(barEntity);
+            }
+
         }
+
 
         Collections.sort(barEntities, new Comparator<BarEntity>() {
             public int compare(BarEntity o1, BarEntity o2) {
@@ -105,7 +80,7 @@ public class ReportServiceImpl implements ReportService {
             }
         });
 
-        logger.debug(String.format("Sorted list:"));
+        logger.debug(String.format("Sorted list for injecting:"));
         for (BarEntity barEntity : barEntities){
             logger.debug(String.format("%s", barEntity));
         }

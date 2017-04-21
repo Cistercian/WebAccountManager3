@@ -9,13 +9,17 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import ru.hd.olaf.entities.Amount;
 import ru.hd.olaf.entities.Category;
+import ru.hd.olaf.entities.Product;
+import ru.hd.olaf.mvc.repository.ProductRepository;
 import ru.hd.olaf.mvc.service.AmountService;
 import ru.hd.olaf.mvc.service.CategoryService;
+import ru.hd.olaf.mvc.service.ProductService;
 import ru.hd.olaf.mvc.service.SecurityService;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,6 +32,8 @@ public class AmountController {
     private CategoryService categoryService;
     @Autowired
     private AmountService amountService;
+    @Autowired
+    private ProductService productService;
     @Autowired
     private SecurityService securityService;
 
@@ -52,10 +58,10 @@ public class AmountController {
         return categoryService.getIdAndNameByCurrentUser();
     }
 
-    @RequestMapping(params = {"id", "categoryId", "name", "price", "date", "details", "submitAmmount"},
-            value = "/page-amount/save", method = RequestMethod.POST)
+    @RequestMapping(value = "/page-amount/save", method = RequestMethod.POST)
     public String saveAmount(@RequestParam(value = "id") Integer id,
                             @RequestParam(value = "categoryId") Integer categoryId,
+                            @RequestParam(value = "productName") String productName,
                             @RequestParam(value = "name") String name,
                             @RequestParam(value = "price") BigDecimal price,
                             @RequestParam(value = "date") Date amountsDate,
@@ -67,7 +73,7 @@ public class AmountController {
         try {
             amount = amountService.getById(id);
         } catch (Exception e) {
-            logger.debug(String.format("function: %s. Not found amount, reson:",
+            logger.debug(String.format("function: %s. Not found Amount, reason:",
                     "saveAmount", e.getMessage()));
             amount = new Amount();
         }
@@ -79,6 +85,23 @@ public class AmountController {
         amount.setDetails(details);
         amount.setUserId(securityService.findLoggedUser());
 
+        Product product;
+        try {
+            product = productService.getByName(productName);
+            logger.debug(String.format("Used existed Product: %s", product));
+        } catch (Exception e) {
+            logger.debug(String.format("function: %s. Not found Product, reason:",
+                    "saveAmount", e.getMessage()));
+            product = new Product();
+            product.setName(productName);
+            product.setUserId(securityService.findLoggedUser());
+
+            logger.debug(String.format("Create new Product: %s", product));
+
+            productService.save(product);
+        }
+        amount.setProductId(product);
+
         amountService.add(amount);
 
         logger.debug(String.format("function: %s. User: %s, Amount=%s",
@@ -87,7 +110,7 @@ public class AmountController {
         return "index";
     }
 
-    @RequestMapping(value = "/page-amount/amount/{id}/display", method = RequestMethod.GET)
+    @RequestMapping(value = "/page-amount/{id}", method = RequestMethod.GET)
     public ModelAndView displayAmount(@PathVariable("id") int id){
         logger.debug(String.format("%s. id: %d",
                 "displayAmount()", id));
@@ -103,6 +126,12 @@ public class AmountController {
         modelAndView.addObject("categoryId", amount.getCategoryId().getId());
         modelAndView.addObject("categoryName", amount.getCategoryId().getName());
 
+        Product product = amount.getProductId();
+        if (product != null) {
+            modelAndView.addObject("productId", amount.getProductId().getId());
+            modelAndView.addObject("productName", amount.getProductId().getName());
+        }
+
         logger.debug(String.format("Amount: %s",
                 amount));
 
@@ -114,7 +143,7 @@ public class AmountController {
         return modelAndView;
     }
 
-    @RequestMapping(params = {"id"}, value = "/page-amount/amount/delete", method = RequestMethod.POST)
+    @RequestMapping(params = {"id"}, value = "/page-amount/delete", method = RequestMethod.POST)
     public String deleteAmount(@RequestParam(value = "id") Integer id){
         logger.debug(String.format("%s. id: %d",
                 "deleteAmount()", id));
@@ -131,6 +160,15 @@ public class AmountController {
 
         return "index";
     }
+
+    @RequestMapping(value = "/page-amount/getProducts", method = RequestMethod.GET)
+    public @ResponseBody
+    List<Product> getProducts(@RequestParam("query") String query) {
+        logger.debug(String.format("Function %s. params: %s", "getProducts()", query));
+
+        return productService.getByContainedName(query);
+    }
+
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {

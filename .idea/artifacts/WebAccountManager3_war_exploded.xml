@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="exploded-war" name="WebAccountManager3:war exploded">
-    <output-path>$PROJECT_DIR$/out/artifacts/WebAccountManager3_war_exploded</output-path>
+    <output-path>C:/1/java/out</output-path>
     <root id="root">
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">

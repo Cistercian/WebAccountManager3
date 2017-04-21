@@ -6,6 +6,7 @@ CREATE TABLE amounts (
 ID INT NOT NULL AUTO_INCREMENT
 , category_id INT
 , user_id INT
+, good_id INT
 , name VARCHAR(40)
 , price DECIMAL(10, 2) DEFAULT 0
 , date DATE
@@ -34,6 +35,16 @@ CREATE TABLE `users` (
   `enabled` tinyint(1) NOT NULL,
   PRIMARY KEY (id)
 );
+DROP TABLE IF EXISTS products;
+CREATE TABLE products (
+ID INT NOT NULL AUTO_INCREMENT
+, name VARCHAR(40)
+, user_id INT
+, PRIMARY KEY (id)
+);
+ALTER TABLE Amounts CHANGE good_id product_id INT;
+
+
 
 INSERT INTO categories (parent_id, user_id, name, details, type) VALUES (0, 1, 'Категория 1', 'Описание 1', 0);
 INSERT INTO categories (parent_id, user_id, name, details, type) VALUES (1, 1, 'Категория 2', 'Описание 2', 1);

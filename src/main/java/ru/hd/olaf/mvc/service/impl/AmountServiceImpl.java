@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.hd.olaf.entities.Amount;
 import ru.hd.olaf.entities.Category;
+import ru.hd.olaf.entities.Product;
 import ru.hd.olaf.mvc.repository.AmountRepository;
 import ru.hd.olaf.mvc.service.AmountService;
 
@@ -37,6 +38,25 @@ public class AmountServiceImpl implements AmountService {
         });
 
         return amounts;
+    }
+
+    public List<Amount> getByCategoryAndProduct(Category categoryId, Product productId) {
+        return amountRepository.findByCategoryIdAndProductId(categoryId, productId);
+    }
+
+    public List<Amount> getByProduct(Product product) {
+        return amountRepository.findByProductId(product);
+    }
+
+    public BigDecimal getSumByCategoryAndProduct(Category category, Product product) {
+        List<Amount> amounts = getByCategoryAndProduct(category, product);
+
+        BigDecimal sumAmounts = new BigDecimal("0");
+        for (Amount amount : amounts) {
+            sumAmounts = sumAmounts.add(amount.getPrice());
+        }
+
+        return sumAmounts;
     }
 
     public Amount getById(int id) {

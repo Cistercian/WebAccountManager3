@@ -9,11 +9,46 @@
 
 <jsp:include page="/WEB-INF/view/tags/header-template.jsp"></jsp:include>
 
+<spring:url value="/resources/js/bootstrap3-typeahead.js" var="typeahead"/>
+<script src="${typeahead}"></script>
 
 <script language="javascript" type="text/javascript">
     $(document).ready(function () {
         $.ajaxSetup({
             headers: {'X-CSRF-TOKEN': document.getElementById('_csrf_token').value}
+        });
+
+        $('#productName').typeahead({
+            source: function (query, process) {
+                var $products=new Array;
+                $products = [''];
+                $.ajax({
+                    type: 'Get',
+                    url: '/page-amount/getProducts',
+                    dataType: "json",
+                    data: {'query' : query},
+                    success: function (data) {
+                        process(data);
+//                        var resultList = [];
+//
+//                        $.map(data,function (Id,value) {
+//                            var aItem = { id: Id, name: value};
+//                            resultList.push(aItem);
+//                        });
+//
+//                        return process(resultList);
+                    }
+                });
+            },
+            autoSelect: true,
+            displayText: function (category) {
+                return category.name;
+            },
+            updater:function (category) {
+                $('#productId').val(category.id);
+                $('#productName').val(category.name);
+                return category.name;
+            }
         });
     });
 
@@ -75,6 +110,20 @@
                                path="name" placeholder="Amount Name" data-rule="minlen:5"
                                data-msg="Please enter at least 5 chars"
                                value='${name}'/>
+                        <div class="validation"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12"><h4><strong><spring:message code="label.page-amount.product" /></strong></h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <input id="productId" type="hidden"  name="productId" value="${productId}"/>
+                        <input id="productName" type="text" name="productName" class="form-control form input-lg"
+                               path="name" placeholder="Good" data-rule="minlen:5"
+                               data-msg="Please enter at least 5 chars"
+                               value='${productName}'/>
                         <div class="validation"></div>
                     </div>
                 </div>
@@ -149,12 +198,13 @@
                         <script language="javascript" type="text/javascript">
                             function Save() {
                                 var data = {
-                                    'id': document.getElementById('id').value,
-                                    'categoryId': document.getElementById('btnCategories').value,
-                                    'name': document.getElementById('name').value,
-                                    'price': document.getElementById('price').value,
-                                    'date': document.getElementById('date').value,
-                                    'details': document.getElementById('details').value,
+                                    'id': $('#id').val(),
+                                    'categoryId': $('#btnCategories').val(),
+                                    'productName': $('#productName').val(),
+                                    'name': $('#name').val(),
+                                    'price': $('#price').val(),
+                                    'date': $('#date').val(),
+                                    'details': $('#details').val(),
                                     'submitAmmount': '' //TODO: ??
                                 };
                                 $.ajax({
@@ -203,11 +253,11 @@
                                 $('#modal').modal('show');
                             };
                             function SendDeleteQuery() {
-                                var id = document.getElementById('id').value;
+                                var id = $('#id').val();
                                 if (id != '') {
                                     $.ajax({
                                         type: "POST",
-                                        url: '/page-amount/amount/delete',
+                                        url: '/page-amount/delete',
                                         data: {id},
                                         success: function (data) {
                                             location.href="/index.html";
