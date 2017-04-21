@@ -29,12 +29,12 @@ public class CategoryServiceImpl implements CategoryService {
 
     private static final Logger logger = LoggerFactory.getLogger(CategoryServiceImpl.class);
 
-    public Category add(Category category) {
+    public Category save(Category category) {
         return categoryRepository.save(category);
     }
 
     public List<Category> getAll() {
-        return Lists.newArrayList(categoryRepository.findAll());
+        return Lists.newArrayList(categoryRepository.findByUserId(securityService.findLoggedUser()));
     }
 
     public Category getById(int id) {
@@ -52,8 +52,9 @@ public class CategoryServiceImpl implements CategoryService {
         return map;
     }
 
-    public Map<Category, BigDecimal> getWithTotalSum() {
-        List<Category> categories = Lists.newArrayList(getAllByCurrentUser());
+    public Map<Category, BigDecimal> getParentWithTotalSum() {
+        //List<Category> categories = Lists.newArrayList(getAllByCurrentUser());
+        List<Category> categories = Lists.newArrayList(getByParentId(null));
 
         Map<Category, BigDecimal> nonSortedMap = getCategoryPrice(categories);
 
@@ -70,14 +71,25 @@ public class CategoryServiceImpl implements CategoryService {
 
         for (Category category : categories) {
 
-            BigDecimal sum = new BigDecimal(0);
-            for (Amount amount : category.getAmounts()) {
-                sum = sum.add(amount.getPrice());
-            }
-            categoryPrices.put(category, sum);
+            BigDecimal sum = getSumCategory(category);
 
+            if (sum.compareTo(new BigDecimal("0")) > 0) {
+                categoryPrices.put(category, sum);
+            }
         }
         return categoryPrices;
+    }
+
+    private BigDecimal getSumCategory(Category category) {
+        BigDecimal sum = new BigDecimal(0);
+        for (Amount amount : category.getAmounts()) {
+            sum = sum.add(amount.getPrice());
+        }
+        //учитываем дочерние категории
+        for (Category children : categoryRepository.findByParentId(category)){
+            sum = sum.add(getSumCategory(children));
+        }
+        return sum;
     }
 
     public List<Category> getAllByCurrentUser() {

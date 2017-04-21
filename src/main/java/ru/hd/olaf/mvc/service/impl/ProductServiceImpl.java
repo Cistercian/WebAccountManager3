@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.hd.olaf.entities.Product;
 import ru.hd.olaf.mvc.repository.ProductRepository;
 import ru.hd.olaf.mvc.service.ProductService;
+import ru.hd.olaf.mvc.service.SecurityService;
 
 import java.util.List;
 
@@ -17,9 +18,11 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private SecurityService securityService;
 
     public List<Product> getAll() {
-        return Lists.newArrayList(productRepository.findAll());
+        return Lists.newArrayList(productRepository.findByUserId(securityService.findLoggedUser()));
     }
 
     public Product getById(Integer id) {

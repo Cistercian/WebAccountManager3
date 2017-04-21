@@ -89,7 +89,7 @@
                 );
                 var categoryName = $('#categoryBarName' + categoryId).attr('value');
                 $('#modalHeader').append(
-                        "<h3>" + categoryName + "<a href='./page-category/" + categoryId + "'>(редактировать)</a></h3>"
+                        "<h3>" + categoryName + " <a href='./page-category/" + categoryId + "'>(редактировать)</a></h3>"
                 );
                 //показываем модальное окно
                 $('#modalCategory').modal('show');

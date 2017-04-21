@@ -37,7 +37,7 @@ public class IndexController {
         logger.debug(String.format("Function %s", "getViewIndex()"));
         ModelAndView modelAndView = new ModelAndView("index");
 
-        Map<Category, BigDecimal> categories = categoryService.getWithTotalSum();
+        Map<Category, BigDecimal> categories = categoryService.getParentWithTotalSum();
 
         modelAndView.addObject("categories", categories);
 
@@ -81,7 +81,7 @@ public class IndexController {
     @ResponseBody
     Map<Category, BigDecimal> getAllCategoriesWithTotalSum() {
         logger.debug(String.format("Function %s", "getAllCategoriesWithTotalSum()"));
-        return categoryService.getWithTotalSum();
+        return categoryService.getParentWithTotalSum();
     }
 
     //TODO: depricate?

@@ -87,7 +87,7 @@ public class CategoryController {
                 "parentId: %s," +
                 "name: %s," +
                 "type: %s," +
-                "details: %s", id.toString(), parentId.toString(), name, type.toString(), details));
+                "details: %s", id, parentId, name, type, details));
 
         Category category;
         if (id == null){
@@ -101,12 +101,17 @@ public class CategoryController {
         }
 
         category.setName(name);
-        category.setParentId(categoryService.getById(parentId));
+
+        Category parent = categoryService.getById(parentId);
+        if (parent != null) {
+            category.setParentId(parent);
+        }
+
         category.setType(type);
         category.setDetails(details);
         category.setUserId(securityService.findLoggedUser());
 
-        categoryService.add(category);
+        categoryService.save(category);
 
         return "index";
     }

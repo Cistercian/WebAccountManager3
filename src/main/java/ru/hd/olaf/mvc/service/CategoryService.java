@@ -18,9 +18,9 @@ public interface CategoryService {
     List<Category> getByParentId(Category parentId);
 
     Map<Integer,String> getIdAndNameByCurrentUser();
-    Map<Category, BigDecimal> getWithTotalSum();
+    Map<Category, BigDecimal> getParentWithTotalSum();
     Map<Category, BigDecimal> getCategoryPrice(List<Category> categories);
 
-    Category add(Category category);
+    Category save(Category category);
     String delete(Integer id);
 }
