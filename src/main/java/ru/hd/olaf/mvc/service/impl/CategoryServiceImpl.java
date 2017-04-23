@@ -110,11 +110,11 @@ public class CategoryServiceImpl implements CategoryService {
             //convert amounts.date to LocalDate
             LocalDate amountDate = amount.getLocalDate();
 
-            logger.debug(String.format("Amount: %s, date: %s", amount, amountDate));
+            //logger.debug(String.format("Amount: %s, date: %s", amount, amountDate));
 
             if (amountDate.isAfter(after) && amountDate.isBefore(before)) {
                 sum = sum.add(amount.getPrice());
-                logger.debug(String.format("Amount is inside to period"));
+                //logger.debug(String.format("Amount is inside to period"));
             }
 
 

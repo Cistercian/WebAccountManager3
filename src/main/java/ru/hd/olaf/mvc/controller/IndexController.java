@@ -94,13 +94,16 @@ public class IndexController {
         Collections.sort(barEntities, new Comparator<BarEntity>() {
             public int compare(BarEntity o1, BarEntity o2) {
                 int result = o1.getType().compareTo(o2.getType());
-                if (result !=0)
-                    return (int) result/Math.abs(result);
+                if (result ==0)
+                    result = o2.getSum().compareTo(o1.getSum());
 
-                result = o2.getSum().compareTo(o2.getSum());
-                return (result != 0) ? (int) result/Math.abs(result) : 0;
+                return result;
             }
         });
+
+        logger.debug(String.format("sorted List:"));
+        for (BarEntity barEntity : barEntities)
+            logger.debug(String.format("%s", barEntity));
 
         return barEntities;
     }

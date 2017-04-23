@@ -408,7 +408,7 @@
             <div class="col-sm-6">
                 <spring:message code="label.index.categories.period.default" var="periodDefault" />
                 <button id="btnPeriod" class="btn-default btn-lg btn-block dropdown-toggle"
-                        data-toggle="dropdown" value="${periodDefault}">
+                        data-toggle="dropdown" value="month">
                     ${periodDefault}
                 </button>
                 <ul id="dropdownPeriods" class="dropdown-menu">
