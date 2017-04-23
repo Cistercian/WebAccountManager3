@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 
 
@@ -105,6 +107,13 @@ public class Amount {
 
     public void setDetails(String details) {
         this.details = details;
+    }
+
+    @Transient
+    public LocalDate getLocalDate(){
+        //convert amounts.date to LocalDate
+        Date date = new Date(amountsDate.getTime());
+        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }
 
     @Override

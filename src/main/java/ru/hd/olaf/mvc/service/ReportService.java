@@ -3,6 +3,7 @@ package ru.hd.olaf.mvc.service;
 import ru.hd.olaf.util.json.BarEntity;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +12,6 @@ import java.util.Map;
  */
 public interface ReportService {
 
-    List<BarEntity> getCategoryContentById(Integer id);
+    List<BarEntity> getCategoryContentById(Integer id, LocalDate after, LocalDate before);
 
 }

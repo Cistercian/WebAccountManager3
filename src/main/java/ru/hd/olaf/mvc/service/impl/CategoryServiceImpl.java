@@ -11,8 +11,11 @@ import ru.hd.olaf.mvc.repository.CategoryRepository;
 import ru.hd.olaf.mvc.service.CategoryService;
 import ru.hd.olaf.mvc.service.SecurityService;
 import ru.hd.olaf.util.MapComparatorByValue;
+import ru.hd.olaf.util.json.BarEntity;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 
 /**
@@ -52,11 +55,10 @@ public class CategoryServiceImpl implements CategoryService {
         return map;
     }
 
-    public Map<Category, BigDecimal> getParentWithTotalSum() {
-        //List<Category> categories = Lists.newArrayList(getAllByCurrentUser());
+    public Map<Category, BigDecimal> getParentsWithTotalSum(LocalDate after, LocalDate before) {
         List<Category> categories = Lists.newArrayList(getByParentId(null));
 
-        Map<Category, BigDecimal> nonSortedMap = getCategoryPrice(categories);
+        Map<Category, BigDecimal> nonSortedMap = getCategoryPrice(categories, after, before);
 
         MapComparatorByValue comparator = new MapComparatorByValue(nonSortedMap);
         Map<Category, BigDecimal> map = new TreeMap<Category, BigDecimal>(comparator);
@@ -66,12 +68,31 @@ public class CategoryServiceImpl implements CategoryService {
         return map;
     }
 
-    public Map<Category, BigDecimal> getCategoryPrice(List<Category> categories) {
+    public List<BarEntity> getCategoriesSum(Category parentId, LocalDate after, LocalDate before) {
+        //logger.debug(String.format("Function %s", "getParents()"));
+        logger.debug(String.format("Dates: after: %s, before %s", after.toString(), before.toString()));
+
+        List<Category> categories = getByParentId(parentId);
+        List<BarEntity> parents = new ArrayList<BarEntity>();
+
+        for (Category category : categories) {
+            BigDecimal sum = getSumCategory(category, after, before);
+
+            if (sum.compareTo(new BigDecimal("0")) > 0){
+                String type = category.getType() == 0 ? "CategoryIncome" : "CategoryExpense";
+                BarEntity barEntity = new BarEntity(type, category.getId(), sum, category.getName());
+                parents.add(barEntity);
+            }
+        }
+        return parents;
+    }
+
+    public Map<Category, BigDecimal> getCategoryPrice(List<Category> categories, LocalDate after, LocalDate before) {
         Map<Category, BigDecimal> categoryPrices = new HashMap<Category, BigDecimal>();
 
         for (Category category : categories) {
 
-            BigDecimal sum = getSumCategory(category);
+            BigDecimal sum = getSumCategory(category, after, before);
 
             if (sum.compareTo(new BigDecimal("0")) > 0) {
                 categoryPrices.put(category, sum);
@@ -80,14 +101,27 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryPrices;
     }
 
-    private BigDecimal getSumCategory(Category category) {
+    private BigDecimal getSumCategory(Category category, LocalDate after, LocalDate before) {
+        logger.debug(String.format("Function %s", "getSumCategory()"));
+
         BigDecimal sum = new BigDecimal(0);
         for (Amount amount : category.getAmounts()) {
-            sum = sum.add(amount.getPrice());
+
+            //convert amounts.date to LocalDate
+            LocalDate amountDate = amount.getLocalDate();
+
+            logger.debug(String.format("Amount: %s, date: %s", amount, amountDate));
+
+            if (amountDate.isAfter(after) && amountDate.isBefore(before)) {
+                sum = sum.add(amount.getPrice());
+                logger.debug(String.format("Amount is inside to period"));
+            }
+
+
         }
         //учитываем дочерние категории
         for (Category children : categoryRepository.findByParentId(category)){
-            sum = sum.add(getSumCategory(children));
+            sum = sum.add(getSumCategory(children, after, before));
         }
         return sum;
     }

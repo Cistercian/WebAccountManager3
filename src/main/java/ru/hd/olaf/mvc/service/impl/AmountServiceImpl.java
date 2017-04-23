@@ -10,6 +10,7 @@ import ru.hd.olaf.mvc.repository.AmountRepository;
 import ru.hd.olaf.mvc.service.AmountService;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.*;
 
 /**
@@ -48,12 +49,16 @@ public class AmountServiceImpl implements AmountService {
         return amountRepository.findByProductId(product);
     }
 
-    public BigDecimal getSumByCategoryAndProduct(Category category, Product product) {
+    public BigDecimal getSumByCategoryAndProduct(Category category, Product product, LocalDate after, LocalDate before) {
         List<Amount> amounts = getByCategoryAndProduct(category, product);
 
         BigDecimal sumAmounts = new BigDecimal("0");
         for (Amount amount : amounts) {
-            sumAmounts = sumAmounts.add(amount.getPrice());
+
+            LocalDate amountDate = amount.getLocalDate();
+            if (amountDate.isAfter(after) && amountDate.isBefore(before)) {
+                sumAmounts = sumAmounts.add(amount.getPrice());
+            }
         }
 
         return sumAmounts;

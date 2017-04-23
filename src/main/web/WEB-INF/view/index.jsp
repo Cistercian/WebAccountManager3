@@ -1,5 +1,3 @@
-<!DOCTYPE html>
-
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
@@ -14,87 +12,127 @@
     $(document).ready(function () {
         drawChartOfTypes("<spring:message code='label.index.chart.income.label' />=${sumIncome},<spring:message code='label.index.chart.expense.label' />=${sumExpense}", "typeChart");
     });
-    function drawBarsByParentId(categoryId) {
-        $.ajax({
-            url: 'http://localhost:8080/getContentByCategoryId',
-            type: "GET",
-            data: {
-                'categoryId': categoryId
-            },
-            dataType: 'json',
-            success: function (data) {
-                ClearModal();
-                //данные для стилей прогресс баров
-                var styles = ['success', 'info', 'warning', 'danger'];
-                var curNumStyle = -1;
-                var maxPrice = 0;
+    function drawBarsByParentId(categoryId, isChildren) {
+        //свитчер - либо показываем, либо стираем детализацию по дочерней категории
+        if (($('*').is('#childrenCategoryDetails')) && isChildren) {
+            $('#childrenCategoryDetails').remove();
+        }
+        else {
+            $.ajax({
+                url: 'http://localhost:8080/getContentByCategoryId',
+                type: "GET",
+                data: {
+                    'categoryId': categoryId,
+                    'period' : $('#btnPeriod').val()
+                },
+                dataType: 'json',
+                success: function (data) {
+                    var idBarElem;
+                    var idSumElem;
+                    var categoryName
+                    var idHeaderElem;
+                    var tagHeader;
+                    var tagClassProgress;
+                    var maxSum = 0;
 
-                data.forEach(function (barData, index, data) {
-                    var classId = barData.id;
-                    var classType = barData.className;
-                    var className = barData.name;
-                    var classPrice = barData.sum;
-
-                    <!-- нормализуем суммы -->
-                    if (maxPrice == 0) maxPrice = classPrice;
-                    normalPrice = classPrice * 100 / maxPrice;
-                    <!-- меняем цвет баров -->
-                    curNumStyle = curNumStyle < 4 ? curNumStyle + 1 : 0;
-
-
-                    var link;
-                    if (classType == 'Amount') {
-                        link = "./page-amount/" + classId;
-                        classType = "<spring:message code='label.index.amount.className' />";
+                    if (!isChildren) {
+                        ClearModal();
+                        idBarElem = 'modalDropDown';
+                        idSumElem = 'categoryBarSum' + categoryId;
+                        idNameElem = 'categoryBarName' + categoryId;
+                        idHeaderElem = 'modalHeader';
+                        tagHeader = "h3";
+                        tagClassProgress = "";
+                        categoryName = $('#' + idNameElem).attr('value');
+                    } else {
+                        $('#progressBarCategory' + categoryId).append(
+                                "<div id='childrenCategoryDetails' class='wow fadeInDown' data-wow-duration='1000ms '" +
+                                "data-wow-delay='300ms'>");
+                        idBarElem = 'childrenCategoryDetails';
+                        idSumElem = 'barSum' + categoryId;
+                        idNameElem = 'barName' + categoryId;
+                        idHeaderElem = 'childrenCategoryDetails';
+                        tagHeader = "h4";
+                        tagClassProgress = "mini";
+                        maxSum = $('#' + idSumElem).attr('value');
+                        categoryName = "Детализация по категории: " + $('#' + idNameElem).attr('value');
                     }
-                    if (classType == 'Product') {
-                        link = "./page-product/" + classId;
-                        classType = "<spring:message code='label.index.product.className' />";
-                    }
-                    if (classType == 'Category') {
-                        link = "./page-category/" + classId;
-                        classType = "<spring:message code='label.index.category.className' />";
-                    }
-                    <!-- добавляем прогресс бар -->
-                    $('#modalDropDown').append(
-                            "<li>" +
-                            "<a href='" + link + "'>" +
-                            "<div>" +
-                            "<p>" +
-                            "<strong id='barName" + classId + "' value='" + className + "'>" +
-                            classType + ": " + className + "</strong>" +
-                            "<strong id='barSum" + classId + "' class='pull-right text-muted' value='" + className +
-                            "'>" + classPrice + " руб." + "</strong>" +
-                            "</p>" +
-                            "<div class='progress progress-striped active'>" +
-                            "<div class='progress-bar progress-bar-" + styles[curNumStyle] + "' role='progressbar'" +
-                            " aria-valuenow='" + classPrice + "'" +
-                            "aria-valuemin='0' aria-valuemax='100' style='width: " + normalPrice + "%' " +
-                            "value='" + className + "'>" +
-                            "<span class='sr-only'>" + classPrice + "</span>" +
-                            "</div>" +
-                            "</div>" +
-                            "</div>" +
-                            "</a>" +
-                            "</li>" +
-                            "");
-                });
-                $('#modalDropDown').append(
-                        "<div class='row'>" +
-                            "<div class='col-md-12'><h4><strong>" +
-                                "ИТОГО " + $('#categoryBarSum' + categoryId).attr('value') + " руб." +
-                            "</strong></h4>" +
-                            "</div>" +
-                        "</div>"
-                );
-                var categoryName = $('#categoryBarName' + categoryId).attr('value');
-                $('#modalHeader').append(
-                        "<h3>" + categoryName + " <a href='./page-category/" + categoryId + "'>(редактировать)</a></h3>"
-                );
-                //показываем модальное окно
-                $('#modalCategory').modal('show');
-            }
-        });
+                    //заголовок
+                    $('#' + idHeaderElem).append(
+                            "<" + tagHeader + ">" + categoryName + " <a href='./page-category/" + categoryId +
+                            "'>(редактировать)</a></" + tagHeader + ">"
+                    );
+
+                    //данные для стилей прогресс баров
+                    var styles = ['success', 'info', 'warning', 'danger'];
+                    var curNumStyle = -1;
+
+                    data.forEach(function (barData, index, data) {
+                        var classId = barData.id;
+                        var classType = barData.type;
+                        var classTitle = "";
+                        var className = barData.name;
+                        var classSum = barData.sum;
+
+                        <!-- нормализуем суммы -->
+                        if (maxSum == 0) maxSum = classSum;
+                        normalSum = classSum * 100 / maxSum;
+                        <!-- меняем цвет баров -->
+                        curNumStyle = curNumStyle < 4 ? curNumStyle + 1 : 0;
+
+
+                        var link;
+                        if (classType == 'Amount') {
+                            link = "./page-amount/" + classId;
+                            classTitle = "<spring:message code='label.index.amount.className' />";
+                        }
+                        if (classType == 'Product') {
+                            link = "./page-product/" + classId;
+                            classTitle = "<spring:message code='label.index.product.className' />";
+                        }
+                        if (classType.indexOf('Category') + 1) {
+                            link = "";
+                            classTitle = "<spring:message code='label.index.category.className' />";
+                            classType = 'Category';
+                        }
+                        <!-- добавляем прогресс бар -->
+                        $('#' + idBarElem).append(
+                                "<li id='progressBar" + classType + classId + "'>" +
+                                (classType == 'Category' ?
+                                "<a onclick='drawBarsByParentId(" + classId + ", true);'>" :
+                                "<a href='" + link + "'>") +
+                                "<strong id='barName" + classId + "' value='" + className + "'>" +
+                                classTitle + ": " + className + "</strong>" +
+                                "<strong id='barSum" + classId + "' class='pull-right text-muted' value='" + classSum +
+                                "'>" + classSum + " руб." + "</strong>" +
+                                "<div class='progress " + tagClassProgress + " progress-striped active' >" +
+                                "<div class='progress-bar " + tagClassProgress + " progress-bar-" + styles[curNumStyle] +
+                                "' role='progressbar' aria-valuenow='" + classSum + "'" +
+                                "aria-valuemin='0' aria-valuemax='100' style='width: " + normalSum + "%' " +
+                                "value='" + className + "'>" +
+                                "<span class='sr-only'>" + classSum + "</span>" +
+                                "</div>" +
+                                "</div>" +
+                                "</div>" +
+                                "</a>" +
+                                "</li>" +
+                                "");
+                    });
+                    $('#' + idBarElem).append(
+                            "<div class='row'>" +
+                            "<div class='col-md-12'><h6><strong>" +
+                            "ИТОГО " + $('#' + idSumElem).attr('value') + " руб." +
+                            "</strong></h6>" +
+                            "</div><p><p>" +
+                            "</div>"
+                    );
+
+                    //показываем модальное окно
+                    if (!isChildren)
+                        $('#modalCategory').modal('show');
+                }
+            });
+        }
     }
     ;
     function ClearModal() {
@@ -108,23 +146,7 @@
                 "<div id='modalDropDown'" +
                 "</div>");
     }
-    //парсинг переданной строки и возврат значения пары формата key=value
-//    function getValue(string, key) {
-//        var array = string.split(', ');
-//        var value;
-//        array.forEach(function (pair, index, array) {
-//            var arrayPair = pair.split('=');
-//            if (arrayPair[0] == key) {
-//                value = arrayPair[1];
-//                return '';
-//            }
-//        });
-//        value = value.replace(/'/g, '');
-//        return value;
-//    }
-//    ;
     function drawChartOfTypes(data, elementId) {
-
         var pieChartCanvas = $('#' + elementId).get(0).getContext('2d');
         var pieChart = new Chart(pieChartCanvas);
         var PieData = [];
@@ -183,6 +205,91 @@
         pieChart.Doughnut(PieData, pieOptions);
     }
     ;
+    function selectPeriod(period){
+        $('#btnPeriod').val(period);
+        $('#btnPeriod').text($('#' + period).text());
+
+        $.ajax({
+            url: 'http://localhost:8080/getParentsWithTotalSum',
+            type: "GET",
+            data: {
+                'period': period
+            },
+            dataType: 'json',
+            success: function (data) {
+                //удаляем текущие данные
+                removeStatistics();
+
+                var maxIncomeSum = 0;
+                var maxExpenseSum = 0;
+                var totalIncomeSum = 0;
+                var totalExpenseSum = 0;
+                var idBarsElem;
+
+                //данные для стилей прогресс баров
+                var styles = ['success', 'info', 'warning', 'danger'];
+                var curNumStyle = -1;
+
+                $.each(data, function(index, barData) {
+                    var type = barData.type;
+                    var name = barData.name;
+                    var id = barData.id;
+                    var sum = barData.sum;
+
+                    <!-- меняем цвет баров -->
+                    curNumStyle = curNumStyle < 4 ? curNumStyle + 1 : 0;
+
+                    if (type == 'CategoryIncome') {
+                        idBarsElem = 'dropDownCategoryBarsIncome';
+                        maxIncomeSum = maxIncomeSum == 0 ? sum : maxIncomeSum;
+                        normalSum = sum * 100 / maxIncomeSum;
+                        totalIncomeSum += sum;
+                    } else {
+                        idBarsElem = 'dropDownCategoryBarsExpense';
+                        maxExpenseSum = maxExpenseSum == 0 ? sum : maxExpenseSum;
+                        normalSum = sum * 100 / maxExpenseSum;
+                        totalExpenseSum += sum;
+                    }
+
+                    $('#' + idBarsElem).append(
+                        "<li>" +
+                            "<a onclick='drawBarsByParentId(" + id + ")'>" +
+                                "<div>" +
+                                    "<h4><strong id='categoryBarName" + id + "' value='" + name + "'>" +
+                                        name +
+                                    "</strong>" +
+                                        "<strong id='categoryBarSum" + id + "' class='pull-right text-muted' " +
+                                                "value='" + sum + "'>" +
+                                            sum + " руб." +
+                                        "</strong></h4>" +
+                                    "<div class='progress progress-striped active'> " +
+                                        "<div class='progress-bar progress-bar-" + styles[curNumStyle] + "' role='progressbar' " +
+                                             "aria-valuenow='" + sum + "' aria-valuemin='0' aria-valuemax='100' " +
+                                             "style='width: " + normalSum + "%' value='" + name + "'>" +
+                                            "<span class='sr-only'>" + sum + "</span>" +
+                                        "</div>" +
+                                    "</div>" +
+                                "</div>" +
+                            "</a>" +
+                        "</li>"
+                    );
+                });
+
+                $('#textTotalIncome').append("<strong>" + totalIncomeSum + "</strong>");
+                $('#textTotalExpense').append("<strong>" + totalExpenseSum + "</strong>");
+            }
+        });
+    };
+    function removeStatistics(){
+        $('#textTotalIncome').empty();
+        $('#textTotalExpense').empty();
+
+        $('#dropDownCategoryBarsIncome').empty();
+        $('#dropDownCategoryBarsExpense').empty();
+
+        $('#dropDownCategoryBarsIncome').append("<h3><spring:message code="label.index.categoryBars.income" /></h3>");
+        $('#dropDownCategoryBarsExpense').append("<h3><spring:message code="label.index.categoryBars.expense" /></h3>");
+    }
 </script>
 <!-- modal panel -->
 <div id="modalCategory" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalCategorylabel"
@@ -295,7 +402,28 @@
     </div>
     <div class="container">
         <div class="row wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="300ms">
-            <h2><spring:message code="label.index.categories.title" /></h2>
+            <div class="col-sm-8">
+                <h2><spring:message code="label.index.categories.title" /></h2>
+            </div>
+            <div class="col-sm-6">
+                <spring:message code="label.index.categories.period.default" var="periodDefault" />
+                <button id="btnPeriod" class="btn-default btn-lg btn-block dropdown-toggle"
+                        data-toggle="dropdown" value="${periodDefault}">
+                    ${periodDefault}
+                </button>
+                <ul id="dropdownPeriods" class="dropdown-menu">
+                    <li><a id="day" onclick="selectPeriod('day');">За сегодня</a>
+                    </li>
+                    <li><a id="week" onclick="selectPeriod('week');">За текущую неделю</a>
+                    </li>
+                    <li><a id="month" onclick="selectPeriod('month');">За текущий месяц</a>
+                    </li>
+                    <li><a id="allTimes" onclick="selectPeriod('allTimes');">За все время</a>
+                    </li>
+                    <li><a id="period" onclick="selectPeriod('period');">Произвольный интервал</a>
+                    </li>
+                </ul>
+            </div>
             <div class="col-sm-12" id="categoryBars">
                 <div id="dropDownCategoryBarsIncome">
                 <h3><spring:message code="label.index.categoryBars.income" /></h3>

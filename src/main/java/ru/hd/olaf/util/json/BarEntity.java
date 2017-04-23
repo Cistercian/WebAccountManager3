@@ -8,24 +8,24 @@ import java.math.BigDecimal;
  * Created by d.v.hozyashev on 20.04.2017.
  */
 public class BarEntity {
-    private String className;
+    private String type;
     private int id;
     private BigDecimal sum;
     private String name;
 
-    public BarEntity(String className, int id, BigDecimal sum, String name) {
-        this.className = className;
+    public BarEntity(String type, int id, BigDecimal sum, String name) {
+        this.type = type;
         this.id = id;
         this.sum = sum;
         this.name = name;
     }
 
-    public String getClassName() {
-        return className;
+    public String getType() {
+        return type;
     }
 
-    public void setClassName(String className) {
-        this.className = className;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public int getId() {
@@ -55,7 +55,7 @@ public class BarEntity {
     @Override
     public String toString() {
         return "BarEntity{" +
-                "className='" + className + '\'' +
+                "type='" + type + '\'' +
                 ", id=" + id +
                 ", sum=" + sum +
                 ", name='" + name + '\'' +

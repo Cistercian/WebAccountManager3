@@ -15,6 +15,7 @@ import ru.hd.olaf.util.MapComparatorByValue;
 import ru.hd.olaf.util.json.BarEntity;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.*;
 
 /**
@@ -34,33 +35,25 @@ public class ReportServiceImpl implements ReportService {
 
     private static final Logger logger = LoggerFactory.getLogger(ReportServiceImpl.class);
 
-    public List<BarEntity> getCategoryContentById(Integer id) {
+    public List<BarEntity> getCategoryContentById(Integer id, LocalDate after, LocalDate before) {
         logger.debug(String.format("Function %s", "getCategoryContentById"));
 
         List<BarEntity> barEntities = new ArrayList<BarEntity>();
         Category category = categoryService.getById(id);
 
         //собираем данные по таблице categories
-        Map<Category, BigDecimal> categoryPrices=
-                categoryService.getCategoryPrice(categoryService.getByParentId(category));
-
-        //агрегируем данные
-        for (Map.Entry<Category, BigDecimal> entry : categoryPrices.entrySet()) {
-            BarEntity barEntity = new BarEntity(
-                    entry.getKey().getClass().getSimpleName(),
-                    entry.getKey().getId(),
-                    new BigDecimal(entry.getValue().toString()),
-                    entry.getKey().getName());
-
-            barEntities.add(barEntity);
-        }
+        barEntities = categoryService.getCategoriesSum(category, after, before);
 
         //собираем данные по таблице amount с группировкой по Product
         //TODO: query?
         List<Product> products = productService.getAll();
         for (Product product : products) {
 
-            BigDecimal sumAmounts = amountService.getSumByCategoryAndProduct(category, product);
+            BigDecimal sumAmounts = amountService.getSumByCategoryAndProduct(category,
+                    product,
+                    after,
+                    before);
+
             if (sumAmounts.compareTo(new BigDecimal("0")) > 0) {
                 BarEntity barEntity = new BarEntity(
                         product.getClass().getSimpleName(),
@@ -70,7 +63,6 @@ public class ReportServiceImpl implements ReportService {
 
                 barEntities.add(barEntity);
             }
-
         }
 
 
