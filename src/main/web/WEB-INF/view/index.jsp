@@ -277,6 +277,11 @@
 
                 $('#textTotalIncome').append("<strong>" + totalIncomeSum + "</strong>");
                 $('#textTotalExpense').append("<strong>" + totalExpenseSum + "</strong>");
+
+                //рисуем диаграмму
+                drawChartOfTypes("<spring:message code='label.index.chart.income.label' />=" + totalIncomeSum + "," +
+                        "<spring:message code='label.index.chart.expense.label' />=" + totalExpenseSum + "",
+                        "typeChart");
             }
         });
     };
