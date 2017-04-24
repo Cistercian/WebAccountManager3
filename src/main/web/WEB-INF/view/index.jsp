@@ -29,7 +29,8 @@
                 success: function (data) {
                     var idBarElem;
                     var idSumElem;
-                    var categoryName
+                    var dataClass = 'Category'; //задел на будущее - вдруг придется выводить подитоги по другим данным
+                    var categoryName;
                     var idHeaderElem;
                     var tagHeader;
                     var tagClassProgress;
@@ -49,8 +50,8 @@
                                 "<div id='childrenCategoryDetails' class='wow fadeInDown' data-wow-duration='1000ms '" +
                                 "data-wow-delay='300ms'>");
                         idBarElem = 'childrenCategoryDetails';
-                        idSumElem = 'barSum' + categoryId;
-                        idNameElem = 'barName' + categoryId;
+                        idSumElem = 'barSum' + dataClass + categoryId;
+                        idNameElem = 'barName' + dataClass + categoryId;
                         idHeaderElem = 'childrenCategoryDetails';
                         tagHeader = "h4";
                         tagClassProgress = "mini";
@@ -101,9 +102,9 @@
                                 (classType == 'Category' ?
                                 "<a onclick='drawBarsByParentId(" + classId + ", true);'>" :
                                 "<a href='" + link + "'>") +
-                                "<strong id='barName" + classId + "' value='" + className + "'>" +
+                                "<strong id='barName" + classType + classId + "' value='" + className + "'>" +
                                 classTitle + ": " + className + "</strong>" +
-                                "<strong id='barSum" + classId + "' class='pull-right text-muted' value='" + classSum +
+                                "<strong id='barSum" + classType + classId + "' class='pull-right text-muted' value='" + classSum +
                                 "'>" + classSum + " руб." + "</strong>" +
                                 "<div class='progress " + tagClassProgress + " progress-striped active' >" +
                                 "<div class='progress-bar " + tagClassProgress + " progress-bar-" + styles[curNumStyle] +
@@ -210,7 +211,7 @@
         $('#btnPeriod').text($('#' + period).text());
 
         $.ajax({
-            url: 'http://localhost:8080/getParentsWithTotalSum',
+            url: 'http://localhost:8080/getParentsCategories',
             type: "GET",
             data: {
                 'period': period
@@ -435,19 +436,19 @@
                 <c:set var="styles" value="${['success', 'info', 'warning', 'danger']}" scope="page" />
                 <c:set var="step" value="-1" scope="page"/>
 
-                <c:forEach items="${categories}" var="map">
-                    <c:if test="${map.key.getType() == 0}">
+                <c:forEach items="${categories}" var="list">
+                    <c:if test="${list.getType() == 'CategoryIncome'}">
 
-                        <c:set var="classId" value="${map.key.getId()}" />
-                        <c:set var="className" value="${map.key.getName()}" />
-                        <c:set var="classPrice" value="${map.value}" />
+                        <c:set var="classId" value="${list.getId()}" />
+                        <c:set var="className" value="${list.getName()}" />
+                        <c:set var="classPrice" value="${list.getSum()}" />
                         <c:set var="normalPrice" value="${classPrice * 100 / maxIncome}" />
 
                         <c:set var="step" value="${step + 1}" scope="page"/>
                         <li>
                             <a onclick="drawBarsByParentId(${classId})">
                                 <div>
-                                    <h4><strong id="categoryBarName${map.key.getId()}" value="${className}">
+                                    <h4><strong id="categoryBarName${classId}" value="${className}">
                                         ${className}
                                     </strong>
                                     <strong id="categoryBarSum${classId}" class="pull-right text-muted"
@@ -473,19 +474,19 @@
                     <c:set var="styles" value="${['success', 'info', 'warning', 'danger']}" scope="page" />
                     <c:set var="step" value="-1" scope="page"/>
 
-                    <c:forEach items="${categories}" var="map">
-                        <c:if test="${map.key.getType() == 1}">
+                    <c:forEach items="${categories}" var="list">
+                        <c:if test="${list.getType() == 'CategoryExpense'}">
 
-                            <c:set var="classId" value="${map.key.getId()}" />
-                            <c:set var="className" value="${map.key.getName()}" />
-                            <c:set var="classPrice" value="${map.value}" />
+                            <c:set var="classId" value="${list.getId()}" />
+                            <c:set var="className" value="${list.getName()}" />
+                            <c:set var="classPrice" value="${list.getSum()}" />
                             <c:set var="normalPrice" value="${classPrice * 100 / maxExpense}" />
 
                             <c:set var="step" value="${step + 1}" scope="page"/>
                             <li>
                                 <a onclick="drawBarsByParentId(${classId})">
                                     <div>
-                                        <h4><strong id="categoryBarName${map.key.getId()}" value="${className}">
+                                        <h4><strong id="categoryBarName${classId}" value="${className}">
                                                 ${className}
                                         </strong>
                                         <strong id="categoryBarSum${classId}" class="pull-right text-muted"

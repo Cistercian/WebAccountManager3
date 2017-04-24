@@ -8,14 +8,16 @@ import org.springframework.stereotype.Service;
 import ru.hd.olaf.entities.Amount;
 import ru.hd.olaf.entities.Category;
 import ru.hd.olaf.mvc.repository.CategoryRepository;
+import ru.hd.olaf.mvc.service.AmountService;
 import ru.hd.olaf.mvc.service.CategoryService;
 import ru.hd.olaf.mvc.service.SecurityService;
 import ru.hd.olaf.util.MapComparatorByValue;
+import ru.hd.olaf.util.json.AnswerType;
 import ru.hd.olaf.util.json.BarEntity;
+import ru.hd.olaf.util.json.JsonAnswer;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.*;
 
 /**
@@ -26,53 +28,71 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
     private CategoryRepository categoryRepository;
-
     @Autowired
     private SecurityService securityService;
+    @Autowired
+    private AmountService amountService;
 
     private static final Logger logger = LoggerFactory.getLogger(CategoryServiceImpl.class);
 
+    /**
+     * Функция создания/обновления записи
+     * @param category
+     * @return
+     */
     public Category save(Category category) {
         return categoryRepository.save(category);
     }
 
+    /**
+     * Функция возвращает список category  с проверкой на текущего пользователя
+     * @return
+     */
     public List<Category> getAll() {
-        return Lists.newArrayList(categoryRepository.findByUserId(securityService.findLoggedUser()));
+        logger.debug(String.format("Function %s", "getAll()"));
+
+        return getAllByCurrentUser();
     }
 
-    public Category getById(int id) {
-        return categoryRepository.findOne(id);
+    /**
+     * Функция возвращает список Category по текущему пользователю
+     * @return
+     */
+    public List<Category> getAllByCurrentUser() {
+        logger.debug(String.format("Function %s", "getAllByCurrentUser()"));
+        logger.debug(String.format("Cerrent user:", securityService.findLoggedUser()));
+
+        return categoryRepository.findByUserId(securityService.findLoggedUser());
     }
 
-    public Map<Integer, String> getIdAndNameByCurrentUser() {
-        Map<Integer, String> map = new HashMap<Integer, String>();
-        List<Category> categories = getAllByCurrentUser();
+    /**
+     * Функция возвращения записи category с проверкой на текущего пользователя
+     * @param id
+     * @return
+     */
+    public Category getById(Integer id) {
+        if (id == null) return null;
 
-        for(Category category : categories) {
-            map.put(category.getId(), category.getName());
-        }
+        Category category = categoryRepository.findOne(id);
+        if (category == null) return null;
 
-        return map;
+        return category.getUserId().equals(securityService.findLoggedUser()) ? category : null;
     }
 
-    public Map<Category, BigDecimal> getParentsWithTotalSum(LocalDate after, LocalDate before) {
-        List<Category> categories = Lists.newArrayList(getByParentId(null));
+    /**
+     * Функция возвращает коллекцию служебного класса BarEntity, элемент которой - дочерняя категория, указанной родительской
+     с итоговой по ней суммой за заданный период с исключением нулевых сумм.
 
-        Map<Category, BigDecimal> nonSortedMap = getCategoryPrice(categories, after, before);
-
-        MapComparatorByValue comparator = new MapComparatorByValue(nonSortedMap);
-        Map<Category, BigDecimal> map = new TreeMap<Category, BigDecimal>(comparator);
-
-        map.putAll(nonSortedMap);
-
-        return map;
-    }
-
-    public List<BarEntity> getCategoriesSum(Category parentId, LocalDate after, LocalDate before) {
-        //logger.debug(String.format("Function %s", "getParents()"));
+     * @param parent
+     * @param after
+     * @param before
+     * @return
+     */
+    public List<BarEntity> getBarEntityOfSubCategories(Category parent, LocalDate after, LocalDate before) {
+        logger.debug(String.format("Function %s", "getBarEntityOfSubCategories()"));
         logger.debug(String.format("Dates: after: %s, before %s", after.toString(), before.toString()));
 
-        List<Category> categories = getByParentId(parentId);
+        List<Category> categories = getByParentId(parent);
         List<BarEntity> parents = new ArrayList<BarEntity>();
 
         for (Category category : categories) {
@@ -80,6 +100,7 @@ public class CategoryServiceImpl implements CategoryService {
 
             if (sum.compareTo(new BigDecimal("0")) > 0){
                 String type = category.getType() == 0 ? "CategoryIncome" : "CategoryExpense";
+
                 BarEntity barEntity = new BarEntity(type, category.getId(), sum, category.getName());
                 parents.add(barEntity);
             }
@@ -87,63 +108,69 @@ public class CategoryServiceImpl implements CategoryService {
         return parents;
     }
 
-    public Map<Category, BigDecimal> getCategoryPrice(List<Category> categories, LocalDate after, LocalDate before) {
-        Map<Category, BigDecimal> categoryPrices = new HashMap<Category, BigDecimal>();
-
-        for (Category category : categories) {
-
-            BigDecimal sum = getSumCategory(category, after, before);
-
-            if (sum.compareTo(new BigDecimal("0")) > 0) {
-                categoryPrices.put(category, sum);
-            }
-        }
-        return categoryPrices;
-    }
-
+    /**
+     * Функция получения итоговой суммы по категории с учетом вложенных (дочерних) категорий
+     * @param category
+     * @param after
+     * @param before
+     * @return
+     */
     private BigDecimal getSumCategory(Category category, LocalDate after, LocalDate before) {
         logger.debug(String.format("Function %s", "getSumCategory()"));
 
         BigDecimal sum = new BigDecimal(0);
         for (Amount amount : category.getAmounts()) {
-
             //convert amounts.date to LocalDate
             LocalDate amountDate = amount.getLocalDate();
 
-            //logger.debug(String.format("Amount: %s, date: %s", amount, amountDate));
-
             if (amountDate.isAfter(after) && amountDate.isBefore(before)) {
                 sum = sum.add(amount.getPrice());
-                //logger.debug(String.format("Amount is inside to period"));
             }
-
-
         }
         //учитываем дочерние категории
-        for (Category children : categoryRepository.findByParentId(category)){
+        for (Category children : getByParentId(category)){
+
             sum = sum.add(getSumCategory(children, after, before));
+
         }
         return sum;
     }
 
-    public List<Category> getAllByCurrentUser() {
-        logger.debug(String.format("current User = %s", securityService.findLoggedUser().getUsername()));
-
-        return categoryRepository.findByUserId(securityService.findLoggedUser());
-    }
-
-    public String delete(Integer id) {
-        try {
-            categoryRepository.delete(id);
-            return "delete successfully";
-        } catch (Exception e) {
-            return "delete was not coplited";
-        }
-    }
-
-    public List<Category> getByParentId(Category parentId) {
-        List<Category> categories = categoryRepository.findByParentId(parentId);
+    /**
+     * Функция возвращает список дочерних категорий
+     * @param parentId
+     * @return
+     */
+    private List<Category> getByParentId(Category parentId) {
+        List<Category> categories =
+                categoryRepository.findByParentIdAndUserId(parentId, securityService.findLoggedUser());
 
         return categories;
+    }
+
+    /**
+     * Функция удаления записи Category
+     * @param category
+     * @return
+     */
+    public JsonAnswer delete(Category category) {
+
+        //Проверка существуют ли записи amount с данной категорией
+        if (amountService.getByCategory(category).size() > 0) {
+            logger.debug(String.format("Deleting is aborted. Found available Amounts!"));
+
+            String message = String.format("Deleting is aborted. Found exists Amounts!");
+            return new JsonAnswer(AnswerType.ERROR, message);
+        }
+
+        if (!category.getUserId().equals(securityService.findLoggedUser()))
+            return new JsonAnswer(AnswerType.ERROR, "auth error!");
+        //TODO: catch exceptions
+        try {
+            categoryRepository.delete(category);
+            return new JsonAnswer(AnswerType.SUCCESS, "Deleting complite");
+        } catch (Exception e) {
+            return new JsonAnswer(AnswerType.ERROR, e.getMessage());
+        }
     }
 }

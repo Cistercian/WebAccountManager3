@@ -10,17 +10,17 @@ import org.springframework.web.servlet.ModelAndView;
 import ru.hd.olaf.entities.Amount;
 import ru.hd.olaf.entities.Category;
 import ru.hd.olaf.entities.Product;
-import ru.hd.olaf.mvc.repository.ProductRepository;
 import ru.hd.olaf.mvc.service.AmountService;
 import ru.hd.olaf.mvc.service.CategoryService;
 import ru.hd.olaf.mvc.service.ProductService;
 import ru.hd.olaf.mvc.service.SecurityService;
+import ru.hd.olaf.util.json.AnswerType;
+import ru.hd.olaf.util.json.JsonAnswer;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Olaf on 14.04.2017.
@@ -39,42 +39,86 @@ public class AmountController {
 
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
+    /**
+     * Отрисовка пустой страницы page-amount.html
+     * @return
+     */
     @RequestMapping(value = "/page-amount", method = RequestMethod.GET)
-    public ModelAndView getPageAmount(){
-        logger.debug(String.format("function: %s.", "getPageAmount"));
+    public ModelAndView getViewPageAmount(){
+        logger.debug(String.format("function: %s.", "getViewPageAmount()"));
+
+        return getViewPageAmountByID(null);
+    }
+
+    /**
+     * Функция просмотра записи amount (заполненная страница page-amount)
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/page-amount/{id}", method = RequestMethod.GET)
+    public ModelAndView getViewPageAmountByID(@PathVariable("id") Integer id){
+        logger.debug(String.format("Function %s", "getViewPageAmountByID()", id));
 
         ModelAndView modelAndView = new ModelAndView("/data/page-amount");
 
-        Map<Integer, String> categories = categoryService.getIdAndNameByCurrentUser();
-        modelAndView.addObject("categories", categories);
+        Amount amount = amountService.getById(id);
+        if (amount != null) {
+            //TODO: security
+
+            modelAndView.addObject("name", amount.getName());
+            modelAndView.addObject("date", amount.getAmountsDate());
+            modelAndView.addObject("price", amount.getPrice());
+            modelAndView.addObject("details", amount.getDetails());
+            modelAndView.addObject("id", amount.getId());
+            modelAndView.addObject("categoryId", amount.getCategoryId().getId());
+            modelAndView.addObject("categoryName", amount.getCategoryId().getName());
+
+            Product product = amount.getProductId();
+            if (product != null) {
+                modelAndView.addObject("productId", amount.getProductId().getId());
+                modelAndView.addObject("productName", amount.getProductId().getName());
+            }
+
+            logger.debug(String.format("Display Amount: %s", amount));
+        }
+
+        List<Category> categories = categoryService.getAll();
 
         logger.debug(String.format("Map 'categories' for injecting: %s.", categories.toString()));
+
+        modelAndView.addObject("categories", categories);
 
         return modelAndView;
     }
 
-    @RequestMapping(value = "/page-amount/getCategoriesIdAndName", method = RequestMethod.GET)
-    public @ResponseBody Map<Integer, String> getCategoriesIdAndName() {
-        return categoryService.getIdAndNameByCurrentUser();
-    }
-
+    /**
+     * Функция сохранения записи amount в БД
+     * @param id
+     * @param categoryId
+     * @param productName
+     * @param name
+     * @param price
+     * @param amountsDate
+     * @param details
+     * @return
+     */
     @RequestMapping(value = "/page-amount/save", method = RequestMethod.POST)
     public String saveAmount(@RequestParam(value = "id") Integer id,
-                            @RequestParam(value = "categoryId") Integer categoryId,
-                            @RequestParam(value = "productName") String productName,
-                            @RequestParam(value = "name") String name,
-                            @RequestParam(value = "price") BigDecimal price,
-                            @RequestParam(value = "date") Date amountsDate,
-                            @RequestParam(value = "details") String details,
-                            @RequestParam(value = "submitAmmount") String submitAmmount) {
+                             @RequestParam(value = "categoryId") Integer categoryId,
+                             @RequestParam(value = "productName") String productName,
+                             @RequestParam(value = "name") String name,
+                             @RequestParam(value = "price") BigDecimal price,
+                             @RequestParam(value = "date") Date amountsDate,
+                             @RequestParam(value = "details") String details) {
 
+        //TODO: throw exception
         Category category = categoryService.getById(categoryId);
-        Amount amount;
-        try {
-            amount = amountService.getById(id);
-        } catch (Exception e) {
-            logger.debug(String.format("function: %s. Not found Amount, reason:",
-                    "saveAmount", e.getMessage()));
+        if (category == null)
+            return null;
+
+        Amount amount = amountService.getById(id);
+        if (amount == null) {
+            logger.debug(String.format("Not found Amount, id: %d", id));
             amount = new Amount();
         }
 
@@ -102,7 +146,7 @@ public class AmountController {
         }
         amount.setProductId(product);
 
-        amountService.add(amount);
+        amountService.save(amount);
 
         logger.debug(String.format("function: %s. User: %s, Amount=%s",
                 "saveAmount", securityService.findLoggedUsername(), amount));
@@ -110,65 +154,43 @@ public class AmountController {
         return "index";
     }
 
-    @RequestMapping(value = "/page-amount/{id}", method = RequestMethod.GET)
-    public ModelAndView displayAmount(@PathVariable("id") int id){
-        logger.debug(String.format("%s. id: %d",
-                "displayAmount()", id));
-        //TODO: NPE
+    /**
+     * Функция удаления записи по ее id
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/page-amount/delete", method = RequestMethod.POST)
+    public @ResponseBody JsonAnswer deleteAmount(@RequestParam(value = "id") Integer id){
+        logger.debug(String.format("Function %s", "deleteAmount()"));
+
         Amount amount = amountService.getById(id);
+        JsonAnswer response = null;
+        if (amount != null) {
 
-        ModelAndView modelAndView = new ModelAndView("/data/page-amount");
-        modelAndView.addObject("name", amount.getName());
-        modelAndView.addObject("date", amount.getAmountsDate());
-        modelAndView.addObject("price", amount.getPrice());
-        modelAndView.addObject("details", amount.getDetails());
-        modelAndView.addObject("id", amount.getId());
-        modelAndView.addObject("categoryId", amount.getCategoryId().getId());
-        modelAndView.addObject("categoryName", amount.getCategoryId().getName());
+            logger.debug(String.format("Delete Amount: %s", amount));
 
-        Product product = amount.getProductId();
-        if (product != null) {
-            modelAndView.addObject("productId", amount.getProductId().getId());
-            modelAndView.addObject("productName", amount.getProductId().getName());
+            response = amountService.delete(amount);
+
+            logger.debug(String.format("Result: %s", response.getMessage()));
+
+        } else {
+            response.setType(AnswerType.ERROR);
+            response.setMessage("Entity not found!");
         }
 
-        logger.debug(String.format("Amount: %s",
-                amount));
-
-        Map<Integer, String> categories = categoryService.getIdAndNameByCurrentUser();
-        modelAndView.addObject("categories", categories);
-
-        logger.debug(String.format("Map 'categories' for injecting: %s.", categories.toString()));
-
-        return modelAndView;
+        return response;
     }
 
-    @RequestMapping(params = {"id"}, value = "/page-amount/delete", method = RequestMethod.POST)
-    public String deleteAmount(@RequestParam(value = "id") Integer id){
-        logger.debug(String.format("%s. id: %d",
-                "deleteAmount()", id));
-        //TODO: NPE
-        Amount amount = amountService.getById(id);
-
-        logger.debug(String.format("Amount: %s",
-                amount));
-
-        String result = amountService.delete(id);
-
-        logger.debug(String.format("Result: %s",
-                result));
-
-        return "index";
-    }
-
+    /**
+     * Функция получения списка таблицы product по совпадению (быстрый поиск для выпадающего списка)
+     * @param query
+     * @return
+     */
     @RequestMapping(value = "/page-amount/getProducts", method = RequestMethod.GET)
     public @ResponseBody
     List<Product> getProducts(@RequestParam("query") String query) {
-        logger.debug(String.format("Function %s. params: %s", "getProducts()", query));
-
         return productService.getByContainedName(query);
     }
-
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {

@@ -10,7 +10,7 @@ import java.util.List;
  * Created by d.v.hozyashev on 11.04.2017.
  */
 public interface CategoryRepository extends CrudRepository<Category, Integer>{
-    List<Category> findByParentId(Category parentId);
+    List<Category> findByParentIdAndUserId(Category parent, User user);
     List<Category> findByName(String name);
     List<Category> findByUserId(User user);
 }

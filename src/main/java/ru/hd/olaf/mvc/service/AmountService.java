@@ -4,6 +4,9 @@ import org.springframework.cglib.core.Local;
 import ru.hd.olaf.entities.Amount;
 import ru.hd.olaf.entities.Category;
 import ru.hd.olaf.entities.Product;
+import ru.hd.olaf.entities.User;
+import ru.hd.olaf.util.json.BarEntity;
+import ru.hd.olaf.util.json.JsonAnswer;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -15,14 +18,19 @@ import java.util.Map;
  */
 public interface AmountService {
 
-    Amount getById(int id);
+    Amount getById(Integer id);
+
     List<Amount> getAll();
-    List<Amount> getByCategory(Category categoryId);
     List<Amount> getByProduct(Product product);
     List<Amount> getByCategoryAndProduct(Category category, Product product);
+    List<Amount> getByCategory(Category category);
 
-    Amount add(Amount amount);
-    String delete(Integer id);
+    List<BarEntity> getBarEntitiesByCategory(Category category,
+                                             LocalDate after,
+                                             LocalDate before);
+
+    Amount save(Amount amount);
+    JsonAnswer delete(Amount amount);
 
     BigDecimal getSumByCategoryAndProduct(Category category, Product product, LocalDate after, LocalDate before);
 }

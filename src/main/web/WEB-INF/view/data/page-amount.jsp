@@ -29,14 +29,6 @@
                     data: {'query' : query},
                     success: function (data) {
                         process(data);
-//                        var resultList = [];
-//
-//                        $.map(data,function (Id,value) {
-//                            var aItem = { id: Id, name: value};
-//                            resultList.push(aItem);
-//                        });
-//
-//                        return process(resultList);
                     }
                 });
             },
@@ -150,9 +142,9 @@
                         <ul id="dropdownCategories" class="dropdown-menu">
                             <li><a onclick="setCategoryId(-1, 'Select Category');return false;"><spring:message code="label.page-amount.selectCategory" /></a></li>
                             <li class="divider"></li>
-                            <c:forEach items="${categories}" var="map">
-                                    <li><a id='${map.key}' onclick="setCategoryId('${map.key}', '${map.value}');
-                                    return false;">${map.value}</a></li>
+                            <c:forEach items="${categories}" var="list">
+                                    <li><a id='${list.getId()}' onclick="setCategoryId('${list.getId()}', '${list.getName()}');
+                                    return false;">${list.getName()}</a></li>
                             </c:forEach>
                         </ul>
                     </div>

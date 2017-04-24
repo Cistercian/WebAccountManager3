@@ -29,27 +29,22 @@ public class CategoryController {
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
     @RequestMapping(value = "/page-category", method = RequestMethod.GET)
-    public ModelAndView getPageCategory(){
-        logger.debug(String.format("Function %s", "getPageCategory()"));
+    public ModelAndView getViewPageCategory(){
+        logger.debug(String.format("Function %s", "getViewPageCategory()"));
 
-        ModelAndView modelAndView = new ModelAndView("/data/page-category");
-        modelAndView.addObject("categories", categoryService.getIdAndNameByCurrentUser());
-
-        return modelAndView;
+        return getViewPageCategoryById(null);
     }
 
     @RequestMapping(value = "/page-category/{id}", method = RequestMethod.GET)
-    public ModelAndView getPageCategoryById(@PathVariable("id") Integer id){
-        logger.debug(String.format("Function %s", "getPageCategoryById()"));
+    public ModelAndView getViewPageCategoryById(@PathVariable("id") Integer id){
+        logger.debug(String.format("Function %s", "getViewPageCategoryById()"));
 
         ModelAndView modelAndView = new ModelAndView("/data/page-category");
+        modelAndView.addObject("categories", categoryService.getAll());
 
-        modelAndView.addObject("categories", categoryService.getIdAndNameByCurrentUser());
+        Category category = categoryService.getById(id);
+        if (category != null){
 
-        try {
-            Category category = categoryService.getById(id);
-
-            modelAndView.addObject("parentId", category.getParentId());
             modelAndView.addObject("id", category.getId());
             modelAndView.addObject("name", category.getName());
             modelAndView.addObject("details", category.getDetails());
@@ -67,13 +62,21 @@ public class CategoryController {
             logger.debug(String.format("Find category by id: %s", category));
             logger.debug(String.format("Parent: %s", parent));
 
-        } catch (Exception e) {
-            logger.debug(String.format("Cant load category by id. Reason: %s", e.getMessage()));
-        }
+        } else
+            logger.debug(String.format("Cant load category by id: %d", id));
 
         return modelAndView;
     }
 
+    /**
+     * Функция сохранения/обновления записи Category
+     * @param id
+     * @param parentId
+     * @param name
+     * @param type
+     * @param details
+     * @return
+     */
     @RequestMapping(value = "/page-category/save", method = RequestMethod.POST)
     public String saveCategory(@RequestParam(value = "id", required = false) Integer id,
                                @RequestParam(value = "parentId") Integer parentId,
@@ -81,7 +84,7 @@ public class CategoryController {
                                @RequestParam(value = "type") Byte type,
                                @RequestParam(value = "details") String details){
         logger.debug(String.format("Function %s", "saveCategory()"));
-        parentId = parentId == null ? 0 : parentId;
+
         logger.debug(String.format("Params: " +
                 "id: %s," +
                 "parentId: %s," +
@@ -89,15 +92,13 @@ public class CategoryController {
                 "type: %s," +
                 "details: %s", id, parentId, name, type, details));
 
-        Category category;
-        if (id == null){
-            logger.debug(String.format("RequestParam 'id' is not found, creating new Category"));
+        //TODO: refactoring to JsonAnswer
+        Category category = categoryService.getById(id);
+        if (category == null){
+            logger.debug(String.format("Not found Category, id: %d", id));
             category = new Category();
         } else {
-            logger.debug(String.format("RequestParam 'id'=%d", id));
-            category = categoryService.getById(id);
             logger.debug(String.format("Category=%s", category));
-            //TODO: security and NPE;
         }
 
         category.setName(name);
@@ -116,28 +117,28 @@ public class CategoryController {
         return "index";
     }
 
+    /**
+     * Функция удаления записи category
+     * @param id
+     * @return
+     */
     @RequestMapping(value = "/page-category/delete",method = RequestMethod.POST)
     public @ResponseBody JsonAnswer deleteCategory(@RequestParam(value = "id") Integer id) {
         logger.debug(String.format("Function %s", "deleteCategory()"));
 
-        JsonAnswer jsonAnswer = new JsonAnswer();
+        Category category = categoryService.getById(id);
+        JsonAnswer response = null;
+        if (category != null) {
+            response = categoryService.delete(category);
 
-        //TODO: check available Amount
-        if (amountService.getByCategory(categoryService.getById(id)).size() > 0) {
-            logger.debug(String.format("Deleting is aborted. Found available Amounts!"));
+            logger.debug(String.format("Result: %s", response.getMessage()));
+        } else {
+            logger.debug(String.format("Not found Category, id: %d", id));
 
-            jsonAnswer.setType(AnswerType.ERROR);
-            jsonAnswer.setMessage("Deleting is aborted. Found available Amounts!");
-
-            return jsonAnswer;
+            response.setType(AnswerType.ERROR);
+            response.setMessage(String.format("Not found Category, id: %d", id));
         }
 
-        logger.debug(String.format("Category for deleting: %s", categoryService.getById(id)));
-
-        String result = categoryService.delete(id);
-        jsonAnswer.setType(AnswerType.SUCCESS);
-        jsonAnswer.setMessage(result);
-
-        return jsonAnswer;
+        return response;
     }
 }

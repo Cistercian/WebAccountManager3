@@ -29,6 +29,11 @@ public class DataController {
     @Autowired
     private ProductService productService;
 
+    /**
+     * Функция прорисовки страницы page-data с произвольным содержимым
+     * @param className
+     * @return
+     */
     @RequestMapping(value = "/page-data/{class}", method = RequestMethod.GET)
     public ModelAndView displayPageData(@PathVariable("class") String className){
         ModelAndView modelAndView = new ModelAndView("/data/page-data");

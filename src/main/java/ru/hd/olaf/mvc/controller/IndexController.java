@@ -7,12 +7,11 @@ import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import ru.hd.olaf.entities.Amount;
 import ru.hd.olaf.entities.Category;
 import ru.hd.olaf.mvc.service.AmountService;
 import ru.hd.olaf.mvc.service.CategoryService;
 import ru.hd.olaf.mvc.service.ReportService;
-import ru.hd.olaf.util.DataPeriod;
+import ru.hd.olaf.util.DatePeriod;
 import ru.hd.olaf.util.json.BarEntity;
 
 import java.math.BigDecimal;
@@ -29,38 +28,42 @@ public class IndexController {
     private CategoryService categoryService;
     @Autowired
     private AmountService amountService;
-    @Autowired
-    private ReportService reportService;
 
     private static final Logger logger = LoggerFactory.getLogger(IndexController.class);
 
+    /**
+     * Функция отрисовки index.html
+     * @return
+     */
     @RequestMapping(value = {"", "/", "/index"}, method = RequestMethod.GET)
-    public ModelAndView getViewIndex(){
+    public ModelAndView getViewIndex() {
         logger.debug(String.format("Function %s", "getViewIndex()"));
+
         ModelAndView modelAndView = new ModelAndView("index");
 
-        //TODO: refactoring to BarEntity?
-        LocalDate today = LocalDate.now();
-        LocalDate after = LocalDate.of(today.getYear(), today.now().getMonth(), 1);
-        Map<Category, BigDecimal> categories = categoryService.getParentsWithTotalSum(after, today.plusDays(1));
+        List<BarEntity> parentsCategories = new ArrayList<BarEntity>();
 
-        modelAndView.addObject("categories", categories);
+        parentsCategories.addAll(getParentsCategories(DatePeriod.MONTH.toString()));
 
-        //get total sum income and expense
+        logger.debug(String.format("data for injecting:"));
+        logList(parentsCategories);
+
+        modelAndView.addObject("categories", parentsCategories);
+
+        //Получение суммарных данных
         BigDecimal sumIncome = new BigDecimal("0");
         BigDecimal maxIncome = new BigDecimal("0");
 
         BigDecimal sumExpense = new BigDecimal("0");
         BigDecimal maxExpense = new BigDecimal("0");
 
-        for (Map.Entry<Category, BigDecimal> entry : categories.entrySet()){
-            //if current category is income entry
-            if (entry.getKey().getType() == 0) {
-                sumIncome = sumIncome.add(entry.getValue());
-                maxIncome = maxIncome.compareTo(entry.getValue()) > 0 ? maxIncome : entry.getValue();
+        for (BarEntity barEntity : parentsCategories) {
+            if ("CategoryIncome".equalsIgnoreCase(barEntity.getType())) {
+                sumIncome = sumIncome.add(barEntity.getSum());
+                maxIncome = maxIncome.compareTo(barEntity.getSum()) > 0 ? maxIncome : barEntity.getSum();
             } else {
-                sumExpense = sumExpense.add(entry.getValue());
-                maxExpense = maxExpense.compareTo(entry.getValue()) > 0 ? maxExpense : entry.getValue();
+                sumExpense = sumExpense.add(barEntity.getSum());
+                maxExpense = maxExpense.compareTo(barEntity.getSum()) > 0 ? maxExpense : barEntity.getSum();
             }
         }
 
@@ -69,57 +72,103 @@ public class IndexController {
         modelAndView.addObject("maxIncome", maxIncome);
         modelAndView.addObject("maxExpense", maxExpense);
 
-        //Calendar today = Calendar.getInstance();
-        //SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-
-        modelAndView.addObject("curDate", today);
+        modelAndView.addObject("curDate", LocalDate.now());
 
         logger.debug(String.format("Data for injecting: sumIncome: %s, sumExpense: %s, curDate: %s",
-                sumIncome.toString(), sumExpense.toString(), today));
+                sumIncome.toString(), sumExpense.toString(), LocalDate.now()));
 
         return modelAndView;
     }
 
-    @RequestMapping(value = "getParentsWithTotalSum", method = RequestMethod.GET)
-    public @ResponseBody List<BarEntity> getParentsWithTotalSum(@RequestParam(value = "period") String period){
-        logger.debug(String.format("Function %s", "getParentsWithTotalSum()"));
+    /**
+     * Функция возврата json данных для прорисовки прогресс баров на главной странице по корневым категориям доход/расход
+     * с сортировкой по типу (CategoryIncome\CategoryExpense) и сумме по убыванию
+     * @param period - период, по которому выводим данные (see DatePeriod)
+     * @return
+     */
+    @RequestMapping(value = "getParentsCategories", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<BarEntity> getParentsCategories(@RequestParam(value = "period") String period) {
+        logger.debug(String.format("Function %s", "getParentsCategories()"));
 
         LocalDate today = LocalDate.now();
-
         LocalDate after = getAfterDate(period, today);
 
+        List<BarEntity> parentsCategories = categoryService.getBarEntityOfSubCategories(null, after.minusDays(1), today.plusDays(1));
 
-        List<BarEntity> barEntities = categoryService.getCategoriesSum(null, after.minusDays(1), today.plusDays(1));
-
-        Collections.sort(barEntities, new Comparator<BarEntity>() {
+        Collections.sort(parentsCategories, new Comparator<BarEntity>() {
             public int compare(BarEntity o1, BarEntity o2) {
                 int result = o1.getType().compareTo(o2.getType());
-                if (result ==0)
+                if (result == 0)
                     result = o2.getSum().compareTo(o1.getSum());
 
                 return result;
             }
         });
 
-        logger.debug(String.format("sorted List:"));
-        for (BarEntity barEntity : barEntities)
-            logger.debug(String.format("%s", barEntity));
+        logger.debug(String.format("data for injecting:"));
+        logList(parentsCategories);
 
-        return barEntities;
+        return parentsCategories;
     }
 
-    private LocalDate getAfterDate(@RequestParam(value = "period") String period, LocalDate today) {
-        DataPeriod dataPeriod = null;
+
+    @RequestMapping(value = "/getContentByCategoryId", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<BarEntity> getCategoryContentByCategoryId(@RequestParam(value = "categoryId") Integer categoryId,
+                                                   @RequestParam(value = "period") String period) {
+        logger.debug(String.format("Function %s, id: %d", "getCategoryContentByCategoryId", categoryId));
+
+        List<BarEntity> categoryContent = new ArrayList<BarEntity>();
+
+        Category category = categoryService.getById(categoryId);
+
+        //TODO: npe, security
+
+        LocalDate today = LocalDate.now();
+        LocalDate after = getAfterDate(period, today);
+
+        //данные по дочерним категориям
+        categoryContent.addAll(categoryService.getBarEntityOfSubCategories(category, after.minusDays(1),
+                today.plusDays(1)));
+        //данные по товарным группам(amounts с группировкой по product)
+        categoryContent.addAll(amountService.getBarEntitiesByCategory(category, after.minusDays(1),
+                today.plusDays(1)));
+
+        //сортировка
+        Collections.sort(categoryContent, new Comparator<BarEntity>() {
+            public int compare(BarEntity o1, BarEntity o2) {
+                return o2.getSum().compareTo(o1.getSum());
+            }
+        });
+
+        logger.debug(String.format("data for injecting:"));
+        logList(categoryContent);
+
+        return categoryContent;
+    }
+
+    /**
+     * Функция парсинга переданного в запросе периода (see DatePeriod)
+     *
+     * @param period see DatePeriod
+     * @param today LocalDate
+     * @return LocalDate value
+     */
+    private LocalDate getAfterDate(String period, LocalDate today) {
+        DatePeriod datePeriod = null;
         try {
-            dataPeriod = DataPeriod.valueOf(period.toUpperCase());
-            logger.debug(String.format("Period: %s", dataPeriod));
+            datePeriod = DatePeriod.valueOf(period.toUpperCase());
+            logger.debug(String.format("Period: %s", datePeriod));
         } catch (IllegalArgumentException e) {
-            dataPeriod = DataPeriod.MONTH;
-            logger.debug(String.format("Cant parsed param Period. Request: %s, using default value: %s", period, dataPeriod));
+            datePeriod = DatePeriod.MONTH;
+            logger.debug(String.format("Cant parsed param Period. Request: %s, using default value: %s", period, datePeriod));
         }
 
         LocalDate after = null;
-        switch (dataPeriod){
+        switch (datePeriod) {
             case DAY:
                 after = today;
                 break;
@@ -129,6 +178,7 @@ public class IndexController {
             case ALL:
                 after = LocalDate.MIN;
                 break;
+            case MONTH:
             default:
                 after = today.minusDays(today.getDayOfMonth());
                 break;
@@ -136,36 +186,9 @@ public class IndexController {
         return after;
     }
 
-    //TODO: depricate?
-    @RequestMapping(value = "/getAmountsByCategoryId", params = {"categoryId"}, method = RequestMethod.GET)
-    public
-    @ResponseBody
-    List<Amount> getAmountsByCategoryId(@RequestParam(value = "categoryId") Integer categoryId) {
-        logger.debug(String.format("Function %s", "getAmountsByCategoryId"));
-        Category category = categoryService.getById(categoryId);
-
-        List<Amount> amounts = amountService.getByCategory(category);
-        printData(amounts);
-
-        return amounts;
-    }
-
-    @RequestMapping(value = "/getContentByCategoryId", method = RequestMethod.GET)
-    public
-    @ResponseBody
-    List<BarEntity> getCategoryContentByCategoryId(@RequestParam(value = "categoryId") Integer categoryId,
-                                                   @RequestParam(value = "period") String period){
-        logger.debug(String.format("Function %s, id: %d", "getCategoryContentByCategoryId", categoryId));
-
-        LocalDate today = LocalDate.now();
-        LocalDate after = getAfterDate(period, today);
-
-        return reportService.getCategoryContentById(categoryId, after.minusDays(1), today.plusDays(1));
-    }
-
-    private <T> void printData(List<T> list) {
+    private <T> void logList(List<T> list) {
         for (T T : list) {
-            System.out.println(T);
+            logger.debug(String.format("%s", T));
         }
     }
 

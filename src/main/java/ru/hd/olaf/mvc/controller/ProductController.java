@@ -12,6 +12,7 @@ import ru.hd.olaf.entities.Amount;
 import ru.hd.olaf.entities.Product;
 import ru.hd.olaf.mvc.service.AmountService;
 import ru.hd.olaf.mvc.service.ProductService;
+import ru.hd.olaf.mvc.service.SecurityService;
 
 import java.util.List;
 
@@ -25,6 +26,8 @@ public class ProductController {
     private ProductService productService;
     @Autowired
     private AmountService amountService;
+    @Autowired
+    private SecurityService securityService;
 
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
@@ -32,11 +35,15 @@ public class ProductController {
     public ModelAndView displayPageProduct(@PathVariable("id") Integer id) {
         logger.debug(String.format("Function %s", "displayPageProduct()"));
 
-        Product product = productService.getById(id);
-        List<Amount> amounts = amountService.getByProduct(product);
         ModelAndView modelAndView = new ModelAndView("/data/page-product");
 
-        modelAndView.addObject("amounts", amounts);
+        if (id != null) {
+            Product product = productService.getById(id);
+
+            List<Amount> amounts = amountService.getByProduct(product);
+
+            modelAndView.addObject("amounts", amounts);
+        }
 
         return modelAndView;
     }
