@@ -23,7 +23,8 @@
                 type: "GET",
                 data: {
                     'categoryId': categoryId,
-                    'period' : $('#btnPeriod').val()
+                    'period' : $('#btnPeriod').val(),
+                    'countDays' : $('#countDaysPeriod').val()
                 },
                 dataType: 'json',
                 success: function (data) {
@@ -210,11 +211,25 @@
         $('#btnPeriod').val(period);
         $('#btnPeriod').text($('#' + period).text());
 
+        if (period == 'custom') {
+            //предустановка значения для автоматического обновления данных
+            if ($('#countDaysPeriod').val() == "")
+                $('#countDaysPeriod').val('14');
+
+            $('#countDaysPeriod').show();
+            $('#btnRefresh').show();
+        } else {
+            $('#countDaysPeriod').val('');
+            $('#countDaysPeriod').hide();
+            $('#btnRefresh').hide();
+        }
+
         $.ajax({
             url: 'http://localhost:8080/getParentsCategories',
             type: "GET",
             data: {
-                'period': period
+                'period': period,
+                'countDays': $('#countDaysPeriod').val()
             },
             dataType: 'json',
             success: function (data) {
@@ -411,24 +426,40 @@
             <div class="col-sm-8">
                 <h2><spring:message code="label.index.categories.title" /></h2>
             </div>
-            <div class="col-sm-6">
+            <div class="col-sm-4">
                 <spring:message code="label.index.categories.period.default" var="periodDefault" />
                 <button id="btnPeriod" class="btn-default btn-lg btn-block dropdown-toggle"
                         data-toggle="dropdown" value="month">
                     ${periodDefault}
                 </button>
                 <ul id="dropdownPeriods" class="dropdown-menu">
-                    <li><a id="day" onclick="selectPeriod('day');">За сегодня</a>
+                    <li><a id="day" onclick="selectPeriod('day');">
+                        <spring:message code="label.index.categories.period.today" /></a>
                     </li>
-                    <li><a id="week" onclick="selectPeriod('week');">За текущую неделю</a>
+                    <li><a id="week" onclick="selectPeriod('week');">
+                        <spring:message code="label.index.categories.period.week" /></a>
                     </li>
-                    <li><a id="month" onclick="selectPeriod('month');">За текущий месяц</a>
+                    <li><a id="month" onclick="selectPeriod('month');">
+                        <spring:message code="label.index.categories.period.month" /></a>
                     </li>
-                    <li><a id="allTimes" onclick="selectPeriod('allTimes');">За все время</a>
+                    <li><a id="all" onclick="selectPeriod('all');">
+                        <spring:message code="label.index.categories.period.all" /></a>
                     </li>
-                    <li><a id="period" onclick="selectPeriod('period');">Произвольный интервал</a>
+                    <li><a id="custom" onclick="selectPeriod('custom');">
+                        <spring:message code="label.index.categories.period.custom" /></a>
                     </li>
                 </ul>
+            </div>
+            <div class="col-sm-4 col-sm-offset-4">
+                <button id="btnRefresh" class="btn-default btn-lg btn-block" style="display: none;"
+                    onclick="selectPeriod($('#btnPeriod').val())">
+                    <spring:message code="label.index.refresh" />
+                </button>
+            </div>
+            <div class="col-sm-4">
+                <input id="countDaysPeriod" type="number" class="form-control input-lg" name="countDaysPeriod"
+                       path="countDaysPeriod" placeholder="Кол-во дней" data-rule="number"
+                       value="" style="display: none;"/>
             </div>
             <div class="col-sm-12" id="categoryBars">
                 <div id="dropDownCategoryBarsIncome">

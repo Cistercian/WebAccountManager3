@@ -218,13 +218,14 @@
                                         "onclick='location.href=\"/page-amount.html\";'>" +
                                         "<spring:message code="label.page-amount.modal.btnYes" />" +
                                         "</button>" +
-                                        "<button type='button' class='btn btn-primary' " +
-                                        "onclick='location.href=\"/index.html#home\";'>" +
+                                        "<button id='dbtModalYes' type='button' class='btn btn-primary' " +
+                                        "onclick='location.href=\"/index.html#home\";' autofocus>" +
                                         "<spring:message code="label.page-amount.modal.btnNo" />" +
                                         "</button>" +
                                         ""
                                 );
                                 $('#modal').modal('show');
+                                document.getElementById("dbtModalYes").focus();
                             };
                             function Delete(){
                                 ClearModalPanel();
