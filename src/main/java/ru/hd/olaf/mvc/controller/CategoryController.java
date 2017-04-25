@@ -7,8 +7,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import ru.hd.olaf.entities.Category;
-import ru.hd.olaf.util.json.AnswerType;
-import ru.hd.olaf.util.json.JsonAnswer;
+import ru.hd.olaf.exception.AuthException;
+import ru.hd.olaf.exception.CrudException;
+import ru.hd.olaf.util.json.ResponseType;
+import ru.hd.olaf.util.json.JsonResponse;
 import ru.hd.olaf.mvc.service.AmountService;
 import ru.hd.olaf.mvc.service.CategoryService;
 import ru.hd.olaf.mvc.service.SecurityService;
@@ -35,6 +37,7 @@ public class CategoryController {
         return getViewPageCategoryById(null);
     }
 
+    //TODO: refactoring to abstract service?
     @RequestMapping(value = "/page-category/{id}", method = RequestMethod.GET)
     public ModelAndView getViewPageCategoryById(@PathVariable("id") Integer id){
         logger.debug(String.format("Function %s", "getViewPageCategoryById()"));
@@ -42,28 +45,45 @@ public class CategoryController {
         ModelAndView modelAndView = new ModelAndView("/data/page-category");
         modelAndView.addObject("categories", categoryService.getAll());
 
-        Category category = categoryService.getById(id);
-        if (category != null){
+        Category category;
 
-            modelAndView.addObject("id", category.getId());
-            modelAndView.addObject("name", category.getName());
-            modelAndView.addObject("details", category.getDetails());
+        try {
+            category = categoryService.getById(id);
+            if (category != null){
 
-            Category parent = category.getParentId();
-            if (parent != null) {
-                modelAndView.addObject("parentId", parent.getId());
-                modelAndView.addObject("parentName", parent.getName());
-            } else
-                modelAndView.addObject("parentName", "Отсутствует");
+                modelAndView.addObject("id", category.getId());
+                modelAndView.addObject("name", category.getName());
+                modelAndView.addObject("details", category.getDetails());
 
-            if (category.getType() == 0)
-                modelAndView.addObject("typeIncome", "true");
+                Category parent = category.getParentId();
+                if (parent != null) {
+                    modelAndView.addObject("parentId", parent.getId());
+                    modelAndView.addObject("parentName", parent.getName());
+                } else
+                    modelAndView.addObject("parentName", "Отсутствует");
 
-            logger.debug(String.format("Find category by id: %s", category));
-            logger.debug(String.format("Parent: %s", parent));
+                if (category.getType() == 0)
+                    modelAndView.addObject("typeIncome", "true");
 
-        } else
-            logger.debug(String.format("Cant load category by id: %d", id));
+                logger.debug(String.format("Find category by id: %s", category));
+                logger.debug(String.format("Parent: %s", parent));
+
+            } else {
+                String message = String.format("Запрошеный объект с id %d не найден", id);
+                modelAndView.addObject("response", message);
+
+                logger.debug(message);
+            }
+        } catch (AuthException e) {
+            modelAndView.addObject("response", e.getMessage());
+
+            logger.error(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            String message = String.format("Запрошенный объект с id %d не найден. \n" +
+                    "Error message: %s", id, e.getMessage());
+
+            logger.debug(message);
+        }
 
         return modelAndView;
     }
@@ -78,7 +98,7 @@ public class CategoryController {
      * @return
      */
     @RequestMapping(value = "/page-category/save", method = RequestMethod.POST)
-    public String saveCategory(@RequestParam(value = "id", required = false) Integer id,
+    public @ResponseBody JsonResponse saveCategory(@RequestParam(value = "id", required = false) Integer id,
                                @RequestParam(value = "parentId") Integer parentId,
                                @RequestParam(value = "name") String name,
                                @RequestParam(value = "type") Byte type,
@@ -92,8 +112,20 @@ public class CategoryController {
                 "type: %s," +
                 "details: %s", id, parentId, name, type, details));
 
-        //TODO: refactoring to JsonAnswer
-        Category category = categoryService.getById(id);
+        //TODO: refactoring to JsonResponse
+        Category category;
+
+        try {
+            category = categoryService.getById(id);
+        } catch (AuthException e) {
+            logger.debug(e.getMessage());
+
+            return new JsonResponse(ResponseType.ERROR, e.getMessage());
+        } catch (IllegalArgumentException e) {
+            //так здесь может быть операция создания
+            category = null;
+        }
+
         if (category == null){
             logger.debug(String.format("Not found Category, id: %d", id));
             category = new Category();
@@ -103,18 +135,37 @@ public class CategoryController {
 
         category.setName(name);
 
-        Category parent = categoryService.getById(parentId);
-        if (parent != null) {
-            category.setParentId(parent);
+        try {
+            Category parent = categoryService.getById(parentId);
+            if (parent != null) {
+                category.setParentId(parent);
+            }
+        } catch (AuthException e) {
+            logger.debug("Ошибка обработки родительской категории." + e.getMessage());
+
+            return new JsonResponse(ResponseType.ERROR, "Ошибка обработки родительской категории." + e.getMessage());
+        }  catch (IllegalArgumentException e) {
+            logger.debug("Родительская категория = null");
         }
 
         category.setType(type);
         category.setDetails(details);
         category.setUserId(securityService.findLoggedUser());
 
-        categoryService.save(category);
+        try {
+            categoryService.save(category);
+        } catch (CrudException e) {
+            String message = String.format("Возникла ошибка при сохранении данных в БД. \n" +
+                    "Error message: %s", e.getMessage());
+            logger.error(message);
 
-        return "index";
+            return new JsonResponse(ResponseType.ERROR, message);
+        }
+
+        String message = String.format("Запись успешно сохранена в БД.");
+        logger.debug(message + "\n" + category);
+
+        return new JsonResponse(ResponseType.SUCCESS, message);
     }
 
     /**
@@ -123,21 +174,38 @@ public class CategoryController {
      * @return
      */
     @RequestMapping(value = "/page-category/delete",method = RequestMethod.POST)
-    public @ResponseBody JsonAnswer deleteCategory(@RequestParam(value = "id") Integer id) {
+    public @ResponseBody
+    JsonResponse deleteCategory(@RequestParam(value = "id") Integer id) {
         logger.debug(String.format("Function %s", "deleteCategory()"));
 
-        Category category = categoryService.getById(id);
-        JsonAnswer response = null;
-        if (category != null) {
-            response = categoryService.delete(category);
-
-            logger.debug(String.format("Result: %s", response.getMessage()));
-        } else {
-            logger.debug(String.format("Not found Category, id: %d", id));
-
-            response.setType(AnswerType.ERROR);
-            response.setMessage(String.format("Not found Category, id: %d", id));
+        Category category = null;
+        try {
+            category = categoryService.getById(id);
+        } catch (AuthException e) {
+            return new JsonResponse(ResponseType.ERROR, e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return new JsonResponse(ResponseType.ERROR, String.format("Ошибка: передан пустой параметр id"));
         }
+
+        JsonResponse response = new JsonResponse();
+        if (category != null) {
+
+            logger.debug(String.format("Delete category: %s", category));
+
+            try {
+                response = categoryService.delete(category);
+            } catch (CrudException e) {
+                String message = String.format("Произошла неизвестная ошибка: %s", e.getCause());
+                response.setType(ResponseType.ERROR);
+                response.setMessage(message);
+            }
+
+        } else {
+            response.setType(ResponseType.ERROR);
+            response.setMessage(String.format("Отмена операции: запись с id %d не найдена!", id));
+        }
+
+        logger.debug(String.format("Result: %s", response.getMessage()));
 
         return response;
     }

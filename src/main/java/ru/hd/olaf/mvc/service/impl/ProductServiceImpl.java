@@ -37,7 +37,7 @@ public class ProductServiceImpl implements ProductService {
     public Product getById(Integer id) {
         if (id == null) return null;
 
-        Product product = productRepository.getOne(id);
+        Product product = productRepository.findOne(id);
         if (product == null) return null;
         return product.getUserId().equals(securityService.findLoggedUser()) ? product : null;
     }

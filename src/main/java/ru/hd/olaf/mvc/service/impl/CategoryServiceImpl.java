@@ -1,20 +1,20 @@
 package ru.hd.olaf.mvc.service.impl;
 
-import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.hd.olaf.entities.Amount;
 import ru.hd.olaf.entities.Category;
+import ru.hd.olaf.exception.AuthException;
+import ru.hd.olaf.exception.CrudException;
 import ru.hd.olaf.mvc.repository.CategoryRepository;
 import ru.hd.olaf.mvc.service.AmountService;
 import ru.hd.olaf.mvc.service.CategoryService;
 import ru.hd.olaf.mvc.service.SecurityService;
-import ru.hd.olaf.util.MapComparatorByValue;
-import ru.hd.olaf.util.json.AnswerType;
+import ru.hd.olaf.util.json.ResponseType;
 import ru.hd.olaf.util.json.BarEntity;
-import ru.hd.olaf.util.json.JsonAnswer;
+import ru.hd.olaf.util.json.JsonResponse;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -36,15 +36,6 @@ public class CategoryServiceImpl implements CategoryService {
     private static final Logger logger = LoggerFactory.getLogger(CategoryServiceImpl.class);
 
     /**
-     * Функция создания/обновления записи
-     * @param category
-     * @return
-     */
-    public Category save(Category category) {
-        return categoryRepository.save(category);
-    }
-
-    /**
      * Функция возвращает список category  с проверкой на текущего пользователя
      * @return
      */
@@ -63,20 +54,6 @@ public class CategoryServiceImpl implements CategoryService {
         logger.debug(String.format("Cerrent user:", securityService.findLoggedUser()));
 
         return categoryRepository.findByUserId(securityService.findLoggedUser());
-    }
-
-    /**
-     * Функция возвращения записи category с проверкой на текущего пользователя
-     * @param id
-     * @return
-     */
-    public Category getById(Integer id) {
-        if (id == null) return null;
-
-        Category category = categoryRepository.findOne(id);
-        if (category == null) return null;
-
-        return category.getUserId().equals(securityService.findLoggedUser()) ? category : null;
     }
 
     /**
@@ -149,28 +126,58 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     /**
+     * Функция возвращения записи category с проверкой на текущего пользователя
+     * @param id
+     * @return
+     */
+    public Category getById(Integer id) throws AuthException, IllegalArgumentException{
+        if (id == null) throw new IllegalArgumentException();
+
+        Category category = categoryRepository.findOne(id);
+        if (category == null) return null;
+
+        if (!category.getUserId().equals(securityService.findLoggedUser()))
+            throw new AuthException(String.format("Запрошенный объект с id %d Вам не принадлежит.", id));
+
+        return category;
+    }
+
+    /**
+     * Функция создания/обновления записи
+     * @param category
+     * @return
+     */
+    public Category save(Category category) throws CrudException{
+        Category entity;
+
+        try {
+            entity = categoryRepository.save(category);
+        } catch (Exception e) {
+            throw new CrudException(e.getMessage());
+        }
+
+        return entity;
+    }
+
+    /**
      * Функция удаления записи Category
      * @param category
      * @return
      */
-    public JsonAnswer delete(Category category) {
+    public JsonResponse delete(Category category) throws CrudException{
 
         //Проверка существуют ли записи amount с данной категорией
-        if (amountService.getByCategory(category).size() > 0) {
-            logger.debug(String.format("Deleting is aborted. Found available Amounts!"));
-
-            String message = String.format("Deleting is aborted. Found exists Amounts!");
-            return new JsonAnswer(AnswerType.ERROR, message);
+        if (category.getAmounts().size() > 0) {
+            String message = String.format("Удаление невозможно: к данной категории привязаны " +
+                    "один или несколько записей таблицы amounts");
+            throw new CrudException(message);
         }
 
-        if (!category.getUserId().equals(securityService.findLoggedUser()))
-            return new JsonAnswer(AnswerType.ERROR, "auth error!");
-        //TODO: catch exceptions
         try {
             categoryRepository.delete(category);
-            return new JsonAnswer(AnswerType.SUCCESS, "Deleting complite");
+            return new JsonResponse(ResponseType.SUCCESS, "Удаление успешно завершено.");
         } catch (Exception e) {
-            return new JsonAnswer(AnswerType.ERROR, e.getMessage());
+            throw new CrudException(e.getMessage());
         }
     }
 }

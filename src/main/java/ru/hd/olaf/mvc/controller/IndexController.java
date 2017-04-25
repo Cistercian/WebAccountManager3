@@ -8,9 +8,9 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import ru.hd.olaf.entities.Category;
+import ru.hd.olaf.exception.AuthException;
 import ru.hd.olaf.mvc.service.AmountService;
 import ru.hd.olaf.mvc.service.CategoryService;
-import ru.hd.olaf.mvc.service.ReportService;
 import ru.hd.olaf.util.DatePeriod;
 import ru.hd.olaf.util.json.BarEntity;
 
@@ -123,9 +123,13 @@ public class IndexController {
 
         List<BarEntity> categoryContent = new ArrayList<BarEntity>();
 
-        Category category = categoryService.getById(categoryId);
-
-        //TODO: npe, security
+        Category category = null;
+        try {
+            category = categoryService.getById(categoryId);
+        } catch (AuthException e) {
+            //TODO: modal?
+            //e.printStackTrace();
+        }
 
         LocalDate today = LocalDate.now();
         LocalDate after = getAfterDate(period, today);

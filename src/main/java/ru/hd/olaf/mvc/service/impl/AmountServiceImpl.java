@@ -6,18 +6,22 @@ import org.springframework.stereotype.Service;
 import ru.hd.olaf.entities.Amount;
 import ru.hd.olaf.entities.Category;
 import ru.hd.olaf.entities.Product;
+import ru.hd.olaf.exception.AuthException;
+import ru.hd.olaf.exception.CrudException;
 import ru.hd.olaf.mvc.repository.AmountRepository;
 import ru.hd.olaf.mvc.service.AmountService;
-import ru.hd.olaf.mvc.service.CategoryService;
 import ru.hd.olaf.mvc.service.ProductService;
 import ru.hd.olaf.mvc.service.SecurityService;
-import ru.hd.olaf.util.json.AnswerType;
+import ru.hd.olaf.util.json.ResponseType;
 import ru.hd.olaf.util.json.BarEntity;
-import ru.hd.olaf.util.json.JsonAnswer;
+import ru.hd.olaf.util.json.JsonResponse;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * Created by Olaf on 13.04.2017.
@@ -31,15 +35,6 @@ public class AmountServiceImpl implements AmountService {
     private ProductService productService;
     @Autowired
     private SecurityService securityService;
-
-    /**
-     * Функция сохраняет(обновляет) запись amount
-     * @param amount
-     * @return
-     */
-    public Amount save(Amount amount) {
-        return amountRepository.save(amount);
-    }
 
     /**
      * Функция возвращает список amount с проверкой на текущего пользователя
@@ -149,13 +144,33 @@ public class AmountServiceImpl implements AmountService {
      * @param id
      * @return
      */
-    public Amount getById(Integer id) {
-        if (id == null) return null;
+    public Amount getById(Integer id) throws AuthException, IllegalArgumentException{
+        if (id == null) throw new IllegalArgumentException();
 
         Amount amount = amountRepository.findOne(id);
         if (amount == null) return null;
-        
-        return amount.getUserId().equals(securityService.findLoggedUser()) ? amount : null;
+
+        if (!amount.getUserId().equals(securityService.findLoggedUser()))
+            throw new AuthException(String.format("Запрошенный объект с id %d Вам не принадлежит.", id));
+
+        return amount;
+    }
+
+    /**
+     * Функция сохраняет(обновляет) запись amount
+     * @param amount
+     * @return
+     */
+    public Amount save(Amount amount) throws CrudException{
+        Amount entity = null;
+
+        try {
+            entity = amountRepository.save(amount);
+        } catch (Exception e) {
+            throw new CrudException(e.getMessage());
+        }
+
+        return entity;
     }
 
     /**
@@ -163,15 +178,12 @@ public class AmountServiceImpl implements AmountService {
      * @param amount
      * @return
      */
-    public JsonAnswer delete(Amount amount) {
-        if (!amount.getUserId().equals(securityService.findLoggedUser()))
-            return new JsonAnswer(AnswerType.ERROR, "auth error!");
-        //TODO: catch exceptions
+    public JsonResponse delete(Amount amount) throws CrudException {
         try {
             amountRepository.delete(amount.getId());
-            return new JsonAnswer(AnswerType.SUCCESS, "Deleteing complite!");
+            return new JsonResponse(ResponseType.SUCCESS, "Удаление успешно завершено.");
         } catch (Exception e) {
-            return new JsonAnswer(AnswerType.ERROR, e.getMessage());
+            throw new CrudException(e.getMessage());
         }
     }
 }

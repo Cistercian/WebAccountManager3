@@ -18,6 +18,12 @@
             headers: {'X-CSRF-TOKEN': document.getElementById('_csrf_token').value}
         });
 
+        //показываем модальное окно при получении ошибки в момент загрузки страницы
+        if ($('#response').val() != '') {
+            displayError('error', $('#response').val());
+        }
+
+        //быстрый поиск в выпадающем списке
         $('#productName').typeahead({
             source: function (query, process) {
                 var $products=new Array;
@@ -49,6 +55,35 @@
         $('#btnCategories').val(categoryId);
         $('#btnCategories').append("\<span class=\"caret\">\<\/span>");
     };
+    function displayError(type, message, Url) {
+        ClearModalPanel();
+        $('#modalBody').append(
+                "<h4><strong>" + message + "</strong></h4>"
+        );
+
+        var onclick;
+        if (type == 'SUCCESS') {
+            onclick = "$(\"#response\").val(\"\"); location.href=\"" + Url + "\";";
+            //alert(onclick);
+        } else {
+            onclick = "$(\"#response\").val(\"\"); return false;";
+        }
+        $('#modalFooter').append(
+                "<button type='button' class='btn btn-default' data-dismiss='modal' " +
+                "onclick='" + onclick + "'>" +
+                "Ok" +
+                "</button>"
+        );
+        $('#modal').modal('show');
+    }
+    function ClearModalPanel(){
+        $('[id^="modalBody"]').each(function () {
+            $(this).empty();
+        });
+        $('[id^="modalFooter"]').each(function () {
+            $(this).empty();
+        });
+    }
 </script>
 
 <!-- Modal Panel -->
@@ -75,6 +110,9 @@
         <div class="form-group">
             <input id="_csrf_token" type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
             <input id="id" type="hidden"  name="id" value="${id}"/>
+
+            <textarea id="response" name="response" style="display: none;">${response}</textarea>
+
             <section id='sectionAmount'>
                 <div class='page-header'>
                     <h2><spring:message code="label.page-amount.title" /></h2>
@@ -196,36 +234,20 @@
                                     'name': $('#name').val(),
                                     'price': $('#price').val(),
                                     'date': $('#date').val(),
-                                    'details': $('#details').val(),
-                                    'submitAmmount': '' //TODO: ??
+                                    'details': $('#details').val()
                                 };
                                 $.ajax({
                                     type: "POST",
                                     url: '/page-amount/save',
                                     data: data,
+                                    dataType: 'json',
                                     success: function (data) {
-                                        //                                    alert(data); TODO: modal?  charset?
+                                        var type = data.type;
+                                        var message = data.message;
+
+                                        displayError(type, message, "/page-amount/" + $('#id').val());
                                     }
                                 });
-
-                                //Modal panel
-                                ClearModalPanel();
-                                $('#modalBody').append(
-                                        "<h4><strong><spring:message code="label.page-amount.modal.textSave" /></strong></h4>"
-                                );
-                                $('#modalFooter').append(
-                                        "<button type='button' class='btn btn-default' data-dismiss='modal' " +
-                                        "onclick='location.href=\"/page-amount.html\";'>" +
-                                        "<spring:message code="label.page-amount.modal.btnYes" />" +
-                                        "</button>" +
-                                        "<button id='dbtModalYes' type='button' class='btn btn-primary' " +
-                                        "onclick='location.href=\"/index.html#home\";' autofocus>" +
-                                        "<spring:message code="label.page-amount.modal.btnNo" />" +
-                                        "</button>" +
-                                        ""
-                                );
-                                $('#modal').modal('show');
-                                document.getElementById("dbtModalYes").focus();
                             };
                             function Delete(){
                                 ClearModalPanel();
@@ -247,38 +269,17 @@
                             };
                             function SendDeleteQuery() {
                                 var id = $('#id').val();
-                                if (id != '') {
-                                    $.ajax({
-                                        type: "POST",
-                                        url: '/page-amount/delete',
-                                        data: {id},
-                                        success: function (data) {
-                                            location.href="/index.html";
-                                        }
-                                    });
-                                } else {
-                                    ShowError('Ошибка удаления: не найдено поле id записи.');
-                                }
-                            };
-                            function ClearModalPanel(){
-                                $('[id^="modalBody"]').each(function () {
-                                    $(this).empty();
+                                $.ajax({
+                                    type: "POST",
+                                    url: '/page-amount/delete',
+                                    data: {id},
+                                    success: function (data) {
+                                        var type = data.type;
+                                        var message = data.message;
+
+                                        displayError(type, message, "/index");
+                                    }
                                 });
-                                $('[id^="modalFooter"]').each(function () {
-                                    $(this).empty();
-                                });
-                            }
-                            function ShowError(message){
-                                ClearModalPanel();
-                                $('#modalBody').append(
-                                        "<h4><strong>" + message + "</strong></h4>"
-                                );
-                                $('#modalFooter').append(
-                                        "<button type='button' class='btn btn-default' data-dismiss='modal' >" +
-                                        "Ok" +
-                                        "</button>"
-                                );
-                                $('#modal').modal('show');
                             };
                         </script>
                     </div>
