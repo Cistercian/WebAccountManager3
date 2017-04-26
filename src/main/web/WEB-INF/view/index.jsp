@@ -42,7 +42,7 @@
                         idBarElem = 'modalDropDown';
                         idSumElem = 'categoryBarSum' + categoryId;
                         idNameElem = 'categoryBarName' + categoryId;
-                        idHeaderElem = 'modalHeader';
+                        idHeaderElem = 'modalCategoryBody'; //TODO:fix position
                         tagHeader = "h3";
                         tagClassProgress = "";
                         categoryName = $('#' + idNameElem).attr('value');
@@ -131,7 +131,15 @@
 
                     //показываем модальное окно
                     if (!isChildren)
-                        $('#modalCategory').modal('show');
+                        $.fancybox({
+                            'type': 'inline',
+                            'content': $('#modalCategoryBody'),
+                            'titlePosition' : 'inside',
+                            'transitionIn' : 'none',
+                            'transitionOut' : 'none',
+                            'autoSize':true,
+                            'autoDimensions': true
+                        });
                 }
             });
         }

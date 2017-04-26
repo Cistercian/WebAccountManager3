@@ -41,7 +41,39 @@
         var table = $('#amounts').DataTable({
             responsive: true
         });
+        if ($('#response').val() != '') {
+            displayError('error', $('#response').val());
+        }
     });
+    function displayError(type, message, Url) {
+        ClearModalPanel();
+        $('#modalBody').append(
+                "<h4><strong>" + message + "</strong></h4>"
+        );
+
+        var onclick;
+        if (type == 'SUCCESS') {
+            onclick = "$(\"#response\").val(\"\"); location.href=\"" + Url + "\";";
+            //alert(onclick);
+        } else {
+            onclick = "$(\"#response\").val(\"\"); return false;";
+        }
+        $('#modalFooter').append(
+                "<button type='button' class='btn btn-default' data-dismiss='modal' " +
+                "onclick='" + onclick + "'>" +
+                "Ok" +
+                "</button>"
+        );
+        $('#modal').modal('show');
+    }
+    function ClearModalPanel(){
+        $('[id^="modalBody"]').each(function () {
+            $(this).empty();
+        });
+        $('[id^="modalFooter"]').each(function () {
+            $(this).empty();
+        });
+    }
 </script>
 
 <!-- Modal Panel -->
@@ -69,6 +101,7 @@
         <div class="form-group">
             <input id="_csrf_token" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             <input id="id" type="hidden" name="id" value="${id}"/>
+            <textarea id="response" name="response" style="display: none;">${response}</textarea>
             <section id='section'>
                 <div class='page-header'>
                     <h2><spring:message code="label.page-data.title"/>

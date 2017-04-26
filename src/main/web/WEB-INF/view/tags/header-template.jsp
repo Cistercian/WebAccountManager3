@@ -25,12 +25,15 @@
     <spring:url value="/resources/css/font-awesome.css" var="fontawesome"/>
     <spring:url value="/resources/css/animate.css" var="animate"/>
     <spring:url value="/resources/css/style.css" var="style"/>
+    <!--модальное окно-->
+    <spring:url value="/resources/css/jquery.fancybox.css?v=2.1.5" var="fancyboxcss"/>
 
     <link rel="stylesheet" href="${bootstrapmin}">
     <link rel="stylesheet" href="${fontawesomemin}">
     <link rel="stylesheet" href="${fontawesome}">
     <link rel="stylesheet" href="${animate}">
     <link rel="stylesheet" href="${style}">
+    <link rel="stylesheet" href="${fancyboxcss}">
     <!-- =======================================================
         Theme Name: Anyar
         Theme URL: https://bootstrapmade.com/anyar-free-multipurpose-one-page-bootstrap-theme/
@@ -45,6 +48,9 @@
     <spring:url value="/resources/js/jquery.easing.min.js" var="jqueryeasingmin"/>
     <spring:url value="/resources/js/jquery.isotope.min.js" var="jqueryisotopemin"/>
     <spring:url value="/resources/js/functions.js" var="functions"/>
+    <!--модальное окно-->
+    <spring:url value="/resources/js/jquery.fancybox.js?v=2.1.5" var="fancybox"/>
+    <spring:url value="/resources/js/jquery.fancybox.pack.js?v=2.1.5" var="fancyboxpack"/>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="${jquery}"></script>
@@ -54,6 +60,8 @@
     <script src="${jqueryeasingmin}"></script>
     <script src="${jqueryisotopemin}"></script>
     <script src="${functions}"></script>
+    <script src="${fancybox}"></script>
+    <script src="${fancyboxpack}"></script>
     <script src="https://maps.google.com/maps/api/js?sensor=true"></script>
 
 </head>

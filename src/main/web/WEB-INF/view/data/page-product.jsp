@@ -44,8 +44,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 id="mpdalcategoryTitle" class="modal-title">
-                    <spring:message code="label.page-category.modal.title" /></h4>
+                <h4 id="mpdalcategoryTitle" class="modal-title"><spring:message code="label.page-amount.modal.title" /></h4>
             </div>
             <div id="modalBody" class="modal-body">
                 Loading data...
@@ -81,7 +80,7 @@
                         <tbody>
 
                         <c:forEach items="${amounts}" var="amount">
-                            <tr onclick="location.href='/page-amount/${amount.getId()};'">
+                            <tr onclick="location.href='/page-data/display/Amount/${amount.getId()}';">
                                 <td>${amount.getId()}</td>
                                 <td>${amount.getAmountsDate()}</td>
                                 <td>${amount.getName()}</td>
