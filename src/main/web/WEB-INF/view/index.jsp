@@ -19,7 +19,7 @@
         }
         else {
             $.ajax({
-                url: 'http://localhost:8080/getContentByCategoryId',
+                url: '/getContentByCategoryId',
                 type: "GET",
                 data: {
                     'categoryId': categoryId,
@@ -225,7 +225,7 @@
         }
 
         $.ajax({
-            url: 'http://localhost:8080/getParentsCategories',
+            url: '/getParentsCategories',
             type: "GET",
             data: {
                 'period': period,
