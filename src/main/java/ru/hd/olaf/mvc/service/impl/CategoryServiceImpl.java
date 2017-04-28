@@ -41,7 +41,7 @@ public class CategoryServiceImpl implements CategoryService {
      * @return
      */
     public List<Category> getAll() {
-        logger.debug(String.format("Function %s", "getAll()"));
+        logger.debug(LogUtil.getMethodName());
 
         return getAllByCurrentUser();
     }
@@ -51,8 +51,7 @@ public class CategoryServiceImpl implements CategoryService {
      * @return
      */
     public List<Category> getAllByCurrentUser() {
-        logger.debug(String.format("Function %s", "getAllByCurrentUser()"));
-        logger.debug(String.format("Cerrent user:", securityService.findLoggedUser()));
+        logger.debug(LogUtil.getMethodName());
 
         return categoryRepository.findByUserId(securityService.findLoggedUser());
     }
@@ -67,7 +66,7 @@ public class CategoryServiceImpl implements CategoryService {
      * @return
      */
     public List<BarEntity> getBarEntityOfSubCategories(Category parent, LocalDate after, LocalDate before) {
-        logger.debug(String.format("Function %s", "getBarEntityOfSubCategories()"));
+        logger.debug(LogUtil.getMethodName());
         logger.debug(String.format("Dates: after: %s, before %s", after.toString(), before.toString()));
 
         List<Category> categories = getByParentId(parent);
@@ -94,7 +93,7 @@ public class CategoryServiceImpl implements CategoryService {
      * @return
      */
     private BigDecimal getSumCategory(Category category, LocalDate after, LocalDate before) {
-        logger.debug(String.format("Function %s", "getSumCategory()"));
+        logger.debug(LogUtil.getMethodName());
 
         BigDecimal sum = new BigDecimal(0);
         for (Amount amount : category.getAmounts()) {
@@ -120,6 +119,7 @@ public class CategoryServiceImpl implements CategoryService {
      * @return
      */
     private List<Category> getByParentId(Category parentId) {
+        logger.debug(LogUtil.getMethodName());
         List<Category> categories =
                 categoryRepository.findByParentIdAndUserId(parentId, securityService.findLoggedUser());
 
@@ -167,8 +167,15 @@ public class CategoryServiceImpl implements CategoryService {
         try {
             category = getOne(id);
 
-            String message = String.format("Запись с id = %d найдена: %s", id, category);
-            jsonResponse.setType(ResponseType.SUCCESS);
+            String message;
+            if (category != null) {
+                message = String.format("Запись с id = %d найдена: %s", id, category);
+                jsonResponse.setType(ResponseType.SUCCESS);
+            } else {
+                message = String.format("Запись с id = %d не найдена.", id);
+                jsonResponse.setType(ResponseType.INFO);
+            }
+
             jsonResponse.setMessage(message);
         } catch (AuthException e) {
             logger.debug(e.getMessage());

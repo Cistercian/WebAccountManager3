@@ -12,6 +12,7 @@ import ru.hd.olaf.exception.AuthException;
 import ru.hd.olaf.mvc.service.AmountService;
 import ru.hd.olaf.mvc.service.CategoryService;
 import ru.hd.olaf.util.DatePeriod;
+import ru.hd.olaf.util.LogUtil;
 import ru.hd.olaf.util.json.BarEntity;
 import ru.hd.olaf.util.json.JsonResponse;
 import ru.hd.olaf.util.json.ResponseType;
@@ -20,6 +21,8 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.*;
+
+import static ru.hd.olaf.util.DatePeriod.getAfterDate;
 
 /**
  * Created by Olaf on 11.04.2017.
@@ -39,13 +42,13 @@ public class IndexController {
      */
     @RequestMapping(value = {"", "/", "/index"}, method = RequestMethod.GET)
     public ModelAndView getViewIndex() {
-        logger.debug(String.format("Function %s", "getViewIndex()"));
+        logger.debug(LogUtil.getMethodName());
 
         ModelAndView modelAndView = new ModelAndView("index");
 
         List<BarEntity> parentsCategories = new ArrayList<BarEntity>();
 
-        parentsCategories.addAll(getParentsCategories(DatePeriod.MONTH.toString()));
+        parentsCategories.addAll(getParentsCategories(DatePeriod.MONTH.toString(), null));
 
         logger.debug(String.format("data for injecting:"));
         logList(parentsCategories);
@@ -91,13 +94,16 @@ public class IndexController {
     @RequestMapping(value = "getParentsCategories", method = RequestMethod.GET)
     public
     @ResponseBody
-    List<BarEntity> getParentsCategories(@RequestParam(value = "period") String period) {
-        logger.debug(String.format("Function %s", "getParentsCategories()"));
+    List<BarEntity> getParentsCategories(@RequestParam(value = "period") String period,
+                                         @RequestParam(value = "countDays", required = false) Integer countDays) {
+        logger.debug(LogUtil.getMethodName());
 
         LocalDate today = LocalDate.now();
-        LocalDate after = getAfterDate(period, today);
+        LocalDate after = getAfterDate(period, today, countDays);
 
-        List<BarEntity> parentsCategories = categoryService.getBarEntityOfSubCategories(null, after.minusDays(1), today.plusDays(1));
+        List<BarEntity> parentsCategories = categoryService.getBarEntityOfSubCategories(null,
+                after.minusDays(1),
+                today.plusDays(1));
 
         Collections.sort(parentsCategories, new Comparator<BarEntity>() {
             public int compare(BarEntity o1, BarEntity o2) {
@@ -120,8 +126,9 @@ public class IndexController {
     public
     @ResponseBody
     List<BarEntity> getCategoryContentByCategoryId(@RequestParam(value = "categoryId") Integer categoryId,
-                                                   @RequestParam(value = "period") String period) {
-        logger.debug(String.format("Function %s, id: %d", "getCategoryContentByCategoryId", categoryId));
+                                                   @RequestParam(value = "period") String period,
+                                                   @RequestParam(value = "countDays", required = false) Integer countDays) {
+        logger.debug(LogUtil.getMethodName());
 
         List<BarEntity> categoryContent = new ArrayList<BarEntity>();
 
@@ -135,7 +142,7 @@ public class IndexController {
         }
 
         LocalDate today = LocalDate.now();
-        LocalDate after = getAfterDate(period, today);
+        LocalDate after = getAfterDate(period, today, countDays);
 
         //данные по дочерним категориям
         categoryContent.addAll(categoryService.getBarEntityOfSubCategories(category, after.minusDays(1),
@@ -155,42 +162,6 @@ public class IndexController {
         logList(categoryContent);
 
         return categoryContent;
-    }
-
-    /**
-     * Функция парсинга переданного в запросе периода (see DatePeriod)
-     *
-     * @param period see DatePeriod
-     * @param today LocalDate
-     * @return LocalDate value
-     */
-    private LocalDate getAfterDate(String period, LocalDate today) {
-        DatePeriod datePeriod = null;
-        try {
-            datePeriod = DatePeriod.valueOf(period.toUpperCase());
-            logger.debug(String.format("Period: %s", datePeriod));
-        } catch (IllegalArgumentException e) {
-            datePeriod = DatePeriod.MONTH;
-            logger.debug(String.format("Cant parsed param Period. Request: %s, using default value: %s", period, datePeriod));
-        }
-
-        LocalDate after = null;
-        switch (datePeriod) {
-            case DAY:
-                after = today;
-                break;
-            case WEEK:
-                after = today.minusDays(today.getDayOfWeek().ordinal() + 1);
-                break;
-            case ALL:
-                after = LocalDate.MIN;
-                break;
-            case MONTH:
-            default:
-                after = today.minusDays(today.getDayOfMonth());
-                break;
-        }
-        return after;
     }
 
     private <T> void logList(List<T> list) {

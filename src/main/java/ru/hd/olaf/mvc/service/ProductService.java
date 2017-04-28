@@ -1,6 +1,7 @@
 package ru.hd.olaf.mvc.service;
 
 import ru.hd.olaf.entities.Product;
+import ru.hd.olaf.util.json.JsonResponse;
 
 import java.util.List;
 
@@ -9,8 +10,8 @@ import java.util.List;
  */
 public interface ProductService {
 
+    JsonResponse getById(Integer id);
     List<Product> getAll();
-    Product getById(Integer id);
 
     List<Product> getByContainedName(String name);
     Product getByName(String name);

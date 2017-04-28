@@ -20,7 +20,7 @@
 
         //показываем модальное окно при получении ошибки в момент загрузки страницы
         if ($('#response').val() != '') {
-            displayError('error', $('#response').val());
+            displayMessage('error', $('#response').val());
         }
 
         //быстрый поиск в выпадающем списке
@@ -59,7 +59,7 @@
         $('#btnParentCategories').val(categoryId);
         $('#btnParentCategories').append("\<span class=\"caret\">\<\/span>");
     };
-    function displayError(type, message, Url) {
+    function displayMessage(type, message, Url) {
         ClearModalPanel();
         $('#modalBody').append(
                 "<h4><strong>" + message + "</strong></h4>"
@@ -98,8 +98,8 @@
                 'categoryId': $('#btnCategories').val(),
                 'productName': $('#productName').val(),
                 'name': $('#amountName').val(),
-                'price': $('#price').val(),
-                'date': $('#date').val(),
+                'price': $('#amountPrice').val(),
+                'date': $('#amountDate').val(),
                 'details': $('#amountDetails').val()
             };
         } else if (className == 'category') {
@@ -121,7 +121,7 @@
                 var type = data.type;
                 var message = data.message;
 
-                displayError(type, message, null);
+                displayMessage(type, message, "/page-data/" + className);
             }
         });
     };
@@ -156,7 +156,7 @@
                 var type = data.type;
                 var message = data.message;
 
-                displayError(type, message, "/index");
+                displayMessage(type, message, "/index");
             }
         });
     };
@@ -270,7 +270,7 @@
                             </ul>
                         </div>
                         <div class="col-md-2">
-                            <input id="price" type="number" class="form-control input-lg" name="price"
+                            <input id="amountPrice" type="number" class="form-control input-lg" name="price"
                                    path="price" placeholder="Amount price" data-rule="number"
                                    data-msg="Please enter a valid price"
                                    value='${price}'/>

@@ -5,12 +5,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.hd.olaf.entities.Amount;
 import ru.hd.olaf.entities.Product;
+import ru.hd.olaf.exception.AuthException;
 import ru.hd.olaf.mvc.controller.LoginController;
 import ru.hd.olaf.mvc.repository.ProductRepository;
 import ru.hd.olaf.mvc.service.ProductService;
 import ru.hd.olaf.mvc.service.SecurityService;
 import ru.hd.olaf.util.LogUtil;
+import ru.hd.olaf.util.json.JsonResponse;
+import ru.hd.olaf.util.json.ResponseType;
 
 import java.util.List;
 
@@ -36,19 +40,50 @@ public class ProductServiceImpl implements ProductService {
         return Lists.newArrayList(productRepository.findByUserId(securityService.findLoggedUser()));
     }
 
+    public JsonResponse getById(Integer id) {
+        logger.debug(LogUtil.getMethodName());
+
+        Product product = null;
+
+        JsonResponse jsonResponse = new JsonResponse();
+        try {
+            product = getOne(id);
+
+            String message = String.format("Запись с id = %d найдена: %s", id, product);
+            jsonResponse.setType(ResponseType.SUCCESS);
+            jsonResponse.setMessage(message);
+            jsonResponse.setEntity(product);
+        } catch (AuthException e) {
+            logger.debug(e.getMessage());
+            jsonResponse.setType(ResponseType.ERROR);
+            jsonResponse.setMessage(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            String message = "Переданный параметр id равен null.";
+            logger.debug(message);
+
+            jsonResponse.setType(ResponseType.INFO);
+            jsonResponse.setMessage(message);
+        }
+
+        return jsonResponse;
+    }
+
     /**
      * Функция возвращает product по id с проверкой на пользователя
      * @param id
      * @return
      */
-    public Product getById(Integer id) {
+    private Product getOne(Integer id) throws AuthException, IllegalArgumentException {
         logger.debug(LogUtil.getMethodName());
-
-        if (id == null) return null;
+        if (id == null) throw new IllegalArgumentException();
 
         Product product = productRepository.findOne(id);
         if (product == null) return null;
-        return product.getUserId().equals(securityService.findLoggedUser()) ? product : null;
+
+        if (!product.getUserId().equals(securityService.findLoggedUser()))
+            throw new AuthException(String.format("Запрошенный объект с id %d Вам не принадлежит.", id));
+
+        return product;
     }
 
     /**

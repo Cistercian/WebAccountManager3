@@ -24,7 +24,7 @@
                 data: {
                     'categoryId': categoryId,
                     'period' : $('#btnPeriod').val(),
-                    'countDays' : $('#countDaysPeriod').val()
+                    'countDays' : $('#countDays').val()
                 },
                 dataType: 'json',
                 success: function (data) {
@@ -83,26 +83,21 @@
                         curNumStyle = curNumStyle < 4 ? curNumStyle + 1 : 0;
 
 
-                        var link;
-                        if (classType == 'Amount') {
-                            link = "./page-amount/" + classId;
-                            classTitle = "<spring:message code='label.index.amount.className' />";
-                        }
+                        var onclick;
                         if (classType == 'Product') {
-                            link = "./page-product/" + classId;
+                            //link = "./page-product/" + classId;
+                            onclick = "getViewProduct(" + classId + ");";
                             classTitle = "<spring:message code='label.index.product.className' />";
                         }
                         if (classType.indexOf('Category') + 1) {
-                            link = "";
+                            onclick = "drawBarsByParentId(" + classId + ", true);";
                             classTitle = "<spring:message code='label.index.category.className' />";
                             classType = 'Category';
                         }
                         <!-- добавляем прогресс бар -->
                         $('#' + idBarElem).append(
                                 "<li id='progressBar" + classType + classId + "'>" +
-                                (classType == 'Category' ?
-                                "<a onclick='drawBarsByParentId(" + classId + ", true);'>" :
-                                "<a href='" + link + "'>") +
+                                "<a onclick='" + onclick + "'>" +
                                 "<strong id='barName" + classType + classId + "' value='" + className + "'>" +
                                 classTitle + ": " + className + "</strong>" +
                                 "<strong id='barSum" + classType + classId + "' class='pull-right text-muted' value='" + classSum +
@@ -135,8 +130,11 @@
                 }
             });
         }
+    };
+    function getViewProduct(productId) {
+        $('#periodForm').attr('action', '/page-product/' + productId);
+        $('#periodForm').submit();
     }
-    ;
     function ClearModal() {
         //удаляем прежние amount
         $('[id^="modalCategoryBody"]').each(function () {
@@ -149,6 +147,12 @@
                 "</div>");
     }
     function drawChartOfTypes(data, elementId) {
+        var parent = $('#' + elementId).parent();
+        parent.empty();
+        parent.append(
+                "<h2><spring:message code='label.index.chartIncomeExpense.title' /></h2>" +
+                "<canvas id='typeChart' style='height:250px'></canvas>");
+
         var pieChartCanvas = $('#' + elementId).get(0).getContext('2d');
         var pieChart = new Chart(pieChartCanvas);
         var PieData = [];
@@ -208,19 +212,21 @@
     }
     ;
     function selectPeriod(period){
+        //TODO: redudant
         $('#btnPeriod').val(period);
+        $('#period').val(period);
         $('#btnPeriod').text($('#' + period).text());
 
         if (period == 'custom') {
             //предустановка значения для автоматического обновления данных
-            if ($('#countDaysPeriod').val() == "")
-                $('#countDaysPeriod').val('14');
-
-            $('#countDaysPeriod').show();
+            if ($('#countDays').val() == "") {
+                $('#countDays').val('14');
+            }
+            $('#countDays').show();
             $('#btnRefresh').show();
         } else {
-            $('#countDaysPeriod').val('');
-            $('#countDaysPeriod').hide();
+            $('#countDays').val('');
+            $('#countDays').hide();
             $('#btnRefresh').hide();
         }
 
@@ -229,7 +235,7 @@
             type: "GET",
             data: {
                 'period': period,
-                'countDays': $('#countDaysPeriod').val()
+                'countDays': $('#countDays').val()
             },
             dataType: 'json',
             success: function (data) {
@@ -457,9 +463,15 @@
                 </button>
             </div>
             <div class="col-sm-4">
-                <input id="countDaysPeriod" type="number" class="form-control input-lg" name="countDaysPeriod"
-                       path="countDaysPeriod" placeholder="Кол-во дней" data-rule="number"
+                <%--форма для перехода на другую страницу по периоду--%>
+                <form id="periodForm" method="GET" action="/page-product/productId">
+                    <input id="period" type="hidden" name="period" value="month"/>
+                    <%--<input type="hidden" name="countDays" value=""/>--%>
+
+                <input id="countDays" type="number" class="form-control input-lg" name="countDays"
+                       path="countDays" placeholder="Кол-во дней" data-rule="number"
                        value="" style="display: none;"/>
+                </form>
             </div>
             <div class="col-sm-12" id="categoryBars">
                 <div id="dropDownCategoryBarsIncome">

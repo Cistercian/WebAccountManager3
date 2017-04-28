@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import ru.hd.olaf.entities.User;
 import ru.hd.olaf.mvc.repository.UserRepository;
 import ru.hd.olaf.mvc.service.SecurityService;
+import ru.hd.olaf.util.LogUtil;
 
 /**
  * Created by d.v.hozyashev on 18.04.2017.
@@ -31,6 +32,8 @@ public class SecurityServiceImpl implements SecurityService {
     private static final Logger logger = LoggerFactory.getLogger(SecurityServiceImpl.class);
 
     public String findLoggedUsername() {
+        logger.debug(LogUtil.getMethodName());
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         //TODO: Exception
@@ -51,17 +54,18 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     public User findLoggedUser() {
+        logger.debug(LogUtil.getMethodName());
+
         String userName = findLoggedUsername();
         if (null == userName || "anonymousUser".equalsIgnoreCase(userName)) userName = "demoUser";
-
-        logger.debug(String.format("%s(): userName = %s, context:%s",
-                "findLoggedUser", userName, SecurityContextHolder.getContext().toString()));
 
         //TODO: UserNotFoundException?
         return userRepository.findByUsername(userName);
     }
 
     public void autologin(String username, String password) {
+        logger.debug(LogUtil.getMethodName());
+
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                 new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());

@@ -73,9 +73,20 @@ public class AmountServiceImpl implements AmountService {
      * @param product
      * @return
      */
-    public List<Amount> getByProduct(Product product) {
+    public List<Amount> getByProduct(Product product, LocalDate after, LocalDate before) {
         logger.debug(LogUtil.getMethodName());
-        return amountRepository.findByProductIdAndUserId(product, securityService.findLoggedUser());
+
+        //TODO: query
+        List<Amount> amounts = new ArrayList<Amount>();
+        for (Amount amount : amountRepository.findByProductIdAndUserId(product, securityService.findLoggedUser())) {
+
+            LocalDate amountDate = amount.getLocalDate();
+            if (amountDate.isAfter(after) && amountDate.isBefore(before)) {
+                amounts.add(amount);
+            }
+        }
+
+        return amounts;
     }
 
     /**

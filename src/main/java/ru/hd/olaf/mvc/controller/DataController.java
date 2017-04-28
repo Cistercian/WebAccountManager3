@@ -173,7 +173,7 @@ public class DataController {
     public @ResponseBody JsonResponse deleteEntity(@RequestParam(value = "className") String className,
                                                    @RequestParam(value = "id") Integer id) {
         logger.debug(LogUtil.getMethodName());
-        JsonResponse response = null;
+        JsonResponse response = new JsonResponse();
 
         try {
             if (className.equalsIgnoreCase(Amount.class.getSimpleName())) {
@@ -190,7 +190,7 @@ public class DataController {
                 logger.debug("Инициализация удаления записи Category");
 
                 response = categoryService.getById(id);
-                if (response.getType() != ResponseType.SUCCESS || ) {
+                if (response.getType() != ResponseType.SUCCESS) {
                     logger.debug(response.getType() + ":" + response.getMessage());
                     return response;
                 }
@@ -276,7 +276,7 @@ public class DataController {
             return new JsonResponse(ResponseType.ERROR, message);
         }
 
-        String message = String.format("Запись успешно сохранена в БД.");
+        String message = "Запись успешно сохранена в БД.";
         logger.debug(message + "\n" + amount);
 
         return new JsonResponse(ResponseType.SUCCESS, message);
@@ -335,7 +335,7 @@ public class DataController {
             return new JsonResponse(ResponseType.ERROR, message);
         }
 
-        String message = String.format("Запись успешно сохранена в БД.");
+        String message = "Запись успешно сохранена в БД.";
         logger.debug(message + "\n" + category);
 
         return new JsonResponse(ResponseType.SUCCESS, message);
@@ -349,7 +349,10 @@ public class DataController {
      * @return заполненный ModelAndView
      */
     private ModelAndView fillViewAmount(ModelAndView modelAndView, JsonResponse response) {
+        logger.debug(LogUtil.getMethodName());
         Amount amount = (Amount) response.getEntity();
+
+        modelAndView.addObject("className", "amount");
 
         if (amount != null) {
 
@@ -370,11 +373,11 @@ public class DataController {
                 modelAndView.addObject("productId", amount.getProductId().getId());
                 modelAndView.addObject("productName", amount.getProductId().getName());
             } else {
-                logger.debug(String.format("Товарная группа не определена"));
+                logger.debug("Товарная группа не определена");
                 //TODO: Логическая ошибка данных БД?
             }
-        } else if (response.getType() == ResponseType.SUCCESS && (amount == null)){
-            String message = String.format("Запрошеный объект не найден");
+        } else if (response.getType() == ResponseType.SUCCESS){
+            String message = "Запрошеный объект не найден";
             modelAndView.addObject("response", message);
 
             logger.debug(message);
@@ -383,7 +386,6 @@ public class DataController {
             logger.debug("Инициализация пустой формы");
 
             modelAndView.addObject("date", LocalDate.now());
-            modelAndView.addObject("className", "amount");
         }
 
         return modelAndView;
@@ -397,7 +399,10 @@ public class DataController {
      * @return заполненный ModelAndView
      */
     private ModelAndView fillViewCategory(ModelAndView modelAndView, JsonResponse response) {
+        logger.debug(LogUtil.getMethodName());
         Category category = (Category) response.getEntity();
+
+        modelAndView.addObject("className", "category");
 
         if (category != null) {
             logger.debug(String.format("Обрабатываемый объект: %s", category));
@@ -413,7 +418,7 @@ public class DataController {
                 modelAndView.addObject("parentId", parent.getId());
                 modelAndView.addObject("parentName", parent.getName());
             } else {
-                logger.debug(String.format("Родительская категория отсутствует"));
+                logger.debug("Родительская категория отсутствует");
 
                 modelAndView.addObject("parentName", "Отсутствует");
             }
@@ -423,14 +428,11 @@ public class DataController {
                 modelAndView.addObject("typeIncome", "true");
 
 
-        } else if (response.getType() == ResponseType.SUCCESS && (category == null)){
-            String message = String.format("Запрошеный объект не найден");
+        } else if (response.getType() == ResponseType.INFO){
+            String message = "Запрошеный объект не найден";
             modelAndView.addObject("response", message);
 
             logger.debug(message);
-        } else {
-            //рисуем пустую форму
-            modelAndView.addObject("className", "category");
         }
 
         return modelAndView;
