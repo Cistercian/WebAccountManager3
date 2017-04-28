@@ -81,8 +81,8 @@
                             <li role="presentation"><a href="/index.html#home" class="active">Home</a></li>
                             <li role="presentation"><a href="#about">Statistics</a></li>
                             <li role="presentation"><a href="#services">Edit</a></li>
-                            <li role="presentation"><a href="/page-amount.html">Edit Amounts</a></li>
-                            <li role="presentation"><a href="/page-category.html">Edit Categories</a></li>
+                            <li role="presentation"><a href="/page-data/amount">Edit Amounts</a></li>
+                            <li role="presentation"><a href="/page-data/category">Edit Categories</a></li>
                         </ul>
                     </div>
                 </div>

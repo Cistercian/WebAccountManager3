@@ -14,6 +14,7 @@ public interface ProductService {
 
     List<Product> getByContainedName(String name);
     Product getByName(String name);
+    Product getExistedOrCreated(String productName);
 
     Product save(Product product);
 

@@ -10,12 +10,17 @@ import ru.hd.olaf.entities.Amount;
 import ru.hd.olaf.entities.Category;
 import ru.hd.olaf.entities.Product;
 import ru.hd.olaf.exception.AuthException;
+import ru.hd.olaf.exception.CrudException;
 import ru.hd.olaf.mvc.service.AmountService;
 import ru.hd.olaf.mvc.service.CategoryService;
 import ru.hd.olaf.mvc.service.ProductService;
+import ru.hd.olaf.mvc.service.SecurityService;
 import ru.hd.olaf.util.LogUtil;
 import ru.hd.olaf.util.json.JsonResponse;
+import ru.hd.olaf.util.json.ResponseType;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +37,8 @@ public class DataController {
     private CategoryService categoryService;
     @Autowired
     private ProductService productService;
+    @Autowired
+    private SecurityService securityService;
 
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
@@ -87,41 +94,41 @@ public class DataController {
         logger.debug(LogUtil.getMethodName());
 
         ModelAndView modelAndView = null;
-        Object entity;
+        JsonResponse response;
+        Object entity = null;
+        if (className.equalsIgnoreCase(Amount.class.getSimpleName())) {
+            logger.debug("Обрабатывается класс Amount");
 
-        try {
+            modelAndView = new ModelAndView("/data/page-amount");
+            response = amountService.getById(id);
 
-            if (className.equalsIgnoreCase(Amount.class.getSimpleName())) {
-                logger.debug("Обрабатывается класс Amount");
-
-                modelAndView = new ModelAndView("/data/page-amount");
-                entity = amountService.getById(id);
+            if (response.getType() == ResponseType.ERROR)
+                modelAndView.addObject("response", response.getMessage());
+            else if (response.getType() == ResponseType.SUCCESS) {
+                entity = response.getEntity();
 
                 logger.debug(String.format("Entity: %s", entity));
 
                 modelAndView = fillViewAmount(modelAndView, entity);
+            }
 
-            } else if (className.equalsIgnoreCase(Category.class.getSimpleName())) {
-                logger.debug("Обрабатывается класс Category");
+        } else if (className.equalsIgnoreCase(Category.class.getSimpleName())) {
+            logger.debug("Обрабатывается класс Category");
 
-                modelAndView = new ModelAndView("/data/page-category");
-                entity = categoryService.getById(id);
+            modelAndView = new ModelAndView("/data/page-category");
+
+            response = categoryService.getById(id);
+            if (response.getType() == ResponseType.ERROR)
+                modelAndView.addObject("response", response.getMessage());
+            else if (response.getType() == ResponseType.SUCCESS) {
+                entity = response.getEntity();
 
                 logger.debug(String.format("Entity: %s", entity));
 
                 modelAndView = fillViewCategory(modelAndView, entity);
             }
-
-        } catch (AuthException e) {
-            logger.error(e.getMessage());
-
-            modelAndView.addObject("response", e.getMessage());
-        } catch (IllegalArgumentException e) {
-            String message = String.format("Запрошенный объект с id %d не найден. \n" +
-                    "Error message: %s", id, e.getMessage());
-
-            logger.debug(message);
         }
+
 
         List<Category> categories = categoryService.getAll();
         logger.debug(String.format("Список 'categories' для заполнения выпадающего списка: %s.",
@@ -135,12 +142,194 @@ public class DataController {
     @RequestMapping(value = "/page-data/save/{className}", method = RequestMethod.POST)
     public @ResponseBody
     JsonResponse saveEntity(@PathVariable(value = "className") String className,
-                            @RequestParam(value = "id") Integer id) {
+                            @RequestParam(value = "id") Integer id,
+                            @RequestParam(value = "categoryId", required = false) Integer categoryId,
+                            @RequestParam(value = "parentId", required = false) Integer parentId,
+                            @RequestParam(value = "productName", required = false) String productName,
+                            @RequestParam(value = "name") String name,
+                            @RequestParam(value = "price", required = false) BigDecimal price,
+                            @RequestParam(value = "date", required = false) Date amountsDate,
+                            @RequestParam(value = "type", required = false) Byte type,
+                            @RequestParam(value = "details") String details) {
         logger.debug(LogUtil.getMethodName());
 
+        JsonResponse response = null;
 
+        if (className.equalsIgnoreCase(Amount.class.getSimpleName())) {
+            logger.debug("Инициализация сохранения записи Amount");
 
-        return null;
+            response = saveAmount(id, categoryId, productName, name, price, amountsDate, details);
+
+        } else if (className.equalsIgnoreCase(Category.class.getSimpleName())) {
+            logger.debug("Инициализация сохранения записи Category");
+
+            response = saveCategory(id, parentId, name, type, details);
+        }
+
+        return response;
+    }
+
+    @RequestMapping(value = "/page-data/delete/{className}/{id}", method = RequestMethod.POST)
+    public @ResponseBody JsonResponse deleteEntity(@PathVariable(value = "className") String className,
+                                      @PathVariable(value = "id") Integer id) {
+        logger.debug(LogUtil.getMethodName());
+        JsonResponse response = null;
+
+        try {
+            if (className.equalsIgnoreCase(Amount.class.getSimpleName())) {
+                logger.debug("Инициализация удаления записи Amount");
+
+                response = amountService.getById(id);
+                if (response.getType() != ResponseType.SUCCESS)
+                    return response;
+                response = amountService.delete((Amount)response.getEntity());
+
+            } else if (className.equalsIgnoreCase(Category.class.getSimpleName())) {
+                logger.debug("Инициализация удаления записи Category");
+
+                response = categoryService.getById(id);
+                if (response.getType() != ResponseType.SUCCESS)
+                    return response;
+                response = categoryService.delete((Category) response.getEntity());
+            }
+        } catch (CrudException e) {
+            String message = String.format("Произошла неизвестная ошибка: %s", e.getCause());
+            response = new JsonResponse();
+            response.setType(ResponseType.ERROR);
+            response.setMessage(message);
+        }
+
+        return response;
+    }
+
+    /**
+     * Функция сохранения записи Amount
+     * @param id
+     * @return
+     */
+    private JsonResponse saveAmount(Integer id,
+                                   Integer categoryId,
+                                   String productName,
+                                   String name,
+                                   BigDecimal price,
+                                   Date amountsDate,
+                                   String details) {
+        logger.debug(LogUtil.getMethodName());
+        JsonResponse response;
+        Amount amount;
+
+        response = amountService.getById(id);
+        if (response.getType() == ResponseType.ERROR)
+            return response;
+        else
+            amount = (Amount) response.getEntity();
+
+        //если запись с переданным id не существует, то создаем новую.
+        if (amount == null) {
+            logger.debug("Запись Amount c id = %d не найдена. Создаем новую.", id);
+            amount = new Amount();
+        }
+
+        //вычисляем категорию
+        response = categoryService.getById(categoryId);
+
+        if (response.getType() != ResponseType.SUCCESS) {
+            response.setType(ResponseType.ERROR);
+            return response;
+        }
+
+        Category category = (Category) response.getEntity();
+
+        if (category == null) {
+            String message = String.format("Отмена операции: не найдена категория с id %d", categoryId);
+            logger.debug(message);
+            return new JsonResponse(ResponseType.ERROR, message);
+        }
+
+        //вычисляем товарную группу
+        Product product = productService.getExistedOrCreated(productName);
+
+        amount.setCategoryId(category);
+        amount.setName(name);
+        amount.setPrice(price);
+        amount.setAmountsDate(amountsDate);
+        amount.setDetails(details);
+        amount.setUserId(securityService.findLoggedUser());
+        amount.setProductId(product);
+
+        try {
+            amountService.save(amount);
+        } catch (CrudException e) {
+            String message = String.format("Возникла ошибка при сохранении данных в БД. \n" +
+                    "Error message: %s", e.getMessage());
+            logger.error(message);
+
+            return new JsonResponse(ResponseType.ERROR, message);
+        }
+
+        String message = String.format("Запись успешно сохранена в БД.");
+        logger.debug(message + "\n" + amount);
+
+        return new JsonResponse(ResponseType.SUCCESS, message);
+    }
+
+    /**
+     * Функция сохранаяет/обновляет запись в таблице Category
+     * @param id
+     * @param parentId
+     * @param name
+     * @param type
+     * @param details
+     * @return
+     */
+    private JsonResponse saveCategory(Integer id,
+                                      Integer parentId,
+                                      String name,
+                                      Byte type,
+                                      String details){
+        logger.debug(LogUtil.getMethodName());
+
+        JsonResponse response = categoryService.getById(id);
+        if (response.getType() == ResponseType.ERROR)
+            return response;
+
+        Category category = (Category) response.getEntity();
+
+        if (category == null) {
+            logger.debug("Запись Сategory c id = %d не найдена. Создаем новую.", id);
+            category = new Category();
+        }
+
+        //обрабатываем рожительскую категорию
+        logger.debug("Обрабатываем родительскую категорию");
+        response = categoryService.getById(parentId);
+        if (response.getType() == ResponseType.ERROR)
+            return response;
+
+        Category parent = (Category) response.getEntity();
+        if (parent != null) {
+            category.setParentId(parent);
+        }
+
+        category.setName(name);
+        category.setType(type);
+        category.setDetails(details);
+        category.setUserId(securityService.findLoggedUser());
+
+        try {
+            categoryService.save(category);
+        } catch (CrudException e) {
+            String message = String.format("Возникла ошибка при сохранении данных в БД. \n" +
+                    "Error message: %s", e.getMessage());
+            logger.error(message);
+
+            return new JsonResponse(ResponseType.ERROR, message);
+        }
+
+        String message = String.format("Запись успешно сохранена в БД.");
+        logger.debug(message + "\n" + category);
+
+        return new JsonResponse(ResponseType.SUCCESS, message);
     }
 
     /**

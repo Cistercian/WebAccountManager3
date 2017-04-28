@@ -207,7 +207,7 @@
                     <div class="col-md-6 col-md-offset-6">
                         <div class="btn-group">
                             <button id="btnNew" type="submit" name="btnNew"
-                                    class="btn btn-default btn-lg " onclick="location.href='/page-amount.html'"><spring:message code="label.page-amount.btnNew" />
+                                    class="btn btn-default btn-lg " onclick="location.href='/page-data/amount.html'"><spring:message code="label.page-amount.btnNew" />
                             </button>
                         </div>
                         <div class="btn-group">
@@ -228,6 +228,7 @@
                         <script language="javascript" type="text/javascript">
                             function Save() {
                                 var data = {
+                                    'className' : 'amount',
                                     'id': $('#id').val(),
                                     'categoryId': $('#btnCategories').val(),
                                     'productName': $('#productName').val(),
@@ -238,14 +239,14 @@
                                 };
                                 $.ajax({
                                     type: "POST",
-                                    url: '/page-amount/save',
+                                    url: '/page-data/save',
                                     data: data,
                                     dataType: 'json',
                                     success: function (data) {
                                         var type = data.type;
                                         var message = data.message;
 
-                                        displayError(type, message, "/page-amount/" + $('#id').val());
+                                        displayError(type, message, "/page-data/amount" + $('#id').val());
                                     }
                                 });
                             };
@@ -268,11 +269,14 @@
                                 $('#modal').modal('show');
                             };
                             function SendDeleteQuery() {
-                                var id = $('#id').val();
+                                var data = {
+                                    'className' : 'amount',
+                                    'id' : $('#id').val(),
+                                }
                                 $.ajax({
                                     type: "POST",
-                                    url: '/page-amount/delete',
-                                    data: {id},
+                                    url: '/page-data/delete',
+                                    data: data,
                                     success: function (data) {
                                         var type = data.type;
                                         var message = data.message;

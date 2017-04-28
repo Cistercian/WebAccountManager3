@@ -169,6 +169,7 @@
                                 var type = $('#typeIncome').prop('checked') ? 0 : 1;
 
                                 var data = {
+                                    'className' : 'category',
                                     'id': $('#id').val(),
                                     'parentId': $('#btnCategories').val(),
                                     'name': $('#name').val(),
@@ -177,7 +178,7 @@
                                 };
                                 $.ajax({
                                     type: "POST",
-                                    url: '/page-category/save',
+                                    url: '/page-data/save',
                                     data: data,
                                     dataType: 'application/json; charset=utf-8',
                                     success: function (data) {
@@ -192,7 +193,7 @@
                                 );
                                 $('#modalFooter').append(
                                         "<button type='button' class='btn btn-default' data-dismiss='modal' " +
-                                        "onclick='location.href=\"/page-category.html\";'>" +
+                                        "onclick='location.href=\"/page-data/category.html\";'>" +
                                         "<spring:message code="label.page-category.modal.btnYes" />" +
                                         "</button>" +
                                         "<button type='button' class='btn btn-primary' " +
@@ -222,12 +223,15 @@
                                 $('#modal').modal('show');
                             };
                             function SendDeleteQuery() {
-                                var id = $('#id').val();
+                                var data = {
+                                    'className' : 'category',
+                                    'id' : $('#id').val()
+                                }
                                 if (id != '') {
                                     $.ajax({
                                         type: "POST",
-                                        url: '/page-category/delete',
-                                        data: {id},
+                                        url: '/page-data/delete',
+                                        data: data,
                                         dataType: 'text',
                                         success: function (data) {
                                             var response = $.parseJSON(data);

@@ -17,7 +17,7 @@ import java.util.List;
  */
 public interface AmountService {
 
-    Amount getById(Integer id) throws AuthException, IllegalArgumentException;
+    JsonResponse getById(Integer id);
 
     List<Amount> getAll();
     List<Amount> getByProduct(Product product);

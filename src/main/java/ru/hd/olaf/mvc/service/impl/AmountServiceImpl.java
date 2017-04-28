@@ -1,6 +1,8 @@
 package ru.hd.olaf.mvc.service.impl;
 
 import com.google.common.collect.Lists;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.hd.olaf.entities.Amount;
@@ -12,6 +14,7 @@ import ru.hd.olaf.mvc.repository.AmountRepository;
 import ru.hd.olaf.mvc.service.AmountService;
 import ru.hd.olaf.mvc.service.ProductService;
 import ru.hd.olaf.mvc.service.SecurityService;
+import ru.hd.olaf.util.LogUtil;
 import ru.hd.olaf.util.json.ResponseType;
 import ru.hd.olaf.util.json.BarEntity;
 import ru.hd.olaf.util.json.JsonResponse;
@@ -36,11 +39,14 @@ public class AmountServiceImpl implements AmountService {
     @Autowired
     private SecurityService securityService;
 
+    private static final Logger logger = LoggerFactory.getLogger(CategoryServiceImpl.class);
+
     /**
      * Функция возвращает список amount с проверкой на текущего пользователя
      * @return
      */
     public List<Amount> getAll() {
+        logger.debug(LogUtil.getMethodName());
         return Lists.newArrayList(amountRepository.findByUserId(securityService.findLoggedUser()));
     }
 
@@ -50,6 +56,7 @@ public class AmountServiceImpl implements AmountService {
      * @return
      */
     public List<Amount> getByCategory(Category category){
+        logger.debug(LogUtil.getMethodName());
         List<Amount> amounts = amountRepository.findByCategoryIdAndUserId(category, securityService.findLoggedUser());
 
         Collections.sort(amounts, new Comparator<Amount>() {
@@ -67,6 +74,7 @@ public class AmountServiceImpl implements AmountService {
      * @return
      */
     public List<Amount> getByProduct(Product product) {
+        logger.debug(LogUtil.getMethodName());
         return amountRepository.findByProductIdAndUserId(product, securityService.findLoggedUser());
     }
 
@@ -79,6 +87,7 @@ public class AmountServiceImpl implements AmountService {
      * @return
      */
     public List<BarEntity> getBarEntitiesByCategory(Category category, LocalDate after, LocalDate before) {
+        logger.debug(LogUtil.getMethodName());
         List<BarEntity> barEntities = new ArrayList<BarEntity>();
 
         List<Product> products = productService.getAll();
@@ -113,6 +122,7 @@ public class AmountServiceImpl implements AmountService {
      * @return
      */
     public BigDecimal getSumByCategoryAndProduct(Category category, Product product, LocalDate after, LocalDate before) {
+        logger.debug(LogUtil.getMethodName());
         List<Amount> amounts = getByCategoryAndProduct(category, product);
 
         BigDecimal sumAmounts = new BigDecimal("0");
@@ -134,6 +144,7 @@ public class AmountServiceImpl implements AmountService {
      * @return
      */
     public List<Amount> getByCategoryAndProduct(Category categoryId, Product productId) {
+        logger.debug(LogUtil.getMethodName());
         return amountRepository.findByCategoryIdAndProductIdAndUserId(categoryId,
                 productId,
                 securityService.findLoggedUser());
@@ -144,7 +155,8 @@ public class AmountServiceImpl implements AmountService {
      * @param id
      * @return
      */
-    public Amount getById(Integer id) throws AuthException, IllegalArgumentException{
+    private Amount getOne(Integer id) throws AuthException, IllegalArgumentException{
+        logger.debug(LogUtil.getMethodName());
         if (id == null) throw new IllegalArgumentException();
 
         Amount amount = amountRepository.findOne(id);
@@ -154,6 +166,35 @@ public class AmountServiceImpl implements AmountService {
             throw new AuthException(String.format("Запрошенный объект с id %d Вам не принадлежит.", id));
 
         return amount;
+    }
+
+    /**
+     * Функция возвращает объект JsonResponse, содержащий результат поиска объекта и, при возможности, сам объект
+     * @param id id записи
+     * @return JsonResponse
+     */
+    public JsonResponse getById(Integer id) {
+        logger.debug(LogUtil.getMethodName());
+        Amount amount = null;
+
+        JsonResponse jsonResponse = null;
+        try {
+            amount = getOne(id);
+        } catch (AuthException e) {
+            logger.debug(e.getMessage());
+            jsonResponse.setType(ResponseType.ERROR);
+            jsonResponse.setMessage(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            String message = "Переданный параметр id равен null.";
+            logger.debug(message);
+
+            jsonResponse.setType(ResponseType.INFO);
+            jsonResponse.setMessage(message);
+        }
+
+        jsonResponse.setEntity(amount);
+
+        return jsonResponse;
     }
 
     /**

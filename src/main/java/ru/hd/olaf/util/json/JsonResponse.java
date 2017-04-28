@@ -1,4 +1,5 @@
 package ru.hd.olaf.util.json;
+import javax.persistence.Transient;
 
 /**
  * Created by d.v.hozyashev on 20.04.2017.
@@ -6,6 +7,8 @@ package ru.hd.olaf.util.json;
 public class JsonResponse {
     private ResponseType type;
     private String message;
+    @Transient
+    private Object entity;
 
     public JsonResponse() {
     }
@@ -31,4 +34,11 @@ public class JsonResponse {
         this.message = message;
     }
 
+    public Object getEntity() {
+        return entity;
+    }
+
+    public void setEntity(Object entity) {
+        this.entity = entity;
+    }
 }

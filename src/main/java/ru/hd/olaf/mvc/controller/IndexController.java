@@ -125,7 +125,7 @@ public class IndexController {
 
         Category category = null;
         try {
-            category = categoryService.getById(categoryId);
+            category = categoryService.getOne(categoryId);
         } catch (AuthException e) {
             //TODO: modal?
             //e.printStackTrace();

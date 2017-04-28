@@ -12,6 +12,7 @@ import ru.hd.olaf.mvc.repository.CategoryRepository;
 import ru.hd.olaf.mvc.service.AmountService;
 import ru.hd.olaf.mvc.service.CategoryService;
 import ru.hd.olaf.mvc.service.SecurityService;
+import ru.hd.olaf.util.LogUtil;
 import ru.hd.olaf.util.json.ResponseType;
 import ru.hd.olaf.util.json.BarEntity;
 import ru.hd.olaf.util.json.JsonResponse;
@@ -130,7 +131,7 @@ public class CategoryServiceImpl implements CategoryService {
      * @param id
      * @return
      */
-    public Category getById(Integer id) throws AuthException, IllegalArgumentException{
+    private Category getOne(Integer id) throws AuthException, IllegalArgumentException{
         if (id == null) throw new IllegalArgumentException();
 
         Category category = categoryRepository.findOne(id);
@@ -140,6 +141,36 @@ public class CategoryServiceImpl implements CategoryService {
             throw new AuthException(String.format("Запрошенный объект с id %d Вам не принадлежит.", id));
 
         return category;
+    }
+
+    /**
+     * Функция возвращает объект JsonResponse, содержащий результат поиска объекта и, при возможности, сам объект
+     * @param id id записи
+     * @return JsonResponse
+     */
+    public JsonResponse getById(Integer id) {
+        logger.debug(LogUtil.getMethodName());
+
+        Category category = null;
+
+        JsonResponse jsonResponse = null;
+        try {
+            category = getOne(id);
+        } catch (AuthException e) {
+            logger.debug(e.getMessage());
+            jsonResponse.setType(ResponseType.ERROR);
+            jsonResponse.setMessage(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            String message = "Переданный параметр id равен null.";
+            logger.debug(message);
+
+            jsonResponse.setType(ResponseType.INFO);
+            jsonResponse.setMessage(message);
+        }
+
+        jsonResponse.setEntity(category);
+
+        return jsonResponse;
     }
 
     /**

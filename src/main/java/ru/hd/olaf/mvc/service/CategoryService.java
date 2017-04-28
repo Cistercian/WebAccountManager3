@@ -8,17 +8,19 @@ import ru.hd.olaf.util.json.JsonResponse;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Olaf on 13.04.2017.
  */
 public interface CategoryService {
 
-    Category getById(Integer id) throws AuthException, IllegalArgumentException;
+    JsonResponse getById(Integer id);
 
     List<Category> getAll();
     List<Category> getAllByCurrentUser();
     List<BarEntity> getBarEntityOfSubCategories(Category parent, LocalDate after, LocalDate before);
+
 
     Category save(Category category) throws CrudException;
     JsonResponse delete(Category category) throws CrudException;

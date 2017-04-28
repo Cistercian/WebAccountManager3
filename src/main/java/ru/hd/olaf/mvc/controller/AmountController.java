@@ -43,10 +43,11 @@ public class AmountController {
 
     /**
      * Отрисовка пустой страницы page-amount.html
+     *
      * @return
      */
     @RequestMapping(value = "/page-amount", method = RequestMethod.GET)
-    public ModelAndView getViewPageAmount(){
+    public ModelAndView getViewPageAmount() {
         logger.debug(String.format("function: %s.", "getViewPageAmount()"));
 
         return getViewPageAmountByID(null);
@@ -54,52 +55,46 @@ public class AmountController {
 
     /**
      * Функция просмотра записи amount (заполненная страница page-amount)
+     *
      * @param id
      * @return
      */
     @RequestMapping(value = "/page-amount/{id}", method = RequestMethod.GET)
-    public ModelAndView getViewPageAmountByID(@PathVariable("id") Integer id){
+    public ModelAndView getViewPageAmountByID(@PathVariable("id") Integer id) {
         logger.debug(String.format("Function %s", "getViewPageAmountByID()", id));
 
         ModelAndView modelAndView = new ModelAndView("/data/page-amount");
         Amount amount;
+        JsonResponse response = amountService.getById(id);
+        if (response.getType() == ResponseType.ERROR)
+            modelAndView.addObject("response", response.getMessage());
 
-        try {
-            amount = amountService.getById(id);
-            if (amount != null) {
 
-                modelAndView.addObject("name", amount.getName());
-                modelAndView.addObject("date", amount.getAmountsDate());
-                modelAndView.addObject("price", amount.getPrice());
-                modelAndView.addObject("details", amount.getDetails());
-                modelAndView.addObject("id", amount.getId());
-                modelAndView.addObject("categoryId", amount.getCategoryId().getId());
-                modelAndView.addObject("categoryName", amount.getCategoryId().getName());
+        amount = (Amount) response.getEntity();
+        if (amount != null) {
 
-                Product product = amount.getProductId();
-                if (product != null) {
-                    modelAndView.addObject("productId", amount.getProductId().getId());
-                    modelAndView.addObject("productName", amount.getProductId().getName());
-                }
-                String message = String.format("Запрошен объект с id %d: %s", id, amount);
-                logger.debug(message);
-            } else {
-                String message = String.format("Запрошеный объект с id %d не найден", id);
-                modelAndView.addObject("response", message);
+            modelAndView.addObject("name", amount.getName());
+            modelAndView.addObject("date", amount.getAmountsDate());
+            modelAndView.addObject("price", amount.getPrice());
+            modelAndView.addObject("details", amount.getDetails());
+            modelAndView.addObject("id", amount.getId());
+            modelAndView.addObject("categoryId", amount.getCategoryId().getId());
+            modelAndView.addObject("categoryName", amount.getCategoryId().getName());
 
-                logger.debug(message);
+            Product product = amount.getProductId();
+            if (product != null) {
+                modelAndView.addObject("productId", amount.getProductId().getId());
+                modelAndView.addObject("productName", amount.getProductId().getName());
             }
-        } catch (AuthException e) {
-            modelAndView.addObject("response", e.getMessage());
-
-            logger.error(e.getMessage());
-        } catch (IllegalArgumentException e) {
-            String message = String.format("Запрошенный объект с id %d не найден. \n" +
-                    "Error message: %s", id, e.getMessage());
-            //modelAndView.addObject("response", message);
+            String message = String.format("Запрошен объект с id %d: %s", id, amount);
+            logger.debug(message);
+        } else {
+            String message = String.format("Запрошеный объект с id %d не найден", id);
+            modelAndView.addObject("response", message);
 
             logger.debug(message);
         }
+
 
         List<Category> categories = categoryService.getAll();
 
@@ -112,6 +107,7 @@ public class AmountController {
 
     /**
      * Функция сохранения записи amount в БД
+     *
      * @param id
      * @param categoryId
      * @param productName
@@ -122,7 +118,8 @@ public class AmountController {
      * @return
      */
     @RequestMapping(value = "/page-amount/save", method = RequestMethod.POST)
-    public @ResponseBody
+    public
+    @ResponseBody
     JsonResponse saveAmount(@RequestParam(value = "id") Integer id,
                             @RequestParam(value = "categoryId") Integer categoryId,
                             @RequestParam(value = "productName") String productName,
@@ -133,19 +130,12 @@ public class AmountController {
 
         //TODO: throw exception
         Category category = null;
-        try {
-            category = categoryService.getById(categoryId);
-        } catch (AuthException e) {
-            String message = "Ошибка захвата категории. " + e.getMessage();
-            logger.debug(message);
+        JsonResponse response = categoryService.getById(categoryId);
+        if (response.getType() != ResponseType.SUCCESS)
+            return response;
 
-            return new JsonResponse(ResponseType.ERROR, e.getMessage());
-        } catch (IllegalArgumentException e) {
-            String message = "Ошибка захвата категории. " + e.getMessage();
-            logger.debug(message);
+        category = (Category) response.getEntity();
 
-            return new JsonResponse(ResponseType.ERROR, e.getMessage());
-        }
         if (category == null) {
             String message = String.format("Отмена операции: не найдена категория с id %d", categoryId);
 
@@ -156,16 +146,9 @@ public class AmountController {
 
         Amount amount;
 
-        try {
-            amount = amountService.getById(id);
-        } catch (AuthException e) {
-            logger.debug(e.getMessage());
 
-            return new JsonResponse(ResponseType.ERROR, e.getMessage());
-        } catch (IllegalArgumentException e) {
-            //так здесь может быть операция создания
-            amount = null;
-        }
+        amount = (Amount) amountService.getById(id).getEntity();
+
 
         if (amount == null) {
             logger.debug(String.format("Not found Amount, id: %d", id));
@@ -198,7 +181,7 @@ public class AmountController {
 
         try {
             amountService.save(amount);
-       } catch (CrudException e) {
+        } catch (CrudException e) {
             String message = String.format("Возникла ошибка при сохранении данных в БД. \n" +
                     "Error message: %s", e.getMessage());
             logger.error(message);
@@ -214,23 +197,19 @@ public class AmountController {
 
     /**
      * Функция удаления записи по ее id
+     *
      * @param id
      * @return
      */
     @RequestMapping(value = "/page-amount/delete", method = RequestMethod.POST)
-    public @ResponseBody
-    JsonResponse deleteAmount(@RequestParam(value = "id") Integer id){
+    public
+    @ResponseBody
+    JsonResponse deleteAmount(@RequestParam(value = "id") Integer id) {
         logger.debug(String.format("Function %s", "deleteAmount()"));
 
         Amount amount;
 
-        try {
-            amount = amountService.getById(id);
-        } catch (AuthException e) {
-            return new JsonResponse(ResponseType.ERROR, e.getMessage());
-        } catch (IllegalArgumentException e) {
-            return new JsonResponse(ResponseType.ERROR, String.format("Ошибка: передан пустой параметр id"));
-        }
+        amount = (Amount) amountService.getById(id).getEntity();
 
         JsonResponse response = new JsonResponse();
         if (amount != null) {
@@ -257,11 +236,13 @@ public class AmountController {
 
     /**
      * Функция получения списка таблицы product по совпадению (быстрый поиск для выпадающего списка)
+     *
      * @param query
      * @return
      */
     @RequestMapping(value = "/page-amount/getProducts", method = RequestMethod.GET)
-    public @ResponseBody
+    public
+    @ResponseBody
     List<Product> getProducts(@RequestParam("query") String query) {
         return productService.getByContainedName(query);
     }

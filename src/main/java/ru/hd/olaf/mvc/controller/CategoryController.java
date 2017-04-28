@@ -47,8 +47,8 @@ public class CategoryController {
 
         Category category;
 
-        try {
-            category = categoryService.getById(id);
+
+            category = (Category) categoryService.getById(id).getEntity();
             if (category != null){
 
                 modelAndView.addObject("id", category.getId());
@@ -74,16 +74,6 @@ public class CategoryController {
 
                 logger.debug(message);
             }
-        } catch (AuthException e) {
-            modelAndView.addObject("response", e.getMessage());
-
-            logger.error(e.getMessage());
-        } catch (IllegalArgumentException e) {
-            String message = String.format("Запрошенный объект с id %d не найден. \n" +
-                    "Error message: %s", id, e.getMessage());
-
-            logger.debug(message);
-        }
 
         return modelAndView;
     }
@@ -115,16 +105,9 @@ public class CategoryController {
         //TODO: refactoring to JsonResponse
         Category category;
 
-        try {
-            category = categoryService.getById(id);
-        } catch (AuthException e) {
-            logger.debug(e.getMessage());
 
-            return new JsonResponse(ResponseType.ERROR, e.getMessage());
-        } catch (IllegalArgumentException e) {
-            //так здесь может быть операция создания
-            category = null;
-        }
+            category = (Category) categoryService.getById(id).getEntity();
+
 
         if (category == null){
             logger.debug(String.format("Not found Category, id: %d", id));
@@ -135,18 +118,12 @@ public class CategoryController {
 
         category.setName(name);
 
-        try {
-            Category parent = categoryService.getById(parentId);
+
+            Category parent = (Category) categoryService.getById(parentId).getEntity();
             if (parent != null) {
                 category.setParentId(parent);
             }
-        } catch (AuthException e) {
-            logger.debug("Ошибка обработки родительской категории." + e.getMessage());
 
-            return new JsonResponse(ResponseType.ERROR, "Ошибка обработки родительской категории." + e.getMessage());
-        }  catch (IllegalArgumentException e) {
-            logger.debug("Родительская категория = null");
-        }
 
         category.setType(type);
         category.setDetails(details);
@@ -178,16 +155,12 @@ public class CategoryController {
     JsonResponse deleteCategory(@RequestParam(value = "id") Integer id) {
         logger.debug(String.format("Function %s", "deleteCategory()"));
 
-        Category category = null;
-        try {
-            category = categoryService.getById(id);
-        } catch (AuthException e) {
-            return new JsonResponse(ResponseType.ERROR, e.getMessage());
-        } catch (IllegalArgumentException e) {
-            return new JsonResponse(ResponseType.ERROR, String.format("Ошибка: передан пустой параметр id"));
-        }
+        JsonResponse response = categoryService.getById(id);
+        if (response.getType() == ResponseType.ERROR)
+            return response;
 
-        JsonResponse response = new JsonResponse();
+        Category category = (Category) response.getEntity();
+
         if (category != null) {
 
             logger.debug(String.format("Delete category: %s", category));
