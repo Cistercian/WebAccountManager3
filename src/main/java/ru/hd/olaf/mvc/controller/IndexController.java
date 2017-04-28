@@ -13,6 +13,8 @@ import ru.hd.olaf.mvc.service.AmountService;
 import ru.hd.olaf.mvc.service.CategoryService;
 import ru.hd.olaf.util.DatePeriod;
 import ru.hd.olaf.util.json.BarEntity;
+import ru.hd.olaf.util.json.JsonResponse;
+import ru.hd.olaf.util.json.ResponseType;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -124,11 +126,12 @@ public class IndexController {
         List<BarEntity> categoryContent = new ArrayList<BarEntity>();
 
         Category category = null;
-        try {
-            category = categoryService.getOne(categoryId);
-        } catch (AuthException e) {
-            //TODO: modal?
-            //e.printStackTrace();
+        JsonResponse response = categoryService.getById(categoryId);
+        if (response.getType() == ResponseType.SUCCESS)
+            category = (Category) response.getEntity();
+        else {
+            logger.debug("Возникла ошибка: " + response.getMessage());
+            return null;
         }
 
         LocalDate today = LocalDate.now();

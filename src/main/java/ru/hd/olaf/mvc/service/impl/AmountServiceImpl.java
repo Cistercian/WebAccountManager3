@@ -175,11 +175,17 @@ public class AmountServiceImpl implements AmountService {
      */
     public JsonResponse getById(Integer id) {
         logger.debug(LogUtil.getMethodName());
+
         Amount amount = null;
 
-        JsonResponse jsonResponse = null;
+        JsonResponse jsonResponse = new JsonResponse();
         try {
             amount = getOne(id);
+
+            String message = String.format("Запись с id = %d найдена: %s", id, amount);
+            jsonResponse.setType(ResponseType.SUCCESS);
+            jsonResponse.setMessage(message);
+            jsonResponse.setEntity(amount);
         } catch (AuthException e) {
             logger.debug(e.getMessage());
             jsonResponse.setType(ResponseType.ERROR);
@@ -192,7 +198,7 @@ public class AmountServiceImpl implements AmountService {
             jsonResponse.setMessage(message);
         }
 
-        jsonResponse.setEntity(amount);
+
 
         return jsonResponse;
     }

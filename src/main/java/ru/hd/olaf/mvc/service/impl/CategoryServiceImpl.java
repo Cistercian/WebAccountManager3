@@ -132,13 +132,23 @@ public class CategoryServiceImpl implements CategoryService {
      * @return
      */
     private Category getOne(Integer id) throws AuthException, IllegalArgumentException{
-        if (id == null) throw new IllegalArgumentException();
+        logger.debug(LogUtil.getMethodName());
+        if (id == null) {
+            logger.debug("Переданный id = null.");
+            throw new IllegalArgumentException();
+        }
 
         Category category = categoryRepository.findOne(id);
-        if (category == null) return null;
+        if (category == null) {
+            logger.debug(String.format("Запись с id = %d не найдена", id));
+            return null;
+        }
 
-        if (!category.getUserId().equals(securityService.findLoggedUser()))
-            throw new AuthException(String.format("Запрошенный объект с id %d Вам не принадлежит.", id));
+        if (!category.getUserId().equals(securityService.findLoggedUser())) {
+            String message = String.format("Запрошенный объект с id %d Вам не принадлежит.", id);
+            logger.debug(message);
+            throw new AuthException(message);
+        }
 
         return category;
     }
@@ -153,9 +163,13 @@ public class CategoryServiceImpl implements CategoryService {
 
         Category category = null;
 
-        JsonResponse jsonResponse = null;
+        JsonResponse jsonResponse = new JsonResponse();
         try {
             category = getOne(id);
+
+            String message = String.format("Запись с id = %d найдена: %s", id, category);
+            jsonResponse.setType(ResponseType.SUCCESS);
+            jsonResponse.setMessage(message);
         } catch (AuthException e) {
             logger.debug(e.getMessage());
             jsonResponse.setType(ResponseType.ERROR);
@@ -179,6 +193,8 @@ public class CategoryServiceImpl implements CategoryService {
      * @return
      */
     public Category save(Category category) throws CrudException{
+        logger.debug(LogUtil.getMethodName());
+
         Category entity;
 
         try {
@@ -196,11 +212,21 @@ public class CategoryServiceImpl implements CategoryService {
      * @return
      */
     public JsonResponse delete(Category category) throws CrudException{
+        logger.debug(LogUtil.getMethodName());
 
         //Проверка существуют ли записи amount с данной категорией
         if (category.getAmounts().size() > 0) {
             String message = String.format("Удаление невозможно: к данной категории привязаны " +
-                    "один или несколько записей таблицы amounts");
+                    "один или несколько записей таблицы amounts ");
+            logger.debug(message);
+
+            throw new CrudException(message);
+        }
+        if (getByParentId(category).size() > 0) {
+            String message = String.format("Удаление невозможно: данная запись числится " +
+                    "родительской для других категорий");
+            logger.debug(message);
+
             throw new CrudException(message);
         }
 

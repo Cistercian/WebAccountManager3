@@ -41,4 +41,13 @@ public class JsonResponse {
     public void setEntity(Object entity) {
         this.entity = entity;
     }
+
+    @Override
+    public String toString() {
+        return "JsonResponse{" +
+                "type=" + type +
+                ", message='" + message + '\'' +
+                ", entity=" + entity +
+                '}';
+    }
 }

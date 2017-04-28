@@ -3,7 +3,9 @@ package ru.hd.olaf.mvc.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import ru.hd.olaf.entities.Amount;
@@ -20,6 +22,8 @@ import ru.hd.olaf.util.json.JsonResponse;
 import ru.hd.olaf.util.json.ResponseType;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -95,37 +99,33 @@ public class DataController {
 
         ModelAndView modelAndView = null;
         JsonResponse response;
-        Object entity = null;
+
         if (className.equalsIgnoreCase(Amount.class.getSimpleName())) {
             logger.debug("Обрабатывается класс Amount");
 
-            modelAndView = new ModelAndView("/data/page-amount");
+            modelAndView = new ModelAndView("/data/data");
             response = amountService.getById(id);
 
             if (response.getType() == ResponseType.ERROR)
                 modelAndView.addObject("response", response.getMessage());
-            else if (response.getType() == ResponseType.SUCCESS) {
-                entity = response.getEntity();
+            else {
+                logger.debug(String.format("Response: %s", response));
 
-                logger.debug(String.format("Entity: %s", entity));
-
-                modelAndView = fillViewAmount(modelAndView, entity);
+                modelAndView = fillViewAmount(modelAndView, response);
             }
 
         } else if (className.equalsIgnoreCase(Category.class.getSimpleName())) {
             logger.debug("Обрабатывается класс Category");
 
-            modelAndView = new ModelAndView("/data/page-category");
+            modelAndView = new ModelAndView("/data/data");
 
             response = categoryService.getById(id);
             if (response.getType() == ResponseType.ERROR)
                 modelAndView.addObject("response", response.getMessage());
-            else if (response.getType() == ResponseType.SUCCESS) {
-                entity = response.getEntity();
+            else {
+                logger.debug(String.format("Response: %s", response));
 
-                logger.debug(String.format("Entity: %s", entity));
-
-                modelAndView = fillViewCategory(modelAndView, entity);
+                modelAndView = fillViewCategory(modelAndView, response);
             }
         }
 
@@ -139,16 +139,16 @@ public class DataController {
         return modelAndView;
     }
 
-    @RequestMapping(value = "/page-data/save/{className}", method = RequestMethod.POST)
+    @RequestMapping(value = "/page-data/save", method = RequestMethod.POST)
     public @ResponseBody
-    JsonResponse saveEntity(@PathVariable(value = "className") String className,
+    JsonResponse saveEntity(@RequestParam(value = "className") String className,
                             @RequestParam(value = "id") Integer id,
                             @RequestParam(value = "categoryId", required = false) Integer categoryId,
-                            @RequestParam(value = "parentId", required = false) Integer parentId,
                             @RequestParam(value = "productName", required = false) String productName,
                             @RequestParam(value = "name") String name,
                             @RequestParam(value = "price", required = false) BigDecimal price,
                             @RequestParam(value = "date", required = false) Date amountsDate,
+                            @RequestParam(value = "parentId", required = false) Integer parentId,
                             @RequestParam(value = "type", required = false) Byte type,
                             @RequestParam(value = "details") String details) {
         logger.debug(LogUtil.getMethodName());
@@ -169,9 +169,9 @@ public class DataController {
         return response;
     }
 
-    @RequestMapping(value = "/page-data/delete/{className}/{id}", method = RequestMethod.POST)
-    public @ResponseBody JsonResponse deleteEntity(@PathVariable(value = "className") String className,
-                                      @PathVariable(value = "id") Integer id) {
+    @RequestMapping(value = "/page-data/delete", method = RequestMethod.POST)
+    public @ResponseBody JsonResponse deleteEntity(@RequestParam(value = "className") String className,
+                                                   @RequestParam(value = "id") Integer id) {
         logger.debug(LogUtil.getMethodName());
         JsonResponse response = null;
 
@@ -180,24 +180,33 @@ public class DataController {
                 logger.debug("Инициализация удаления записи Amount");
 
                 response = amountService.getById(id);
-                if (response.getType() != ResponseType.SUCCESS)
+                if (response.getType() != ResponseType.SUCCESS) {
+                    logger.debug(response.getType() + ":" + response.getMessage());
                     return response;
+                }
                 response = amountService.delete((Amount)response.getEntity());
 
             } else if (className.equalsIgnoreCase(Category.class.getSimpleName())) {
                 logger.debug("Инициализация удаления записи Category");
 
                 response = categoryService.getById(id);
-                if (response.getType() != ResponseType.SUCCESS)
+                if (response.getType() != ResponseType.SUCCESS || ) {
+                    logger.debug(response.getType() + ":" + response.getMessage());
                     return response;
+                }
                 response = categoryService.delete((Category) response.getEntity());
             }
         } catch (CrudException e) {
             String message = String.format("Произошла неизвестная ошибка: %s", e.getCause());
+
+            logger.error(message);
+
             response = new JsonResponse();
             response.setType(ResponseType.ERROR);
             response.setMessage(message);
         }
+
+        logger.debug(response.getMessage());
 
         return response;
     }
@@ -336,11 +345,11 @@ public class DataController {
      * Функция заполняет ModelAndView класса Amount
      *
      * @param modelAndView заполняемый ModelAndView
-     * @param entity       сам объект
+     * @param response  ранее полученный объект ответа сервиса
      * @return заполненный ModelAndView
      */
-    private ModelAndView fillViewAmount(ModelAndView modelAndView, Object entity) {
-        Amount amount = (Amount) entity;
+    private ModelAndView fillViewAmount(ModelAndView modelAndView, JsonResponse response) {
+        Amount amount = (Amount) response.getEntity();
 
         if (amount != null) {
 
@@ -362,14 +371,19 @@ public class DataController {
                 modelAndView.addObject("productName", amount.getProductId().getName());
             } else {
                 logger.debug(String.format("Товарная группа не определена"));
-
                 //TODO: Логическая ошибка данных БД?
             }
-        } else {
+        } else if (response.getType() == ResponseType.SUCCESS && (amount == null)){
             String message = String.format("Запрошеный объект не найден");
             modelAndView.addObject("response", message);
 
             logger.debug(message);
+        } else {
+            //рисуем пустую форму
+            logger.debug("Инициализация пустой формы");
+
+            modelAndView.addObject("date", LocalDate.now());
+            modelAndView.addObject("className", "amount");
         }
 
         return modelAndView;
@@ -379,11 +393,11 @@ public class DataController {
      * Функция заполняет ModelAndView класса Category
      *
      * @param modelAndView заполняемый ModelAndView
-     * @param entity       сам объект
+     * @param response Ответ, полученный от сервиса
      * @return заполненный ModelAndView
      */
-    private ModelAndView fillViewCategory(ModelAndView modelAndView, Object entity) {
-        Category category = (Category) entity;
+    private ModelAndView fillViewCategory(ModelAndView modelAndView, JsonResponse response) {
+        Category category = (Category) response.getEntity();
 
         if (category != null) {
             logger.debug(String.format("Обрабатываемый объект: %s", category));
@@ -409,13 +423,23 @@ public class DataController {
                 modelAndView.addObject("typeIncome", "true");
 
 
-        } else {
+        } else if (response.getType() == ResponseType.SUCCESS && (category == null)){
             String message = String.format("Запрошеный объект не найден");
             modelAndView.addObject("response", message);
 
             logger.debug(message);
+        } else {
+            //рисуем пустую форму
+            modelAndView.addObject("className", "category");
         }
 
         return modelAndView;
+    }
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        sdf.setLenient(true);
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(sdf, true));
     }
 }
