@@ -3,6 +3,7 @@ package ru.hd.olaf.mvc.service;
 import ru.hd.olaf.entities.Amount;
 import ru.hd.olaf.entities.Category;
 import ru.hd.olaf.entities.Product;
+import ru.hd.olaf.entities.User;
 import ru.hd.olaf.exception.AuthException;
 import ru.hd.olaf.exception.CrudException;
 import ru.hd.olaf.util.json.BarEntity;
@@ -23,6 +24,7 @@ public interface AmountService {
     List<Amount> getByProduct(Product product, LocalDate after, LocalDate before);
     List<Amount> getByCategoryAndProduct(Category category, Product product);
     List<Amount> getByCategory(Category category);
+    List<Amount> getByDate(User user, LocalDate after, LocalDate before);
 
     List<BarEntity> getBarEntitiesByCategory(Category category,
                                              LocalDate after,

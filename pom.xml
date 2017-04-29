@@ -166,9 +166,5 @@
             <artifactId>spring-security-core</artifactId>
             <version>${security.version}</version>
         </dependency>
-
-
     </dependencies>
-
-
 </project>

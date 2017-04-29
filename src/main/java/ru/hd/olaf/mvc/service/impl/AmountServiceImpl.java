@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import ru.hd.olaf.entities.Amount;
 import ru.hd.olaf.entities.Category;
 import ru.hd.olaf.entities.Product;
+import ru.hd.olaf.entities.User;
 import ru.hd.olaf.exception.AuthException;
 import ru.hd.olaf.exception.CrudException;
 import ru.hd.olaf.mvc.repository.AmountRepository;
@@ -21,10 +22,8 @@ import ru.hd.olaf.util.json.JsonResponse;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.time.ZoneId;
+import java.util.*;
 
 /**
  * Created by Olaf on 13.04.2017.
@@ -43,6 +42,7 @@ public class AmountServiceImpl implements AmountService {
 
     /**
      * Функция возвращает список amount с проверкой на текущего пользователя
+     *
      * @return
      */
     public List<Amount> getAll() {
@@ -52,10 +52,11 @@ public class AmountServiceImpl implements AmountService {
 
     /**
      * Функция возвращает список amount по категории и текущему пользователю
+     *
      * @param category
      * @return
      */
-    public List<Amount> getByCategory(Category category){
+    public List<Amount> getByCategory(Category category) {
         logger.debug(LogUtil.getMethodName());
         List<Amount> amounts = amountRepository.findByCategoryIdAndUserId(category, securityService.findLoggedUser());
 
@@ -70,6 +71,7 @@ public class AmountServiceImpl implements AmountService {
 
     /**
      * Функция возвращает список amount по продукту с учетом текущего пользователя
+     *
      * @param product
      * @return
      */
@@ -89,9 +91,21 @@ public class AmountServiceImpl implements AmountService {
         return amounts;
     }
 
+    public List<Amount> getByDate(User user, LocalDate after, LocalDate before) {
+        logger.debug(LogUtil.getMethodName());
+
+        Date begin = Date.from(after.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date end = Date.from(before.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        return Lists.newArrayList(amountRepository.findByUserIdAndAmountsDateBetween(user,
+                begin,
+                end));
+    }
+
     /**
      * Функция возвращает список BarEntity, соответствующий набору amount по заданной категории при совпадении amounts.date
      * в заданный период с группировкой по amounts.product
+     *
      * @param category
      * @param after
      * @param before
@@ -126,6 +140,7 @@ public class AmountServiceImpl implements AmountService {
     /**
      * Функция возвращает общую сумму по всем amount, относящимся к данной категории, продукту и попадающим
      * в указанный временной интервал
+     *
      * @param category
      * @param product
      * @param after
@@ -150,6 +165,7 @@ public class AmountServiceImpl implements AmountService {
 
     /**
      * Функция возвращает список amount по категории и продукту с контролем пользователя
+     *
      * @param categoryId
      * @param productId
      * @return
@@ -163,10 +179,11 @@ public class AmountServiceImpl implements AmountService {
 
     /**
      * Функция возвращает запись amount  с проверкой на соответствие текущему пользователю
+     *
      * @param id
      * @return
      */
-    private Amount getOne(Integer id) throws AuthException, IllegalArgumentException{
+    private Amount getOne(Integer id) throws AuthException, IllegalArgumentException {
         logger.debug(LogUtil.getMethodName());
         if (id == null) throw new IllegalArgumentException();
 
@@ -181,6 +198,7 @@ public class AmountServiceImpl implements AmountService {
 
     /**
      * Функция возвращает объект JsonResponse, содержащий результат поиска объекта и, при возможности, сам объект
+     *
      * @param id id записи
      * @return JsonResponse
      */
@@ -210,16 +228,16 @@ public class AmountServiceImpl implements AmountService {
         }
 
 
-
         return jsonResponse;
     }
 
     /**
      * Функция сохраняет(обновляет) запись amount
+     *
      * @param amount
      * @return
      */
-    public Amount save(Amount amount) throws CrudException{
+    public Amount save(Amount amount) throws CrudException {
         Amount entity = null;
 
         try {
@@ -233,6 +251,7 @@ public class AmountServiceImpl implements AmountService {
 
     /**
      * Функция удаления записи из БД
+     *
      * @param amount
      * @return
      */

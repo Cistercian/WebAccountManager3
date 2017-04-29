@@ -7,19 +7,24 @@ import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import ru.hd.olaf.entities.Amount;
 import ru.hd.olaf.entities.Category;
+import ru.hd.olaf.entities.User;
 import ru.hd.olaf.exception.AuthException;
 import ru.hd.olaf.mvc.service.AmountService;
 import ru.hd.olaf.mvc.service.CategoryService;
+import ru.hd.olaf.mvc.service.SecurityService;
 import ru.hd.olaf.util.DatePeriod;
 import ru.hd.olaf.util.LogUtil;
 import ru.hd.olaf.util.json.BarEntity;
+import ru.hd.olaf.util.json.CalendarEntity;
 import ru.hd.olaf.util.json.JsonResponse;
 import ru.hd.olaf.util.json.ResponseType;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 
 import static ru.hd.olaf.util.DatePeriod.getAfterDate;
@@ -33,6 +38,8 @@ public class IndexController {
     private CategoryService categoryService;
     @Autowired
     private AmountService amountService;
+    @Autowired
+    private SecurityService securityService;
 
     private static final Logger logger = LoggerFactory.getLogger(IndexController.class);
 
@@ -81,6 +88,8 @@ public class IndexController {
 
         logger.debug(String.format("Data for injecting: sumIncome: %s, sumExpense: %s, curDate: %s",
                 sumIncome.toString(), sumExpense.toString(), LocalDate.now()));
+
+        modelAndView.addObject("calendarData", getCalendarData());
 
         return modelAndView;
     }
@@ -162,6 +171,42 @@ public class IndexController {
         logList(categoryContent);
 
         return categoryContent;
+    }
+
+    private List<CalendarEntity> getCalendarData(){
+        logger.debug(LogUtil.getMethodName());
+        List<CalendarEntity> calendarEntities = new ArrayList<CalendarEntity>();
+
+        User user = securityService.findLoggedUser();
+        //первое и последнее число текущего месяца
+        LocalDate date = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
+        LocalDate endDate = LocalDate.now().with(TemporalAdjusters.lastDayOfMonth());
+
+        while (date.compareTo(endDate) < 0) {
+
+            List<Amount> amounts = amountService.getByDate(user, date, date);
+
+            if (amounts.size() > 0) {
+
+                BigDecimal sum = new BigDecimal("0");
+
+                for (Amount amount : amounts) {
+                    sum = amount.getCategoryId().getType() == 0 ?
+                            sum.add(amount.getPrice()) :
+                            sum.subtract(amount.getPrice());
+                }
+
+                CalendarEntity calendarEntity = new CalendarEntity();
+                calendarEntity.setTitle(sum.toString());
+                calendarEntity.setDate(date.toString());
+
+                calendarEntities.add(calendarEntity);
+
+            }
+            date = date.plusDays(1);
+        }
+
+        return calendarEntities;
     }
 
     private <T> void logList(List<T> list) {

@@ -5,13 +5,36 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-gb" lang="en-gb" dir="ltr">
 
 <jsp:include page="/WEB-INF/view/tags/header-template.jsp"></jsp:include>
+<%--Диаиграмма--%>
 <spring:url value="/resources/js/Chart.min.js" var="chartmin"/>
 <script src="${chartmin}"></script>
+
+<%--fullcalendar--%>
+<spring:url value="/resources/js/fullcalendar/moment.min.js" var="momentmin"/>
+<spring:url value="/resources/js/fullcalendar/fullcalendar.js" var="fullcalendarjs"/>
+<spring:url value="/resources/js/fullcalendar/locale-all.js" var="localeall"/>
+<script src="${momentmin}"></script>
+<script src="${fullcalendarjs}"></script>
+<script src="${localeall}"></script>
+<spring:url value="/resources/css/fullcalendar/fullcalendar.css" var="fullcalendarcss"/>
+<link rel="stylesheet" href="${fullcalendarcss}">
+
+
 <!-- обращение к контроллеру -->
 <script language="javascript" type="text/javascript">
     $(document).ready(function () {
+        //formatting sums
+        $('#sumIncome').append(numberToString('${sumIncome}'));
+        $('#sumExpense').append(numberToString('${sumExpense}'));
+
         drawChartOfTypes("<spring:message code='label.index.chart.income.label' />=${sumIncome},<spring:message code='label.index.chart.expense.label' />=${sumExpense}", "typeChart");
+
+        //fullcalendar
+        drawCalendar();
     });
+    function numberToString(number){
+        return (number + '').replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ');
+    }
     function drawBarsByParentId(categoryId, isChildren) {
         //свитчер - либо показываем, либо стираем детализацию по дочерней категории
         if (($('*').is('#childrenCategoryDetails')) && isChildren) {
@@ -101,13 +124,13 @@
                                 "<strong id='barName" + classType + classId + "' value='" + className + "'>" +
                                 classTitle + ": " + className + "</strong>" +
                                 "<strong id='barSum" + classType + classId + "' class='pull-right text-muted' value='" + classSum +
-                                "'>" + classSum + " руб." + "</strong>" +
+                                "'>" + numberToString(classSum) + " руб." + "</strong>" +
                                 "<div class='progress " + tagClassProgress + " progress-striped active' >" +
                                 "<div class='progress-bar " + tagClassProgress + " progress-bar-" + styles[curNumStyle] +
                                 "' role='progressbar' aria-valuenow='" + classSum + "'" +
                                 "aria-valuemin='0' aria-valuemax='100' style='width: " + normalSum + "%' " +
                                 "value='" + className + "'>" +
-                                "<span class='sr-only'>" + classSum + "</span>" +
+                                "<span class='sr-only'>" + numberToString(classSum) + "</span>" +
                                 "</div>" +
                                 "</div>" +
                                 "</div>" +
@@ -118,7 +141,7 @@
                     $('#' + idBarElem).append(
                             "<div class='row'>" +
                             "<div class='col-md-12'><h6><strong>" +
-                            "ИТОГО " + $('#' + idSumElem).attr('value') + " руб." +
+                            "ИТОГО " + numberToString($('#' + idSumElem).attr('value')) + " руб." +
                             "</strong></h6>" +
                             "</div><p><p>" +
                             "</div>"
@@ -306,7 +329,7 @@
                         "typeChart");
             }
         });
-    };
+    }
     function removeStatistics(){
         $('#textTotalIncome').empty();
         $('#textTotalExpense').empty();
@@ -316,6 +339,34 @@
 
         $('#dropDownCategoryBarsIncome').append("<h3><spring:message code="label.index.categoryBars.income" /></h3>");
         $('#dropDownCategoryBarsExpense').append("<h3><spring:message code="label.index.categoryBars.expense" /></h3>");
+    }
+    function drawCalendar(){
+        $('#calendar').fullCalendar({
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: ''
+            },
+            //theme: true,
+            defaultDate: '${curDate}',
+            locale: 'ru',
+            buttonIcons: true, // show the prev/next text
+            weekNumbers: false,
+            navLinks: false, // can click day/week names to navigate views
+            editable: false,
+            eventLimit: false, // allow "more" link when too many events
+            events: [
+                <c:forEach items="${calendarData}" var="calendarData">
+                {
+                    title: '${calendarData.getTitle()}'.replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 '),
+                    start: '${calendarData.getDate()}',
+                    allDay: ${calendarData.isAllDay()},
+                    color: '${calendarData.getColor()}',
+                    textColor: '${calendarData.getTextColor()}'
+                },
+                </c:forEach>
+            ]
+        });
     }
 </script>
 <!-- modal panel -->
@@ -411,12 +462,12 @@
                 <h2><spring:message code="label.index.total.title" /></h2>
                 <h2 id="textTotalIncome"><spring:message code="label.index.total.income" />
                     <c:if test="${not empty sumIncome}">
-                        <strong>${sumIncome}</strong>
+                        <strong id="sumIncome"></strong>
                     </c:if>
                 </h2>
                 <h2 id="textTotalExpense"><spring:message code="label.index.total.expense" />
                     <c:if test="${not empty sumExpense}">
-                        <strong>${sumExpense}</strong>
+                        <strong id="sumExpense"></strong>
                     </c:if>
                 </h2>
                 <h2><spring:message code="label.index.total.date" />
@@ -556,6 +607,16 @@
 
 </section><!--/#about-->
 
-<jsp:include page="/WEB-INF/view/tags/footer-template.jsp"></jsp:include>
+<section id="services">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 wow fadeInDown " data-wow-duration="1000ms" data-wow-delay="300ms">
+                <div id="calendar">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 </body>
 </html>

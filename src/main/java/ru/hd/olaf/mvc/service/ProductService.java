@@ -1,6 +1,7 @@
 package ru.hd.olaf.mvc.service;
 
 import ru.hd.olaf.entities.Product;
+import ru.hd.olaf.exception.CrudException;
 import ru.hd.olaf.util.json.JsonResponse;
 
 import java.util.List;
@@ -17,6 +18,7 @@ public interface ProductService {
     Product getByName(String name);
     Product getExistedOrCreated(String productName);
 
-    Product save(Product product);
+    Product save(Product product) throws CrudException;
+    JsonResponse delete(Product product) throws CrudException;
 
 }

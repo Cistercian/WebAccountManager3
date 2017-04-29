@@ -6,16 +6,20 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.hd.olaf.entities.Amount;
+import ru.hd.olaf.entities.Category;
 import ru.hd.olaf.entities.Product;
 import ru.hd.olaf.exception.AuthException;
+import ru.hd.olaf.exception.CrudException;
 import ru.hd.olaf.mvc.controller.LoginController;
 import ru.hd.olaf.mvc.repository.ProductRepository;
+import ru.hd.olaf.mvc.service.AmountService;
 import ru.hd.olaf.mvc.service.ProductService;
 import ru.hd.olaf.mvc.service.SecurityService;
 import ru.hd.olaf.util.LogUtil;
 import ru.hd.olaf.util.json.JsonResponse;
 import ru.hd.olaf.util.json.ResponseType;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -28,6 +32,8 @@ public class ProductServiceImpl implements ProductService {
     private ProductRepository productRepository;
     @Autowired
     private SecurityService securityService;
+    @Autowired
+    private AmountService amountService;
 
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
@@ -117,9 +123,18 @@ public class ProductServiceImpl implements ProductService {
      * @param product
      * @return
      */
-    public Product save(Product product) {
+    public Product save(Product product) throws CrudException{
         logger.debug(LogUtil.getMethodName());
-        return productRepository.save(product);
+
+        Product entity;
+
+        try {
+            entity = productRepository.save(product);
+        } catch (Exception e) {
+            throw new CrudException(e.getMessage());
+        }
+
+        return entity;
     }
 
     /**
@@ -143,9 +158,31 @@ public class ProductServiceImpl implements ProductService {
 
             logger.debug(String.format("Создана новая запись Product: %s", product));
 
-            save(product);
+            try {
+                save(product);
+            } catch (CrudException e1) {
+                //TODO: throws?
+            }
         }
 
         return product;
+    }
+
+    /**
+     * Функция удаления записи из БД
+     * @param product
+     * @return JsonResponse
+     */
+    public JsonResponse delete(Product product) throws CrudException {
+        try {
+            if (amountService.getByProduct(product, LocalDate.MIN, LocalDate.MAX).size() > 0)
+                return new JsonResponse(ResponseType.ERROR, "Откат удаления: обнаружены существующие записи amount " +
+                        "с данной товарной группой");
+
+            productRepository.delete(product.getId());
+            return new JsonResponse(ResponseType.SUCCESS, "Удаление успешно завершено.");
+        } catch (Exception e) {
+            throw new CrudException(e.getMessage());
+        }
     }
 }

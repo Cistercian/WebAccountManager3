@@ -9,6 +9,7 @@
 
 <jsp:include page="/WEB-INF/view/tags/header-template.jsp"></jsp:include>
 
+<%--быстрый поиск--%>
 <spring:url value="/resources/js/bootstrap3-typeahead.js" var="typeahead"/>
 <script src="${typeahead}"></script>
 
@@ -30,7 +31,7 @@
                 $products = [''];
                 $.ajax({
                     type: 'Get',
-                    url: '/page-amount/getProducts',
+                    url: '/page-data/getProducts',
                     dataType: "json",
                     data: {'query' : query},
                     success: function (data) {
@@ -50,15 +51,23 @@
         });
     });
 
-    function setCategoryId(categoryId, categoryName) {
-        $('#btnCategories').text(categoryName + "  ");
-        $('#btnCategories').val(categoryId);
-        $('#btnCategories').append("\<span class=\"caret\">\<\/span>");
-
-        $('#btnParentCategories').text(categoryName + "  ");
-        $('#btnParentCategories').val(categoryId);
-        $('#btnParentCategories').append("\<span class=\"caret\">\<\/span>");
-    };
+    function setDropdownListId(categoryId, categoryName, type) {
+        var elem;
+        switch (type) {
+            case 'categories':
+                elem = $('#btnCategories');
+                break;
+            case 'parentCategories':
+                elem = $('#btnParentCategories');
+                break;
+            case 'product':
+                elem = $('#btnProductMerge');
+                break;
+        }
+        elem.text(categoryName + "  ");
+        elem.val(categoryId);
+        elem.append("\<span class=\"caret\">\<\/span>");
+    }
     function displayMessage(type, message, Url) {
         ClearModalPanel();
         $('#modalBody').append(
@@ -111,6 +120,13 @@
                 'type': $('#typeIncome').prop('checked') ? 0 : 1,
                 'details': $('#categoryDetails').val(),
             };
+        } else if (className == 'product') {
+            var data = {
+                'className' : 'product',
+                'id': $('#id').val(),
+                'name': $('#product').val(),
+                'mergeProductId': $('#btnProductMerge').val()
+            };
         }
         $.ajax({
             type: "POST",
@@ -121,7 +137,7 @@
                 var type = data.type;
                 var message = data.message;
 
-                displayMessage(type, message, "/page-data/" + className);
+                displayMessage(type, message, "/index");
             }
         });
     };
@@ -261,10 +277,11 @@
                                 <span class="caret"></span>
                             </button>
                             <ul id="dropdownCategories" class="dropdown-menu">
-                                <li><a onclick="setCategoryId(-1, 'Select Category');return false;"><spring:message code="label.page-amount.selectCategory" /></a></li>
+                                <li><a onclick="setDropdownListId(-1, 'Select Category', 'categories');return false;"><spring:message code="label.page-amount.selectCategory" /></a></li>
                                 <li class="divider"></li>
-                                <c:forEach items="${categories}" var="list">
-                                        <li><a id='${list.getId()}' onclick="setCategoryId('${list.getId()}', '${list.getName()}');
+                                <c:forEach items="${list}" var="list">
+                                        <li><a id='${list.getId()}' onclick="setDropdownListId('${list.getId()}',
+                                                '${list.getName()}', 'categories');
                                         return false;">${list.getName()}</a></li>
                                 </c:forEach>
                             </ul>
@@ -340,11 +357,12 @@
                             <span class="caret"></span>
                         </button>
                         <ul id="dropdownParentCategories" class="dropdown-menu">
-                            <li><a onclick="setCategoryId(-1, 'Select Category');return false;">
+                            <li><a onclick="setDropdownListId(-1, 'Select Category', 'parentCategories');return false;">
                                 <spring:message code="label.page-category.selectCategory" /></a></li>
                             <li class="divider"></li>
-                            <c:forEach items="${categories}" var="list">
-                                <li><a id='${list.getId()}' onclick="setCategoryId('${list.getId()}', '${list.getName()}');
+                            <c:forEach items="${list}" var="list">
+                                <li><a id='${list.getId()}' onclick="setDropdownListId('${list.getId()}',
+                                        '${list.getName()}', 'parentCategories');
                                         return false;">${list.getName()}</a></li>
                             </c:forEach>
                         </ul>
@@ -410,7 +428,7 @@
                     <div class="col-md-6 col-md-offset-6">
                         <div class="btn-group">
                             <button id="btnCategoryNew" type="submit" name="btnNew"
-                                    class="btn btn-default btn-lg " onclick="location.href='/page-category.html'">
+                                    class="btn btn-default btn-lg " onclick="location.href='/page-data/category.html'">
                                 <spring:message code="label.page-category.btnNew" />
                             </button>
                         </div>
@@ -436,27 +454,82 @@
                 </div>
             </section>
             </c:if>
-        </div>
-    </div>
-</div>
-
-
-<div class="sub-footer">
-    <div class="container">
-        <div class="col-md-6 ">
-            <div class="copyright text-right">
-                &copy; Anyar Theme. All Rights Reserved.
-                <div class="credits">
-                    <!--
-                        All the links in the footer should remain intact.
-                        You can delete the links only if you purchased the pro version.
-                        Licensing information: https://bootstrapmade.com/license/
-                        Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/buy/?theme=Anyar
-                    -->
-                    <a href="https://bootstrapmade.com/">Bootstrap Themes</a> by <a
-                        href="https://bootstrapmade.com/">BootstrapMade</a>
+            <c:if test="${className=='product'}">
+            <section id='sectionCategory'>
+                <div class='page-header'>
+                    <h2><spring:message code="label.page-data.product.title" /></h2>
                 </div>
-            </div>
+                <div class="row">
+                    <div class="col-md-12"><h4><strong>
+                        <spring:message code="label.page-data.product.name" />
+                    </strong></h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <input id="product" type="text" name="name" class="form-control form input-lg"
+                               path="name" placeholder="Name" data-rule="minlen:5"
+                               data-msg="Please enter at least 5 chars"
+                               value='${name}'/>
+                        <div class="validation"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12"><h4><strong>
+                        <spring:message code="label.page-data.product.mergeText" />
+                    </strong></h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <button id="btnProductMerge" class="btn-default btn-lg btn-block dropdown-toggle"
+                                data-toggle="dropdown" value="${productMergeId}">
+                            <c:choose>
+                                <c:when test="${not empty productMerge}">
+                                    ${productMergeName}
+                                </c:when>
+                                <c:otherwise>
+                                    <spring:message code="label.page-data.product.selectProductMerge" />
+                                </c:otherwise>
+                            </c:choose>
+                            <span class="caret"></span>
+                        </button>
+                        <ul id="dropdownProductMerge" class="dropdown-menu">
+                            <li><a onclick="setDropdownListId(-1, 'Select Product', 'product');return false;">
+                                <spring:message code="label.page-data.product.selectProductMerge" /></a></li>
+                            <li class="divider"></li>
+                            <c:forEach items="${list}" var="list">
+                                <li><a id='${list.getId()}' onclick="setDropdownListId('${list.getId()}',
+                                        '${list.getName()}', 'product');
+                                        return false;">${list.getName()}</a></li>
+                            </c:forEach>
+                        </ul>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 col-md-offset-6">
+                        <div class="btn-group">
+                            <button id="btnProductDelete" type="submit" name="btnDelete"
+                                    class="btn btn-default btn-lg " onclick="Delete('product');return false;">
+                                <spring:message code="label.page-category.btnDelete" />
+                            </button>
+                        </div>
+                        <div class="btn-group">
+                            <button id="btnProductOk" type="submit" name="btnOk"
+                                    class="btn btn-default btn-lg " onclick="Save('product');return false;">
+                                <spring:message code="label.page-category.btnOk" />
+                            </button>
+                        </div>
+                        <div class="btn-group">
+                            <button id="btnProductCancel" type="submit" name="btnCancel"
+                                    class="btn btn-default btn-lg " onclick="location.reload();">
+                                <spring:message code="label.page-category.btnCancel" />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            </c:if>
         </div>
     </div>
 </div>

@@ -72,6 +72,7 @@ public class DataController {
 
     /**
      * Функция просмотра пустой страницы заполнения Amount
+     *
      * @return ModelAndView
      */
     @RequestMapping(value = "/page-data/amount", method = RequestMethod.GET)
@@ -83,6 +84,7 @@ public class DataController {
 
     /**
      * Функция просмотра пустой страницы заполнения Category
+     *
      * @return ModelAndView
      */
     @RequestMapping(value = "/page-data/category", method = RequestMethod.GET)
@@ -97,13 +99,12 @@ public class DataController {
                                       @PathVariable(value = "id") Integer id) {
         logger.debug(LogUtil.getMethodName());
 
-        ModelAndView modelAndView = null;
+        ModelAndView modelAndView = new ModelAndView("/data/data");
         JsonResponse response;
 
         if (className.equalsIgnoreCase(Amount.class.getSimpleName())) {
             logger.debug("Обрабатывается класс Amount");
 
-            modelAndView = new ModelAndView("/data/data");
             response = amountService.getById(id);
 
             if (response.getType() == ResponseType.ERROR)
@@ -117,8 +118,6 @@ public class DataController {
         } else if (className.equalsIgnoreCase(Category.class.getSimpleName())) {
             logger.debug("Обрабатывается класс Category");
 
-            modelAndView = new ModelAndView("/data/data");
-
             response = categoryService.getById(id);
             if (response.getType() == ResponseType.ERROR)
                 modelAndView.addObject("response", response.getMessage());
@@ -127,20 +126,40 @@ public class DataController {
 
                 modelAndView = fillViewCategory(modelAndView, response);
             }
+        } else if (className.equalsIgnoreCase(Product.class.getSimpleName())) {
+            logger.debug("Обрабатывается класс Product");
+
+            response = productService.getById(id);
+            if (response.getType() == ResponseType.ERROR)
+                modelAndView.addObject("response", response.getMessage());
+            else {
+                logger.debug(String.format("Response: %s", response));
+
+                modelAndView = fillViewProduct(modelAndView, response);
+            }
         }
 
+        //TODO: refactoring
+        if (!className.equalsIgnoreCase(Product.class.getSimpleName())) {
+            List<Category> list = categoryService.getAll();
 
-        List<Category> categories = categoryService.getAll();
-        logger.debug(String.format("Список 'categories' для заполнения выпадающего списка: %s.",
-                categories.toString()));
+            logger.debug(String.format("Список 'list' для заполнения выпадающего списка: %s.",
+                    list.toString()));
+            modelAndView.addObject("list", list);
+        } else {
+            List<Product> list = productService.getAll();
 
-        modelAndView.addObject("categories", categories);
+            logger.debug(String.format("Список 'list' для заполнения выпадающего списка: %s.",
+                    list.toString()));
+            modelAndView.addObject("list", list);
+        }
 
         return modelAndView;
     }
 
     @RequestMapping(value = "/page-data/save", method = RequestMethod.POST)
-    public @ResponseBody
+    public
+    @ResponseBody
     JsonResponse saveEntity(@RequestParam(value = "className") String className,
                             @RequestParam(value = "id") Integer id,
                             @RequestParam(value = "categoryId", required = false) Integer categoryId,
@@ -150,7 +169,8 @@ public class DataController {
                             @RequestParam(value = "date", required = false) Date amountsDate,
                             @RequestParam(value = "parentId", required = false) Integer parentId,
                             @RequestParam(value = "type", required = false) Byte type,
-                            @RequestParam(value = "details") String details) {
+                            @RequestParam(value = "details", required = false) String details,
+                            @RequestParam(value = "mergeProductId", required = false) Integer mergeProductId) {
         logger.debug(LogUtil.getMethodName());
 
         JsonResponse response = null;
@@ -164,14 +184,20 @@ public class DataController {
             logger.debug("Инициализация сохранения записи Category");
 
             response = saveCategory(id, parentId, name, type, details);
+        } else if (className.equalsIgnoreCase(Product.class.getSimpleName())) {
+            logger.debug("Инициализация сохранения записи Product");
+
+            response = saveProduct(id, name, mergeProductId);
         }
 
         return response;
     }
 
     @RequestMapping(value = "/page-data/delete", method = RequestMethod.POST)
-    public @ResponseBody JsonResponse deleteEntity(@RequestParam(value = "className") String className,
-                                                   @RequestParam(value = "id") Integer id) {
+    public
+    @ResponseBody
+    JsonResponse deleteEntity(@RequestParam(value = "className") String className,
+                              @RequestParam(value = "id") Integer id) {
         logger.debug(LogUtil.getMethodName());
         JsonResponse response = new JsonResponse();
 
@@ -180,21 +206,30 @@ public class DataController {
                 logger.debug("Инициализация удаления записи Amount");
 
                 response = amountService.getById(id);
-                if (response.getType() != ResponseType.SUCCESS) {
+                if (response.getEntity() == null) {
                     logger.debug(response.getType() + ":" + response.getMessage());
                     return response;
                 }
-                response = amountService.delete((Amount)response.getEntity());
+                response = amountService.delete((Amount) response.getEntity());
 
             } else if (className.equalsIgnoreCase(Category.class.getSimpleName())) {
                 logger.debug("Инициализация удаления записи Category");
 
                 response = categoryService.getById(id);
-                if (response.getType() != ResponseType.SUCCESS) {
+                if (response.getEntity() == null) {
                     logger.debug(response.getType() + ":" + response.getMessage());
                     return response;
                 }
                 response = categoryService.delete((Category) response.getEntity());
+            } else if (className.equalsIgnoreCase(Product.class.getSimpleName())) {
+                logger.debug("Инициализация удаления записи Product");
+
+                response = productService.getById(id);
+                if (response.getEntity() == null) {
+                    logger.debug(response.getType() + ":" + response.getMessage());
+                    return response;
+                }
+                response = productService.delete((Product) response.getEntity());
             }
         } catch (CrudException e) {
             String message = String.format("Произошла неизвестная ошибка: %s", e.getCause());
@@ -212,17 +247,32 @@ public class DataController {
     }
 
     /**
+     * Функция возвращает список товарных групп для автозаполнения поля
+     * @param query строка для поиска
+     * @return лист продуктов
+     */
+    @RequestMapping(value = "/page-data/getProducts", method = RequestMethod.GET)
+    public @ResponseBody
+    List<Product> getProducts(@RequestParam("query") String query) {
+        logger.debug(String.format("Function %s. params: %s", "getProducts()", query));
+
+        return productService.getByContainedName(query);
+    }
+
+
+    /**
      * Функция сохранения записи Amount
+     *
      * @param id
      * @return
      */
     private JsonResponse saveAmount(Integer id,
-                                   Integer categoryId,
-                                   String productName,
-                                   String name,
-                                   BigDecimal price,
-                                   Date amountsDate,
-                                   String details) {
+                                    Integer categoryId,
+                                    String productName,
+                                    String name,
+                                    BigDecimal price,
+                                    Date amountsDate,
+                                    String details) {
         logger.debug(LogUtil.getMethodName());
         JsonResponse response;
         Amount amount;
@@ -284,6 +334,7 @@ public class DataController {
 
     /**
      * Функция сохранаяет/обновляет запись в таблице Category
+     *
      * @param id
      * @param parentId
      * @param name
@@ -295,7 +346,7 @@ public class DataController {
                                       Integer parentId,
                                       String name,
                                       Byte type,
-                                      String details){
+                                      String details) {
         logger.debug(LogUtil.getMethodName());
 
         JsonResponse response = categoryService.getById(id);
@@ -342,10 +393,90 @@ public class DataController {
     }
 
     /**
+     * Функция сохраняет запись Product
+     *
+     * @param id             редактируемой записи
+     * @param name           имя записи
+     * @param mergeProductId id сущности, с которой необходимо произвести объединение
+     * @return объект JsonResponse
+     */
+    private JsonResponse saveProduct(Integer id,
+                                     String name,
+                                     Integer mergeProductId) {
+        logger.debug(LogUtil.getMethodName());
+
+        JsonResponse response = productService.getById(id);
+        if (response.getType() == ResponseType.ERROR)
+            return response;
+
+        Product product = (Product) response.getEntity();
+
+        if (product == null) {
+            response.setType(ResponseType.ERROR);
+            response.setMessage("Запись не найдена.");
+            return response;
+        }
+
+        product.setName(name);
+
+        try {
+            productService.save(product);
+        } catch (CrudException e) {
+            String message = String.format("Возникла ошибка при сохранении данных в БД. \n" +
+                    "Error message: %s", e.getMessage());
+            logger.error(message);
+
+            return new JsonResponse(ResponseType.ERROR, message);
+        }
+
+        String message = "Запись успешно сохранена в БД.";
+        logger.debug(message + "\n" + product);
+
+        //брабатываем объединение записей
+        if (mergeProductId != null && mergeProductId != -1) {
+            response = productService.getById(mergeProductId);
+
+            if (response.getEntity() == null) {
+                message += "Возникла ошибка при поиске записи товарной группы для объединения. Откат объединения.";
+                logger.error(message);
+            } else {
+                Product mergeProduct = (Product) response.getEntity();
+
+                for (Amount amount : amountService.getByProduct(mergeProduct, LocalDate.MIN, LocalDate.MAX)) {
+
+                    response = saveAmount(amount.getId(),
+                            amount.getCategoryId().getId(),
+                            product.getName(),
+                            amount.getName(),
+                            amount.getPrice(),
+                            amount.getAmountsDate(),
+                            amount.getDetails());
+
+                    logger.debug(String.format("Редактирование записи amount (перевод в другую товарную группу):" +
+                            "результат %s (%s).", response.getType(), response.getMessage()));
+
+                }
+
+                //удаляем объединяемую сущность
+                try {
+                    response = productService.delete(mergeProduct);
+                    logger.debug(String.format("Результат удаления объединяемой записи: %s (%s)",
+                            response.getType(), response.getMessage()));
+                    message = message + "(Редактирование объединяемой записи: " + response.getMessage() + ")";
+                } catch (CrudException e) {
+                    message += e.getMessage();
+                }
+            }
+        }
+
+        return new JsonResponse(ResponseType.SUCCESS, message);
+    }
+
+    /**
      * Функция заполняет ModelAndView класса Amount
      *
      * @param modelAndView заполняемый ModelAndView
-     * @param response  ранее полученный объект ответа сервиса
+     * @param response     ранее полученный объект ответа сервиса
      * @return заполненный ModelAndView
      */
     private ModelAndView fillViewAmount(ModelAndView modelAndView, JsonResponse response) {
@@ -376,7 +507,7 @@ public class DataController {
                 logger.debug("Товарная группа не определена");
                 //TODO: Логическая ошибка данных БД?
             }
-        } else if (response.getType() == ResponseType.SUCCESS){
+        } else if (response.getType() == ResponseType.SUCCESS) {
             String message = "Запрошеный объект не найден";
             modelAndView.addObject("response", message);
 
@@ -395,7 +526,7 @@ public class DataController {
      * Функция заполняет ModelAndView класса Category
      *
      * @param modelAndView заполняемый ModelAndView
-     * @param response Ответ, полученный от сервиса
+     * @param response     Ответ, полученный от сервиса
      * @return заполненный ModelAndView
      */
     private ModelAndView fillViewCategory(ModelAndView modelAndView, JsonResponse response) {
@@ -428,7 +559,36 @@ public class DataController {
                 modelAndView.addObject("typeIncome", "true");
 
 
-        } else if (response.getType() == ResponseType.INFO){
+        } else if (response.getType() == ResponseType.INFO) {
+            String message = "Запрошеный объект не найден";
+            modelAndView.addObject("response", message);
+
+            logger.debug(message);
+        }
+
+        return modelAndView;
+    }
+
+    /**
+     * Функция заполняет ModelAndView класса Product
+     *
+     * @param modelAndView заполняемый ModelAndView
+     * @param response     Ответ, полученный от сервиса
+     * @return заполненный ModelAndView
+     */
+    private ModelAndView fillViewProduct(ModelAndView modelAndView, JsonResponse response) {
+        logger.debug(LogUtil.getMethodName());
+        Product product = (Product) response.getEntity();
+
+        modelAndView.addObject("className", "product");
+
+        if (product != null) {
+            logger.debug(String.format("Обрабатываемый объект: %s", product));
+
+            modelAndView.addObject("id", product.getId());
+            modelAndView.addObject("name", product.getName());
+
+        } else if (response.getType() == ResponseType.INFO) {
             String message = "Запрошеный объект не найден";
             modelAndView.addObject("response", message);
 

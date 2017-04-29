@@ -1,5 +1,5 @@
 <component name="ArtifactManager">
-  <artifact type="exploded-war" name="WebAccountManager3:war exploded">
+  <artifact type="exploded-war" build-on-make="true" name="WebAccountManager3:war exploded">
     <output-path>C:/1/java/out</output-path>
     <root id="root">
       <element id="directory" name="WEB-INF">
