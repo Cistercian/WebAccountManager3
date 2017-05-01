@@ -15,7 +15,8 @@
 <html>
 <head>
     <title>Title</title>
-
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Bootstrap -->
     <spring:url value="resources/css/bootstrap.min.css" var="bootstrapmin"/>
     <spring:url value="resources/css/font-awesome.min.css" var="fontawesomemin"/>

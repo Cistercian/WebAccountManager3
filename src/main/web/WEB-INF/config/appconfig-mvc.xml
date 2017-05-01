@@ -48,11 +48,10 @@
     <mvc:view-controller path="/index.html" view-name="/index"/>
     <mvc:view-controller path="/about.html" view-name="/about/about"/>
     <mvc:view-controller path="/jdbc.html" view-name="/jdbc/jdbc"/>
-    <mvc:view-controller path="/page-amount.html" view-name="/data/page-amount"/>
-    <mvc:view-controller path="/page-category.html" view-name="/data/page-category"/>
     <mvc:view-controller path="/page-product.html" view-name="/data/page-product"/>
     <mvc:view-controller path="/page-data.html" view-name="/data/page-data"/>
     <mvc:view-controller path="/data.html" view-name="/data/data"/>
+    <mvc:view-controller path="/calendar.html" view-name="/statistic/calendar"/>
     <mvc:view-controller path="/login.html" view-name="/login/login"/>
     <mvc:view-controller path="/registraion.html" view-name="/login/registration"/>
 

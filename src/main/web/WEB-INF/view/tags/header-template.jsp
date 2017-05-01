@@ -24,13 +24,11 @@
     <spring:url value="/resources/css/font-awesome.min.css" var="fontawesomemin"/>
     <spring:url value="/resources/css/font-awesome.css" var="fontawesome"/>
     <spring:url value="/resources/css/animate.css" var="animate"/>
-    <spring:url value="/resources/css/style.css" var="style"/>
 
     <link rel="stylesheet" href="${bootstrapmin}">
     <link rel="stylesheet" href="${fontawesomemin}">
     <link rel="stylesheet" href="${fontawesome}">
     <link rel="stylesheet" href="${animate}">
-    <link rel="stylesheet" href="${style}">
     <!-- =======================================================
         Theme Name: Anyar
         Theme URL: https://bootstrapmade.com/anyar-free-multipurpose-one-page-bootstrap-theme/
@@ -54,39 +52,58 @@
     <script src="${jqueryeasingmin}"></script>
     <script src="${jqueryisotopemin}"></script>
     <script src="${functions}"></script>
-    <script src="https://maps.google.com/maps/api/js?sensor=true"></script>
+
+
+    <%--fullcalendar--%>
+    <spring:url value="/resources/js/fullcalendar/moment.min.js" var="momentmin"/>
+    <spring:url value="/resources/js/fullcalendar/fullcalendar.js" var="fullcalendarjs"/>
+    <spring:url value="/resources/js/fullcalendar/locale-all.js" var="localeall"/>
+    <script src="${momentmin}"></script>
+    <script src="${fullcalendarjs}"></script>
+    <script src="${localeall}"></script>
+    <spring:url value="/resources/css/fullcalendar/fullcalendar.css" var="fullcalendarcss"/>
+    <link rel="stylesheet" href="${fullcalendarcss}">
+
+    <%--Datepicker--%>
+    <spring:url value="/resources/js/datepicker/bootstrap-datetimepicker.min.js" var="datetimepicker"/>
+    <script src="${datetimepicker}"></script>
+    <spring:url value="/resources/css/datepicker/bootstrap-datetimepicker.min.css" var="datetimepickercss"/>
+    <link rel="stylesheet" href="${datetimepickercss}">
+
+    <spring:url value="/resources/js/web.account.functions.js" var="webaccount"/>
+    <script src="${webaccount}"></script>
 
 </head>
 <body>
 <header>
-    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-        <div class="navigation">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                            data-target=".navbar-collapse.collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <div class="navbar-brand">
-                        <a href="/index.html#home"><h1>Web Account Manager</h1></a>
-                    </div>
-                </div>
-
-                <div class="navbar-collapse collapse">
-                    <div class="menu">
-                        <ul class="nav nav-tabs" role="tablist">
-                            <li role="presentation"><a href="/index.html#home" class="active">Home</a></li>
-                            <li role="presentation"><a href="#about">Statistics</a></li>
-                            <li role="presentation"><a href="#services">Edit</a></li>
-                            <li role="presentation"><a href="/page-data/amount">Edit Amounts</a></li>
-                            <li role="presentation"><a href="/page-data/category">Edit Categories</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+    <nav class="navbar navbar-default" role="navigation">
+        <!-- Название компании и кнопка, которая отображается для мобильных устройств группируются для лучшего отображения при свертывании -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">WebAccountManager</a>
         </div>
+
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/index"><spring:message code="menu.nav.home" /></a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><spring:message code="menu.nav.statistic" /> <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/statistic/calendar"><spring:message code="menu.nav.calendar" /></a></li>
+                        <li><a href="#">Что-то еще</a></li>
+                        <li><a href="#">Что-то еще</a></li>
+                        <li class="divider"></li>
+                    </ul>
+                </li>
+                <li><a href="/page-data/amount"><spring:message code="menu.nav.amounts" /></a></li>
+                <li><a href="/page-data/category"><spring:message code="menu.nav.categories" /></a></li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
     </nav>
+
 </header>

@@ -69,20 +69,20 @@
                 <div class="panel-body">
                     <table id="amounts" class="table table-striped table-bordered table-text" cellspacing="0" width="100%">
                         <thead>
-                            <tr>
-                                <th><spring:message code="label.page-product.table.id" /></th>
-                                <th><spring:message code="label.page-product.table.date" /></th>
-                                <th><spring:message code="label.page-product.table.name" /></th>
-                                <th><spring:message code="label.page-product.table.price" /></th>
-                                <th><spring:message code="label.page-product.table.category" /></th>
-                            </tr>
+                        <tr>
+                            <th style="display : none;"><spring:message code="label.page-product.table.id" /></th>
+                            <th><spring:message code="label.page-product.table.date" /></th>
+                            <th><spring:message code="label.page-product.table.name" /></th>
+                            <th><spring:message code="label.page-product.table.price" /></th>
+                            <th><spring:message code="label.page-product.table.category" /></th>
+                        </tr>
                         </thead>
                         <tbody>
 
                         <c:forEach items="${amounts}" var="amount">
                             <tr onclick="location.href='/page-data/display/Amount/${amount.getId()}';">
-                                <td>${amount.getId()}</td>
-                                <td>${amount.getAmountsDate()}</td>
+                                <td style="display : none;">${amount.getId()}</td>
+                                <td style="white-space: nowrap;">${amount.getAmountsDate()}</td>
                                 <td>${amount.getName()}</td>
                                 <td>${amount.getPrice()}</td>
                                 <td>${amount.getCategoryId().getName()}</td>
@@ -97,25 +97,6 @@
 </div>
 
 
-<div class="sub-footer">
-    <div class="container">
-        <div class="col-md-6 ">
-            <div class="copyright text-right">
-                &copy; Anyar Theme. All Rights Reserved.
-                <div class="credits">
-                    <!--
-                        All the links in the footer should remain intact.
-                        You can delete the links only if you purchased the pro version.
-                        Licensing information: https://bootstrapmade.com/license/
-                        Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/buy/?theme=Anyar
-                    -->
-                    <a href="https://bootstrapmade.com/">Bootstrap Themes</a> by <a
-                        href="https://bootstrapmade.com/">BootstrapMade</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 </body>
 </html>

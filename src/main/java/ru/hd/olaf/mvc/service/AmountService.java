@@ -21,7 +21,7 @@ public interface AmountService {
     JsonResponse getById(Integer id);
 
     List<Amount> getAll();
-    List<Amount> getByProduct(Product product, LocalDate after, LocalDate before);
+    List<Amount> getByProductAndDate(Product product, LocalDate after, LocalDate before);
     List<Amount> getByCategoryAndProduct(Category category, Product product);
     List<Amount> getByCategory(Category category);
     List<Amount> getByDate(User user, LocalDate after, LocalDate before);

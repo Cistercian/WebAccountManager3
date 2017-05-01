@@ -19,6 +19,7 @@ import ru.hd.olaf.util.json.JsonResponse;
 import ru.hd.olaf.util.json.ResponseType;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static ru.hd.olaf.util.DatePeriod.getAfterDate;
@@ -40,10 +41,15 @@ public class ProductController {
 
     @RequestMapping(value = "/page-product/{id}", method = RequestMethod.GET)
     public ModelAndView displayPageProduct(@PathVariable("id") Integer id,
-                                           @RequestParam(value = "period") String period,
-                                           @RequestParam(value = "countDays", required = false) Integer countDays) {
+                                           @RequestParam(value = "after") String beginDate,
+                                           @RequestParam(value = "before") String endDate) {
         logger.debug(LogUtil.getMethodName());
-        logger.debug(String.format("Params: id = %d, period = %s, countDays = %d", id, period, countDays));
+
+        String delimiter = beginDate.contains(".") ? "." : "-";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd" + delimiter + "MM" + delimiter + "yyyy");
+
+        LocalDate after = LocalDate.parse(beginDate, formatter);
+        LocalDate before = LocalDate.parse(endDate, formatter);
 
         ModelAndView modelAndView = new ModelAndView("/data/page-product");
 
@@ -53,10 +59,7 @@ public class ProductController {
         if (response.getType() == ResponseType.SUCCESS)
             product = (Product) response.getEntity();
 
-        LocalDate today = LocalDate.now();
-        LocalDate after = getAfterDate(period, today, countDays);
-
-        List<Amount> amounts = amountService.getByProduct(product, after.minusDays(1), today.plusDays(1));
+        List<Amount> amounts = amountService.getByProductAndDate(product, after, before);
         modelAndView.addObject("amounts", amounts);
 
         return modelAndView;

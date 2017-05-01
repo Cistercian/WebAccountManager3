@@ -1,5 +1,6 @@
 package ru.hd.olaf.mvc.controller;
 
+import org.joda.time.format.DateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +19,15 @@ import ru.hd.olaf.mvc.service.CategoryService;
 import ru.hd.olaf.mvc.service.ProductService;
 import ru.hd.olaf.mvc.service.SecurityService;
 import ru.hd.olaf.util.LogUtil;
+import ru.hd.olaf.util.ParseUtil;
 import ru.hd.olaf.util.json.JsonResponse;
 import ru.hd.olaf.util.json.ResponseType;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -166,7 +170,7 @@ public class DataController {
                             @RequestParam(value = "productName", required = false) String productName,
                             @RequestParam(value = "name") String name,
                             @RequestParam(value = "price", required = false) BigDecimal price,
-                            @RequestParam(value = "date", required = false) Date amountsDate,
+                            @RequestParam(value = "date", required = false) String amountsDate,
                             @RequestParam(value = "parentId", required = false) Integer parentId,
                             @RequestParam(value = "type", required = false) Byte type,
                             @RequestParam(value = "details", required = false) String details,
@@ -178,7 +182,8 @@ public class DataController {
         if (className.equalsIgnoreCase(Amount.class.getSimpleName())) {
             logger.debug("Инициализация сохранения записи Amount");
 
-            response = saveAmount(id, categoryId, productName, name, price, amountsDate, details);
+            Date date = Date.from(ParseUtil.getParsedDate(amountsDate).atStartOfDay(ZoneId.systemDefault()).toInstant());
+            response = saveAmount(id, categoryId, productName, name, price, date, details);
 
         } else if (className.equalsIgnoreCase(Category.class.getSimpleName())) {
             logger.debug("Инициализация сохранения записи Category");
@@ -442,7 +447,7 @@ public class DataController {
             } else {
                 Product mergeProduct = (Product) response.getEntity();
 
-                for (Amount amount : amountService.getByProduct(mergeProduct, LocalDate.MIN, LocalDate.MAX)) {
+                for (Amount amount : amountService.getByProductAndDate(mergeProduct, LocalDate.MIN, LocalDate.MAX)) {
 
                     response = saveAmount(amount.getId(),
                             amount.getCategoryId().getId(),
@@ -489,6 +494,8 @@ public class DataController {
 
             logger.debug(String.format("Обрабатываемый объект: %s", amount));
 
+            //TODO: fix date format
+
             modelAndView.addObject("name", amount.getName());
             modelAndView.addObject("date", amount.getAmountsDate());
             modelAndView.addObject("price", amount.getPrice());
@@ -516,7 +523,7 @@ public class DataController {
             //рисуем пустую форму
             logger.debug("Инициализация пустой формы");
 
-            modelAndView.addObject("date", LocalDate.now());
+            modelAndView.addObject("date", LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
         }
 
         return modelAndView;
@@ -559,7 +566,7 @@ public class DataController {
                 modelAndView.addObject("typeIncome", "true");
 
 
-        } else if (response.getType() == ResponseType.INFO) {
+        } else if (response.getType() == ResponseType.SUCCESS) {
             String message = "Запрошеный объект не найден";
             modelAndView.addObject("response", message);
 
