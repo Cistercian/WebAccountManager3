@@ -93,7 +93,7 @@ public class AmountServiceImpl implements AmountService {
     }
 
     public List<Amount> getByDate(User user, LocalDate after, LocalDate before) {
-        logger.debug(LogUtil.getMethodName());
+        logger.debug(LogUtil.getMethodName() + String.format(". Интервал: %s - %s", after, before));
 
         Date begin = Date.from(after.atStartOfDay(ZoneId.systemDefault()).toInstant());
         Date end = Date.from(before.atStartOfDay(ZoneId.systemDefault()).toInstant());

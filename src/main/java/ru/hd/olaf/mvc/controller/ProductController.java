@@ -15,6 +15,7 @@ import ru.hd.olaf.mvc.service.AmountService;
 import ru.hd.olaf.mvc.service.ProductService;
 import ru.hd.olaf.mvc.service.SecurityService;
 import ru.hd.olaf.util.LogUtil;
+import ru.hd.olaf.util.ParseUtil;
 import ru.hd.olaf.util.json.JsonResponse;
 import ru.hd.olaf.util.json.ResponseType;
 
@@ -45,11 +46,8 @@ public class ProductController {
                                            @RequestParam(value = "before") String endDate) {
         logger.debug(LogUtil.getMethodName());
 
-        String delimiter = beginDate.contains(".") ? "." : "-";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd" + delimiter + "MM" + delimiter + "yyyy");
-
-        LocalDate after = LocalDate.parse(beginDate, formatter);
-        LocalDate before = LocalDate.parse(endDate, formatter);
+        LocalDate after = ParseUtil.getParsedDate(beginDate);
+        LocalDate before = ParseUtil.getParsedDate(endDate);
 
         ModelAndView modelAndView = new ModelAndView("/data/page-product");
 

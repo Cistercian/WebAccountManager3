@@ -1,6 +1,5 @@
 package ru.hd.olaf.mvc.controller;
 
-import org.joda.time.format.DateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,6 @@ import org.springframework.web.servlet.ModelAndView;
 import ru.hd.olaf.entities.Amount;
 import ru.hd.olaf.entities.Category;
 import ru.hd.olaf.entities.Product;
-import ru.hd.olaf.exception.AuthException;
 import ru.hd.olaf.exception.CrudException;
 import ru.hd.olaf.mvc.service.AmountService;
 import ru.hd.olaf.mvc.service.CategoryService;
@@ -494,10 +492,11 @@ public class DataController {
 
             logger.debug(String.format("Обрабатываемый объект: %s", amount));
 
-            //TODO: fix date format
+            //TODO: parse exception?
+            SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
 
             modelAndView.addObject("name", amount.getName());
-            modelAndView.addObject("date", amount.getAmountsDate());
+            modelAndView.addObject("date", format.format(amount.getAmountsDate()));
             modelAndView.addObject("price", amount.getPrice());
             modelAndView.addObject("details", amount.getDetails());
             modelAndView.addObject("id", amount.getId());

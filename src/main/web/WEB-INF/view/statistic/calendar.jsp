@@ -58,34 +58,37 @@
      * Функция прорисовки календаря с помощью fullcalendar
      */
     function drawCalendar(){
+        var screenWidth = $(document).width();
+        var calendarView = screenWidth < 1000 ? 'listWeek' : 'month';
         $('#calendar').fullCalendar({
             header: {
                 left: 'prev,next today',
                 center: 'title',
                 right: ''
             },
-            //theme: true,
+            defaultView : calendarView,
+            height: calendarView == 'listWeek' ? 575 : 800,
+            theme: false,
             defaultDate: new Date(),
             locale: 'ru',
-            buttonIcons: true, // show the prev/next text
+            buttonIcons: true, // prev/next
             weekNumbers: false,
-            navLinks: false, // can click day/week names to navigate views
+            navLinks: false,
             editable: false,
-            eventLimit: false, // allow "more" link when too many events
-            events: [
-                <c:forEach items="${calendarData}" var="calendarData">
-                {
-                    title: numberToString('${calendarData.getTitle()}'),
-                    start: '${calendarData.getDate()}',
-                    allDay: ${calendarData.isAllDay()},
-                    color: '${calendarData.getColor()}',
-                    textColor: '${calendarData.getTextColor()}'
-                },
-                </c:forEach>
-            ],
-            eventClick: function(event) {
-                var date = $.fullCalendar.formatDate(event.start, "DD-MM-YYYY");
+            eventLimit: false,
+            eventClick: function(calEvent, jsEvent, view) {
+                var date = moment(calEvent.date).format('YYYY-MM-DD');
                 drawBarsByParentId(false, null, date, date);
+            },
+            dayClick: function(date, allDay, jsEvent, view) {
+                var date = $.fullCalendar.formatDate(date, "DD-MM-YYYY");
+                drawBarsByParentId(false, null, date, date);
+            },
+            events : '/statistic/calendar/getCalendarData',
+            viewRender: function(view, element) {
+                var after = $.fullCalendar.formatDate(view.intervalStart, "DD-MM-YYYY");
+                var before = $.fullCalendar.formatDate(view.intervalEnd, "DD-MM-YYYY");
+                //$('#calendar').fullCalendar( 'renderEvent', me);
             }
         });
     }

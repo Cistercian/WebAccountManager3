@@ -209,7 +209,6 @@
 
 <section id="about">
     <div class="container-fluid">
-
         <c:if test="${pageContext.request.userPrincipal.name != null}">
             <form id="logoutForm" method="POST" action="${contextPath}/logout">
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
@@ -228,40 +227,45 @@
         </div>
     </div>
 
-    <div class="container-fluid">
+    <div class="container wow fadeInDown " data-wow-duration="1000ms"
+         data-wow-delay="300ms">
         <div class="row">
-            <div class="col-sm-6 wow fadeInDown " data-wow-duration="1000ms"
-                 data-wow-delay="300ms">
-                <h2><spring:message code="label.index.chartIncomeExpense.title" /></h2>
-                <canvas id="typeChart" style="height:250px"></canvas>
+            <div class="col-xs-12 col-md-6">
+                <h3><spring:message code="label.index.chartIncomeExpense.title" /></h3>
             </div>
-            <div class="col-sm-6 wow fadeInDown " data-wow-duration="1000ms"
-                 data-wow-delay="300ms">
-                <h2><spring:message code="label.index.total.title" /></h2>
-                <h2 id="textTotalIncome"><spring:message code="label.index.total.income" />
+            <div class="col-xs-12 col-md-6 col-md-push-6">
+                <canvas id="typeChart"></canvas>
+            </div>
+            <div class="col-xs-12 col-md-6 col-md-pull-6">
+                <h3><spring:message code="label.index.total.title" /></h3>
+            </div>
+            <div class="col-xs-12 col-md-6">
+                <h3 id="textTotalIncome"><spring:message code="label.index.total.income" />
                     <c:if test="${not empty sumIncome}">
                         <strong id="sumIncome"></strong>
                     </c:if>
-                </h2>
-                <h2 id="textTotalExpense"><spring:message code="label.index.total.expense" />
+                </h3>
+                <h3 id="textTotalExpense"><spring:message code="label.index.total.expense" />
                     <c:if test="${not empty sumExpense}">
                         <strong id="sumExpense"></strong>
                     </c:if>
-                </h2>
-                <h2><spring:message code="label.index.total.date" />
+                </h3>
+                <h3><spring:message code="label.index.total.date" />
                     <c:if test="${not empty curDate}">
                         <strong>${curDate}</strong>
                     </c:if>
-                </h2>
+                </h3>
             </div>
         </div>
     </div>
+
+
     <div class="container-fluid">
         <div class="row wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="300ms">
-            <div class="col-sm-8">
+            <div class="col-md-8">
                 <h2><spring:message code="label.index.categories.title" /></h2>
             </div>
-            <div class="col-sm-4">
+            <div class="col-md-4">
                 <spring:message code="label.index.categories.period.default" var="periodDefault" />
                 <button id="btnPeriod" class="btn-default btn-lg btn-block dropdown-toggle"
                         data-toggle="dropdown" value="month">
@@ -285,15 +289,15 @@
                     </li>
                 </ul>
             </div>
-            <div class="col-sm-12">
+            <div class="col-md-12">
 
-                <div class="col-sm-4 col-sm-offset-4">
+                <div class="col-md-4 col-md-offset-4">
                     <button id="btnRefresh" class="btn-default btn-lg btn-block" style="display: none;"
                             onclick="refreshCategories()">
                         <spring:message code="label.index.refresh" />
                     </button>
                 </div>
-                <div id="hiddenInputs" class="col-sm-4 input-group date" style="display: none;">
+                <div id="hiddenInputs" class="col-md-4 input-group date" style="display: none;">
                     <input id="afterDate" type="text" class="form-control" name = "after" value="${afterMonth}">
                         <span class="input-group-addon">
                             <i class="glyphicon glyphicon-th"></i>
@@ -305,44 +309,44 @@
                 </div>
 
             </div>
-            <div class="col-sm-12" id="categoryBars">
+            <div class="col-md-12" id="categoryBars">
                 <div id="dropDownCategoryBarsIncome">
-                <h3><spring:message code="label.index.categoryBars.income" /></h3>
-                <c:set var="styles" value="${['success', 'info', 'warning', 'danger']}" scope="page" />
-                <c:set var="step" value="-1" scope="page"/>
+                    <h3><spring:message code="label.index.categoryBars.income" /></h3>
+                    <c:set var="styles" value="${['success', 'info', 'warning', 'danger']}" scope="page" />
+                    <c:set var="step" value="-1" scope="page"/>
 
-                <c:forEach items="${categories}" var="list">
-                    <c:if test="${list.getType() == 'CategoryIncome'}">
+                    <c:forEach items="${categories}" var="list">
+                        <c:if test="${list.getType() == 'CategoryIncome'}">
 
-                        <c:set var="classId" value="${list.getId()}" />
-                        <c:set var="className" value="${list.getName()}" />
-                        <c:set var="classPrice" value="${list.getSum()}" />
-                        <c:set var="normalPrice" value="${classPrice * 100 / maxIncome}" />
+                            <c:set var="classId" value="${list.getId()}" />
+                            <c:set var="className" value="${list.getName()}" />
+                            <c:set var="classPrice" value="${list.getSum()}" />
+                            <c:set var="normalPrice" value="${classPrice * 100 / maxIncome}" />
 
-                        <c:set var="step" value="${step + 1}" scope="page"/>
-                        <li>
-                            <a href="javascript:drawBarsByParentId(false, '${classId}', '${afterMonth}', '${curDate}')">
-                                <div>
-                                    <h4><strong id="categoryBarName${classId}" value="${className}">
-                                        ${className}
-                                    </strong>
-                                    <strong id="categoryBarSum${classId}" class="pull-right text-muted"
-                                            value="${classPrice}">
-                                            ${classPrice} руб.
-                                    </strong></h4>
-                                    <div class="progress progress-striped active">
-                                        <div class="progress-bar progress-bar-${styles[step]}" role="progressbar"
-                                             aria-valuenow="${classPrice}" aria-valuemin="0" aria-valuemax="100"
-                                             style="width: ${normalPrice}%" value="${className}">
-                                        <span class="sr-only">${classPrice}</span>
+                            <c:set var="step" value="${step + 1}" scope="page"/>
+                            <li>
+                                <a href="javascript:drawBarsByParentId(false, '${classId}', '${afterMonth}', '${curDate}')">
+                                    <div>
+                                        <h4><strong id="categoryBarName${classId}" value="${className}">
+                                                ${className}
+                                        </strong>
+                                            <strong id="categoryBarSum${classId}" class="pull-right text-muted"
+                                                    value="${classPrice}">
+                                                    ${classPrice} руб.
+                                            </strong></h4>
+                                        <div class="progress progress-striped active">
+                                            <div class="progress-bar progress-bar-${styles[step]}" role="progressbar"
+                                                 aria-valuenow="${classPrice}" aria-valuemin="0" aria-valuemax="100"
+                                                 style="width: ${normalPrice}%" value="${className}">
+                                                <span class="sr-only">${classPrice}</span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </a>
-                        </li>
-                        <li class='divider'></li>
-                    </c:if>
-                </c:forEach>
+                                </a>
+                            </li>
+                            <li class='divider'></li>
+                        </c:if>
+                    </c:forEach>
                 </div>
                 <div id="dropDownCategoryBarsExpense">
                     <h3><spring:message code="label.index.categoryBars.expense" /></h3>
@@ -364,10 +368,10 @@
                                         <h4><strong id="categoryBarName${classId}" value="${className}">
                                                 ${className}
                                         </strong>
-                                        <strong id="categoryBarSum${classId}" class="pull-right text-muted"
-                                                value="${classPrice}">
-                                                ${classPrice} руб.
-                                        </strong>
+                                            <strong id="categoryBarSum${classId}" class="pull-right text-muted"
+                                                    value="${classPrice}">
+                                                    ${classPrice} руб.
+                                            </strong>
                                         </h4>
                                         <div class="progress progress-striped active">
                                             <div class="progress-bar progress-bar-${styles[step]}" role="progressbar"

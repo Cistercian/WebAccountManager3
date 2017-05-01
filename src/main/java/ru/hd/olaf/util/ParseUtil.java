@@ -18,10 +18,15 @@ public class ParseUtil {
         logger.debug(LogUtil.getMethodName());
 
         String delimiter = string.contains(".") ? "." : "-";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd" + delimiter + "MM" + delimiter + "yyyy");
+        DateTimeFormatter formatter;
+        if (string.indexOf(delimiter) < 3)
+            formatter = DateTimeFormatter.ofPattern("dd" + delimiter + "MM" + delimiter + "yyyy");
+        else
+            formatter = DateTimeFormatter.ofPattern("yyyy" + delimiter + "MM" + delimiter + "dd");
 
         LocalDate date = LocalDate.parse(string, formatter);
 
+        logger.debug(String.format("Исходная строка до преобразования: %s, после: %s", string, date.toString()));
         return date;
     }
 }

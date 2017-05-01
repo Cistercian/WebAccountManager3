@@ -52,9 +52,25 @@ public class IndexController {
 
         ModelAndView modelAndView = new ModelAndView("index");
 
+        //предуставки даты для выбора отчетного периода
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        //текущая дата
+        LocalDate curDate = LocalDate.now();
+        //дата начала текущей недели
+        LocalDate weekDate = LocalDate.now().minusDays(LocalDate.now().getDayOfWeek().ordinal());
+        //дата начала текущего месяца
+        LocalDate monthDate = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
+        //дата начала периода "за все время"
+        LocalDate allTimeDate = LocalDate.of(1900,1,1);
+
+        modelAndView.addObject("curDate", curDate.format(formatter));
+        modelAndView.addObject("afterWeek", weekDate.format(formatter));
+        modelAndView.addObject("afterMonth", monthDate.format(formatter));
+        modelAndView.addObject("afterAllTime", allTimeDate.format(formatter));
+
         List<BarEntity> parentsCategories = new ArrayList<BarEntity>();
 
-        parentsCategories.addAll(getCategoriesByDate(DatePeriod.MONTH.toString(), null));
+        parentsCategories.addAll(getCategoriesByDate(monthDate.format(formatter), curDate.format(formatter)));
 
         logger.debug(String.format("data for injecting:"));
         logList(parentsCategories);
@@ -83,62 +99,11 @@ public class IndexController {
         modelAndView.addObject("maxIncome", maxIncome);
         modelAndView.addObject("maxExpense", maxExpense);
 
-        //текущая дата
-        modelAndView.addObject("curDate", LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
-        //предуставки даты для выбора отчетного периода
-        //дата начала текущей недели
-        LocalDate afterDate = LocalDate.now().minusDays(LocalDate.now().getDayOfWeek().ordinal());
-        modelAndView.addObject("afterWeek", afterDate.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
-        //дата начала текущего месяца
-        afterDate = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
-        modelAndView.addObject("afterMonth", afterDate.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
-        //дата начала периода "за все время"
-        afterDate = LocalDate.of(1900,1,1);
-        modelAndView.addObject("afterAllTime", afterDate.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
-
         logger.debug(String.format("Data for injecting: sumIncome: %s, sumExpense: %s, curDate: %s",
                 sumIncome.toString(), sumExpense.toString(), LocalDate.now()));
 
         return modelAndView;
     }
-
-//    /**
-//     * Функция возврата json данных для прорисовки прогресс баров на главной странице по корневым категориям доход/расход
-//     * с сортировкой по типу (CategoryIncome\CategoryExpense) и сумме по убыванию
-//     *
-//     * @param period - период, по которому выводим данные (see DatePeriod)
-//     * @return
-//     */
-//    //TODO: redudant
-//    @RequestMapping(value = "getParentsCategories", method = RequestMethod.GET)
-//    public
-//    @ResponseBody
-//    List<BarEntity> getParentsCategories(@RequestParam(value = "period") String period,
-//                                         @RequestParam(value = "countDays", required = false) Integer countDays) {
-//        logger.debug(LogUtil.getMethodName());
-//
-//        LocalDate today = LocalDate.now();
-//        LocalDate after = getAfterDate(period, today, countDays);
-//
-//        List<BarEntity> parentsCategories = categoryService.getBarEntityOfSubCategories(null,
-//                after.minusDays(1),
-//                today.plusDays(1));
-//
-//        Collections.sort(parentsCategories, new Comparator<BarEntity>() {
-//            public int compare(BarEntity o1, BarEntity o2) {
-//                int result = o1.getType().compareTo(o2.getType());
-//                if (result == 0)
-//                    result = o2.getSum().compareTo(o1.getSum());
-//
-//                return result;
-//            }
-//        });
-//
-//        logger.debug(String.format("data for injecting:"));
-//        logList(parentsCategories);
-//
-//        return parentsCategories;
-//    }
 
     /**
      * Функция возврата json данных для прорисовки прогресс баров на главной странице по корневым категориям доход/расход
