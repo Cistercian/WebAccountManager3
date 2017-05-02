@@ -9,7 +9,6 @@
 <spring:url value="/resources/js/Chart.min.js" var="chartmin"/>
 <script src="${chartmin}"></script>
 
-
 <!-- обращение к контроллеру -->
 <script language="javascript" type="text/javascript">
     $(document).ready(function () {
@@ -28,6 +27,7 @@
             pickTime: false,
             language: 'ru',
         });
+
     });
     function selectPeriod(hasDates, after, before, idElem){
         var elemAfter = $('#afterDate');
@@ -38,11 +38,9 @@
         $('#btnPeriod').text($('#' + idElem).text());
 
         if (!hasDates) {
-            $('#hiddenInputs').show();
-            $('#btnRefresh').show();
+            $('#periodHiddenDivs').show();
         } else {
-            $('#hiddenInputs').hide();
-            $('#btnRefresh').hide();
+            $('#periodHiddenDivs').hide();
 
             drawParentsCategories(after, before);
         }
@@ -125,6 +123,14 @@
                             "</li>"
                     );
                 });
+                if (totalIncomeSum == 0)
+                    $('#dropDownCategoryBarsIncome').hide();
+                else
+                    $('#dropDownCategoryBarsIncome').show();
+                if (totalExpenseSum == 0)
+                    $('#dropDownCategoryBarsExpense').hide();
+                else
+                    $('#dropDownCategoryBarsExpense').show();
 
                 $('#textTotalIncome').append("Доходы <strong>" + numberToString(totalIncomeSum) + "</strong> руб.");
                 $('#textTotalExpense').append("Расходы <strong>" + numberToString(totalExpenseSum) + "</strong> руб.");
@@ -209,15 +215,6 @@
 
 <section id="about">
     <div class="container-fluid">
-        <c:if test="${pageContext.request.userPrincipal.name != null}">
-            <form id="logoutForm" method="POST" action="${contextPath}/logout">
-                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-            </form>
-            <h2>Welcome ${pageContext.request.userPrincipal.name} | <a onclick="document.forms['logoutForm'].submit()">Выйти</a>
-            </h2>
-        </c:if>
-    </div>
-    <div class="container-fluid">
         <div class="center">
             <div class="col-md-12">
                 <h2><spring:message code="label.index.title" /></h2>
@@ -231,30 +228,34 @@
          data-wow-delay="300ms">
         <div class="row">
             <div class="col-xs-12 col-md-6">
-                <h3><spring:message code="label.index.chartIncomeExpense.title" /></h3>
-            </div>
-            <div class="col-xs-12 col-md-6 col-md-push-6">
-                <canvas id="typeChart"></canvas>
-            </div>
-            <div class="col-xs-12 col-md-6 col-md-pull-6">
-                <h3><spring:message code="label.index.total.title" /></h3>
+                <div class="col-xs-12 col-md-12">
+                    <h3><spring:message code="label.index.chartIncomeExpense.title" /></h3>
+                </div>
+                <div class="col-xs-12 col-md-12">
+                    <canvas id="typeChart"></canvas>
+                </div>
             </div>
             <div class="col-xs-12 col-md-6">
-                <h3 id="textTotalIncome"><spring:message code="label.index.total.income" />
-                    <c:if test="${not empty sumIncome}">
-                        <strong id="sumIncome"></strong>
-                    </c:if>
-                </h3>
-                <h3 id="textTotalExpense"><spring:message code="label.index.total.expense" />
-                    <c:if test="${not empty sumExpense}">
-                        <strong id="sumExpense"></strong>
-                    </c:if>
-                </h3>
-                <h3><spring:message code="label.index.total.date" />
-                    <c:if test="${not empty curDate}">
-                        <strong>${curDate}</strong>
-                    </c:if>
-                </h3>
+                <div class="col-xs-12 col-md-12">
+                    <h3><spring:message code="label.index.total.title" /></h3>
+                </div>
+                <div class="col-xs-12 col-md-12">
+                    <h3 id="textTotalIncome"><spring:message code="label.index.total.income" />
+                        <c:if test="${not empty sumIncome}">
+                            <strong id="sumIncome"></strong>
+                        </c:if>
+                    </h3>
+                    <h3 id="textTotalExpense"><spring:message code="label.index.total.expense" />
+                        <c:if test="${not empty sumExpense}">
+                            <strong id="sumExpense"></strong>
+                        </c:if>
+                    </h3>
+                    <h3><spring:message code="label.index.total.date" />
+                        <c:if test="${not empty curDate}">
+                            <strong>${curDate}</strong>
+                        </c:if>
+                    </h3>
+                </div>
             </div>
         </div>
     </div>
@@ -262,16 +263,16 @@
 
     <div class="container-fluid">
         <div class="row wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="300ms">
-            <div class="col-md-8">
+            <div class="col-xs-12 col-md-8">
                 <h2><spring:message code="label.index.categories.title" /></h2>
             </div>
-            <div class="col-md-4">
+            <div class="col-xs-12 col-md-4 dropup">
                 <spring:message code="label.index.categories.period.default" var="periodDefault" />
                 <button id="btnPeriod" class="btn-default btn-lg btn-block dropdown-toggle"
                         data-toggle="dropdown" value="month">
                     ${periodDefault}
                 </button>
-                <ul id="dropdownPeriods" class="dropdown-menu">
+                <ul id="dropdownPeriods" class="dropdown-menu dropup dropdown-period">
                     <li><a id="day" onclick="selectPeriod(true, '${curDate}', '${curDate}', 'day');">
                         <spring:message code="label.index.categories.period.today" /></a>
                     </li>
@@ -289,32 +290,46 @@
                     </li>
                 </ul>
             </div>
-            <div class="col-md-12">
+            <div id="periodHiddenDivs" style="display: none;">
+                <div class="col-xs-12 col-md-8 col-md-offset-4">
+                    <h4><spring:message code="label.index.categories.period" /></h4>
+                </div>
 
-                <div class="col-md-4 col-md-offset-4">
-                    <button id="btnRefresh" class="btn-default btn-lg btn-block" style="display: none;"
-                            onclick="refreshCategories()">
+                <div class='col-xs-12 col-md-2 col-md-offset-4'>
+                    <div class="form-group">
+                        <div class='input-group date' id='datetimepicker1'>
+                            <input id='afterDate' type='text' class="form-control" />
+							<span class="input-group-addon">
+								<span class="glyphicon glyphicon-calendar"></span>
+							</span>
+                        </div>
+                    </div>
+                </div>
+                <div class='col-xs-12 col-md-2'>
+                    <div class="form-group">
+                        <div class='input-group date' id='datetimepicker1'>
+                            <input id='beforeDate' type='text' class="form-control" />
+							<span class="input-group-addon">
+								<span class="glyphicon glyphicon-calendar"></span>
+							</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-xs-12 col-md-4">
+                    <button id="btnRefresh" class="btn-default btn-lg btn-block"
+                            onclick="javascript:refreshCategories()">
                         <spring:message code="label.index.refresh" />
                     </button>
                 </div>
-                <div id="hiddenInputs" class="col-md-4 input-group date" style="display: none;">
-                    <input id="afterDate" type="text" class="form-control" name = "after" value="${afterMonth}">
-                        <span class="input-group-addon">
-                            <i class="glyphicon glyphicon-th"></i>
-                        </span>
-                    <input id="beforeDate" type="text" class="form-control" name="before" value="${curDate}">
-                        <span class="input-group-addon">
-                            <i class="glyphicon glyphicon-th"></i>
-                        </span>
-                </div>
-
             </div>
-            <div class="col-md-12" id="categoryBars">
+            <div class="col-xs-12 col-md-12" id="categoryBars">
                 <div id="dropDownCategoryBarsIncome">
-                    <h3><spring:message code="label.index.categoryBars.income" /></h3>
+
                     <c:set var="styles" value="${['success', 'info', 'warning', 'danger']}" scope="page" />
                     <c:set var="step" value="-1" scope="page"/>
-
+                    <c:if test="not empty categories">
+                        <h3><spring:message code="label.index.categoryBars.income" /></h3>
+                    </c:if>
                     <c:forEach items="${categories}" var="list">
                         <c:if test="${list.getType() == 'CategoryIncome'}">
 
@@ -349,10 +364,12 @@
                     </c:forEach>
                 </div>
                 <div id="dropDownCategoryBarsExpense">
-                    <h3><spring:message code="label.index.categoryBars.expense" /></h3>
+
                     <c:set var="styles" value="${['success', 'info', 'warning', 'danger']}" scope="page" />
                     <c:set var="step" value="-1" scope="page"/>
-
+                    <c:if test="not empty categories">
+                        <h3><spring:message code="label.index.categoryBars.expense" /></h3>
+                    </c:if>
                     <c:forEach items="${categories}" var="list">
                         <c:if test="${list.getType() == 'CategoryExpense'}">
 

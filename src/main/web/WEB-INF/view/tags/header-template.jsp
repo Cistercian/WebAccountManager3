@@ -24,11 +24,13 @@
     <spring:url value="/resources/css/font-awesome.min.css" var="fontawesomemin"/>
     <spring:url value="/resources/css/font-awesome.css" var="fontawesome"/>
     <spring:url value="/resources/css/animate.css" var="animate"/>
+    <spring:url value="/resources/css/style.css" var="style"/>
 
     <link rel="stylesheet" href="${bootstrapmin}">
     <link rel="stylesheet" href="${fontawesomemin}">
     <link rel="stylesheet" href="${fontawesome}">
     <link rel="stylesheet" href="${animate}">
+    <link rel="stylesheet" href="${style}">
     <!-- =======================================================
         Theme Name: Anyar
         Theme URL: https://bootstrapmade.com/anyar-free-multipurpose-one-page-bootstrap-theme/
@@ -85,7 +87,9 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">WebAccountManager</a>
+            <c:if test="${pageContext.request.userPrincipal.name != null}">
+                <a class="navbar-brand" href="#"><spring:message code="menu.nav.welcome" /> ${pageContext.request.userPrincipal.name}</a>
+            </c:if>
         </div>
 
         <div id="navbar" class="collapse navbar-collapse">
@@ -102,8 +106,21 @@
                 </li>
                 <li><a href="/page-data/amount"><spring:message code="menu.nav.amounts" /></a></li>
                 <li><a href="/page-data/category"><spring:message code="menu.nav.categories" /></a></li>
+                <c:if test="${pageContext.request.userPrincipal.name != null}">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><spring:message code="menu.nav.login" /> <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#"><spring:message code="menu.nav.login.account" /></a></li>
+                            <li class="divider"></li>
+                            <li><a href="javascript:document.forms['logoutForm'].submit()"><spring:message code="menu.nav.login.logout" /></a></li>
+                        </ul>
+                    </li>
+                </c:if>
             </ul>
         </div><!-- /.navbar-collapse -->
     </nav>
 
 </header>
+<form id="logoutForm" method="POST" action="${contextPath}/logout">
+    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+</form>

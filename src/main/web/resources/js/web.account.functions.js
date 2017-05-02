@@ -86,45 +86,45 @@ function drawBarsByParentId(isChildren, categoryId, after, before) {
                         classTitle = "Товарная группа";
                         //elemLink = 	"<a href='javascript:getViewProduct(" + classId + ");'>" +
                         elemLink = 	"<a href='/page-product/" + classId + "?after=" + after + "&before=" + before + "'>" +
-                                        "<strong> (Просмотреть</strong>" +
-                                    "</a>" + ", " +
-                                    "<a href='/page-data/display/product/" + classId + "'>" +
-                                        "<strong>редактировать)</strong>" +
-                                    "</a>";
+                            "<strong> (Просмотреть</strong>" +
+                            "</a>" + ", " +
+                            "<a href='/page-data/display/product/" + classId + "'>" +
+                            "<strong>редактировать)</strong>" +
+                            "</a>";
                     }
                     if (classType.indexOf('Category') + 1) {
                         classTitle = "Категория";
                         classType = 'Category';
                         elemLink = 	"<a href='javascript:drawBarsByParentId(true, " + classId + "," +
-                                            "\"" + after + "\"," +
-                                            "\"" + before +"\")';\">" +
-                                        "<strong> (Развернуть)</strong>" +
-                                    "</a>";
+                            "\"" + after + "\"," +
+                            "\"" + before +"\")';\">" +
+                            "<strong> (Развернуть)</strong>" +
+                            "</a>";
                     }
                     <!-- добавляем прогресс бар -->
                     $('#' + idBarElem).append(
                         "<li id='progressBar" + classType + classId + "'>" +
-                            "<h5>" +
-                                "<strong id='barName" + classType + classId + "' value='" + className + "'>" +
-                                    classTitle + ": " + className + "" +
-                                "</strong>" +
-                                    elemLink +
-                                "<strong id='barSum" + classType + classId + "' class='pull-right text-muted' " +
-                                    "value='" + classSum + "'>" +
-                                    numberToString(classSum) + " руб." +
-                                "</strong>" +
-                            "</h5>" +
-                            "<div class='progress " + tagClassProgress + " progress-striped active' >" +
-                                "<div class='progress-bar " + tagClassProgress +
-                                    " progress-bar-" + styles[curNumStyle] + "' role='progressbar' " +
-                                    "aria-valuenow='" + classSum + "'" + "aria-valuemin='0' aria-valuemax='100' " +
-                                    "style='width: " + normalSum + "%' " + "value='" + className +
-                                "'>" +
-                                    "<span class='sr-only'>" +
-                                        numberToString(classSum) +
-                                    "</span>" +
-                                "</div>" +
-                            "</div>" +
+                        "<h5>" +
+                        "<strong id='barName" + classType + classId + "' value='" + className + "'>" +
+                        classTitle + ": " + className + "" +
+                        "</strong>" +
+                        elemLink +
+                        "<strong id='barSum" + classType + classId + "' class='pull-right text-muted' " +
+                        "value='" + classSum + "'>" +
+                        numberToString(classSum) + " руб." +
+                        "</strong>" +
+                        "</h5>" +
+                        "<div class='progress " + tagClassProgress + " progress-striped active' >" +
+                        "<div class='progress-bar " + tagClassProgress +
+                        " progress-bar-" + styles[curNumStyle] + "' role='progressbar' " +
+                        "aria-valuenow='" + classSum + "'" + "aria-valuemin='0' aria-valuemax='100' " +
+                        "style='width: " + normalSum + "%' " + "value='" + className +
+                        "'>" +
+                        "<span class='sr-only'>" +
+                        numberToString(classSum) +
+                        "</span>" +
+                        "</div>" +
+                        "</div>" +
                         "</li>" +
                         "");
                 });
@@ -170,7 +170,8 @@ function drawChartOfTypes(data, elementId) {
     parent.empty();
     parent.append(
         "<h2><spring:message code='label.index.chartIncomeExpense.title' /></h2>" +
-        "<canvas id='typeChart' style='height:250px'></canvas>");
+        "<canvas id='typeChart' style=''></canvas>" +
+        "<img id='chartNaN' src='/resources/img/NaN.jpg' class='img-responsive' alt='' style='display: none;'>");
 
     var pieChartCanvas = $('#' + elementId).get(0).getContext('2d');
     var pieChart = new Chart(pieChartCanvas);
@@ -181,6 +182,7 @@ function drawChartOfTypes(data, elementId) {
 
     var array = data.split(',');
     var count = 0;
+    var totalSum = 0
     array.forEach(function (pair, index, array) {
         var arrayPair = pair.split('=');
         var name = arrayPair[0];
@@ -196,38 +198,46 @@ function drawChartOfTypes(data, elementId) {
             label: name
         };
 
+        totalSum += sum;
         count++;
     });
 
-    var pieOptions = {
-        //Boolean - Whether we should show a stroke on each segment
-        segmentShowStroke: true,
-        //String - The colour of each segment stroke
-        segmentStrokeColor: '#fff',
-        //Number - The width of each segment stroke
-        segmentStrokeWidth: 2,
-        //Number - The percentage of the chart that we cut out of the middle
-        percentageInnerCutout: 50, // This is 0 for Pie charts
-        //Number - Amount of animation steps
-        animationSteps: 100,
-        //String - Animation easing effect
-        animationEasing: 'easeOutBounce',
-        //Boolean - Whether we animate the rotation of the Doughnut
-        animateRotate: true,
-        //Boolean - Whether we animate scaling the Doughnut from the centre
-        animateScale: false,
-        //Boolean - whether to make the chart responsive to window resizing
-        responsive: true,
-        // Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
-        maintainAspectRatio: true,
-        //String - A legend template
-        legendTemplate: '<ul class=\"\<\%=name.toLowerCase()%>-legend\">\<\% ' +
-        'for (var i=0; i<segments.length; i++){' +
-        '%><li><span style=\"background-color:\<\%=segments[i].fillColor%>\"></span>' +
-        '<\%if(segments[i].label){' +
-        '%>\<\%=segments[i].label%>\<\%}%></li>\<\%}%></ul>'
-    };
-    pieChart.Doughnut(PieData, pieOptions);
+    if (totalSum == 0) {
+        $('#chartNaN').show();
+        $('#typeChart').hide();
+    } else {
+        $('#chartNaN').hide();
+        $('#typeChart').show();
+        var pieOptions = {
+            //Boolean - Whether we should show a stroke on each segment
+            segmentShowStroke: true,
+            //String - The colour of each segment stroke
+            segmentStrokeColor: '#fff',
+            //Number - The width of each segment stroke
+            segmentStrokeWidth: 2,
+            //Number - The percentage of the chart that we cut out of the middle
+            percentageInnerCutout: 50, // This is 0 for Pie charts
+            //Number - Amount of animation steps
+            animationSteps: 100,
+            //String - Animation easing effect
+            animationEasing: 'easeOutBounce',
+            //Boolean - Whether we animate the rotation of the Doughnut
+            animateRotate: true,
+            //Boolean - Whether we animate scaling the Doughnut from the centre
+            animateScale: false,
+            //Boolean - whether to make the chart responsive to window resizing
+            responsive: true,
+            // Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
+            maintainAspectRatio: true,
+            //String - A legend template
+            legendTemplate: '<ul class=\"\<\%=name.toLowerCase()%>-legend\">\<\% ' +
+            'for (var i=0; i<segments.length; i++){' +
+            '%><li><span style=\"background-color:\<\%=segments[i].fillColor%>\"></span>' +
+            '<\%if(segments[i].label){' +
+            '%>\<\%=segments[i].label%>\<\%}%></li>\<\%}%></ul>'
+        };
+        pieChart.Doughnut(PieData, pieOptions);
+    }
 }
 /**
  * функция форматирования числа в строковый формат с разделителем групп разрядов
