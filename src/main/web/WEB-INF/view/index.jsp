@@ -19,27 +19,42 @@
         drawChartOfTypes("<spring:message code='label.index.chart.income.label' />=${sumIncome},<spring:message code='label.index.chart.expense.label' />=${sumExpense}", "typeChart");
 
         //datepicker
-        $('#afterDate').datetimepicker({
-            pickTime: false,
+        $('#afterDate').datepicker({
             language: 'ru',
+            autoclose: true,
+            todayHighlight: true
         });
-        $('#beforeDate').datetimepicker({
-            pickTime: false,
+        $('#beforeDate').datepicker({
             language: 'ru',
+            autoclose: true,
+            todayHighlight: true
         });
-
     });
+
     function selectPeriod(hasDates, after, before, idElem){
+
         var elemAfter = $('#afterDate');
         var elemBefore = $('#beforeDate');
 
         elemAfter.val(after);
         elemBefore.val(before);
         $('#btnPeriod').text($('#' + idElem).text());
+        var distance = document.body.clientHeight % $(document).height();
 
         if (!hasDates) {
             $('#periodHiddenDivs').show();
+
+            var destination = $('#btnRefresh');
+            //alert($(destination).offset().top + "|" + heightDocument + "%" + heightScreen + "=" + distance);
+            $('html, body').animate({
+                scrollTop: $(destination).offset().top - distance + 55
+            }, 2000, 'easeInOutExpo');
         } else {
+            var destination = $('#dataRow');
+            $('html, body').animate({
+                scrollTop: $(destination).offset().top //- distance + 55
+            }, 400, 'easeInOutExpo');
+
             $('#periodHiddenDivs').hide();
 
             drawParentsCategories(after, before);
@@ -132,8 +147,8 @@
                 else
                     $('#dropDownCategoryBarsExpense').show();
 
-                $('#textTotalIncome').append("Доходы <strong>" + numberToString(totalIncomeSum) + "</strong> руб.");
-                $('#textTotalExpense').append("Расходы <strong>" + numberToString(totalExpenseSum) + "</strong> руб.");
+                $('#textTotalIncome').append("Доходы <strong>" + numberToString(totalIncomeSum.toFixed(2)) + "</strong> руб.");
+                $('#textTotalExpense').append("Расходы <strong>" + numberToString(totalExpenseSum.toFixed(2)) + "</strong> руб.");
 
                 //рисуем диаграмму
                 drawChartOfTypes("<spring:message code='label.index.chart.income.label' />=" + totalIncomeSum + "," +
@@ -226,7 +241,7 @@
 
     <div class="container wow fadeInDown " data-wow-duration="1000ms"
          data-wow-delay="300ms">
-        <div class="row">
+        <div id="dataRow" class="row">
             <div class="col-xs-12 col-md-6">
                 <div class="col-xs-12 col-md-12">
                     <h3><spring:message code="label.index.chartIncomeExpense.title" /></h3>
@@ -272,7 +287,7 @@
                         data-toggle="dropdown" value="month">
                     ${periodDefault}
                 </button>
-                <ul id="dropdownPeriods" class="dropdown-menu dropup dropdown-period">
+                <ul id="dropdownPeriods" class="dropdown-menu dropup dropdown-period wam-text-size-1">
                     <li><a id="day" onclick="selectPeriod(true, '${curDate}', '${curDate}', 'day');">
                         <spring:message code="label.index.categories.period.today" /></a>
                     </li>
@@ -296,9 +311,10 @@
                 </div>
 
                 <div class='col-xs-12 col-md-2 col-md-offset-4'>
-                    <div class="form-group">
+                    <div class="form-group dropup">
+
                         <div class='input-group date' id='datetimepicker1'>
-                            <input id='afterDate' type='text' class="form-control" />
+                            <input id='afterDate' type='text' class="form-control" readonly style="cursor: pointer;"/>
 							<span class="input-group-addon">
 								<span class="glyphicon glyphicon-calendar"></span>
 							</span>
@@ -308,7 +324,7 @@
                 <div class='col-xs-12 col-md-2'>
                     <div class="form-group">
                         <div class='input-group date' id='datetimepicker1'>
-                            <input id='beforeDate' type='text' class="form-control" />
+                            <input id='beforeDate' type='text' class="form-control" readonly style="cursor: pointer;"/>
 							<span class="input-group-addon">
 								<span class="glyphicon glyphicon-calendar"></span>
 							</span>

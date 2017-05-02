@@ -171,7 +171,7 @@ function drawChartOfTypes(data, elementId) {
     parent.append(
         "<h2><spring:message code='label.index.chartIncomeExpense.title' /></h2>" +
         "<canvas id='typeChart' style=''></canvas>" +
-        "<img id='chartNaN' src='/resources/img/NaN.jpg' class='img-responsive' alt='' style='display: none;'>");
+        "<img id='chartNaN' src='/resources/img/web.png' class='img-responsive' alt='' style='display: none;'>");
 
     var pieChartCanvas = $('#' + elementId).get(0).getContext('2d');
     var pieChart = new Chart(pieChartCanvas);
