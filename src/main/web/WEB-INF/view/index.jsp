@@ -116,7 +116,7 @@
                     }
 
                     $('#' + idBarsElem).append(
-                            "<li>" +
+                            "<li class='list-unstyled'>" +
                             "<a href='javascript:drawBarsByParentId(false, \"" + id + "\",\"" + after + "\",\"" + before + "\");'>" +
                             "<div>" +
                             "<h4><strong id='categoryBarName" + id + "' value='" + name + "'>" +

@@ -24,9 +24,10 @@
             displayMessage('error', $('#response').val());
         }
 
-        $('#amountDate').datetimepicker({
-            pickTime: false,
+        $('#amountDate').datepicker({
             language: 'ru',
+            autoclose: true,
+            todayHighlight: true
         });
 
         //быстрый поиск в выпадающем списке
@@ -206,352 +207,331 @@
 </div>
 
 <div id="services" class="container-fluid">
-    <div class='row col-sm-10 col-sm-offset-1'>
+    <div class='row'>
         <div class="form-group">
             <input id="_csrf_token" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             <input id="id" type="hidden" name="id" value="${id}"/>
             <textarea id="response" name="response" style="display: none;">${response}</textarea>
             <c:if test="${className=='amount'}">
-                <section id='sectionAmount'>
-                        <%--Название страницы--%>
-                    <div class='page-header'>
-                        <h3><spring:message code="label.page-amount.title"/></h3>
-                    </div>
-                        <%--Конец названия страницы--%>
-                        <%--Дата--%>
-                    <div class="row">
-                        <div class="col-md-3"><h4><strong><spring:message code="label.page-amount.date"/></strong></h4>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-3 col-sm-12">
-                            <input id="amountDate" type="text" class="form-control col-sm-2" name="date" value='${date}'>
-                        </div>
-                    </div>
-                        <%--Конец блока даты--%>
-                        <%--Имя сущности--%>
-                    <div class="row">
-                        <div class="col-md-12"><h4><strong><spring:message code="label.page-amount.name"/></strong></h4>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <input id="amountName" type="text" name="name" class="form-control form input-lg"
-                                   path="name" placeholder="Наименование ценности" data-rule="minlen:5"
-                                   data-msg="Please enter at least 5 chars"
-                                   value='${name}'/>
-                            <div class="validation"></div>
-                        </div>
-                    </div>
-                        <%--Конец имени сущности--%>
-                        <%--Товарная группа--%>
-                    <div class="row">
-                        <div class="col-md-12"><h4><strong><spring:message code="label.page-amount.product"/></strong>
-                        </h4>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <input id="productId" type="hidden" name="productId" value="${productId}"/>
-                            <input id="productName" type="text" name="productName" class="form-control form input-lg"
-                                   path="name" placeholder="Товарная группа" data-rule="minlen:5"
-                                   data-msg="Please enter at least 5 chars"
-                                   value='${productName}'/>
-                            <div class="validation"></div>
-                        </div>
-                    </div>
-                        <%--Конец товарной группы--%>
-                        <%--Категория и цена--%>
-                    <div class="row">
-                        <div class="col-md-10"><h4><strong><spring:message code="label.page-amount.category"/></strong>
-                        </h4>
-                        </div>
-                        <div class="col-md-2"><h4><strong><spring:message code="label.page-amount.price"/></strong></h4>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-10">
-                            <button id="btnCategories" class="btn-default btn-lg btn-block dropdown-toggle"
-                                    data-toggle="dropdown" value="${categoryId}">
-                                <c:choose>
-                                    <c:when test="${not empty categoryName}">
-                                        ${categoryName}
-                                    </c:when>
-                                    <c:otherwise>
-                                        <spring:message code="label.page-amount.selectCategory"/>
-                                    </c:otherwise>
-                                </c:choose>
-                                <span class="caret"></span>
-                            </button>
-                            <ul id="dropdownCategories" class="dropdown-menu">
-                                <li>
-                                    <a onclick="setDropdownListId(-1, 'Select Category', 'categories');return false;"><spring:message
-                                            code="label.page-amount.selectCategory"/></a></li>
-                                <li class="divider"></li>
-                                <c:forEach items="${list}" var="list">
-                                    <li><a id='${list.getId()}' onclick="setDropdownListId('${list.getId()}',
-                                            '${list.getName()}', 'categories');
-                                            return false;">${list.getName()}</a></li>
-                                </c:forEach>
-                            </ul>
-                        </div>
-                        <div class="col-md-2">
-                            <input id="amountPrice" type="number" class="form-control input-lg" name="price"
-                                   path="price" placeholder="Цена" data-rule="number"
-                                   data-msg="Please enter a valid price"
-                                   value='${price}'/>
-                            <div class="validation"></div>
-                        </div>
-                    </div>
-                        <%--Конец категории и цены--%>
-                        <%--Описание--%>
-                    <div class="row">
-                        <div class="col-md-12"><h4><strong><spring:message code="label.page-amount.details"/></strong>
-                        </h4>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
+            <section id='sectionAmount'>
+                    <%--Название страницы--%>
+                <div class='col-xs-12'>
+                    <h3><spring:message code="label.page-amount.title"/></h3>
+                </div>
+                    <%--Конец названия страницы--%>
+                    <%--Дата--%>
+                <div class="col-xs-12 col-md-3">
+                    <h4><strong><spring:message code="label.page-amount.date"/></strong></h4>
+                </div>
+                <div class="col-xs-12 col-md-3 col-sm-12">
+                    <input id="amountDate" type="text" class="form-control col-sm-2" name="date" value='${date}' readonly style="cursor: pointer;">
+                </div>
+                    <%--Конец блока даты--%>
+                    <%--Имя сущности--%>
+                <div class="col-xs-12 col-md-12">
+                    <h4><strong><spring:message code="label.page-amount.name"/></strong></h4>
+                </div>
+                <div class="col-md-12">
+                    <input id="amountName" type="text" name="name" class="form-control form input-lg"
+                           path="name" placeholder="Наименование ценности" data-rule="minlen:5"
+                           data-msg="Please enter at least 5 chars"
+                           value='${name}'/>
+                    <div class="validation"></div>
+                </div>
+                    <%--Конец имени сущности--%>
+                    <%--Товарная группа--%>
+                <div class="col-md-12">
+                    <h4><strong><spring:message code="label.page-amount.product"/></strong></h4>
+                </div>
+                <div class="col-xs-12 col-md-12">
+                    <input id="productId" type="hidden" name="productId" value="${productId}"/>
+                    <input id="productName" type="text" name="productName" class="form-control form input-lg"
+                           path="name" placeholder="Товарная группа" data-rule="minlen:5"
+                           data-msg="Please enter at least 5 chars"
+                           value='${productName}'/>
+                </div>
+                    <%--Конец товарной группы--%>
+                    <%--Категория и цена--%>
+                <div class="col-xs-12 col-md-10">
+                    <h4><strong><spring:message code="label.page-amount.selectCategory"/></strong></h4>
+
+                    <button id="btnCategories" class="btn-default btn-lg btn-block dropdown-toggle"
+                            data-toggle="dropdown" value="${categoryId}">
+                        <c:choose>
+                            <c:when test="${not empty categoryName}">
+                                ${categoryName}
+                            </c:when>
+                            <c:otherwise>
+                                <spring:message code="label.page-amount.selectCategory"/>
+                            </c:otherwise>
+                        </c:choose>
+                        <span class="caret"></span>
+                    </button>
+                    <ul id="dropdownCategories" class="dropdown-menu">
+                        <li>
+                            <a onclick="setDropdownListId(-1, 'Select Category', 'categories');return false;"><spring:message
+                                    code="label.page-amount.selectCategory"/></a></li>
+                        <li class="divider"></li>
+                        <c:forEach items="${list}" var="list">
+                            <li><a id='${list.getId()}' onclick="setDropdownListId('${list.getId()}',
+                                    '${list.getName()}', 'categories');
+                                    return false;">${list.getName()}</a></li>
+                        </c:forEach>
+                    </ul>
+
+                </div>
+                <div class="col-xs-12 col-md-2">
+                    <h4><strong><spring:message code="label.page-amount.price"/></strong></h4>
+                    <input id="amountPrice" type="number" class="form-control input-lg" name="price"
+                           path="price" placeholder="Цена" data-rule="number"
+                           data-msg="Please enter a valid price"
+                           value='${price}'/>
+                </div>
+                    <%--Конец категории и цены--%>
+                    <%--Описание--%>
+                <div class="col-md-12">
+                    <h4><strong><spring:message code="label.page-amount.details"/></strong></h4>
+                </div>
+                <div class="col-md-12">
                             <textarea id="amountDetails" class="form-control input-lg" rows="5"
                                       placeholder="Описание">${details}</textarea>
+                </div>
+                    <%--Конец описания--%>
+                <p>
+                <div class="col-xs-12 ">
+                    <button id="btnAmountNew" type="submit" name="btnNew"
+                            class="btn-default btn-lg btn-block"
+                            onclick="location.href='/page-data/amount.html'"><spring:message
+                            code="label.page-amount.btnNew"/>
+                    </button>
+                </div>
+                </p>
+                <p>
+                <div class="col-xs-12 ">
+                    <button id="btnAmountDelete" type="submit" name="btnDelete"
+                            class="btn btn-danger btn-lg btn-block" onclick="Delete('amount');return false;">
+                        <spring:message code="label.page-amount.btnDelete"/>
+                    </button>
+                </div>
+                </p>
+                <div class="col-xs-12 ">
+                    <button id="btnAmountOk" type="submit" name="btnOk"
+                            class="btn btn-primary btn-lg btn-block" onclick="Save('amount');return false;">
+                        <spring:message code="label.page-amount.btnOk"/>
+                    </button>
+                </div>
+                <div class="col-xs-12 ">
+                    <button id="btnAmountCancel" type="submit" name="btnCancel"
+                            class="btn btn-default btn-lg btn-block" onclick="location.reload();"><spring:message
+                            code="label.page-amount.btnCancel"/>
+                    </button>
+                </div>
+        </div>
+        </section>
+        </c:if>
+        <c:if test="${className=='category'}">
+            <section id='sectionCategory'>
+                <div class='page-header'>
+                    <h3><spring:message code="label.page-category.title"/></h3>
+                </div>
+                <div class="row">
+                    <div class="col-md-12"><h4><strong><spring:message
+                            code="label.page-category.parentName"/></strong></h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <button id="btnParentCategories" class="btn-default btn-lg btn-block dropdown-toggle"
+                                data-toggle="dropdown" value="${parentId}">
+                            <c:choose>
+                                <c:when test="${not empty parentName}">
+                                    ${parentName}
+                                </c:when>
+                                <c:otherwise>
+                                    <spring:message code="label.page-category.selectCategory"/>
+                                </c:otherwise>
+                            </c:choose>
+                            <span class="caret"></span>
+                        </button>
+                        <ul id="dropdownParentCategories" class="dropdown-menu">
+                            <li>
+                                <a onclick="setDropdownListId(-1, 'Select Category', 'parentCategories');return false;">
+                                    <spring:message code="label.page-category.selectCategory"/></a></li>
+                            <li class="divider"></li>
+                            <c:forEach items="${list}" var="list">
+                                <li><a id='${list.getId()}' onclick="setDropdownListId('${list.getId()}',
+                                        '${list.getName()}', 'parentCategories');
+                                        return false;">${list.getName()}</a></li>
+                            </c:forEach>
+                        </ul>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12"><h4><strong>
+                        <spring:message code="label.page-category.name"/>
+                    </strong></h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <input id="categoryName" type="text" name="name" class="form-control form input-lg"
+                               path="name" placeholder="Наименование" data-rule="minlen:5"
+                               data-msg="Please enter at least 5 chars"
+                               value='${name}'/>
+                        <div class="validation"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4"><h4><strong>
+                        <spring:message code="label.page-category.type"/>
+                    </strong></h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 col-md-offset-2">
+                        <div class="radio">
+                            <label>
+                                <input id="typeIncome" type="radio" name="optionsRadios" value="income"
+                                <c:if test="${not empty typeIncome}">
+                                       checked=true
+                                </c:if>
+                                >
+                                <spring:message code="label.page-category.typeIncome"/>
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input id="typeExpense" type="radio" name="optionsRadios" value="expence"
+                                <c:if test="${empty typeIncome}">
+                                       checked=true
+                                </c:if>
+                                >
+                                <spring:message code="label.page-category.typeExpence"/>
+                            </label>
                         </div>
                     </div>
-                        <%--Конец описания--%>
-                    <div class="row">
-                        <div class="col-md-6 col-md-offset-6">
-                            <div class="btn-group">
-                                <button id="btnAmountNew" type="submit" name="btnNew"
-                                        class="btn btn-default btn-lg "
-                                        onclick="location.href='/page-data/amount.html'"><spring:message
-                                        code="label.page-amount.btnNew"/>
-                                </button>
-                            </div>
-                            <div class="btn-group">
-                                <button id="btnAmountDelete" type="submit" name="btnDelete"
-                                        class="btn btn-default btn-lg " onclick="Delete('amount');return false;">
-                                    <spring:message code="label.page-amount.btnDelete"/>
-                                </button>
-                            </div>
-                            <div class="btn-group">
-                                <button id="btnAmountOk" type="submit" name="btnOk"
-                                        class="btn btn-default btn-lg " onclick="Save('amount');return false;">
-                                    <spring:message code="label.page-amount.btnOk"/>
-                                </button>
-                            </div>
-                            <div class="btn-group">
-                                <button id="btnAmountCancel" type="submit" name="btnCancel"
-                                        class="btn btn-default btn-lg " onclick="location.reload();"><spring:message
-                                        code="label.page-amount.btnCancel"/>
-                                </button>
-                            </div>
-
-                        </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12"><h4><strong>
+                        <spring:message code="label.page-category.details"/>
+                    </strong></h4>
                     </div>
-                </section>
-            </c:if>
-            <c:if test="${className=='category'}">
-                <section id='sectionCategory'>
-                    <div class='page-header'>
-                        <h3><spring:message code="label.page-category.title"/></h3>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12"><h4><strong><spring:message
-                                code="label.page-category.parentName"/></strong></h4>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <button id="btnParentCategories" class="btn-default btn-lg btn-block dropdown-toggle"
-                                    data-toggle="dropdown" value="${parentId}">
-                                <c:choose>
-                                    <c:when test="${not empty parentName}">
-                                        ${parentName}
-                                    </c:when>
-                                    <c:otherwise>
-                                        <spring:message code="label.page-category.selectCategory"/>
-                                    </c:otherwise>
-                                </c:choose>
-                                <span class="caret"></span>
-                            </button>
-                            <ul id="dropdownParentCategories" class="dropdown-menu">
-                                <li>
-                                    <a onclick="setDropdownListId(-1, 'Select Category', 'parentCategories');return false;">
-                                        <spring:message code="label.page-category.selectCategory"/></a></li>
-                                <li class="divider"></li>
-                                <c:forEach items="${list}" var="list">
-                                    <li><a id='${list.getId()}' onclick="setDropdownListId('${list.getId()}',
-                                            '${list.getName()}', 'parentCategories');
-                                            return false;">${list.getName()}</a></li>
-                                </c:forEach>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12"><h4><strong>
-                            <spring:message code="label.page-category.name"/>
-                        </strong></h4>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <input id="categoryName" type="text" name="name" class="form-control form input-lg"
-                                   path="name" placeholder="Наименование" data-rule="minlen:5"
-                                   data-msg="Please enter at least 5 chars"
-                                   value='${name}'/>
-                            <div class="validation"></div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4"><h4><strong>
-                            <spring:message code="label.page-category.type"/>
-                        </strong></h4>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4 col-md-offset-2">
-                            <div class="radio">
-                                <label>
-                                    <input id="typeIncome" type="radio" name="optionsRadios" value="income"
-                                    <c:if test="${not empty typeIncome}">
-                                           checked=true
-                                    </c:if>
-                                    >
-                                    <spring:message code="label.page-category.typeIncome"/>
-                                </label>
-                            </div>
-                            <div class="radio">
-                                <label>
-                                    <input id="typeExpense" type="radio" name="optionsRadios" value="expence"
-                                    <c:if test="${empty typeIncome}">
-                                           checked=true
-                                    </c:if>
-                                    >
-                                    <spring:message code="label.page-category.typeExpence"/>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12"><h4><strong>
-                            <spring:message code="label.page-category.details"/>
-                        </strong></h4>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
                             <textarea id="categoryDetails" class="form-control input-lg" rows="5"
                                       placeholder="Описание">${details}</textarea>
-                        </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6 col-md-offset-6">
-                            <div class="btn-group">
-                                <button id="btnCategoryNew" type="submit" name="btnNew"
-                                        class="btn btn-default btn-lg "
-                                        onclick="location.href='/page-data/category.html'">
-                                    <spring:message code="label.page-category.btnNew"/>
-                                </button>
-                            </div>
-                            <div class="btn-group">
-                                <button id="btnCategoryDelete" type="submit" name="btnDelete"
-                                        class="btn btn-default btn-lg " onclick="Delete('category');return false;">
-                                    <spring:message code="label.page-category.btnDelete"/>
-                                </button>
-                            </div>
-                            <div class="btn-group">
-                                <button id="btnCategoryOk" type="submit" name="btnOk"
-                                        class="btn btn-default btn-lg " onclick="Save('category');return false;">
-                                    <spring:message code="label.page-category.btnOk"/>
-                                </button>
-                            </div>
-                            <div class="btn-group">
-                                <button id="btnCategoryCancel" type="submit" name="btnCancel"
-                                        class="btn btn-default btn-lg " onclick="location.reload();">
-                                    <spring:message code="label.page-category.btnCancel"/>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            </c:if>
-            <c:if test="${className=='product'}">
-                <section id='sectionCategory'>
-                    <div class='page-header'>
-                        <h2><spring:message code="label.page-data.product.title"/></h2>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12"><h4><strong>
-                            <spring:message code="label.page-data.product.name"/>
-                        </strong></h4>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <input id="product" type="text" name="name" class="form-control form input-lg"
-                                   path="name" placeholder="Name" data-rule="minlen:5"
-                                   data-msg="Please enter at least 5 chars"
-                                   value='${name}'/>
-                            <div class="validation"></div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12"><h4><strong>
-                            <spring:message code="label.page-data.product.mergeText"/>
-                        </strong></h4>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <button id="btnProductMerge" class="btn-default btn-lg btn-block dropdown-toggle"
-                                    data-toggle="dropdown" value="${productMergeId}">
-                                <c:choose>
-                                    <c:when test="${not empty productMerge}">
-                                        ${productMergeName}
-                                    </c:when>
-                                    <c:otherwise>
-                                        <spring:message code="label.page-data.product.selectProductMerge"/>
-                                    </c:otherwise>
-                                </c:choose>
-                                <span class="caret"></span>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 col-md-offset-6">
+                        <div class="btn-group">
+                            <button id="btnCategoryNew" type="submit" name="btnNew"
+                                    class="btn btn-default btn-lg "
+                                    onclick="location.href='/page-data/category.html'">
+                                <spring:message code="label.page-category.btnNew"/>
                             </button>
-                            <ul id="dropdownProductMerge" class="dropdown-menu">
-                                <li><a onclick="setDropdownListId(-1, 'Select Product', 'product');return false;">
-                                    <spring:message code="label.page-data.product.selectProductMerge"/></a></li>
-                                <li class="divider"></li>
-                                <c:forEach items="${list}" var="list">
-                                    <li><a id='${list.getId()}' onclick="setDropdownListId('${list.getId()}',
-                                            '${list.getName()}', 'product');
-                                            return false;">${list.getName()}</a></li>
-                                </c:forEach>
-                            </ul>
+                        </div>
+                        <div class="btn-group">
+                            <button id="btnCategoryDelete" type="submit" name="btnDelete"
+                                    class="btn btn-default btn-lg " onclick="Delete('category');return false;">
+                                <spring:message code="label.page-category.btnDelete"/>
+                            </button>
+                        </div>
+                        <div class="btn-group">
+                            <button id="btnCategoryOk" type="submit" name="btnOk"
+                                    class="btn btn-default btn-lg " onclick="Save('category');return false;">
+                                <spring:message code="label.page-category.btnOk"/>
+                            </button>
+                        </div>
+                        <div class="btn-group">
+                            <button id="btnCategoryCancel" type="submit" name="btnCancel"
+                                    class="btn btn-default btn-lg " onclick="location.reload();">
+                                <spring:message code="label.page-category.btnCancel"/>
+                            </button>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6 col-md-offset-6">
-                            <div class="btn-group">
-                                <button id="btnProductDelete" type="submit" name="btnDelete"
-                                        class="btn btn-default btn-lg " onclick="Delete('product');return false;">
-                                    <spring:message code="label.page-category.btnDelete"/>
-                                </button>
-                            </div>
-                            <div class="btn-group">
-                                <button id="btnProductOk" type="submit" name="btnOk"
-                                        class="btn btn-default btn-lg " onclick="Save('product');return false;">
-                                    <spring:message code="label.page-category.btnOk"/>
-                                </button>
-                            </div>
-                            <div class="btn-group">
-                                <button id="btnProductCancel" type="submit" name="btnCancel"
-                                        class="btn btn-default btn-lg " onclick="location.reload();">
-                                    <spring:message code="label.page-category.btnCancel"/>
-                                </button>
-                            </div>
+                </div>
+            </section>
+        </c:if>
+        <c:if test="${className=='product'}">
+            <section id='sectionCategory'>
+                <div class='page-header'>
+                    <h2><spring:message code="label.page-data.product.title"/></h2>
+                </div>
+                <div class="row">
+                    <div class="col-md-12"><h4><strong>
+                        <spring:message code="label.page-data.product.name"/>
+                    </strong></h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <input id="product" type="text" name="name" class="form-control form input-lg"
+                               path="name" placeholder="Name" data-rule="minlen:5"
+                               data-msg="Please enter at least 5 chars"
+                               value='${name}'/>
+                        <div class="validation"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12"><h4><strong>
+                        <spring:message code="label.page-data.product.mergeText"/>
+                    </strong></h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <button id="btnProductMerge" class="btn-default btn-lg btn-block dropdown-toggle"
+                                data-toggle="dropdown" value="${productMergeId}">
+                            <c:choose>
+                                <c:when test="${not empty productMerge}">
+                                    ${productMergeName}
+                                </c:when>
+                                <c:otherwise>
+                                    <spring:message code="label.page-data.product.selectProductMerge"/>
+                                </c:otherwise>
+                            </c:choose>
+                            <span class="caret"></span>
+                        </button>
+                        <ul id="dropdownProductMerge" class="dropdown-menu">
+                            <li><a onclick="setDropdownListId(-1, 'Select Product', 'product');return false;">
+                                <spring:message code="label.page-data.product.selectProductMerge"/></a></li>
+                            <li class="divider"></li>
+                            <c:forEach items="${list}" var="list">
+                                <li><a id='${list.getId()}' onclick="setDropdownListId('${list.getId()}',
+                                        '${list.getName()}', 'product');
+                                        return false;">${list.getName()}</a></li>
+                            </c:forEach>
+                        </ul>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 col-md-offset-6">
+                        <div class="btn-group">
+                            <button id="btnProductDelete" type="submit" name="btnDelete"
+                                    class="btn btn-default btn-lg " onclick="Delete('product');return false;">
+                                <spring:message code="label.page-category.btnDelete"/>
+                            </button>
+                        </div>
+                        <div class="btn-group">
+                            <button id="btnProductOk" type="submit" name="btnOk"
+                                    class="btn btn-default btn-lg " onclick="Save('product');return false;">
+                                <spring:message code="label.page-category.btnOk"/>
+                            </button>
+                        </div>
+                        <div class="btn-group">
+                            <button id="btnProductCancel" type="submit" name="btnCancel"
+                                    class="btn btn-default btn-lg " onclick="location.reload();">
+                                <spring:message code="label.page-category.btnCancel"/>
+                            </button>
                         </div>
                     </div>
-                </section>
-            </c:if>
-        </div>
+                </div>
+            </section>
+        </c:if>
     </div>
+</div>
 </div>
 
 </body>

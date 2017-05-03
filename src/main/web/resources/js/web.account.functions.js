@@ -103,17 +103,17 @@ function drawBarsByParentId(isChildren, categoryId, after, before) {
                     }
                     <!-- добавляем прогресс бар -->
                     $('#' + idBarElem).append(
-                        "<li id='progressBar" + classType + classId + "'>" +
-                        "<h5>" +
+                        "<li id='progressBar" + classType + classId + "' class='list-unstyled'>" +
+                        "<div class='row'><div class='col-xs-12'><h6>" +
                         "<strong id='barName" + classType + classId + "' value='" + className + "'>" +
                         classTitle + ": " + className + "" +
-                        "</strong>" +
-                        elemLink +
-                        "<strong id='barSum" + classType + classId + "' class='pull-right text-muted' " +
+                        "</strong></div></div>" +
+                        "<div class='row'><div class='col-xs-9'>" + elemLink + "</div>" +
+                        "<div class='col-xs-3'><strong id='barSum" + classType + classId + "' class='pull-right text-muted' " +
                         "value='" + classSum + "'>" +
                         numberToString(classSum) + " руб." +
                         "</strong>" +
-                        "</h5>" +
+                        "</h6></div></div>" +
                         "<div class='progress " + tagClassProgress + " progress-striped active' >" +
                         "<div class='progress-bar " + tagClassProgress +
                         " progress-bar-" + styles[curNumStyle] + "' role='progressbar' " +

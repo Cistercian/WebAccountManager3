@@ -89,7 +89,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">WebAccountManager</a>
+            <a class="navbar-brand" href="#"><spring:message code="menu.nav.welcome" /> ${pageContext.request.userPrincipal.name}</a>
         </div>
 
         <div id="navbar" class="collapse navbar-collapse">
@@ -99,15 +99,26 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><spring:message code="menu.nav.statistic" /> <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li><a href="/statistic/calendar"><spring:message code="menu.nav.calendar" /></a></li>
-                        <li><a href="#">Что-то еще</a></li>
-                        <li><a href="#">Что-то еще</a></li>
                         <li class="divider"></li>
                     </ul>
                 </li>
                 <li><a href="/page-data/amount"><spring:message code="menu.nav.amounts" /></a></li>
                 <li><a href="/page-data/category"><spring:message code="menu.nav.categories" /></a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><spring:message code="menu.nav.login" /> <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#"><spring:message code="menu.nav.login.account" /></a></li>
+                        <li class="divider"></li>
+                        <li><a href="javascript:document.forms['logoutForm'].submit()"><spring:message code="menu.nav.login.logout" /></a></li>
+                    </ul>
+                </li>
             </ul>
         </div><!-- /.navbar-collapse -->
     </nav>
-
 </header>
+
+<c:if test="${pageContext.request.userPrincipal.name != null}">
+    <form id="logoutForm" method="POST" action="${contextPath}/logout">
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+    </form>
+</c:if>
