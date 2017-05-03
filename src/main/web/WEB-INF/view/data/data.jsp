@@ -208,11 +208,10 @@
 
 <div id="services" class="container-fluid">
     <div class='row'>
-        <div class="form-group">
-            <input id="_csrf_token" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-            <input id="id" type="hidden" name="id" value="${id}"/>
-            <textarea id="response" name="response" style="display: none;">${response}</textarea>
-            <c:if test="${className=='amount'}">
+        <input id="_csrf_token" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+        <input id="id" type="hidden" name="id" value="${id}"/>
+        <textarea id="response" name="response" style="display: none;">${response}</textarea>
+        <c:if test="${className=='amount'}">
             <section id='sectionAmount'>
                     <%--Название страницы--%>
                 <div class='col-xs-12'>
@@ -224,14 +223,15 @@
                     <h4><strong><spring:message code="label.page-amount.date"/></strong></h4>
                 </div>
                 <div class="col-xs-12 col-md-3 col-sm-12">
-                    <input id="amountDate" type="text" class="form-control col-sm-2" name="date" value='${date}' readonly style="cursor: pointer;">
+                    <input id="amountDate" type="text" class="form-control col-sm-2" name="date"
+                           value='${date}' />
                 </div>
                     <%--Конец блока даты--%>
                     <%--Имя сущности--%>
                 <div class="col-xs-12 col-md-12">
                     <h4><strong><spring:message code="label.page-amount.name"/></strong></h4>
                 </div>
-                <div class="col-md-12">
+                <div class="col-xs-12 col-md-12">
                     <input id="amountName" type="text" name="name" class="form-control form input-lg"
                            path="name" placeholder="Наименование ценности" data-rule="minlen:5"
                            data-msg="Please enter at least 5 chars"
@@ -240,7 +240,7 @@
                 </div>
                     <%--Конец имени сущности--%>
                     <%--Товарная группа--%>
-                <div class="col-md-12">
+                <div class="col-xs-12 col-md-12">
                     <h4><strong><spring:message code="label.page-amount.product"/></strong></h4>
                 </div>
                 <div class="col-xs-12 col-md-12">
@@ -289,45 +289,40 @@
                 </div>
                     <%--Конец категории и цены--%>
                     <%--Описание--%>
-                <div class="col-md-12">
+                <div class="col-md-12 ">
                     <h4><strong><spring:message code="label.page-amount.details"/></strong></h4>
                 </div>
                 <div class="col-md-12">
-                            <textarea id="amountDetails" class="form-control input-lg" rows="5"
-                                      placeholder="Описание">${details}</textarea>
+						<textarea id="amountDetails" class="form-control input-lg" rows="5"
+                                  placeholder="Описание">${details}</textarea>
                 </div>
                     <%--Конец описания--%>
-                <p>
-                <div class="col-xs-12 ">
-                    <button id="btnAmountNew" type="submit" name="btnNew"
-                            class="btn-default btn-lg btn-block"
-                            onclick="location.href='/page-data/amount.html'"><spring:message
-                            code="label.page-amount.btnNew"/>
-                    </button>
-                </div>
-                </p>
-                <p>
-                <div class="col-xs-12 ">
-                    <button id="btnAmountDelete" type="submit" name="btnDelete"
-                            class="btn btn-danger btn-lg btn-block" onclick="Delete('amount');return false;">
-                        <spring:message code="label.page-amount.btnDelete"/>
-                    </button>
-                </div>
-                </p>
                 <div class="col-xs-12 ">
                     <button id="btnAmountOk" type="submit" name="btnOk"
-                            class="btn btn-primary btn-lg btn-block" onclick="Save('amount');return false;">
+                            class="btn btn-primary btn-lg btn-block wam-btn-1" onclick="Save('amount');return false;">
                         <spring:message code="label.page-amount.btnOk"/>
                     </button>
                 </div>
                 <div class="col-xs-12 ">
                     <button id="btnAmountCancel" type="submit" name="btnCancel"
-                            class="btn btn-default btn-lg btn-block" onclick="location.reload();"><spring:message
+                            class="btn btn-default btn-lg btn-block wam-btn-1" onclick="location.reload();"><spring:message
                             code="label.page-amount.btnCancel"/>
                     </button>
                 </div>
-        </div>
-        </section>
+                <div class="col-xs-12 ">
+                    <button id="btnAmountNew" type="submit" name="btnNew"
+                            class="btn-default btn-lg btn-block wam-btn-1"
+                            onclick="location.href='/page-data/amount.html'"><spring:message
+                            code="label.page-amount.btnNew"/>
+                    </button>
+                </div>
+                <div class="col-xs-12">
+                    <button id="btnAmountDelete" type="submit" name="btnDelete"
+                            class="btn btn-danger btn-lg btn-block wam-btn-1" onclick="Delete('amount');return false;">
+                        <spring:message code="label.page-amount.btnDelete"/>
+                    </button>
+                </div>
+            </section>
         </c:if>
         <c:if test="${className=='category'}">
             <section id='sectionCategory'>
