@@ -81,6 +81,8 @@
     <spring:url value="/resources/css/style.css" var="style"/>
     <link rel="stylesheet" href="${style}">
 
+    <link href="https://fonts.googleapis.com/css?family=Baloo" rel="stylesheet">
+
 </head>
 <body>
 <header class="content wam-radius">
@@ -103,15 +105,20 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><spring:message code="menu.nav.statistic" /> <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li><a href="/statistic/calendar"><spring:message code="menu.nav.calendar" /></a></li>
-                        <li class="divider"></li>
                     </ul>
                 </li>
-                <li><a href="/page-data/amount"><spring:message code="menu.nav.amounts" /></a></li>
-                <li><a href="/page-data/category"><spring:message code="menu.nav.categories" /></a></li>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><spring:message code="menu.nav.login" /> <b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><spring:message code="menu.nav.data" /> <b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                        <li><a href="#"><spring:message code="menu.nav.login.account" /></a></li>
+                        <li><a href="/statistic/calendar"><spring:message code="menu.nav.amounts" /></a></li>
+                        <li class="divider"></li>
+                        <li><a href="/statistic/calendar"><spring:message code="menu.nav.categories" /></a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><spring:message code="menu.nav.login.account" /> <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#"><spring:message code="menu.nav.login" /></a></li>
                         <li class="divider"></li>
                         <li><a href="javascript:document.forms['logoutForm'].submit()"><spring:message code="menu.nav.login.logout" /></a></li>
                     </ul>

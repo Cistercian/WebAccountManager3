@@ -8,8 +8,6 @@
 
 <jsp:include page="/WEB-INF/view/tags/header-template.jsp"></jsp:include>
 
-<link href="https://fonts.googleapis.com/css?family=Baloo" rel="stylesheet">
-
 <script language="javascript" type="text/javascript">
     $(document).ready(function () {
         $.ajaxSetup({

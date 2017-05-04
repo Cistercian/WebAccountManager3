@@ -124,10 +124,10 @@ function drawBarsByParentId(isChildren, categoryId, after, before) {
                         classTitle + ": " + className + "" +
                         "</strong1></div></div>" +
                         "<div class='row'><div class='col-xs-12'>" + elemLink + "" +
-                        "<strong id='barSum" + classType + classId + "' class='pull-right text-muted' " +
+                        "<span id='barSum" + classType + classId + "' class='pull-right text-muted' " +
                         "value='" + classSum + "'>" +
                         numberToString(classSum) + " руб." +
-                        "</strong>" +
+                        "</span>" +
                         "</h4></div></div>" +
                         "<div class='progress " + tagClassProgress + " progress-striped active wam-margin-bottom-1' >" +
                         "<div class='progress-bar progress-bar-" + styles[curNumStyle] + "' role='progressbar' " +
@@ -145,9 +145,9 @@ function drawBarsByParentId(isChildren, categoryId, after, before) {
                 totalSum = totalSum.toFixed(2);
                 $('#' + idBarElem).append(
                     "<div class='row'>" +
-                    (isChildren ? "<div class='col-md-12 wam-margin-bottom-2'><h6><strong>" : "<div class='col-md-12'><h4><strong class='pull-right text-muted'>")  +
+                    (isChildren ? "<div class='col-md-12 wam-margin-bottom-2'><h6><span>" : "<div class='col-md-12'><h4><span class='pull-right text-muted'>")  +
                     "ИТОГО " + numberToString(totalSum) + " руб." +
-                    "</strong>" + (isChildren ? "</h6>" : "</h4>") +
+                    "</span>" + (isChildren ? "</h6>" : "</h4>") +
                     "</div><p><p>" +
                     "</div>"
                 );

@@ -16,6 +16,10 @@
         $('#sumIncome').append(numberToString('${sumIncome}') + " руб.");
         $('#sumExpense').append(numberToString('${sumExpense}') + " руб.");
 
+        $('[id ^= "categoryBarSum"]').each(function () {
+            $(this).text(numberToString($(this).attr('value')) + " руб.");
+        });
+
         drawChartOfTypes("<spring:message code='label.index.chart.income.label' />=${sumIncome},<spring:message code='label.index.chart.expense.label' />=${sumExpense}", "typeChart");
 
         //datepicker
@@ -127,10 +131,10 @@
                             "<h4><strong id='categoryBarName" + id + "' value='" + name + "'>" +
                             name +
                             "</strong>" +
-                            "<strong id='categoryBarSum" + id + "' class='pull-right text-muted' " +
+                            "<span id='categoryBarSum" + id + "' class='pull-right text-muted' " +
                             "value='" + sum + "'>" +
-                            sum + " руб." +
-                            "</strong></h4>" +
+                            numberToString(sum) + " руб." +
+                            "</span></h4>" +
                             "<div class='progress progress-striped active'> " +
                             "<div class='progress-bar progress-bar-" + styles[curNumStyle] + "' role='progressbar' " +
                             "aria-valuenow='" + sum + "' aria-valuemin='0' aria-valuemax='100' " +
@@ -256,17 +260,17 @@
                 <div class="col-xs-12 col-md-12">
                     <h3 id="textTotalIncome"><spring:message code="label.index.total.income" />
                         <c:if test="${not empty sumIncome}">
-                            <strong id="sumIncome"></strong>
+                            <span id="sumIncome"></span>
                         </c:if>
                     </h3>
                     <h3 id="textTotalExpense"><spring:message code="label.index.total.expense" />
                         <c:if test="${not empty sumExpense}">
-                            <strong id="sumExpense"></strong>
+                            <span id="sumExpense"></span>
                         </c:if>
                     </h3>
                     <h3><spring:message code="label.index.total.date" />
                         <c:if test="${not empty curDate}">
-                            <strong>${curDate}</strong>
+                            <span>${curDate}</span>
                         </c:if>
                     </h3>
                 </div>
@@ -312,7 +316,7 @@
                 <div class='col-xs-12 col-md-4 col-md-offset-4'>
                     <div class="form-group dropup">
 
-                        <div class='input-group date' id='datetimepicker1'>
+                        <div class='input-group date' >
                             <input id='afterDate' type='text' class="form-control" readonly style="cursor: pointer;"/>
 								<span class="input-group-addon">
 									<span class="glyphicon glyphicon-calendar"></span>
@@ -322,7 +326,7 @@
                 </div>
                 <div class='col-xs-12 col-md-4'>
                     <div class="form-group">
-                        <div class='input-group date' id='datetimepicker1'>
+                        <div class='input-group date' >
                             <input id='beforeDate' type='text' class="form-control" readonly style="cursor: pointer;"/>
 								<span class="input-group-addon">
 									<span class="glyphicon glyphicon-calendar"></span>
@@ -364,10 +368,10 @@
                                         <h4><strong id="categoryBarName${classId}" value="${className}">
                                                 ${className}
                                         </strong>
-                                            <strong id="categoryBarSum${classId}" class="pull-right text-muted"
-                                                    value="${classPrice}">
+                                            <span id="categoryBarSum${classId}" class="pull-right text-muted"
+                                                  value="${classPrice}">
                                                     ${classPrice} руб.
-                                            </strong></h4>
+                                            </span></h4>
                                         <div class="progress progress-striped active">
                                             <div class="progress-bar progress-bar-${styles[step]}" role="progressbar"
                                                  aria-valuenow="${classPrice}" aria-valuemin="0" aria-valuemax="100"
@@ -408,10 +412,10 @@
                                         <h4><strong id="categoryBarName${classId}" value="${className}">
                                                 ${className}
                                         </strong>
-                                            <strong id="categoryBarSum${classId}" class="pull-right text-muted"
-                                                    value="${classPrice}">
+                                            <span id="categoryBarSum${classId}" class="pull-right text-muted"
+                                                  value="${classPrice}">
                                                     ${classPrice} руб.
-                                            </strong>
+                                            </span>
                                         </h4>
                                         <div class="progress progress-striped active">
                                             <div class="progress-bar progress-bar-${styles[step]}" role="progressbar"
@@ -429,5 +433,6 @@
             </div>
         </div><!--/.row-->
     </div>
+</div>
     </body>
 </html>
