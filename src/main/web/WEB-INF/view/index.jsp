@@ -45,7 +45,7 @@
             $('#periodHiddenDivs').show();
 
             var destination = $('#btnRefresh');
-            //alert($(destination).offset().top + "|" + heightDocument + "%" + heightScreen + "=" + distance);
+
             $('html, body').animate({
                 scrollTop: $(destination).offset().top - distance + 55
             }, 2000, 'easeInOutExpo');
@@ -80,7 +80,12 @@
                 'before' : before
             },
             dataType: 'json',
+            beforeSend: function(){
+                displayLoader();
+            },
             success: function (data) {
+                hideLoader();
+
                 //удаляем текущие данные
                 removeStatistics();
 
@@ -169,10 +174,10 @@
     }
 </script>
 <!-- modal panel -->
-<div id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modallabel"
+<div id="modal" class="modal fade " tabindex="-1" role="dialog" aria-labelledby="modallabel"
      aria-hidden="true">
     <div class="modal-dialog modal-lg">
-        <div class="modal-content">
+        <div class="modal-content wam-radius">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <h3 id="mopdalTitle" class="modal-title"><spring:message code="label.index.modal.title" /></h3>
@@ -183,52 +188,46 @@
                 Loading data...
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
             </div>
         </div>
         <!-- /.modal-content -->
     </div>
     <!-- /.modal-dialog -->
 </div>
+<div class="content wam-radius">
+    <div class="slider wam-top-radius">
+        <div id="about-slider" >
+            <div id="carousel-slider" class="carousel slide" data-ride="carousel">
+                <!-- Indicators -->
+                <ol class="carousel-indicators visible-xs">
+                    <li data-target="#carousel-slider" data-slide-to="0" class="active"></li>
+                    <li data-target="#carousel-slider" data-slide-to="1"></li>
+                    <li data-target="#carousel-slider" data-slide-to="2"></li>
+                </ol>
 
-<div id="home">
-    <div class="slider">
-        <div class="">
-            <div id="about-slider">
-                <div id="carousel-slider" class="carousel slide" data-ride="carousel">
-                    <!-- Indicators -->
-                    <ol class="carousel-indicators visible-xs">
-                        <li data-target="#carousel-slider" data-slide-to="0" class="active"></li>
-                        <li data-target="#carousel-slider" data-slide-to="1"></li>
-                        <li data-target="#carousel-slider" data-slide-to="2"></li>
-                    </ol>
-
-                    <div class="carousel-inner">
-                        <div class="item active">
-                            <img src="/resources/img/carousel_1.jpg" class="img-responsive" alt="">
-                        </div>
-                        <div class="item">
-                            <img src="/resources/img/carousel_2.jpg" class="img-responsive" alt="">
-                        </div>
-                        <div class="item">
-                            <img src="/resources/img/carousel_3.jpg" class="img-responsive" alt="">
-                        </div>
+                <div class="carousel-inner">
+                    <div class="item active">
+                        <img src="/resources/img/carousel_1.jpg" class="img-responsive wam-top-radius" alt="">
                     </div>
+                    <div class="item">
+                        <img src="/resources/img/carousel_2.jpg" class="img-responsive wam-top-radius" alt="">
+                    </div>
+                    <div class="item">
+                        <img src="/resources/img/carousel_3.jpg" class="img-responsive wam-top-radius" alt="">
+                    </div>
+                </div>
 
-                    <a class="left carousel-control hidden-xs" href="#carousel-slider" data-slide="prev">
-                        <i class="fa fa-angle-left"></i>
-                    </a>
+                <a class="left carousel-control hidden-xs" href="#carousel-slider" data-slide="prev">
+                    <i class="fa fa-angle-left"></i>
+                </a>
 
-                    <a class=" right carousel-control hidden-xs" href="#carousel-slider" data-slide="next">
-                        <i class="fa fa-angle-right"></i>
-                    </a>
-                </div> <!--/#carousel-slider-->
-            </div><!--/#about-slider-->
-        </div>
+                <a class=" right carousel-control hidden-xs" href="#carousel-slider" data-slide="next">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </div> <!--/#carousel-slider-->
+        </div><!--/#about-slider-->
     </div>
-</div>
-
-<section id="about">
     <div class="container-fluid">
         <div class="center">
             <div class="col-md-12">
@@ -239,7 +238,7 @@
         </div>
     </div>
 
-    <div class="container wow fadeInDown " data-wow-duration="1000ms"
+    <div class="container-fluid wow fadeInDown " data-wow-duration="1000ms"
          data-wow-delay="300ms">
         <div id="dataRow" class="row">
             <div class="col-xs-12 col-md-6">
@@ -300,7 +299,7 @@
                     <li><a id="allTime" onclick="selectPeriod(true, '${afterAllTime}', '${curDate}', 'allTime');">
                         <spring:message code="label.index.categories.period.all" /></a>
                     </li>
-                    <li><a id="custom" onclick="selectPeriod(false, null, null, 'custom');">
+                    <li><a id="custom" onclick="selectPeriod(false, '${afterMonth}', '${curDate}', 'custom');">
                         <spring:message code="label.index.categories.period.custom" /></a>
                     </li>
                 </ul>
@@ -310,28 +309,28 @@
                     <h4><spring:message code="label.index.categories.period" /></h4>
                 </div>
 
-                <div class='col-xs-12 col-md-2 col-md-offset-4'>
+                <div class='col-xs-12 col-md-4 col-md-offset-4'>
                     <div class="form-group dropup">
 
                         <div class='input-group date' id='datetimepicker1'>
                             <input id='afterDate' type='text' class="form-control" readonly style="cursor: pointer;"/>
-							<span class="input-group-addon">
-								<span class="glyphicon glyphicon-calendar"></span>
-							</span>
+								<span class="input-group-addon">
+									<span class="glyphicon glyphicon-calendar"></span>
+								</span>
                         </div>
                     </div>
                 </div>
-                <div class='col-xs-12 col-md-2'>
+                <div class='col-xs-12 col-md-4'>
                     <div class="form-group">
                         <div class='input-group date' id='datetimepicker1'>
                             <input id='beforeDate' type='text' class="form-control" readonly style="cursor: pointer;"/>
-							<span class="input-group-addon">
-								<span class="glyphicon glyphicon-calendar"></span>
-							</span>
+								<span class="input-group-addon">
+									<span class="glyphicon glyphicon-calendar"></span>
+								</span>
                         </div>
                     </div>
                 </div>
-                <div class="col-xs-12 col-xs-12 col-md-4">
+                <div class="col-xs-12 col-xs-12 col-md-4 col-md-offset-8">
                     <button id="btnRefresh" class="btn-default btn-lg btn-block"
                             onclick="javascript:refreshCategories()">
                         <spring:message code="label.index.refresh" />
@@ -429,9 +428,6 @@
                 </div>
             </div>
         </div><!--/.row-->
-    </div><!--/.container-->
-
-</section><!--/#about-->
-
-</body>
+    </div>
+    </body>
 </html>

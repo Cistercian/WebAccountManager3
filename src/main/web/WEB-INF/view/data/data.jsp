@@ -139,7 +139,12 @@
             url: '/page-data/save',
             data: data,
             dataType: 'json',
+            beforeSend: function(){
+                displayLoader();
+            },
             success: function (data) {
+                hideLoader();
+
                 var type = data.type;
                 var message = data.message;
 
@@ -176,7 +181,12 @@
             type: "POST",
             url: '/page-data/delete',
             data: data,
+            beforeSend: function(){
+                displayLoader();
+            },
             success: function (data) {
+                hideLoader();
+
                 var type = data.type;
                 var message = data.message;
 
@@ -189,7 +199,7 @@
 <!-- Modal Panel -->
 <div id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modallabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
-        <div class="modal-content">
+        <div class="modal-content wam-radius">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <h4 id="mpdalcategoryTitle" class="modal-title"><spring:message
@@ -199,6 +209,7 @@
                 Loading data...
             </div>
             <div id="modalFooter" class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
             </div>
         </div>
         <!-- /.modal-content -->
@@ -206,15 +217,15 @@
     <!-- /.modal-dialog -->
 </div>
 
-<div id="services" class="container-fluid">
+<div id="services" class="container-fluid content wam-radius">
     <div class='row'>
         <input id="_csrf_token" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         <input id="id" type="hidden" name="id" value="${id}"/>
         <textarea id="response" name="response" style="display: none;">${response}</textarea>
         <c:if test="${className=='amount'}">
-            <section id='sectionAmount'>
+            <div class="container-fluid">
                     <%--Название страницы--%>
-                <div class='col-xs-12 wam-margin-bottom-1'>
+                <div class='col-xs-12 wam-margin-bottom-2'>
                     <h3><spring:message code="label.page-amount.title"/></h3>
                 </div>
                     <%--Конец названия страницы--%>
@@ -297,36 +308,36 @@
                                   placeholder="Описание">${details}</textarea>
                 </div>
                     <%--Конец описания--%>
-                <div class="col-xs-12 ">
+                <div class="col-xs-12 col-md-6">
                     <button id="btnAmountOk" type="submit" name="btnOk"
                             class="btn btn-primary btn-lg btn-block wam-btn-1" onclick="Save('amount');return false;">
                         <spring:message code="label.page-amount.btnOk"/>
                     </button>
                 </div>
-                <div class="col-xs-12 ">
+                <div class="col-xs-12 col-md-6">
                     <button id="btnAmountCancel" type="submit" name="btnCancel"
                             class="btn btn-default btn-lg btn-block wam-btn-1" onclick="location.reload();"><spring:message
                             code="label.page-amount.btnCancel"/>
                     </button>
                 </div>
-                <div class="col-xs-12 ">
+                <div class="col-xs-12 col-md-6 col-md-push-6">
                     <button id="btnAmountNew" type="submit" name="btnNew"
                             class="btn-default btn-lg btn-block wam-btn-1"
                             onclick="location.href='/page-data/amount.html'"><spring:message
                             code="label.page-amount.btnNew"/>
                     </button>
                 </div>
-                <div class="col-xs-12">
+                <div class="col-xs-12 col-md-6 col-md-pull-6">
                     <button id="btnAmountDelete" type="submit" name="btnDelete"
                             class="btn btn-danger btn-lg btn-block wam-btn-2" onclick="Delete('amount');return false;">
                         <spring:message code="label.page-amount.btnDelete"/>
                     </button>
                 </div>
-            </section>
+            </div>
         </c:if>
         <c:if test="${className=='category'}">
-            <section id='sectionCategory'>
-                <div class='col-xs-12 wam-margin-bottom-1'>
+            <div class="container-fluid">
+                <div class='col-xs-12 wam-margin-bottom-2'>
                     <h3><spring:message code="label.page-category.title"/></h3>
                 </div>
                 <div class="col-md-12">
@@ -401,36 +412,36 @@
                 </div>
 
 
-                <div class="col-xs-12 ">
+                <div class="col-xs-12 col-md-6">
                     <button id="btnCategoryOk" type="submit" name="btnOk"
                             class="btn btn-primary btn-lg btn-block wam-btn-1" onclick="Save('category');return false;">
                         <spring:message code="label.page-amount.btnOk"/>
                     </button>
                 </div>
-                <div class="col-xs-12 ">
+                <div class="col-xs-12 col-md-6">
                     <button id="btnCategoryCancel" type="submit" name="btnCancel"
                             class="btn btn-default btn-lg btn-block wam-btn-1" onclick="location.reload();">
                         <spring:message code="label.page-amount.btnCancel"/>
                     </button>
                 </div>
-                <div class="col-xs-12 ">
+                <div class="col-xs-12 col-md-6 col-md-push-6">
                     <button id="btnCategoryNew" type="submit" name="btnNew"
                             class="btn-default btn-lg btn-block wam-btn-1"
                             onclick="location.href='/page-data/category.html'">
                         <spring:message code="label.page-amount.btnNew"/>
                     </button>
                 </div>
-                <div class="col-xs-12">
+                <div class="col-xs-12 col-md-6 col-md-pull-6">
                     <button id="btnCategoryDelete" type="submit" name="btnDelete"
                             class="btn btn-danger btn-lg btn-block wam-btn-2" onclick="Delete('category');return false;">
                         <spring:message code="label.page-amount.btnDelete"/>
                     </button>
                 </div>
-            </section>
+            </div>
         </c:if>
         <c:if test="${className=='product'}">
-            <section id='sectionCategory'>
-                <div class='col-xs-12 wam-margin-bottom-1'>
+            <div class="container-fluid">
+                <div class='col-xs-12 wam-margin-bottom-2'>
                     <h2><spring:message code="label.page-data.product.title"/></h2>
                 </div>
                 <div class="col-md-12">
@@ -470,25 +481,25 @@
                         </c:forEach>
                     </ul>
                 </div>
-                <div class="col-xs-12 ">
+                <div class="col-xs-12 col-md-6">
                     <button id="btnProductOk" type="submit" name="btnOk"
                             class="btn btn-primary btn-lg btn-block wam-btn-1" onclick="Save('product');return false;">
                         <spring:message code="label.page-amount.btnOk"/>
                     </button>
                 </div>
-                <div class="col-xs-12 ">
+                <div class="col-xs-12 col-md-6">
                     <button id="btnProductCancel" type="submit" name="btnCancel"
                             class="btn btn-default btn-lg btn-block wam-btn-1" onclick="location.reload();">
                         <spring:message code="label.page-amount.btnCancel"/>
                     </button>
                 </div>
-                <div class="col-xs-12 ">
+                <div class="col-xs-12 col-md-6 col-md-offset-6">
                     <button id="btnProductDelete" type="submit" name="btnDelete"
                             class="btn btn-danger btn-lg btn-block wam-btn-2" onclick="Delete('product');return false;">
                         <spring:message code="label.page-amount.btnDelete"/>
                     </button>
                 </div>
-            </section>
+            </div>
         </c:if>
     </div>
 </div>

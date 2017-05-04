@@ -8,7 +8,7 @@
 
 <jsp:include page="/WEB-INF/view/tags/header-template.jsp"></jsp:include>
 
-
+<link href="https://fonts.googleapis.com/css?family=Baloo" rel="stylesheet">
 
 <script language="javascript" type="text/javascript">
     $(document).ready(function () {
@@ -67,7 +67,7 @@
                 right: ''
             },
             defaultView : calendarView,
-            height: calendarView == 'listWeek' ? 575 : 800,
+            height: calendarView == 'listWeek' ? 630 : 850,
             theme: false,
             defaultDate: new Date(),
             locale: 'ru',
@@ -82,22 +82,28 @@
             },
             dayClick: function(date, allDay, jsEvent, view) {
                 var date = $.fullCalendar.formatDate(date, "DD-MM-YYYY");
+
                 drawBarsByParentId(false, null, date, date);
             },
             events : '/statistic/calendar/getCalendarData',
             viewRender: function(view, element) {
                 var after = $.fullCalendar.formatDate(view.intervalStart, "DD-MM-YYYY");
                 var before = $.fullCalendar.formatDate(view.intervalEnd, "DD-MM-YYYY");
-                //$('#calendar').fullCalendar( 'renderEvent', me);
-            }
+            },
+            /*eventAfterRender: function (event, element, view) {
+             var dataHoje = new Date();
+             event.color = "#FFB347"; //Em andamento
+             element.css('background-color', '#FFB347');
+             }*/
+            //eventColor: '#378006'
         });
     }
 </script>
 <!-- Modal Panel -->
-<div id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modallabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div id="modalHeader" class="modal-header">
+<div id="modal" class="modal fade " tabindex="-1" role="dialog" aria-labelledby="modallabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg ">
+        <div class="modal-content wam-radius">
+            <div id="modalHeader" class="modal-header ">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <h4 id="modalcategoryTitle" class="modal-title"><spring:message code="label.page-amount.modal.title" /></h4>
             </div>
@@ -105,21 +111,18 @@
                 Loading data...
             </div>
             <div id="modalFooter" class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
             </div>
         </div>
-        <!-- /.modal-content -->
     </div>
-    <!-- /.modal-dialog -->
 </div>
-
-<div id="body" class="container-fluid">
-    <div class='row'>
-        <div class="form-group">
-            <input id="_csrf_token" type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
-            <textarea id="response" name="response" style="display: none;">${response}</textarea>
-
-            <section id="services">
-                <div class="container">
+<div class="content wam-radius">
+    <div class="container-fluid">
+        <div class='row'>
+            <div class="form-group">
+                <input id="_csrf_token" type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
+                <textarea id="response" name="response" style="display: none;">${response}</textarea>
+                <div class="container-fluid">
                     <div class="row">
                         <div class="col-sm-12 wow fadeInDown " data-wow-duration="1000ms" data-wow-delay="300ms">
                             <spring:message code="label.calendar.details" />
@@ -128,11 +131,9 @@
                         </div>
                     </div>
                 </div>
-            </section>
-
+            </div>
         </div>
     </div>
 </div>
-
 </body>
 </html>

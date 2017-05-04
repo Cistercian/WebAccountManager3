@@ -15,15 +15,80 @@
 	margin-bottom: 10px;
 }
 
+.wam-margin-top-1 {
+	margin-top: 5px;
+}
+
+.wam-margin-bottom-0 {
+	margin-bottom: 0px;
+}
+
 .wam-margin-bottom-1 {
-	margin-bottom: 30px;
+	margin-bottom: 15px;
 }
 
 .wam-margin-bottom-2 {
+	margin-bottom: 30px;
+}
+
+.wam-margin-bottom-3 {
 	margin-bottom: 50px;
 }
 
+.wam-margin-left-3 {
+	margin-left: 10px;
+}
+
+.wam-font-1{
+	font-family: 'Baloo', cursive;
+}
+
+.wam-top-radius{
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+}
+
+.wam-radius{
+	border: 0px solid CornflowerBlue;
+	border-radius: 10px;
+}
+
+/*FullCalendar
+*/
+/*Общие настройки таблицы*/
+@media (min-width: 1000px) {
+	.fc th, .fc td {
+		border-width: 2px;
+		border-color: #b7b7b7;
+		font-family: 'Baloo', cursive;
+		font-size: 30px;
+		color: #675f6f;
+	}
+	/*фон суммы*/
+	.fc-event {
+		height: 100px;
+	}
+}
+@media (max-width: 1000px) {
+	.fc th, .fc td {
+		border-width: 2px;
+		border-color: #b7b7b7;
+		font-family: 'Baloo', cursive;
+		font-size: 15px;
+		/*color: #675f6f;*/
+	}
+}
+/*Принудительно скрываем скролбар*/
+.fc-scroller {
+	overflow-y: hidden !important;
+}
+/*Возврат фокуса на модальное окно после закрытия второго, убирание сдвигания страницы при открытии модального окна
+*/
 .modal { overflow: auto !important; }
+.modal-open{overflow-y: visible;}
+.modal-open {
+	padding-right: 0px !important;
+}
 
 .form-inline .form-control {
 	display : block;
@@ -36,9 +101,106 @@ label {
 div.dataTables_filter input {
 	margin-left: 0.5em;
 	display: block;
-} 
+}
 
 div.dataTables_filter {
 	text-align: left;
 }
- 
+/*
+Общая ширина контента
+*/
+.content {
+	font-family: 'Baloo', cursive;
+}
+.modal-body{
+	font-family: 'Baloo', cursive;
+}
+/*настройки для широкого экрана*/
+@media (min-width: 1000px) {
+	body {
+		background-color: #e6e6e6;
+	}
+	.content {
+		width : 1000px;
+		/*margin: auto;*/
+		background-color : #fff;
+		margin: 0 auto;
+		padding: 0;
+	}
+	/*Стиль прогресс баров
+	*/
+	.progress {
+		height : 30px;
+	}
+
+	.wam-progress-height-2 {
+		height : 20px;
+	}
+
+	.wam-margin-left-3 {
+		margin-left: 30px;
+	}
+}
+/*Стиль для слайдера фотографий
+*/
+.slider {
+	position: relative;
+	/*padding:50px;*/
+	background:#f8f8f8;
+	/*padding-top:130px;*/
+}
+
+.slider img {
+	width: 100%;
+}
+
+#carousel-slider {
+	position: relative;
+}
+
+#carousel-slider .carousel-indicators {
+	bottom: -35px;
+}
+
+#carousel-slider .carousel-indicators li {
+	border: 1px solid #ffbd20;
+}
+
+#carousel-slider a i {
+	border: 1px solid #d9ae6a;
+	border-radius:50%;
+	font-size: 28px;
+	height: 50px;
+	padding: 8px;
+	position: absolute;
+	top: 43%;
+	width: 50px;
+	color:#fff;
+	background:#d9ae6a;
+}
+
+#carousel-slider a i:hover {
+	background:#deae62;
+	color:#fff;
+	border: 1px solid #d9ae6a;
+}
+
+#carousel-slider
+.carousel-control {
+	width:inherit;
+}
+
+#carousel-slider .carousel-control.left i {
+	left:50px
+}
+
+#carousel-slider .carousel-control.right i {
+	right: 50px;
+}
+
+#carousel-slider
+.carousel-control.left,
+#carousel-slider
+.carousel-control.right {
+	background: none;
+}

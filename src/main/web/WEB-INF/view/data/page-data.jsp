@@ -79,7 +79,7 @@
 <!-- Modal Panel -->
 <div id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modallabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
-        <div class="modal-content">
+        <div class="modal-content wam-radius">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <h4 id="mpdalcategoryTitle" class="modal-title">
@@ -96,7 +96,7 @@
     <!-- /.modal-dialog -->
 </div>
 
-<div id="services" class="container-fluid">
+<div id="services" class="container-fluid content">
     <div class='row'>
         <div class="form-group">
             <input id="_csrf_token" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>

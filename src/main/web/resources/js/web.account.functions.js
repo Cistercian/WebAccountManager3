@@ -12,7 +12,8 @@ function drawBarsByParentId(isChildren, categoryId, after, before) {
     //свитчер - либо показываем, либо стираем детализацию по дочерней категории
     if (($('*').is('#childrenCategory' + categoryId)) && isChildren) {
         $('#childrenCategory' + categoryId).remove();
-        $('#strongCategory' + categoryId).text("Развернуть");
+        $('#strongCategory' + categoryId + 'children').remove();
+        $('#strongCategory' + categoryId).text("(Развернуть)");
     }
     else {
         var url = categoryId != null ? '/getContentByCategoryId' : '/getCategoriesByDate';
@@ -26,7 +27,12 @@ function drawBarsByParentId(isChildren, categoryId, after, before) {
                 'before' : before
             },
             dataType: 'json',
+            beforeSend: function(){
+                displayLoader();
+            },
             success: function (data) {
+                hideLoader();
+
                 var dataClass = 'Category'; //задел на будущее - вдруг придется выводить подитоги по другим данным
                 var maxSum = 0;
                 var totalSum = 0;
@@ -38,34 +44,36 @@ function drawBarsByParentId(isChildren, categoryId, after, before) {
                     tagClassProgress = "";
 
                     if (categoryId != null)
-                        categoryName = $('#' + idNameElem).attr('value') + " <a href='/page-data/display/category/" + categoryId +
-                            "'>(редактировать)</a>";
+                        categoryName = "<strong>" + $('#' + idNameElem).attr('value') + " </strong><a href='/page-data/display/category/" +
+                            categoryId + "'>(редактировать)</a>";
                     else
-                        categoryName = "Детализация за дату " + after;
+                        categoryName = "Детализация за дату <p>" + after;
 
                     //заголовок
                     $('#modalHeader').append(
-                        "<h3>" + categoryName + "</h3>"
+                        "<h3 class='wam-font-1'>" + categoryName + "</h3>"
                     );
 
                 } else {
                     idBarElem = 'childrenCategory' + categoryId;
 
-                    $('#progressBarCategory' + categoryId).append("<div id='" + idBarElem + "' >");
+                    $('#progressBarCategory' + categoryId).append("<div id='" + idBarElem + "' class='wam-margin-left-3'>");
 
                     //totalSum = $('#' + 'barSum' + dataClass + categoryId).attr('value');
                     idNameElem = 'barName' + dataClass + categoryId;
-                    tagClassProgress = "mini";
+                    tagClassProgress = "wam-progress-height-2";
                     maxSum = $('#' + 'barSum' + dataClass + categoryId).attr('value');
                     categoryName = "Детализация по категории: " + $('#' + idNameElem).attr('value');
 
                     //заголовок
                     $('#childrenCategoryDetails').append(
-                        "<h4>" + categoryName + " <a href='/page-data/display/category/" + categoryId +
-                        "'>(редактировать)</a></h4>"
+                        "<h4><strong>" + categoryName + " <a href='/page-data/display/category/" + categoryId +
+                        "'>(редактировать)</a></strong></h4>"
                     );
                     $('#strongCategory' + categoryId).text("(Свернуть, ");
-                    $('#strongCategory' + categoryId).append("<a href='/page-data/display/category/" + categoryId + "'>редактировать)</a>");
+                    $('#strongCategory' + categoryId).parent().parent()
+                        .append("<strong id='strongCategory" + categoryId + "children'>" +
+                            "<a href='/page-data/display/category/" + categoryId + "'>редактировать)</a></strong>");
                 }
 
 
@@ -111,19 +119,18 @@ function drawBarsByParentId(isChildren, categoryId, after, before) {
                     <!-- добавляем прогресс бар -->
                     $('#' + idBarElem).append(
                         "<li id='progressBar" + classType + classId + "' class='list-unstyled'>" +
-                        "<div class='row'><div class='col-xs-12'><h6>" +
-                        "<strong id='barName" + classType + classId + "' value='" + className + "'>" +
+                        "<div class='row'><div class='col-xs-12'><h4 class='wam-margin-top-1 wam-margin-bottom-0'>" +
+                        "<strong1 id='barName" + classType + classId + "' value='" + className + "'>" +
                         classTitle + ": " + className + "" +
-                        "</strong></div></div>" +
+                        "</strong1></div></div>" +
                         "<div class='row'><div class='col-xs-12'>" + elemLink + "" +
                         "<strong id='barSum" + classType + classId + "' class='pull-right text-muted' " +
                         "value='" + classSum + "'>" +
                         numberToString(classSum) + " руб." +
                         "</strong>" +
-                        "</h6></div></div>" +
-                        "<div class='progress " + tagClassProgress + " progress-striped active' >" +
-                        "<div class='progress-bar " + tagClassProgress +
-                        " progress-bar-" + styles[curNumStyle] + "' role='progressbar' " +
+                        "</h4></div></div>" +
+                        "<div class='progress " + tagClassProgress + " progress-striped active wam-margin-bottom-1' >" +
+                        "<div class='progress-bar progress-bar-" + styles[curNumStyle] + "' role='progressbar' " +
                         "aria-valuenow='" + classSum + "'" + "aria-valuemin='0' aria-valuemax='100' " +
                         "style='width: " + normalSum + "%' " + "value='" + className +
                         "'>" +
@@ -138,7 +145,7 @@ function drawBarsByParentId(isChildren, categoryId, after, before) {
                 totalSum = totalSum.toFixed(2);
                 $('#' + idBarElem).append(
                     "<div class='row'>" +
-                    (isChildren ? "<div class='col-md-12 wam-margin-bottom-1'><h6><strong>" : "<div class='col-md-12'><h4><strong class='pull-right text-muted'>")  +
+                    (isChildren ? "<div class='col-md-12 wam-margin-bottom-2'><h6><strong>" : "<div class='col-md-12'><h4><strong class='pull-right text-muted'>")  +
                     "ИТОГО " + numberToString(totalSum) + " руб." +
                     "</strong>" + (isChildren ? "</h6>" : "</h4>") +
                     "</div><p><p>" +
@@ -257,9 +264,14 @@ function numberToString(number){
 /**
  * Функция вызова waitingDialog.js при выполнении ajax запросов
  */
-$(document).bind("ajaxSend", function(){
+/*$(document).bind("ajaxSend", function(){
+
+ }).bind("ajaxComplete", function(){
+ $('#modalBody').focus();
+ });*/
+function displayLoader(){
     waitingDialog.show('Загрузка...', {dialogSize: 'sm', progressType: 'warning'});
-}).bind("ajaxComplete", function(){
+}
+function hideLoader(){
     waitingDialog.hide();
-    $('#modalBody').focus();
-});
+}

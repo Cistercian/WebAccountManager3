@@ -97,7 +97,7 @@ body .fc { /* extra precedence to overcome jqui */
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
-	}
+}
 
 /*
 Acceptable font-family overrides for individual icons:
@@ -184,7 +184,7 @@ NOTE: use percentage font sizes or else old IE chokes
 
 /* Firefox has an annoying inner border */
 .fc button::-moz-focus-inner { margin: 0; padding: 0; }
-	
+
 .fc-state-default { /* non-theme */
 	border: 1px solid;
 }
@@ -207,7 +207,7 @@ NOTE: use percentage font sizes or else old IE chokes
 	margin: 0 .2em;
 	vertical-align: middle;
 }
-	
+
 /*
   button states
   borrowed from twitter bootstrap (http://twitter.github.com/bootstrap/)
@@ -241,9 +241,9 @@ NOTE: use percentage font sizes or else old IE chokes
 	text-decoration: none;
 	background-position: 0 -15px;
 	-webkit-transition: background-position 0.1s linear;
-	   -moz-transition: background-position 0.1s linear;
-	     -o-transition: background-position 0.1s linear;
-	        transition: background-position 0.1s linear;
+	-moz-transition: background-position 0.1s linear;
+	-o-transition: background-position 0.1s linear;
+	transition: background-position 0.1s linear;
 }
 
 .fc-state-down,
@@ -428,7 +428,7 @@ a[data-goto]:hover {
 	border-right: 0 hidden transparent;
 
 	/* no bottom borders on rows */
-	border-bottom: 0 hidden transparent; 
+	border-bottom: 0 hidden transparent;
 }
 
 .fc-row:first-child table {
@@ -805,10 +805,10 @@ a.fc-more:hover {
 
 .fc-unselectable {
 	-webkit-user-select: none;
-	 -khtml-user-select: none;
-	   -moz-user-select: none;
-	    -ms-user-select: none;
-	        user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 	-webkit-touch-callout: none;
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
@@ -852,7 +852,7 @@ a.fc-more:hover {
 .fc .fc-toolbar > * > :first-child { /* extra precedence to override button border margins */
 	margin-left: 0;
 }
-	
+
 /* title text */
 
 .fc-toolbar h2 {
@@ -869,7 +869,7 @@ a.fc-more:hover {
 .fc-toolbar .ui-state-hover {
 	z-index: 2;
 }
-	
+
 .fc-toolbar .fc-state-down {
 	z-index: 3;
 }
@@ -893,8 +893,8 @@ a.fc-more:hover {
 .fc-view-container *:before,
 .fc-view-container *:after {
 	-webkit-box-sizing: content-box;
-	   -moz-box-sizing: content-box;
-	        box-sizing: content-box;
+	-moz-box-sizing: content-box;
+	box-sizing: content-box;
 }
 
 .fc-view, /* scope positioning and z-index's for everything within the view */

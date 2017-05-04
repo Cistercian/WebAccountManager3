@@ -83,8 +83,8 @@
 
 </head>
 <body>
-<header>
-    <nav class="navbar navbar-default" role="navigation">
+<header class="content wam-radius">
+    <nav class="navbar navbar-default wam-radius" role="navigation">
         <!-- Название компании и кнопка, которая отображается для мобильных устройств группируются для лучшего отображения при свертывании -->
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
