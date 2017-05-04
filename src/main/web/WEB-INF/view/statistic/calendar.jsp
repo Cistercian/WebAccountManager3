@@ -97,9 +97,9 @@
 <div id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modallabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
+            <div id="modalHeader" class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 id="mpdalcategoryTitle" class="modal-title"><spring:message code="label.page-amount.modal.title" /></h4>
+                <h4 id="modalcategoryTitle" class="modal-title"><spring:message code="label.page-amount.modal.title" /></h4>
             </div>
             <div id="modalBody" class="modal-body">
                 Loading data...

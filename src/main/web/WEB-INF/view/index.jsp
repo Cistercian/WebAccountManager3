@@ -343,11 +343,15 @@
 
                     <c:set var="styles" value="${['success', 'info', 'warning', 'danger']}" scope="page" />
                     <c:set var="step" value="-1" scope="page"/>
-                    <c:if test="not empty categories">
-                        <h3><spring:message code="label.index.categoryBars.income" /></h3>
-                    </c:if>
+                    <c:set var="hasCategories" value="false" scope="page"/>
+
                     <c:forEach items="${categories}" var="list">
                         <c:if test="${list.getType() == 'CategoryIncome'}">
+
+                            <c:if test="${hasCategories == 'false'}">
+                                <c:set var="hasCategories" value="true" scope="page"/>
+                                <h3><spring:message code="label.index.categoryBars.income" /></h3>
+                            </c:if>
 
                             <c:set var="classId" value="${list.getId()}" />
                             <c:set var="className" value="${list.getName()}" />
@@ -355,7 +359,7 @@
                             <c:set var="normalPrice" value="${classPrice * 100 / maxIncome}" />
 
                             <c:set var="step" value="${step + 1}" scope="page"/>
-                            <li>
+                            <li class="list-unstyled">
                                 <a href="javascript:drawBarsByParentId(false, '${classId}', '${afterMonth}', '${curDate}')">
                                     <div>
                                         <h4><strong id="categoryBarName${classId}" value="${className}">
@@ -383,11 +387,15 @@
 
                     <c:set var="styles" value="${['success', 'info', 'warning', 'danger']}" scope="page" />
                     <c:set var="step" value="-1" scope="page"/>
-                    <c:if test="not empty categories">
-                        <h3><spring:message code="label.index.categoryBars.expense" /></h3>
-                    </c:if>
+                    <c:set var="hasCategories" value="false" scope="page"/>
+
                     <c:forEach items="${categories}" var="list">
                         <c:if test="${list.getType() == 'CategoryExpense'}">
+
+                            <c:if test="${hasCategories == 'false'}">
+                                <c:set var="hasCategories" value="true" scope="page"/>
+                                <h3><spring:message code="label.index.categoryBars.expense" /></h3>
+                            </c:if>
 
                             <c:set var="classId" value="${list.getId()}" />
                             <c:set var="className" value="${list.getName()}" />
@@ -395,7 +403,7 @@
                             <c:set var="normalPrice" value="${classPrice * 100 / maxExpense}" />
 
                             <c:set var="step" value="${step + 1}" scope="page"/>
-                            <li>
+                            <li class="list-unstyled">
                                 <a href="javascript:drawBarsByParentId(false, '${classId}', '${afterMonth}', '${curDate}')">
                                     <div>
                                         <h4><strong id="categoryBarName${classId}" value="${className}">

@@ -10,3 +10,35 @@
 .wam-btn-1 {
 	margin-top: 10px;
 }
+.wam-btn-2 {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.wam-margin-bottom-1 {
+	margin-bottom: 30px;
+}
+
+.wam-margin-bottom-2 {
+	margin-bottom: 50px;
+}
+
+.modal { overflow: auto !important; }
+
+.form-inline .form-control {
+	display : block;
+}
+
+label {
+	display : block;
+}
+
+div.dataTables_filter input {
+	margin-left: 0.5em;
+	display: block;
+} 
+
+div.dataTables_filter {
+	text-align: left;
+}
+ 

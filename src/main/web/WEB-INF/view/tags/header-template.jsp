@@ -72,6 +72,10 @@
     <spring:url value="/resources/css/datepicker/bootstrap-datetimepicker.min.css" var="datetimepickercss"/>
     <link rel="stylesheet" href="${datetimepickercss}">
 
+    <%--waitingDialog--%>
+    <spring:url value="/resources/js/waitingDialog.js" var="waitingDialog"/>
+    <script src="${waitingDialog}"></script>
+
     <spring:url value="/resources/js/web.account.functions.js" var="webaccount"/>
     <script src="${webaccount}"></script>
     <spring:url value="/resources/css/style.css" var="style"/>

@@ -12,6 +12,7 @@ function drawBarsByParentId(isChildren, categoryId, after, before) {
     //свитчер - либо показываем, либо стираем детализацию по дочерней категории
     if (($('*').is('#childrenCategory' + categoryId)) && isChildren) {
         $('#childrenCategory' + categoryId).remove();
+        $('#strongCategory' + categoryId).text("Развернуть");
     }
     else {
         var url = categoryId != null ? '/getContentByCategoryId' : '/getCategoriesByDate';
@@ -34,15 +35,19 @@ function drawBarsByParentId(isChildren, categoryId, after, before) {
                     ClearModal();
                     idBarElem = 'parentBars';
                     idNameElem = 'categoryBarName' + categoryId;
-                    idHeaderElem = 'modalHeader';
-                    tagHeader = "h3";
                     tagClassProgress = "";
 
                     if (categoryId != null)
-                        categoryName = $('#' + idNameElem).attr('value');
+                        categoryName = $('#' + idNameElem).attr('value') + " <a href='/page-data/display/category/" + categoryId +
+                            "'>(редактировать)</a>";
                     else
                         categoryName = "Детализация за дату " + after;
-                    //totalSum = $('#' + 'categoryBarSum' + categoryId).attr('value');
+
+                    //заголовок
+                    $('#modalHeader').append(
+                        "<h3>" + categoryName + "</h3>"
+                    );
+
                 } else {
                     idBarElem = 'childrenCategory' + categoryId;
 
@@ -50,17 +55,19 @@ function drawBarsByParentId(isChildren, categoryId, after, before) {
 
                     //totalSum = $('#' + 'barSum' + dataClass + categoryId).attr('value');
                     idNameElem = 'barName' + dataClass + categoryId;
-                    idHeaderElem = 'childrenCategoryDetails';
-                    tagHeader = "h4";
                     tagClassProgress = "mini";
                     maxSum = $('#' + 'barSum' + dataClass + categoryId).attr('value');
                     categoryName = "Детализация по категории: " + $('#' + idNameElem).attr('value');
+
+                    //заголовок
+                    $('#childrenCategoryDetails').append(
+                        "<h4>" + categoryName + " <a href='/page-data/display/category/" + categoryId +
+                        "'>(редактировать)</a></h4>"
+                    );
+                    $('#strongCategory' + categoryId).text("(Свернуть, ");
+                    $('#strongCategory' + categoryId).append("<a href='/page-data/display/category/" + categoryId + "'>редактировать)</a>");
                 }
-                //заголовок
-                $('#' + idHeaderElem).append(
-                    "<" + tagHeader + ">" + categoryName + " <a href='/page-data/display/category/" + categoryId +
-                    "'>(редактировать)</a></" + tagHeader + ">"
-                );
+
 
                 //данные для стилей прогресс баров
                 var styles = ['success', 'info', 'warning', 'danger'];
@@ -98,7 +105,7 @@ function drawBarsByParentId(isChildren, categoryId, after, before) {
                         elemLink = 	"<a href='javascript:drawBarsByParentId(true, " + classId + "," +
                             "\"" + after + "\"," +
                             "\"" + before +"\")';\">" +
-                            "<strong> (Развернуть)</strong>" +
+                            "<strong id='strong" + classType + classId +"'> (Развернуть)</strong>" +
                             "</a>";
                     }
                     <!-- добавляем прогресс бар -->
@@ -108,8 +115,8 @@ function drawBarsByParentId(isChildren, categoryId, after, before) {
                         "<strong id='barName" + classType + classId + "' value='" + className + "'>" +
                         classTitle + ": " + className + "" +
                         "</strong></div></div>" +
-                        "<div class='row'><div class='col-xs-9'>" + elemLink + "</div>" +
-                        "<div class='col-xs-3'><strong id='barSum" + classType + classId + "' class='pull-right text-muted' " +
+                        "<div class='row'><div class='col-xs-12'>" + elemLink + "" +
+                        "<strong id='barSum" + classType + classId + "' class='pull-right text-muted' " +
                         "value='" + classSum + "'>" +
                         numberToString(classSum) + " руб." +
                         "</strong>" +
@@ -131,9 +138,9 @@ function drawBarsByParentId(isChildren, categoryId, after, before) {
                 totalSum = totalSum.toFixed(2);
                 $('#' + idBarElem).append(
                     "<div class='row'>" +
-                    "<div class='col-md-12'><h6><strong>" +
+                    (isChildren ? "<div class='col-md-12 wam-margin-bottom-1'><h6><strong>" : "<div class='col-md-12'><h4><strong class='pull-right text-muted'>")  +
                     "ИТОГО " + numberToString(totalSum) + " руб." +
-                    "</strong></h6>" +
+                    "</strong>" + (isChildren ? "</h6>" : "</h4>") +
                     "</div><p><p>" +
                     "</div>"
                 );
@@ -247,3 +254,12 @@ function drawChartOfTypes(data, elementId) {
 function numberToString(number){
     return (number + '').replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ');
 }
+/**
+ * Функция вызова waitingDialog.js при выполнении ajax запросов
+ */
+$(document).bind("ajaxSend", function(){
+    waitingDialog.show('Загрузка...', {dialogSize: 'sm', progressType: 'warning'});
+}).bind("ajaxComplete", function(){
+    waitingDialog.hide();
+    $('#modalBody').focus();
+});
