@@ -112,7 +112,7 @@
                     <ul class="dropdown-menu">
                         <li><a href="/page-data/amount"><spring:message code="menu.nav.amounts" /></a></li>
                         <li class="divider"></li>
-                        <li><a href="/page-data/category"><spring:message code="menu.nav.categories" /></a></li>
+                        <li><a href="/category"><spring:message code="menu.nav.categories" /></a></li>
                     </ul>
                 </li>
                 <li class="dropdown">

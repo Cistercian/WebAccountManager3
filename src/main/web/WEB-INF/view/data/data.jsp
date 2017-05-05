@@ -3,6 +3,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-gb" lang="en-gb" dir="ltr">
@@ -65,11 +66,13 @@
                 break;
             case 'parentCategories':
                 elem = $('#btnParentCategories');
+                $('#parentId').val(categoryId);
                 break;
             case 'product':
                 elem = $('#btnProductMerge');
                 break;
         }
+
         elem.text(categoryName + "  ");
         elem.val(categoryId);
         elem.append("\<span class=\"caret\">\<\/span>");
@@ -153,14 +156,14 @@
         });
     }
     ;
-    function Delete(className) {
+    function Delete(className, id) {
         ClearModalPanel();
         $('#modalBody').append(
                 "<h4><strong><spring:message code="label.page-amount.modal.textDelete" /></strong></h4>"
         );
         $('#modalFooter').append(
                 "<button type='button' class='btn btn-default' data-dismiss='modal' " +
-                "onclick=SendDeleteQuery('" + className + "');>" +
+                "onclick=\"SendDeleteQuery('" + className + "', '" + id + "');\">" +
                 "<spring:message code="label.page-amount.modal.btnYes" />" +
                 "</button>" +
                 "<button type='button' class='btn btn-primary' " +
@@ -172,10 +175,10 @@
         $('#modal').modal('show');
     }
     ;
-    function SendDeleteQuery(className) {
+    function SendDeleteQuery(className, id) {
         var data = {
             'className': className,
-            'id': $('#id').val(),
+            'id': (id == '' ? $('#id').val() : id),
         }
         $.ajax({
             type: "POST",
@@ -335,6 +338,129 @@
                 </div>
             </div>
         </c:if>
+        <c:if test="${className=='categoryNew'}">
+            <div class="container-fluid">
+                <div class='col-xs-12 wam-margin-bottom-2'>
+                    <h3><spring:message code="label.page-category.title"/></h3>
+                </div>
+                <form:form id="categoryForm" method="POST" modelAttribute="categoryForm" action="/category/save">
+                    <!-- Скрытые поля -->
+                    <spring:bind path="id">
+                        <form:input type="hidden" path="id" class="form-control" placeholder="${id}" ></form:input>
+                    </spring:bind>
+
+                    <!-- Родительская категория -->
+                    <spring:bind path="parentId">
+                        <input id="parentId" type="hidden" name="parent" class="form-control" value="${parent.getId()}"></input>
+
+                        <div class="col-md-12">
+                            <h4><strong><spring:message code="label.page-category.parentName"/></strong></h4>
+                        </div>
+                        <div class="col-md-12">
+                            <button id="btnParentCategories" class="btn-default btn-lg btn-block dropdown-toggle"
+                                    data-toggle="dropdown" value="${parent.getName()}">
+                                <c:choose>
+                                    <c:when test="${not empty parent}">
+                                        ${parent.getName()}
+                                    </c:when>
+                                    <c:otherwise>
+                                        <spring:message code="label.page-category.selectCategory"/>
+                                    </c:otherwise>
+                                </c:choose>
+                                <span class="caret"></span>
+                            </button>
+                            <ul id="dropdownParentCategories" class="dropdown-menu">
+                                <li class="wam-text-size-1">
+                                    <a onclick="setDropdownListId(-1, '<spring:message code="label.page-category.selectCategory"/>',
+                                            'parentCategories');return false;">
+                                        <spring:message code="label.page-category.selectCategory"/></a></li>
+                                <li class="divider"></li>
+                                <c:forEach items="${parents}" var="list">
+                                    <li class="wam-text-size-1"><a id='${list.getId()}' onclick="setDropdownListId('${list.getId()}',
+                                            '${list.getName()}', 'parentCategories');
+                                            return false;">${list.getName()}</a></li>
+                                </c:forEach>
+                            </ul>
+                        </div>
+                    </spring:bind>
+
+                    <!-- Наименование -->
+                    <spring:bind path="name">
+                        <div class="col-md-12">
+                            <h4><strong><spring:message code="label.page-category.name"/></strong></h4>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group ${status.error ? 'has-error' : ''}">
+                                <spring:message code="label.page-category.name" var="name"/>
+                                <form:input type="text" path="name" class="form-control"
+                                            placeholder="${name}" autofocus="true"></form:input>
+                                <form:errors path="name"></form:errors>
+                            </div>
+                        </div>
+                    </spring:bind>
+
+                    <!-- type -->
+                    <spring:bind path="type">
+                        <div class="col-md-4">
+                            <h4><strong><spring:message code="label.page-category.type"/></strong></h4>
+                        </div>
+                        <div class="col-md-4 col-md-offset-2 ${status.error ? 'has-error' : ''}">
+                            <div class="radio">
+                                <label>
+                                    <form:radiobutton path="type" value="0"/><spring:message code="label.page-category.typeIncome"/>
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <form:radiobutton path="type" value="1"/><spring:message code="label.page-category.typeExpence"/>
+                                </label>
+                            </div>
+
+                            <form:errors path="type"></form:errors>
+                        </div>
+                    </spring:bind>
+
+                    <!-- Описание -->
+                    <spring:bind path="details">
+                        <div class="col-md-12">
+                            <h4><strong><spring:message code="label.page-category.details"/></strong></h4>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group ${status.error ? 'has-error' : ''}">
+                                <form:textarea type="text" path="details" class="form-control input-lg" rows="5"
+                                               placeholder="${details}"></form:textarea>
+                                <form:errors path="details"></form:errors>
+                            </div>
+                        </div>
+                    </spring:bind>
+                </form:form>
+                <div class="col-xs-12 col-md-6">
+                    <button type="submit" name="btnOk"
+                            class="btn btn-primary btn-lg btn-block wam-btn-1" onclick="categoryForm.submit();">
+                        <spring:message code="label.page-amount.btnOk"/>
+                    </button>
+                </div>
+                <div class="col-xs-12 col-md-6">
+                    <button type="submit" name="btnCancel"
+                            class="btn btn-default btn-lg btn-block wam-btn-1" onclick="location.reload();">
+                        <spring:message code="label.page-amount.btnCancel"/>
+                    </button>
+                </div>
+                <div class="col-xs-12 col-md-6 col-md-push-6">
+                    <button type="submit" name="btnNew"
+                            class="btn-default btn-lg btn-block wam-btn-1"
+                            onclick="location.href='/category.html'">
+                        <spring:message code="label.page-amount.btnNew"/>
+                    </button>
+                </div>
+                <div class="col-xs-12 col-md-6 col-md-pull-6">
+                    <button type="submit" name="btnDelete"
+                            class="btn btn-danger btn-lg btn-block wam-btn-2" onclick="Delete('category', '${id}');return false;">
+                        <spring:message code="label.page-amount.btnDelete"/>
+                    </button>
+                </div>
+            </div>
+        </c:if>
         <c:if test="${className=='category'}">
             <div class="container-fluid">
                 <div class='col-xs-12 wam-margin-bottom-2'>
@@ -376,7 +502,7 @@
                            path="name" placeholder="Наименование" data-rule="minlen:5"
                            data-msg="Please enter at least 5 chars"
                            value='${name}'/>
-                    <div class="validation"></div>
+                    <form:errors path="name"></form:errors>
                 </div>
                 <div class="col-md-4">
                     <h4><strong><spring:message code="label.page-category.type"/></strong></h4>

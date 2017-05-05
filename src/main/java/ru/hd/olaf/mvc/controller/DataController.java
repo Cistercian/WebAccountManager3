@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -16,6 +18,7 @@ import ru.hd.olaf.mvc.service.AmountService;
 import ru.hd.olaf.mvc.service.CategoryService;
 import ru.hd.olaf.mvc.service.ProductService;
 import ru.hd.olaf.mvc.service.SecurityService;
+import ru.hd.olaf.mvc.validator.CategoryValidator;
 import ru.hd.olaf.util.LogUtil;
 import ru.hd.olaf.util.ParseUtil;
 import ru.hd.olaf.util.json.JsonResponse;
@@ -26,10 +29,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Olaf on 21.04.2017.
@@ -45,6 +45,8 @@ public class DataController {
     private ProductService productService;
     @Autowired
     private SecurityService securityService;
+    @Autowired
+    private CategoryValidator categoryValidator;
 
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
@@ -235,7 +237,7 @@ public class DataController {
                 response = productService.delete((Product) response.getEntity());
             }
         } catch (CrudException e) {
-            String message = String.format("Произошла неизвестная ошибка: %s", e.getCause());
+            String message = String.format("Произошла ошибка: \n%s", e.getMessage());
 
             logger.error(message);
 
@@ -363,7 +365,7 @@ public class DataController {
             category = new Category();
         }
 
-        //обрабатываем рожительскую категорию
+        //обрабатываем родительскую категорию
         logger.debug("Обрабатываем родительскую категорию");
         response = categoryService.getById(parentId);
         if (response.getType() == ResponseType.ERROR)
@@ -379,12 +381,17 @@ public class DataController {
         category.setDetails(details);
         category.setUserId(securityService.findLoggedUser());
 
+        return saveEntityCategory(category);
+    }
+
+    private JsonResponse saveEntityCategory(Category category) {
         try {
             categoryService.save(category);
         } catch (CrudException e) {
             String message = String.format("Возникла ошибка при сохранении данных в БД. \n" +
                     "Error message: %s", e.getMessage());
             logger.error(message);
+            logger.error(e.toString());
 
             return new JsonResponse(ResponseType.ERROR, message);
         }
@@ -602,6 +609,84 @@ public class DataController {
         }
 
         return modelAndView;
+    }
+
+    @RequestMapping(value = "/category/save", method = RequestMethod.POST, produces = "text/plain;charset=UTF-8")
+    public ModelAndView saveCategory(@ModelAttribute("categoryForm") Category categoryForm,
+                                     @RequestParam(value = "parent") Integer parentId,
+                                     BindingResult bindingResult){
+        logger.debug(LogUtil.getMethodName());
+
+        logger.debug("Обрабатываем родительскую категорию");
+        JsonResponse response = categoryService.getById(parentId);
+        Category parent = null;
+        if (response.getType() != ResponseType.ERROR && response.getEntity() != null) {
+            parent = (Category) response.getEntity();
+            logger.debug(String.format("Родительская категория: %s", parent.toString()));
+
+            categoryForm.setParentId(parent);
+        } else {
+            logger.debug(String.format("Ошибка опрделения родительской категории по id = %d: %s",
+                    parentId, response.getMessage()));
+        }
+
+        categoryForm.setUserId(securityService.findLoggedUser());
+        logger.debug(String.format("Обрабатываемая сущность: %s", categoryForm.toString()));
+
+        ModelAndView modelAndView = new ModelAndView("/data/data");
+        modelAndView.addObject("className", "categoryNew");
+
+        categoryValidator.validate(categoryForm, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            logger.info("Ошибка валидиации!");
+
+            modelAndView.addObject("parents", categoryService.getAll());
+            modelAndView.addObject("parent", parent);
+            modelAndView.addObject("category", categoryForm);
+        } else {
+
+            response = saveEntityCategory(categoryForm);
+
+            modelAndView.addObject("parents", categoryService.getAll());
+            modelAndView.addObject("parent", parent);
+            modelAndView.addObject("category", categoryForm);
+
+            modelAndView.addObject("response", response.getMessage());
+        }
+
+        return modelAndView;
+    }
+
+    /**
+     * Функция просмотра страницы редактирования категории
+     * @param model model?
+     * @return Наименование view
+     */
+    @RequestMapping(value = "/category", method = RequestMethod.GET)
+    public String getViewCategory(@RequestParam(value = "id", required = false) Integer id,
+                                  Model model){
+        logger.debug(LogUtil.getMethodName());
+
+        Category category = null;
+        JsonResponse response = categoryService.getById(id);
+
+        if (response.getType() != ResponseType.ERROR && response.getEntity() != null) {
+            category = (Category) response.getEntity();
+            model.addAttribute("id", id);
+            model.addAttribute("parent", (category.getParentId() != null ? category.getParentId() : ""));
+            logger.debug(String.format("Обрабатывается категория: %s", category.toString()));
+        } else {
+            category = new Category();
+            category.setType((byte)1);
+            logger.debug(String.format("Категория с id = %d не найдена. Создаем новую.", id));
+        }
+
+        model.addAttribute("className", "categoryNew");
+        model.addAttribute("parents", categoryService.getAll());
+        model.addAttribute("categoryForm", category);
+
+        return "data/data";
     }
 
     @InitBinder

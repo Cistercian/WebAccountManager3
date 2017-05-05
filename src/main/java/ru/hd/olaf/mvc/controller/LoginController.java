@@ -13,6 +13,7 @@ import ru.hd.olaf.entities.User;
 import ru.hd.olaf.mvc.service.SecurityService;
 import ru.hd.olaf.mvc.service.UserService;
 import ru.hd.olaf.mvc.validator.UserValidator;
+import ru.hd.olaf.util.LogUtil;
 
 /**
  * Created by d.v.hozyashev on 18.04.2017.
@@ -32,16 +33,14 @@ public class LoginController {
 
     @RequestMapping(value = "/registration", method = RequestMethod.GET)
     public String registration(Model model){
-        logger.debug(String.format("Controller: %s, called function: %s",
-                LoginController.class.getSimpleName(), "registration_get"));
+        logger.debug(LogUtil.getMethodName());
         model.addAttribute("userForm", new User());
         return "/login/registration";
     }
 
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
     public String registration(@ModelAttribute("userForm") User userForm, BindingResult bindingResult, Model model) {
-        logger.debug(String.format("Controller: %s, called function: %s",
-                LoginController.class.getSimpleName(), "registration_post"));
+        logger.debug(LogUtil.getMethodName());
 
         userValidator.validate(userForm, bindingResult);
 
@@ -62,8 +61,8 @@ public class LoginController {
 
     @RequestMapping(value = "login", method = RequestMethod.GET)
     public String login(Model model, String error, String logout){
-        logger.debug(String.format("Controller: %s, called function: %s",
-                LoginController.class.getSimpleName(), "login"));
+        logger.debug(LogUtil.getMethodName());
+
         //TODO: link to message.properties
         if (error != null){
             model.addAttribute("error", "Your username and password is invalid.");

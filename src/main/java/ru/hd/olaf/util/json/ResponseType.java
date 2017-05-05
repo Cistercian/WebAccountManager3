@@ -6,5 +6,6 @@ package ru.hd.olaf.util.json;
 public enum ResponseType {
     SUCCESS,
     ERROR,
+    NOTVALID,
     INFO
 }

@@ -1,5 +1,6 @@
 package ru.hd.olaf.mvc.service.impl;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -207,7 +208,7 @@ public class CategoryServiceImpl implements CategoryService {
         try {
             entity = categoryRepository.save(category);
         } catch (Exception e) {
-            throw new CrudException(e.getMessage());
+            throw new CrudException(ExceptionUtils.getRootCause(e).getMessage());
         }
 
         return entity;
@@ -241,7 +242,7 @@ public class CategoryServiceImpl implements CategoryService {
             categoryRepository.delete(category);
             return new JsonResponse(ResponseType.SUCCESS, "Удаление успешно завершено.");
         } catch (Exception e) {
-            throw new CrudException(e.getMessage());
+            throw new CrudException(ExceptionUtils.getRootCause(e).getMessage());
         }
     }
 }

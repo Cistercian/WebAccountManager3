@@ -382,7 +382,6 @@
                                     </div>
                                 </a>
                             </li>
-                            <li class='divider'></li>
                         </c:if>
                     </c:forEach>
                 </div>
@@ -434,5 +433,5 @@
         </div><!--/.row-->
     </div>
 </div>
-    </body>
+</body>
 </html>

@@ -1,6 +1,7 @@
 package ru.hd.olaf.mvc.service.impl;
 
 import com.google.common.collect.Lists;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -244,7 +245,7 @@ public class AmountServiceImpl implements AmountService {
         try {
             entity = amountRepository.save(amount);
         } catch (Exception e) {
-            throw new CrudException(e.getMessage());
+            throw new CrudException(ExceptionUtils.getRootCause(e).getMessage());
         }
 
         return entity;
@@ -261,7 +262,7 @@ public class AmountServiceImpl implements AmountService {
             amountRepository.delete(amount.getId());
             return new JsonResponse(ResponseType.SUCCESS, "Удаление успешно завершено.");
         } catch (Exception e) {
-            throw new CrudException(e.getMessage());
+            throw new CrudException(ExceptionUtils.getRootCause(e).getMessage());
         }
     }
 }

@@ -27,6 +27,8 @@
         <!-- Logging -->
         <log4j12.version>1.7.5</log4j12.version>
         <slf4j.version>1.7.13</slf4j.version>
+        <!-- ExceptionUtil -->
+        <commonLang.version>3.0</commonLang.version>
     </properties>
 
     <dependencyManagement>
@@ -165,6 +167,14 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-core</artifactId>
             <version>${security.version}</version>
+        </dependency>
+
+        <!-- ExceptionUtils -->
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commonLang.version}</version>
         </dependency>
     </dependencies>
 </project>

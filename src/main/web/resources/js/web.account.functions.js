@@ -44,7 +44,11 @@ function drawBarsByParentId(isChildren, categoryId, after, before) {
                     tagClassProgress = "";
 
                     if (categoryId != null)
-                        categoryName = "<strong>" + $('#' + idNameElem).attr('value') + " </strong><a href='/page-data/display/category/" +
+                    /*
+                     categoryName = "<strong>" + $('#' + idNameElem).attr('value') + " </strong><a href='/page-data/display/category/" +
+                     categoryId + "'>(редактировать)</a>";
+                     */
+                        categoryName = "<strong>" + $('#' + idNameElem).attr('value') + " </strong><a href='/category?id=" +
                             categoryId + "'>(редактировать)</a>";
                     else
                         categoryName = "Детализация за дату <p>" + after;
@@ -67,13 +71,13 @@ function drawBarsByParentId(isChildren, categoryId, after, before) {
 
                     //заголовок
                     $('#childrenCategoryDetails').append(
-                        "<h4><strong>" + categoryName + " <a href='/page-data/display/category/" + categoryId +
+                        "<h4><strong>" + categoryName + " <a href='/category?id=" + categoryId +
                         "'>(редактировать)</a></strong></h4>"
                     );
                     $('#strongCategory' + categoryId).text("(Свернуть, ");
                     $('#strongCategory' + categoryId).parent().parent()
                         .append("<strong id='strongCategory" + categoryId + "children'>" +
-                            "<a href='/page-data/display/category/" + categoryId + "'>редактировать)</a></strong>");
+                            "<a href='/category?id=" + categoryId + "'>редактировать)</a></strong>");
                 }
 
 
@@ -264,11 +268,6 @@ function numberToString(number){
 /**
  * Функция вызова waitingDialog.js при выполнении ajax запросов
  */
-/*$(document).bind("ajaxSend", function(){
-
- }).bind("ajaxComplete", function(){
- $('#modalBody').focus();
- });*/
 function displayLoader(){
     waitingDialog.show('Загрузка...', {dialogSize: 'sm', progressType: 'warning'});
 }
