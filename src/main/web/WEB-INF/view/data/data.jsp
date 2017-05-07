@@ -351,23 +351,24 @@
 
                     <!-- Родительская категория -->
                     <spring:bind path="parentId">
-                        <input id="parentId" type="hidden" name="parent" class="form-control" value="${parent.getId()}"></input>
+                        <input id="parentId" type="hidden" name="parent" class="form-control" value="
+                        <c:if test="${not empty parent}">${parent.getId()}"></c:if>"</input>
 
                         <div class="col-md-12">
                             <h4><strong><spring:message code="label.page-category.parentName"/></strong></h4>
                         </div>
                         <div class="col-md-12">
                             <button id="btnParentCategories" class="btn-default btn-lg btn-block dropdown-toggle"
-                                    data-toggle="dropdown" value="${parent.getName()}">
-                                <c:choose>
-                                    <c:when test="${not empty parent}">
-                                        ${parent.getName()}
-                                    </c:when>
-                                    <c:otherwise>
-                                        <spring:message code="label.page-category.selectCategory"/>
-                                    </c:otherwise>
-                                </c:choose>
-                                <span class="caret"></span>
+                                    data-toggle="dropdown" value=<c:if test="${not empty parent}">"${parent.getName()}"</c:if>""></input>
+                            <c:choose>
+                                <c:when test="${not empty parent}">
+                                    ${parent.getName()}
+                                </c:when>
+                                <c:otherwise>
+                                    <spring:message code="label.page-category.selectCategory"/>
+                                </c:otherwise>
+                            </c:choose>
+                            <span class="caret"></span>
                             </button>
                             <ul id="dropdownParentCategories" class="dropdown-menu">
                                 <li class="wam-text-size-1">
