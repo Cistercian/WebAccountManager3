@@ -19,7 +19,7 @@ public class Amount {
     private Category categoryId;
     private String name;
     private BigDecimal price;
-    private Date amountsDate;
+    private Date date;
     private String details;
     private User userId;
     private Product productId;
@@ -91,12 +91,12 @@ public class Amount {
     @Basic
     @Column(name = "date", nullable = false)
     @Temporal(TemporalType.DATE)
-    public Date getAmountsDate() {
-        return amountsDate;
+    public Date getDate() {
+        return date;
     }
 
-    public void setAmountsDate(Date amountsDate) {
-        this.amountsDate = amountsDate;
+    public void setDate(Date amountsDate) {
+        this.date = amountsDate;
     }
 
     @Basic
@@ -112,7 +112,7 @@ public class Amount {
     @Transient
     public LocalDate getLocalDate(){
         //convert amounts.date to LocalDate
-        Date date = new Date(amountsDate.getTime());
+        Date date = new Date(this.date.getTime());
         return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }
 
@@ -127,7 +127,7 @@ public class Amount {
         if (categoryId != null ? !categoryId.equals(amount.categoryId) : amount.categoryId != null) return false;
         if (name != null ? !name.equals(amount.name) : amount.name != null) return false;
         if (price != null ? !price.equals(amount.price) : amount.price != null) return false;
-        if (amountsDate != null ? !amountsDate.equals(amount.amountsDate) : amount.amountsDate != null) return false;
+        if (date != null ? !date.equals(amount.date) : amount.date != null) return false;
         return details != null ? details.equals(amount.details) : amount.details == null;
 
     }
@@ -138,7 +138,7 @@ public class Amount {
         result = 31 * result + (categoryId != null ? categoryId.hashCode() : 0);
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (price != null ? price.hashCode() : 0);
-        result = 31 * result + (amountsDate != null ? amountsDate.hashCode() : 0);
+        result = 31 * result + (date != null ? date.hashCode() : 0);
         result = 31 * result + (details != null ? details.hashCode() : 0);
         return result;
     }
@@ -147,12 +147,12 @@ public class Amount {
     public String toString() {
         return "Amount{" +
                 "id=" + id +
-                //", categoryId=" + categoryId +
+                //", categoryId=" + categoryId != null ? categoryId.getName() : "null" +
                 ", name='" + name + '\'' +
                 ", price=" + price +
-                ", amountsDate=" + amountsDate +
+                ", amountsDate=" + date +
                 ", details='" + details + '\'' +
-                //", userId=" + userId +
+                //", userId=" + userId != null ? userId.getUsername() : "null" +
                 '}';
     }
 }

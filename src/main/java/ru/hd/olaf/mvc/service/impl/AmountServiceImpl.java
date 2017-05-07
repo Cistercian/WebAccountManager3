@@ -78,12 +78,16 @@ public class AmountServiceImpl implements AmountService {
      */
     public List<Amount> getByProductAndDate(Product product, LocalDate after, LocalDate before) {
         logger.debug(LogUtil.getMethodName());
+
+        after = after == null ? LocalDate.of(1900,1,1) : after;
+        before = before == null ? LocalDate.now() : before;
+
         logger.debug(String.format("Dates interval: %s - %s", after.toString(), before.toString()));
 
         Date begin = Date.from(after.atStartOfDay(ZoneId.systemDefault()).toInstant());
         Date end = Date.from(before.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
-        List<Amount> amounts = Lists.newArrayList(amountRepository.findByProductIdAndUserIdAndAmountsDateBetween(
+        List<Amount> amounts = Lists.newArrayList(amountRepository.findByProductIdAndUserIdAndDateBetween(
                 product,
                 securityService.findLoggedUser(),
                 begin,
@@ -99,7 +103,7 @@ public class AmountServiceImpl implements AmountService {
         Date begin = Date.from(after.atStartOfDay(ZoneId.systemDefault()).toInstant());
         Date end = Date.from(before.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
-        return Lists.newArrayList(amountRepository.findByUserIdAndAmountsDateBetween(user,
+        return Lists.newArrayList(amountRepository.findByUserIdAndDateBetween(user,
                 begin,
                 end));
     }

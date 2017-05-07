@@ -57,7 +57,7 @@ public class SecurityServiceImpl implements SecurityService {
         logger.debug(LogUtil.getMethodName());
 
         String userName = findLoggedUsername();
-        if (null == userName || "anonymousUser".equalsIgnoreCase(userName)) userName = "demoUser";
+        //if (null == userName || "anonymousUser".equalsIgnoreCase(userName)) userName = "demoUser";
 
         //TODO: UserNotFoundException?
         return userRepository.findByUsername(userName);

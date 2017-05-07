@@ -154,11 +154,11 @@
                                     String link;
                                     if (data instanceof Category) {
                                         outputData = ((Category) data).getName();
-                                        link = "<a href='/page-category/" + ((Category) data).getId() + "'>" +
+                                        link = "<a href='/category?id=" + ((Category) data).getId() + "'>" +
                                                 outputData + "</a>";
                                     } else if (data instanceof Amount) {
                                         outputData = ((Amount) data).getName();
-                                        link = "<a href='/page-amount/" + ((Amount) data).getId() + "'>" +
+                                        link = "<a href='/amount?id=" + ((Amount) data).getId() + "'>" +
                                                 outputData + "</a>";
                                     } else if (data instanceof User) {
                                         outputData = ((User) data).getUsername();

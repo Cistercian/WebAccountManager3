@@ -107,7 +107,7 @@ function drawBarsByParentId(isChildren, categoryId, after, before) {
                         elemLink = 	"<a href='/page-product/" + classId + "?after=" + after + "&before=" + before + "'>" +
                             "<strong> (Просмотреть</strong>" +
                             "</a>" + ", " +
-                            "<a href='/page-data/display/product/" + classId + "'>" +
+                            "<a href='/product?id=" + classId + "'>" +
                             "<strong>редактировать)</strong>" +
                             "</a>";
                     }

@@ -104,7 +104,7 @@
                             <tbody>
 
                             <c:forEach items="${amounts}" var="amount">
-                                <tr onclick="location.href='/page-data/display/Amount/${amount.getId()}';">
+                                <tr onclick="location.href='/amount?id=${amount.getId()}';">
                                     <td style="display : none;">${amount.getId()}</td>
                                     <td style="white-space: nowrap;">${amount.getAmountsDate()}</td>
                                     <td>${amount.getName()}</td>

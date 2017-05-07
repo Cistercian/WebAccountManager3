@@ -18,18 +18,19 @@ import ru.hd.olaf.mvc.service.AmountService;
 import ru.hd.olaf.mvc.service.CategoryService;
 import ru.hd.olaf.mvc.service.ProductService;
 import ru.hd.olaf.mvc.service.SecurityService;
+import ru.hd.olaf.mvc.validator.AmountValidator;
 import ru.hd.olaf.mvc.validator.CategoryValidator;
+import ru.hd.olaf.mvc.validator.ProductValidator;
 import ru.hd.olaf.util.LogUtil;
-import ru.hd.olaf.util.ParseUtil;
 import ru.hd.olaf.util.json.JsonResponse;
 import ru.hd.olaf.util.json.ResponseType;
 
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Olaf on 21.04.2017.
@@ -47,6 +48,10 @@ public class DataController {
     private SecurityService securityService;
     @Autowired
     private CategoryValidator categoryValidator;
+    @Autowired
+    private AmountValidator amountValidator;
+    @Autowired
+    private ProductValidator productValidator;
 
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
@@ -72,130 +77,6 @@ public class DataController {
         modelAndView.addObject("data", map);
 
         return modelAndView;
-    }
-
-    /**
-     * Функция просмотра пустой страницы заполнения Amount
-     *
-     * @return ModelAndView
-     */
-    @RequestMapping(value = "/page-data/amount", method = RequestMethod.GET)
-    public ModelAndView getViewAmount() {
-        logger.debug(LogUtil.getMethodName());
-
-        return getViewEntity(Amount.class.getSimpleName(), null);
-    }
-
-    /**
-     * Функция просмотра пустой страницы заполнения Category
-     *
-     * @return ModelAndView
-     */
-    @RequestMapping(value = "/page-data/category", method = RequestMethod.GET)
-    public ModelAndView getViewCategory() {
-        logger.debug(LogUtil.getMethodName());
-
-        return getViewEntity(Category.class.getSimpleName(), null);
-    }
-
-    @RequestMapping(value = "/page-data/display/{className}/{id}", method = RequestMethod.GET)
-    public ModelAndView getViewEntity(@PathVariable(value = "className") String className,
-                                      @PathVariable(value = "id") Integer id) {
-        logger.debug(LogUtil.getMethodName());
-
-        ModelAndView modelAndView = new ModelAndView("/data/data");
-        JsonResponse response;
-
-        if (className.equalsIgnoreCase(Amount.class.getSimpleName())) {
-            logger.debug("Обрабатывается класс Amount");
-
-            response = amountService.getById(id);
-
-            if (response.getType() == ResponseType.ERROR)
-                modelAndView.addObject("response", response.getMessage());
-            else {
-                logger.debug(String.format("Response: %s", response));
-
-                modelAndView = fillViewAmount(modelAndView, response);
-            }
-
-        } else if (className.equalsIgnoreCase(Category.class.getSimpleName())) {
-            logger.debug("Обрабатывается класс Category");
-
-            response = categoryService.getById(id);
-            if (response.getType() == ResponseType.ERROR)
-                modelAndView.addObject("response", response.getMessage());
-            else {
-                logger.debug(String.format("Response: %s", response));
-
-                modelAndView = fillViewCategory(modelAndView, response);
-            }
-        } else if (className.equalsIgnoreCase(Product.class.getSimpleName())) {
-            logger.debug("Обрабатывается класс Product");
-
-            response = productService.getById(id);
-            if (response.getType() == ResponseType.ERROR)
-                modelAndView.addObject("response", response.getMessage());
-            else {
-                logger.debug(String.format("Response: %s", response));
-
-                modelAndView = fillViewProduct(modelAndView, response);
-            }
-        }
-
-        //TODO: refactoring
-        if (!className.equalsIgnoreCase(Product.class.getSimpleName())) {
-            List<Category> list = categoryService.getAll();
-
-            logger.debug(String.format("Список 'list' для заполнения выпадающего списка: %s.",
-                    list.toString()));
-            modelAndView.addObject("list", list);
-        } else {
-            List<Product> list = productService.getAll();
-
-            logger.debug(String.format("Список 'list' для заполнения выпадающего списка: %s.",
-                    list.toString()));
-            modelAndView.addObject("list", list);
-        }
-
-        return modelAndView;
-    }
-
-    @RequestMapping(value = "/page-data/save", method = RequestMethod.POST)
-    public
-    @ResponseBody
-    JsonResponse saveEntity(@RequestParam(value = "className") String className,
-                            @RequestParam(value = "id") Integer id,
-                            @RequestParam(value = "categoryId", required = false) Integer categoryId,
-                            @RequestParam(value = "productName", required = false) String productName,
-                            @RequestParam(value = "name") String name,
-                            @RequestParam(value = "price", required = false) BigDecimal price,
-                            @RequestParam(value = "date", required = false) String amountsDate,
-                            @RequestParam(value = "parentId", required = false) Integer parentId,
-                            @RequestParam(value = "type", required = false) Byte type,
-                            @RequestParam(value = "details", required = false) String details,
-                            @RequestParam(value = "mergeProductId", required = false) Integer mergeProductId) {
-        logger.debug(LogUtil.getMethodName());
-
-        JsonResponse response = null;
-
-        if (className.equalsIgnoreCase(Amount.class.getSimpleName())) {
-            logger.debug("Инициализация сохранения записи Amount");
-
-            Date date = Date.from(ParseUtil.getParsedDate(amountsDate).atStartOfDay(ZoneId.systemDefault()).toInstant());
-            response = saveAmount(id, categoryId, productName, name, price, date, details);
-
-        } else if (className.equalsIgnoreCase(Category.class.getSimpleName())) {
-            logger.debug("Инициализация сохранения записи Category");
-
-            response = saveCategory(id, parentId, name, type, details);
-        } else if (className.equalsIgnoreCase(Product.class.getSimpleName())) {
-            logger.debug("Инициализация сохранения записи Product");
-
-            response = saveProduct(id, name, mergeProductId);
-        }
-
-        return response;
     }
 
     @RequestMapping(value = "/page-data/delete", method = RequestMethod.POST)
@@ -264,129 +145,23 @@ public class DataController {
         return productService.getByContainedName(query);
     }
 
-
     /**
-     * Функция сохранения записи Amount
-     *
-     * @param id
+     * Функция сохранение сущностей БД
+     * @param entity
      * @return
      */
-    private JsonResponse saveAmount(Integer id,
-                                    Integer categoryId,
-                                    String productName,
-                                    String name,
-                                    BigDecimal price,
-                                    Date amountsDate,
-                                    String details) {
-        logger.debug(LogUtil.getMethodName());
-        JsonResponse response;
-        Amount amount;
-
-        response = amountService.getById(id);
-        if (response.getType() == ResponseType.ERROR)
-            return response;
-        else
-            amount = (Amount) response.getEntity();
-
-        //если запись с переданным id не существует, то создаем новую.
-        if (amount == null) {
-            logger.debug("Запись Amount c id = %d не найдена. Создаем новую.", id);
-            amount = new Amount();
-        }
-
-        //вычисляем категорию
-        response = categoryService.getById(categoryId);
-
-        if (response.getType() != ResponseType.SUCCESS) {
-            response.setType(ResponseType.ERROR);
-            return response;
-        }
-
-        Category category = (Category) response.getEntity();
-
-        if (category == null) {
-            String message = String.format("Отмена операции: не найдена категория с id %d", categoryId);
-            logger.debug(message);
-            return new JsonResponse(ResponseType.ERROR, message);
-        }
-
-        //вычисляем товарную группу
-        Product product = productService.getExistedOrCreated(productName);
-
-        amount.setCategoryId(category);
-        amount.setName(name);
-        amount.setPrice(price);
-        amount.setAmountsDate(amountsDate);
-        amount.setDetails(details);
-        amount.setUserId(securityService.findLoggedUser());
-        amount.setProductId(product);
-
+    private JsonResponse saveEntity(Object entity) {
         try {
-            amountService.save(amount);
-        } catch (CrudException e) {
-            String message = String.format("Возникла ошибка при сохранении данных в БД. \n" +
-                    "Error message: %s", e.getMessage());
-            logger.error(message);
-
-            return new JsonResponse(ResponseType.ERROR, message);
-        }
-
-        String message = "Запись успешно сохранена в БД.";
-        logger.debug(message + "\n" + amount);
-
-        return new JsonResponse(ResponseType.SUCCESS, message);
-    }
-
-    /**
-     * Функция сохранаяет/обновляет запись в таблице Category
-     *
-     * @param id
-     * @param parentId
-     * @param name
-     * @param type
-     * @param details
-     * @return
-     */
-    private JsonResponse saveCategory(Integer id,
-                                      Integer parentId,
-                                      String name,
-                                      Byte type,
-                                      String details) {
-        logger.debug(LogUtil.getMethodName());
-
-        JsonResponse response = categoryService.getById(id);
-        if (response.getType() == ResponseType.ERROR)
-            return response;
-
-        Category category = (Category) response.getEntity();
-
-        if (category == null) {
-            logger.debug("Запись Сategory c id = %d не найдена. Создаем новую.", id);
-            category = new Category();
-        }
-
-        //обрабатываем родительскую категорию
-        logger.debug("Обрабатываем родительскую категорию");
-        response = categoryService.getById(parentId);
-        if (response.getType() == ResponseType.ERROR)
-            return response;
-
-        Category parent = (Category) response.getEntity();
-        if (parent != null) {
-            category.setParentId(parent);
-        }
-
-        category.setName(name);
-        category.setType(type);
-        category.setDetails(details);
-        category.setUserId(securityService.findLoggedUser());
-
-        return saveEntityCategory(category);
-    }
-
-    private JsonResponse saveEntityCategory(Category category) {
-        try {
-            categoryService.save(category);
+            if (entity.getClass().isAssignableFrom(Category.class)) {
+                Category category = (Category) entity;
+                categoryService.save(category);
+            } else if (entity.getClass().isAssignableFrom(Amount.class)) {
+                Amount amount = (Amount) entity;
+                amountService.save(amount);
+            } else if (entity.getClass().isAssignableFrom(Product.class)) {
+                Product product = (Product) entity;
+                productService.save(product);
+            }
         } catch (CrudException e) {
             String message = String.format("Возникла ошибка при сохранении данных в БД. \n" +
                     "Error message: %s", e.getMessage());
@@ -397,218 +172,9 @@ public class DataController {
         }
 
         String message = "Запись успешно сохранена в БД.";
-        logger.debug(message + "\n" + category);
+        logger.debug(message);
 
         return new JsonResponse(ResponseType.SUCCESS, message);
-    }
-
-    /**
-     * Функция сохраняет запись Product
-     *
-     * @param id             редактируемой записи
-     * @param name           имя записи
-     * @param mergeProductId id сущности, с которой необходимо произвести объединение
-     * @return объект JsonResponse
-     */
-    private JsonResponse saveProduct(Integer id,
-                                     String name,
-                                     Integer mergeProductId) {
-        logger.debug(LogUtil.getMethodName());
-
-        JsonResponse response = productService.getById(id);
-        if (response.getType() == ResponseType.ERROR)
-            return response;
-
-        Product product = (Product) response.getEntity();
-
-        if (product == null) {
-            response.setType(ResponseType.ERROR);
-            response.setMessage("Запись не найдена.");
-            return response;
-        }
-
-        product.setName(name);
-
-        try {
-            productService.save(product);
-        } catch (CrudException e) {
-            String message = String.format("Возникла ошибка при сохранении данных в БД. \n" +
-                    "Error message: %s", e.getMessage());
-            logger.error(message);
-
-            return new JsonResponse(ResponseType.ERROR, message);
-        }
-
-        String message = "Запись успешно сохранена в БД.";
-        logger.debug(message + "\n" + product);
-
-        //брабатываем объединение записей
-        if (mergeProductId != null && mergeProductId != -1) {
-            response = productService.getById(mergeProductId);
-
-            if (response.getEntity() == null) {
-                message += "Возникла ошибка при поиске записи товарной группы для объединения. Откат объединения.";
-                logger.error(message);
-            } else {
-                Product mergeProduct = (Product) response.getEntity();
-
-                for (Amount amount : amountService.getByProductAndDate(mergeProduct, LocalDate.MIN, LocalDate.MAX)) {
-
-                    response = saveAmount(amount.getId(),
-                            amount.getCategoryId().getId(),
-                            product.getName(),
-                            amount.getName(),
-                            amount.getPrice(),
-                            amount.getAmountsDate(),
-                            amount.getDetails());
-
-                    logger.debug(String.format("Редактирование записи amount (перевод в другую товарную группу):" +
-                            "результат %s (%s).", response.getType(), response.getMessage()));
-
-                }
-
-                //удаляем объединяемую сущность
-                try {
-                    response = productService.delete(mergeProduct);
-                    logger.debug(String.format("Результат удаления объединяемой записи: %s (%s)",
-                            response.getType(), response.getMessage()));
-                    message = message + "(Редактирование объединяемой записи: " + response.getMessage() + ")";
-                } catch (CrudException e) {
-                    message += e.getMessage();
-                }
-            }
-        }
-
-        return new JsonResponse(ResponseType.SUCCESS, message);
-    }
-
-    /**
-     * Функция заполняет ModelAndView класса Amount
-     *
-     * @param modelAndView заполняемый ModelAndView
-     * @param response     ранее полученный объект ответа сервиса
-     * @return заполненный ModelAndView
-     */
-    private ModelAndView fillViewAmount(ModelAndView modelAndView, JsonResponse response) {
-        logger.debug(LogUtil.getMethodName());
-        Amount amount = (Amount) response.getEntity();
-
-        modelAndView.addObject("className", "amount");
-
-        if (amount != null) {
-
-            logger.debug(String.format("Обрабатываемый объект: %s", amount));
-
-            //TODO: parse exception?
-            SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
-
-            modelAndView.addObject("name", amount.getName());
-            modelAndView.addObject("date", format.format(amount.getAmountsDate()));
-            modelAndView.addObject("price", amount.getPrice());
-            modelAndView.addObject("details", amount.getDetails());
-            modelAndView.addObject("id", amount.getId());
-            modelAndView.addObject("categoryId", amount.getCategoryId().getId());
-            modelAndView.addObject("categoryName", amount.getCategoryId().getName());
-
-            Product product = amount.getProductId();
-            if (product != null) {
-                logger.debug(String.format("Данные товарной группы: %s", product));
-
-                modelAndView.addObject("productId", amount.getProductId().getId());
-                modelAndView.addObject("productName", amount.getProductId().getName());
-            } else {
-                logger.debug("Товарная группа не определена");
-                //TODO: Логическая ошибка данных БД?
-            }
-        } else if (response.getType() == ResponseType.SUCCESS) {
-            String message = "Запрошеный объект не найден";
-            modelAndView.addObject("response", message);
-
-            logger.debug(message);
-        } else {
-            //рисуем пустую форму
-            logger.debug("Инициализация пустой формы");
-
-            modelAndView.addObject("date", LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
-        }
-
-        return modelAndView;
-    }
-
-    /**
-     * Функция заполняет ModelAndView класса Category
-     *
-     * @param modelAndView заполняемый ModelAndView
-     * @param response     Ответ, полученный от сервиса
-     * @return заполненный ModelAndView
-     */
-    private ModelAndView fillViewCategory(ModelAndView modelAndView, JsonResponse response) {
-        logger.debug(LogUtil.getMethodName());
-        Category category = (Category) response.getEntity();
-
-        modelAndView.addObject("className", "category");
-
-        if (category != null) {
-            logger.debug(String.format("Обрабатываемый объект: %s", category));
-
-            modelAndView.addObject("id", category.getId());
-            modelAndView.addObject("name", category.getName());
-            modelAndView.addObject("details", category.getDetails());
-
-            Category parent = category.getParentId();
-            if (parent != null) {
-                logger.debug(String.format("Родительская категория: %s", parent));
-
-                modelAndView.addObject("parentId", parent.getId());
-                modelAndView.addObject("parentName", parent.getName());
-            } else {
-                logger.debug("Родительская категория отсутствует");
-
-                modelAndView.addObject("parentName", "Отсутствует");
-            }
-
-
-            if (category.getType() == 0)
-                modelAndView.addObject("typeIncome", "true");
-
-
-        } else if (response.getType() == ResponseType.SUCCESS) {
-            String message = "Запрошеный объект не найден";
-            modelAndView.addObject("response", message);
-
-            logger.debug(message);
-        }
-
-        return modelAndView;
-    }
-
-    /**
-     * Функция заполняет ModelAndView класса Product
-     *
-     * @param modelAndView заполняемый ModelAndView
-     * @param response     Ответ, полученный от сервиса
-     * @return заполненный ModelAndView
-     */
-    private ModelAndView fillViewProduct(ModelAndView modelAndView, JsonResponse response) {
-        logger.debug(LogUtil.getMethodName());
-        Product product = (Product) response.getEntity();
-
-        modelAndView.addObject("className", "product");
-
-        if (product != null) {
-            logger.debug(String.format("Обрабатываемый объект: %s", product));
-
-            modelAndView.addObject("id", product.getId());
-            modelAndView.addObject("name", product.getName());
-
-        } else if (response.getType() == ResponseType.INFO) {
-            String message = "Запрошеный объект не найден";
-            modelAndView.addObject("response", message);
-
-            logger.debug(message);
-        }
-
-        return modelAndView;
     }
 
     @RequestMapping(value = "/category/save", method = RequestMethod.POST, produces = "text/plain;charset=UTF-8")
@@ -634,26 +200,19 @@ public class DataController {
         logger.debug(String.format("Обрабатываемая сущность: %s", categoryForm.toString()));
 
         ModelAndView modelAndView = new ModelAndView("/data/data");
-        modelAndView.addObject("className", "categoryNew");
+        modelAndView.addObject("className", "category");
 
         categoryValidator.validate(categoryForm, bindingResult);
 
         if (bindingResult.hasErrors()) {
             logger.info("Ошибка валидиации!");
-
-            modelAndView.addObject("parents", categoryService.getAll());
-            modelAndView.addObject("parent", parent);
-            modelAndView.addObject("category", categoryForm);
         } else {
-
-            response = saveEntityCategory(categoryForm);
-
-            modelAndView.addObject("parents", categoryService.getAll());
-            modelAndView.addObject("parent", parent);
-            modelAndView.addObject("category", categoryForm);
-
+            response = saveEntity(categoryForm);
             modelAndView.addObject("response", response.getMessage());
         }
+        modelAndView.addObject("parents", categoryService.getAll());
+        modelAndView.addObject("parent", parent);
+        modelAndView.addObject("category", categoryForm);
 
         return modelAndView;
     }
@@ -682,16 +241,202 @@ public class DataController {
             logger.debug(String.format("Категория с id = %d не найдена. Создаем новую.", id));
         }
 
-        model.addAttribute("className", "categoryNew");
+        model.addAttribute("className", "category");
         model.addAttribute("parents", categoryService.getAll());
         model.addAttribute("categoryForm", category);
 
         return "data/data";
     }
 
+    /**
+     * Функция прорисовки ModelAndView для amount
+     * @param id id записи (необяхательно)
+     * @param model текущеая модель
+     * @return view
+     */
+    @RequestMapping(value = "/amount", method = RequestMethod.GET)
+    public String getViewAmount(@RequestParam(value = "id", required = false) Integer id,
+                                  Model model){
+        logger.debug(LogUtil.getMethodName());
+
+        Amount amount = null;
+        JsonResponse response = amountService.getById(id);
+
+        if (response.getType() != ResponseType.ERROR && response.getEntity() != null) {
+            amount = (Amount) response.getEntity();
+            model.addAttribute("id", id);
+            model.addAttribute("product", amount.getProductId());
+            model.addAttribute("category", amount.getCategoryId());
+
+            logger.debug(String.format("Обрабатывается запись: %s", amount.toString()));
+        } else {
+            amount = new Amount();
+            amount.setDate(new Date());
+
+            logger.debug(String.format("Категория с id = %d не найдена. Создаем новую.", id));
+        }
+
+        model.addAttribute("className", "amount");
+
+        model.addAttribute("categories", categoryService.getAll());
+        model.addAttribute("amountForm", amount);
+
+        return "data/data";
+    }
+
+    /**
+     * Функция сохранения сущности amount
+     * @param amountForm сама сущность
+     * @param productName наименование товарной группы
+     * @param categoryId id категории
+     * @param bindingResult результат валидации
+     * @return ModelAndView
+     */
+    @RequestMapping(value = "/amount/save", method = RequestMethod.POST)
+    public ModelAndView saveAmount(@ModelAttribute("amountForm") Amount amountForm,
+                                   @RequestParam(value = "productName") String productName,
+                                   @RequestParam(value = "category") Integer categoryId,
+                                   BindingResult bindingResult) {
+        logger.debug(LogUtil.getMethodName());
+
+        //вычисляем категорию
+        JsonResponse response = categoryService.getById(categoryId);
+
+        if (response.getType() == ResponseType.SUCCESS) {
+            Category category = (Category) response.getEntity();
+            amountForm.setCategoryId(category);
+
+            logger.debug(String.format("Категория: %s", category));
+        } else {
+            logger.debug("Возникла ошибка определения категории");
+        }
+
+        //вычисляем товарную группу
+        if (productName.trim().length() > 0) {
+            Product product = productService.getExistedOrCreated(productName);
+            amountForm.setProductId(product);
+        }
+        //указываем владельца
+        amountForm.setUserId(securityService.findLoggedUser());
+        logger.debug(String.format("Обрабатываемая сущность: %s, category: %s, product: %s",
+                amountForm.toString(),
+                amountForm.getCategoryId() != null ? amountForm.getCategoryId() : "",
+                amountForm.getProductId() != null ? amountForm.getProductId() : ""));
+
+        ModelAndView modelAndView = new ModelAndView("/data/data");
+        modelAndView.addObject("className", "amount");
+
+        amountValidator.validate(amountForm, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            logger.info("Ошибка валидиации!");
+        } else {
+            response = saveEntity(amountForm);
+
+            modelAndView.addObject("response", response.getMessage());
+        }
+
+        modelAndView.addObject("product", amountForm.getProductId());
+        modelAndView.addObject("category", amountForm.getCategoryId());
+        modelAndView.addObject("amountForm", amountForm);
+
+        modelAndView.addObject("categories", categoryService.getAll());
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/product", method = RequestMethod.GET)
+    public String getViewProduct(@RequestParam(value = "id", required = false) Integer id,
+                                Model model){
+        logger.debug(LogUtil.getMethodName());
+
+        Product product = null;
+        JsonResponse response = productService.getById(id);
+
+        if (response.getType() != ResponseType.ERROR && response.getEntity() != null) {
+            product = (Product) response.getEntity();
+            model.addAttribute("id", id);
+
+            logger.debug(String.format("Обрабатывается запись: %s", product.toString()));
+        } else {
+            logger.debug(String.format("Категория с id = %d не найдена. Логическая ошибка переходов (нарушение безопасности?).", id));
+            return "index";
+        }
+
+        model.addAttribute("className", "product");
+
+        model.addAttribute("products", productService.getAll());
+        model.addAttribute("productForm", product);
+
+        return "data/data";
+    }
+
+    @RequestMapping(value = "/product/save", method = RequestMethod.POST)
+    public ModelAndView saveProduct(@ModelAttribute("productForm") Product productForm,
+                                   @RequestParam(value = "productMerge") Integer mergeId,
+                                   BindingResult bindingResult) {
+        logger.debug(LogUtil.getMethodName());
+
+        ModelAndView modelAndView = new ModelAndView("/data/data");
+        modelAndView.addObject("className", "product");
+
+        //вычисляем объединяемую категорию
+        Product mergeProduct;
+        String message = "";
+        JsonResponse response = productService.getById(mergeId);
+
+        if (response.getType() != ResponseType.ERROR && response.getEntity() != null) {
+            mergeProduct = (Product) response.getEntity();
+            modelAndView.addObject("mergeProduct", mergeProduct);
+
+            logger.debug(String.format("Обрабатывается запись: %s", mergeProduct.toString()));
+
+            if (mergeProduct != null) {
+                logger.debug(String.format("Товарная группа для объединения: %s", mergeProduct));
+
+                for (Amount amount : amountService.getByProductAndDate(mergeProduct, null, null)) {
+
+                    amount.setProductId(productForm);
+                    response = saveEntity(amount);
+
+                    logger.debug(String.format("Редактирование записи amount (перевод в другую товарную группу):" +
+                            "результат %s (%s).", response.getType(), response.getMessage()));
+                }
+
+                //удаляем объединяемую сущность
+                try {
+                    response = productService.delete(mergeProduct);
+                    logger.debug(String.format("Результат удаления объединяемой записи: %s (%s)",
+                            response.getType(), response.getMessage()));
+                    message = message + "(Редактирование объединяемой записи: " + response.getMessage() + ")";
+                } catch (CrudException e) {
+                    message = message + "(Ошибка удаления объединяемой записи: " + e.getMessage() + ")";
+                    logger.debug(message);
+                }
+            }
+        }
+
+        productForm.setUserId(securityService.findLoggedUser());
+        productValidator.validate(productForm, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            logger.info("Ошибка валидиации!");
+
+        } else {
+            response = saveEntity(productForm);
+
+            modelAndView.addObject("response", message + " " + response.getMessage());
+        }
+
+        modelAndView.addObject("productForm", productForm);
+        modelAndView.addObject("products", productService.getAll());
+
+        return modelAndView;
+    }
+
     @InitBinder
     public void initBinder(WebDataBinder binder) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
         sdf.setLenient(true);
         binder.registerCustomEditor(Date.class, new CustomDateEditor(sdf, true));
     }

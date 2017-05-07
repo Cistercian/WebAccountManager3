@@ -7,46 +7,58 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
-import ru.hd.olaf.entities.Category;
+import ru.hd.olaf.entities.Amount;
+import ru.hd.olaf.mvc.service.AmountService;
 import ru.hd.olaf.mvc.service.CategoryService;
 import ru.hd.olaf.util.LogUtil;
+import ru.hd.olaf.util.json.JsonResponse;
+
+import java.math.BigDecimal;
 
 /**
- * Created by d.v.hozyashev on 05.05.2017.
+ * Created by Olaf on 07.05.2017.
  */
 @Component
-public class CategoryValidator implements Validator {
+public class AmountValidator implements Validator {
 
+    @Autowired
+    private AmountService amountService;
     @Autowired
     private CategoryService categoryService;
 
     private static final Logger logger = LoggerFactory.getLogger(CategoryValidator.class);
 
     public boolean supports(Class<?> aClass) {
-        return Category.class.equals(aClass);
+        return Amount.class.isAssignableFrom(aClass);
     }
 
     public void validate(Object o, Errors errors) {
         logger.debug(LogUtil.getMethodName());
 
-        Category category = (Category) o;
+        Amount amount = (Amount) o;
+
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "date", "NotEmpty");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "productId", "NotEmpty");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "categoryId", "NotEmpty");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "price", "NotEmpty");
 
         //валидация длины наименования
-        if (category.getName().length() < 5 || category.getName().length() > 40) {
+        if (amount.getName().length() < 3 || amount.getName().length() > 40) {
             logger.debug("Validation.size.name");
             errors.rejectValue("name", "Validation.size.name");
         }
 
         //валидация длины описания
-        if (category.getDetails().length() > 255) {
+        if (amount.getDetails().length() > 255) {
             logger.debug("Validation.size.details");
             errors.rejectValue("details", "Validation.size.details");
         }
 
-        //Валидация соответствия типов текущей записи и родительской
-        if (category.getParentId() != null && category.getType() != category.getParentId().getType()) {
-            logger.debug("Validation.category.type");
-            errors.rejectValue("type", "Validation.category.type");
+        //валидация суммы
+        if (amount.getPrice() != null && amount.getPrice().compareTo(new BigDecimal("0")) < 0) {
+            logger.debug("Validation.amount.price");
+            errors.rejectValue("price", "Validation.amount.price");
         }
+
     }
 }

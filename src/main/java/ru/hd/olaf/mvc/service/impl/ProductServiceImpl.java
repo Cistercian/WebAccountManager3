@@ -176,7 +176,7 @@ public class ProductServiceImpl implements ProductService {
      */
     public JsonResponse delete(Product product) throws CrudException {
         try {
-            if (amountService.getByProductAndDate(product, LocalDate.MIN, LocalDate.MAX).size() > 0)
+            if (amountService.getByProductAndDate(product, null, null).size() > 0)
                 return new JsonResponse(ResponseType.ERROR, "Откат удаления: обнаружены существующие записи amount " +
                         "с данной товарной группой");
 

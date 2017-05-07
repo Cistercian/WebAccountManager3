@@ -11,7 +11,6 @@ import ru.hd.olaf.entities.Category;
 import ru.hd.olaf.mvc.service.AmountService;
 import ru.hd.olaf.mvc.service.CategoryService;
 import ru.hd.olaf.mvc.service.SecurityService;
-import ru.hd.olaf.util.DatePeriod;
 import ru.hd.olaf.util.LogUtil;
 import ru.hd.olaf.util.ParseUtil;
 import ru.hd.olaf.util.json.BarEntity;
@@ -24,8 +23,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
-
-import static ru.hd.olaf.util.DatePeriod.getAfterDate;
 
 /**
  * Created by Olaf on 11.04.2017.
@@ -193,7 +190,7 @@ public class IndexController {
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
         format.setLenient(true);
         binder.registerCustomEditor(Date.class, new CustomDateEditor(format, true));
     }

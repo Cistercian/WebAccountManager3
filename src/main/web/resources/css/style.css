@@ -56,7 +56,7 @@
 /*FullCalendar
 */
 /*Общие настройки таблицы*/
-@media (min-width: 1000px) {
+@media (min-width: 400px) {
 	.fc th, .fc td {
 		border-width: 2px;
 		border-color: #b7b7b7;
@@ -69,7 +69,7 @@
 		height: 100px;
 	}
 }
-@media (max-width: 1000px) {
+@media (max-width: 400px) {
 	.fc th, .fc td {
 		border-width: 2px;
 		border-color: #b7b7b7;
@@ -116,12 +116,12 @@ div.dataTables_filter {
 	font-family: 'Baloo', cursive;
 }
 /*настройки для широкого экрана*/
-@media (min-width: 1000px) {
+@media (min-width: 400px) {
 	body {
 		background-color: #e6e6e6;
 	}
 	.content {
-		width : 1000px;
+		width : 400px;
 		background-color : #fff;
 		margin: 0 auto;
 		padding: 0;
