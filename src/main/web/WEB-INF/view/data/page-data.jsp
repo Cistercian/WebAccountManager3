@@ -3,9 +3,9 @@
 <%@ page import="ru.hd.olaf.entities.Product" %>
 <%@ page import="ru.hd.olaf.entities.User" %>
 <%@ page import="java.lang.reflect.Method" %>
-<%@ page import="com.google.common.collect.Lists" %>
-<%@ page import="com.google.common.collect.Maps" %>
-<%@ page import="java.util.*" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.Map" %>
+<%@ page import="java.util.Set" %>
 <!DOCTYPE html>
 
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>

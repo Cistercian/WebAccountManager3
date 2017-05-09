@@ -13,8 +13,15 @@
     </authentication-manager>
 
     <http auto-config="true">
+        <!--<intercept-url pattern="/login" access="permitAll"/>-->
+        <!--<intercept-url pattern="/resources/**" access="permitAll"/>-->
         <intercept-url pattern="/" access="hasRole('ROLE_USER')"/>
         <intercept-url pattern="/index" access="hasRole('ROLE_USER')"/>
+        <intercept-url pattern="/account" access="hasRole('ROLE_USER')"/>
+        <intercept-url pattern="/statistic" access="hasRole('ROLE_USER')"/>
+        <intercept-url pattern="/amount" access="hasRole('ROLE_USER')"/>
+        <intercept-url pattern="/category" access="hasRole('ROLE_USER')"/>
+        <intercept-url pattern="/page-product" access="hasRole('ROLE_USER')"/>
         <form-login login-page="/login" default-target-url="/index" authentication-failure-url="/login?error" username-parameter="username" password-parameter="password"/>
         <logout logout-success-url="/login?logout" />
         <remember-me/>

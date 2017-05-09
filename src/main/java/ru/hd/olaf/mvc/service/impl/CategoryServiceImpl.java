@@ -13,6 +13,7 @@ import ru.hd.olaf.mvc.repository.CategoryRepository;
 import ru.hd.olaf.mvc.service.AmountService;
 import ru.hd.olaf.mvc.service.CategoryService;
 import ru.hd.olaf.mvc.service.SecurityService;
+import ru.hd.olaf.mvc.service.UtilService;
 import ru.hd.olaf.util.LogUtil;
 import ru.hd.olaf.util.json.ResponseType;
 import ru.hd.olaf.util.json.BarEntity;
@@ -34,6 +35,8 @@ public class CategoryServiceImpl implements CategoryService {
     private SecurityService securityService;
     @Autowired
     private AmountService amountService;
+    @Autowired
+    private UtilService utilService;
 
     private static final Logger logger = LoggerFactory.getLogger(CategoryServiceImpl.class);
 
@@ -132,7 +135,7 @@ public class CategoryServiceImpl implements CategoryService {
      * @param id
      * @return
      */
-    private Category getOne(Integer id) throws AuthException, IllegalArgumentException{
+    public Category getOne(Integer id) throws AuthException, IllegalArgumentException{
         logger.debug(LogUtil.getMethodName());
         if (id == null) {
             logger.debug("Переданный id = null.");
@@ -161,38 +164,7 @@ public class CategoryServiceImpl implements CategoryService {
      */
     public JsonResponse getById(Integer id) {
         logger.debug(LogUtil.getMethodName());
-
-        Category category = null;
-
-        JsonResponse jsonResponse = new JsonResponse();
-        try {
-            category = getOne(id);
-
-            String message;
-            if (category != null) {
-                message = String.format("Запись с id = %d найдена: %s", id, category);
-                jsonResponse.setType(ResponseType.SUCCESS);
-            } else {
-                message = String.format("Запись с id = %d не найдена.", id);
-                jsonResponse.setType(ResponseType.INFO);
-            }
-
-            jsonResponse.setMessage(message);
-        } catch (AuthException e) {
-            logger.debug(e.getMessage());
-            jsonResponse.setType(ResponseType.ERROR);
-            jsonResponse.setMessage(e.getMessage());
-        } catch (IllegalArgumentException e) {
-            String message = "Переданный параметр id равен null.";
-            logger.debug(message);
-
-            jsonResponse.setType(ResponseType.INFO);
-            jsonResponse.setMessage(message);
-        }
-
-        jsonResponse.setEntity(category);
-
-        return jsonResponse;
+        return utilService.getById(Category.class, id);
     }
 
     /**

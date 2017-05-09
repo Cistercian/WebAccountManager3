@@ -19,7 +19,7 @@ public class ProductValidator implements Validator {
     @Autowired
     private ProductService productService;
 
-    private static final Logger logger = LoggerFactory.getLogger(CategoryValidator.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProductValidator.class);
 
     public boolean supports(Class<?> aClass) {
         return aClass.isAssignableFrom(Product.class);

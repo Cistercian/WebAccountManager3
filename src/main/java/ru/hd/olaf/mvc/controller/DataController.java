@@ -14,10 +14,7 @@ import ru.hd.olaf.entities.Amount;
 import ru.hd.olaf.entities.Category;
 import ru.hd.olaf.entities.Product;
 import ru.hd.olaf.exception.CrudException;
-import ru.hd.olaf.mvc.service.AmountService;
-import ru.hd.olaf.mvc.service.CategoryService;
-import ru.hd.olaf.mvc.service.ProductService;
-import ru.hd.olaf.mvc.service.SecurityService;
+import ru.hd.olaf.mvc.service.*;
 import ru.hd.olaf.mvc.validator.AmountValidator;
 import ru.hd.olaf.mvc.validator.CategoryValidator;
 import ru.hd.olaf.mvc.validator.ProductValidator;
@@ -47,13 +44,15 @@ public class DataController {
     @Autowired
     private SecurityService securityService;
     @Autowired
+    private UtilService utilService;
+    @Autowired
     private CategoryValidator categoryValidator;
     @Autowired
     private AmountValidator amountValidator;
     @Autowired
     private ProductValidator productValidator;
 
-    private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
+    private static final Logger logger = LoggerFactory.getLogger(DataController.class);
 
     /**
      * Функция прорисовки страницы page-data с произвольным содержимым
@@ -145,37 +144,7 @@ public class DataController {
         return productService.getByContainedName(query);
     }
 
-    /**
-     * Функция сохранение сущностей БД
-     * @param entity
-     * @return
-     */
-    private JsonResponse saveEntity(Object entity) {
-        try {
-            if (entity.getClass().isAssignableFrom(Category.class)) {
-                Category category = (Category) entity;
-                categoryService.save(category);
-            } else if (entity.getClass().isAssignableFrom(Amount.class)) {
-                Amount amount = (Amount) entity;
-                amountService.save(amount);
-            } else if (entity.getClass().isAssignableFrom(Product.class)) {
-                Product product = (Product) entity;
-                productService.save(product);
-            }
-        } catch (CrudException e) {
-            String message = String.format("Возникла ошибка при сохранении данных в БД. \n" +
-                    "Error message: %s", e.getMessage());
-            logger.error(message);
-            logger.error(e.toString());
 
-            return new JsonResponse(ResponseType.ERROR, message);
-        }
-
-        String message = "Запись успешно сохранена в БД.";
-        logger.debug(message);
-
-        return new JsonResponse(ResponseType.SUCCESS, message);
-    }
 
     @RequestMapping(value = "/category/save", method = RequestMethod.POST, produces = "text/plain;charset=UTF-8")
     public ModelAndView saveCategory(@ModelAttribute("categoryForm") Category categoryForm,
@@ -207,7 +176,7 @@ public class DataController {
         if (bindingResult.hasErrors()) {
             logger.info("Ошибка валидиации!");
         } else {
-            response = saveEntity(categoryForm);
+            response = utilService.saveEntity(categoryForm);
             modelAndView.addObject("response", response.getMessage());
         }
         modelAndView.addObject("parents", categoryService.getAll());
@@ -331,7 +300,7 @@ public class DataController {
         if (bindingResult.hasErrors()) {
             logger.info("Ошибка валидиации!");
         } else {
-            response = saveEntity(amountForm);
+            response = utilService.saveEntity(amountForm);
 
             modelAndView.addObject("response", response.getMessage());
         }
@@ -397,7 +366,7 @@ public class DataController {
                 for (Amount amount : amountService.getByProductAndDate(mergeProduct, null, null)) {
 
                     amount.setProductId(productForm);
-                    response = saveEntity(amount);
+                    response = utilService.saveEntity(amount);
 
                     logger.debug(String.format("Редактирование записи amount (перевод в другую товарную группу):" +
                             "результат %s (%s).", response.getType(), response.getMessage()));
@@ -423,7 +392,7 @@ public class DataController {
             logger.info("Ошибка валидиации!");
 
         } else {
-            response = saveEntity(productForm);
+            response = utilService.saveEntity(productForm);
 
             modelAndView.addObject("response", message + " " + response.getMessage());
         }

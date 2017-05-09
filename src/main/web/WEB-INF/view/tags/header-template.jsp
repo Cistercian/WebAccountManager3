@@ -118,7 +118,7 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><spring:message code="menu.nav.login.account" /> <b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                        <li><a href="#"><spring:message code="menu.nav.login" /></a></li>
+                        <li><a href="/account"><spring:message code="menu.nav.login" /></a></li>
                         <li class="divider"></li>
                         <li><a href="javascript:document.forms['logoutForm'].submit()"><spring:message code="menu.nav.login.logout" /></a></li>
                     </ul>

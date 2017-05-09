@@ -21,8 +21,7 @@ import ru.hd.olaf.util.json.CalendarEntity;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Olaf on 30.04.2017.
@@ -35,7 +34,7 @@ public class CalendarController {
     @Autowired
     private SecurityService securityService;
 
-    private static final Logger logger = LoggerFactory.getLogger(IndexController.class);
+    private static final Logger logger = LoggerFactory.getLogger(CalendarController.class);
 
     @RequestMapping(value = "/statistic/calendar", method = RequestMethod.GET)
     public ModelAndView getViewCalendar(){
@@ -88,5 +87,34 @@ public class CalendarController {
         }
 
         return calendarEntities;
+    }
+
+    /**
+     * Функция возвращает ModelAndView с таблицей amount за заданную дату
+     * @param startDate дата начала (строка)
+     * @param endDate дата конца периода (строка)
+     * @return ModelAndView /data/page-product
+     */
+    @RequestMapping(value="/statistic/calendar/getAmountsByDate", method = RequestMethod.GET)
+    public ModelAndView getAmountsByDate(@RequestParam (value = "start") String startDate,
+                                         @RequestParam (value = "end") String endDate) {
+        logger.debug(LogUtil.getMethodName() + String.format("Интервал: %s - %s", startDate, endDate));
+
+        ModelAndView modelAndView = new ModelAndView("/data/page-product");
+        User user = securityService.findLoggedUser();
+        LocalDate after = ParseUtil.getParsedDate(startDate);
+        LocalDate before = ParseUtil.getParsedDate(endDate);
+
+        List<Amount> amounts = amountService.getByDate(user, after, before);
+
+        Collections.sort(amounts, new Comparator<Amount>() {
+            public int compare(Amount o1, Amount o2) {
+                return o2.getPrice().compareTo(o1.getPrice());
+            }
+        });
+
+        modelAndView.addObject("amounts", amounts);
+
+        return modelAndView;
     }
 }

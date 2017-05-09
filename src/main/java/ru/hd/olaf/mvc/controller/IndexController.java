@@ -38,6 +38,12 @@ public class IndexController {
 
     private static final Logger logger = LoggerFactory.getLogger(IndexController.class);
 
+
+    @RequestMapping(value = "favicon.ico", method = RequestMethod.GET)
+    public String getFavicon(){
+        return "forward:resources/img/favicon.ico";
+    }
+
     /**
      * Функция отрисовки index.html
      *

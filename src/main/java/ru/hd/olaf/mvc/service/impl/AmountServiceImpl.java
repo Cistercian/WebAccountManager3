@@ -16,6 +16,7 @@ import ru.hd.olaf.mvc.repository.AmountRepository;
 import ru.hd.olaf.mvc.service.AmountService;
 import ru.hd.olaf.mvc.service.ProductService;
 import ru.hd.olaf.mvc.service.SecurityService;
+import ru.hd.olaf.mvc.service.UtilService;
 import ru.hd.olaf.util.LogUtil;
 import ru.hd.olaf.util.json.ResponseType;
 import ru.hd.olaf.util.json.BarEntity;
@@ -38,8 +39,10 @@ public class AmountServiceImpl implements AmountService {
     private ProductService productService;
     @Autowired
     private SecurityService securityService;
+    @Autowired
+    private UtilService utilService;
 
-    private static final Logger logger = LoggerFactory.getLogger(CategoryServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(AmountServiceImpl.class);
 
     /**
      * Функция возвращает список amount с проверкой на текущего пользователя
@@ -189,7 +192,7 @@ public class AmountServiceImpl implements AmountService {
      * @param id
      * @return
      */
-    private Amount getOne(Integer id) throws AuthException, IllegalArgumentException {
+    public Amount getOne(Integer id) throws AuthException, IllegalArgumentException {
         logger.debug(LogUtil.getMethodName());
         if (id == null) throw new IllegalArgumentException();
 
@@ -210,31 +213,7 @@ public class AmountServiceImpl implements AmountService {
      */
     public JsonResponse getById(Integer id) {
         logger.debug(LogUtil.getMethodName());
-
-        Amount amount = null;
-
-        JsonResponse jsonResponse = new JsonResponse();
-        try {
-            amount = getOne(id);
-
-            String message = String.format("Запись с id = %d найдена: %s", id, amount);
-            jsonResponse.setType(ResponseType.SUCCESS);
-            jsonResponse.setMessage(message);
-            jsonResponse.setEntity(amount);
-        } catch (AuthException e) {
-            logger.debug(e.getMessage());
-            jsonResponse.setType(ResponseType.ERROR);
-            jsonResponse.setMessage(e.getMessage());
-        } catch (IllegalArgumentException e) {
-            String message = "Переданный параметр id равен null.";
-            logger.debug(message);
-
-            jsonResponse.setType(ResponseType.INFO);
-            jsonResponse.setMessage(message);
-        }
-
-
-        return jsonResponse;
+        return utilService.getById(Amount.class, id);
     }
 
     /**
@@ -244,6 +223,8 @@ public class AmountServiceImpl implements AmountService {
      * @return
      */
     public Amount save(Amount amount) throws CrudException {
+        logger.debug(LogUtil.getMethodName());
+
         Amount entity = null;
 
         try {
@@ -262,6 +243,8 @@ public class AmountServiceImpl implements AmountService {
      * @return
      */
     public JsonResponse delete(Amount amount) throws CrudException {
+        logger.debug(LogUtil.getMethodName());
+
         try {
             amountRepository.delete(amount.getId());
             return new JsonResponse(ResponseType.SUCCESS, "Удаление успешно завершено.");

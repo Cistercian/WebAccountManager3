@@ -1,6 +1,7 @@
 package ru.hd.olaf.mvc.service;
 
 import ru.hd.olaf.entities.Product;
+import ru.hd.olaf.exception.AuthException;
 import ru.hd.olaf.exception.CrudException;
 import ru.hd.olaf.util.json.JsonResponse;
 
@@ -11,6 +12,7 @@ import java.util.List;
  */
 public interface ProductService {
 
+    Product getOne(Integer id) throws AuthException, IllegalArgumentException;
     JsonResponse getById(Integer id);
     List<Product> getAll();
 

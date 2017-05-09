@@ -16,9 +16,15 @@ public class User {
     private String username;
     private String password;
     private String passwordConfirm;
+    private String passwordOld;
     private String fullName;
     private String role;
     private byte enabled;
+
+    private Set<Category> categories = new HashSet<Category>();
+    private Set<Amount> amounts = new HashSet<Amount>();
+    private Set<Product> products = new HashSet<Product>();
+    private Set<Notification> notifications = new HashSet<Notification>();
 
     @Id
     @Column(name = "ID", nullable = false)
@@ -90,7 +96,16 @@ public class User {
         this.passwordConfirm = passwordConfirm;
     }
 
-    private Set<Category> categories = new HashSet<Category>();
+    @Transient
+    public String getPasswordOld() {
+        return passwordOld;
+    }
+
+    public void setPasswordOld(String passwordOld) {
+        this.passwordOld = passwordOld;
+    }
+
+
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "userId", cascade = CascadeType.REMOVE, orphanRemoval = false)
     @JsonBackReference
     public Set<Category> getCategories() {
@@ -101,7 +116,6 @@ public class User {
         this.categories = categories;
     }
 
-    private Set<Amount> amounts = new HashSet<Amount>();
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "userId", cascade = CascadeType.REMOVE, orphanRemoval = false)
     @JsonBackReference
     public Set<Amount> getAmounts() {
@@ -112,7 +126,6 @@ public class User {
         this.amounts = amounts;
     }
 
-    private Set<Product> products = new HashSet<Product>();
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "userId", cascade = CascadeType.REMOVE, orphanRemoval = false)
     @JsonBackReference
     public Set<Product> getProducts() {
@@ -121,6 +134,16 @@ public class User {
 
     public void setProducts(Set<Product> products) {
         this.products = products;
+    }
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "userId", cascade = CascadeType.REMOVE, orphanRemoval = false)
+    @JsonBackReference
+    public Set<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(Set<Notification> notifications) {
+        this.notifications = notifications;
     }
 
     @Override

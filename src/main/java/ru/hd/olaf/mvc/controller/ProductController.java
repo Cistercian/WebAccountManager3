@@ -38,7 +38,7 @@ public class ProductController {
     @Autowired
     private SecurityService securityService;
 
-    private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
 
     @RequestMapping(value = "/page-product/{id}", method = RequestMethod.GET)
     public ModelAndView displayPageProduct(@PathVariable("id") Integer id,

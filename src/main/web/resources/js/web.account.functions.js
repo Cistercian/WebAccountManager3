@@ -51,7 +51,7 @@ function drawBarsByParentId(isChildren, categoryId, after, before) {
                         categoryName = "<strong>" + $('#' + idNameElem).attr('value') + " </strong><a href='/category?id=" +
                             categoryId + "'>(редактировать)</a>";
                     else
-                        categoryName = "Детализация за дату <p>" + after;
+                        categoryName = "Детализация за дату <p>" + after + " <a href='/statistic/calendar/getAmountsByDate?start=" + after + "&end=" + after + "'>(Просмотреть)</a>";
 
                     //заголовок
                     $('#modalHeader').append(
@@ -273,4 +273,17 @@ function displayLoader(){
 }
 function hideLoader(){
     waitingDialog.hide();
+}
+/**
+ * Функция очистки модального окна bootstrap
+ * @constructor
+ */
+function ClearModalPanel() {
+    $('#modalTitle').text("");
+    $('[id^="modalBody"]').each(function () {
+        $(this).empty();
+    });
+    $('[id^="modalFooter"]').each(function () {
+        $(this).empty();
+    });
 }

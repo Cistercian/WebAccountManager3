@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter;
  */
 public class ParseUtil {
 
-    private static final Logger logger = LoggerFactory.getLogger(IndexController.class);
+    private static final Logger logger = LoggerFactory.getLogger(ParseUtil.class);
 
     public static LocalDate getParsedDate(String string){
         logger.debug(LogUtil.getMethodName());

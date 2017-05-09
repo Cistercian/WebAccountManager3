@@ -26,7 +26,7 @@ public class AmountValidator implements Validator {
     @Autowired
     private CategoryService categoryService;
 
-    private static final Logger logger = LoggerFactory.getLogger(CategoryValidator.class);
+    private static final Logger logger = LoggerFactory.getLogger(AmountValidator.class);
 
     public boolean supports(Class<?> aClass) {
         return Amount.class.isAssignableFrom(aClass);

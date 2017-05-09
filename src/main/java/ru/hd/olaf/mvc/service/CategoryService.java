@@ -15,6 +15,7 @@ import java.util.Map;
  */
 public interface CategoryService {
 
+    Category getOne(Integer id) throws AuthException, IllegalArgumentException;
     JsonResponse getById(Integer id);
 
     List<Category> getAll();

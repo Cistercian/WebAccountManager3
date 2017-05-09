@@ -79,33 +79,10 @@
         elem.val(categoryId);
         elem.append("\<span class=\"caret\">\<\/span>");
     }
-    function displayMessage(type, message, Url) {
-        ClearModalPanel();
-        $('#modalBody').append(
-                "<h4><strong>" + message + "</strong></h4>"
-        );
-
-        var onclick;
-        if (type == 'SUCCESS') {
-            onclick = "location.reload();";
-        } else {
-            onclick = "$(\"#response\").val(\"\"); return false;";
-        }
-        $('#modalFooter').append(
-                "<button type='button' class='btn btn-default' data-dismiss='modal' " +
-                "onclick='" + onclick + "'>" +
-                "Ok" +
-                "</button>"
-        );
-        $('#modal').modal('show');
-    }
-    function ClearModalPanel() {
-        $('[id^="modalBody"]').each(function () {
-            $(this).empty();
-        });
-        $('[id^="modalFooter"]').each(function () {
-            $(this).empty();
-        });
+    function scrollPage(destination){
+        $('html, body').animate({
+            scrollTop: destination - 50
+        }, 2000, 'easeInOutExpo');
     }
 </script>
 <script language="javascript" type="text/javascript">
@@ -198,7 +175,25 @@
             }
         });
     }
-    ;
+    function displayMessage(type, message, Url) {
+        ClearModalPanel();
+        $('#modalBody').append(
+                "<h4><strong>" + message + "</strong></h4>"
+        );
+        var onclick;
+        if (type == 'SUCCESS') {
+            onclick = "location.reload();";
+        } else {
+            onclick = "$(\"#response\").val(\"\"); return false;";
+        }
+        $('#modalFooter').append(
+                "<button type='button' class='btn btn-default' data-dismiss='modal' " +
+                "onclick='" + onclick + "'>" +
+                "Ok" +
+                "</button>"
+        );
+        $('#modal').modal('show');
+    }
 </script>
 <!-- Modal Panel -->
 <div id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modallabel" aria-hidden="true">
@@ -262,7 +257,7 @@
                         <div class="col-xs-12 col-md-12">
                             <div class="form-group ${status.error ? 'has-error' : ''}">
                                 <form:input type="text" path="name" class="form-control form input-lg"
-                                            placeholder="${label}" ></form:input>
+                                            placeholder="${label}" onclick="scrollPage($($(this)).offset().top);"></form:input>
                                 <form:errors path="name"></form:errors>
                             </div>
                         </div>
@@ -279,6 +274,7 @@
                                 <input id="productId" type="hidden"
                                        value=<c:if test="${not empty product}">${product.getId()}"></c:if></input>
                                 <input id="productName" type="text" name="productName" class="form-control form input-lg" placeholder="${label}"
+                                onclick="scrollPage($($(this)).offset().top);"
                                 value=<c:if test="${not empty product}">"${product.getName()}"</c:if>></input>
                                 <form:errors path="productId"></form:errors>
                             </div>
@@ -297,7 +293,7 @@
                             </strong></h4>
                             <div class="form-group ${status.error ? 'has-error' : ''}">
                                 <button id="btnCategories" class="btn-default btn-lg btn-block dropdown-toggle"
-                                        data-toggle="dropdown"
+                                        data-toggle="dropdown" onclick="scrollPage($($(this)).offset().top);"
                                         value="<c:if test="${not empty category}">${category.getId()}</c:if>">
                                     <c:choose>
                                         <c:when test="${not empty category}">
@@ -336,7 +332,7 @@
                             </strong></h4>
                             <div class="form-group ${status.error ? 'has-error' : ''}">
                                 <form:input type="number" path="price" class="form-control input-lg"
-                                            placeholder="${label}"/>
+                                            placeholder="${label}" onclick="scrollPage($($(this)).offset().top);"/>
                                 <form:errors path="price"></form:errors>
                             </div>
                         </div>
@@ -440,7 +436,8 @@
                         <div class="col-md-12">
                             <div class="form-group ${status.error ? 'has-error' : ''}">
                                 <form:input type="text" path="name" class="form-control form input-lg"
-                                            placeholder="${label}" autofocus="true"></form:input>
+                                            placeholder="${label}" autofocus="true"
+                                            onclick="scrollPage($($(this)).offset().top);"></form:input>
                                 <form:errors path="name"></form:errors>
                             </div>
                         </div>
@@ -528,7 +525,8 @@
                         <div class="col-md-12">
                             <div class="form-group ${status.error ? 'has-error' : ''}">
                                 <form:input type="text" path="name" class="form-control form input-lg"
-                                            placeholder="${label}" autofocus="true"></form:input>
+                                            placeholder="${label}" autofocus="true"
+                                            onclick="scrollPage($($(this)).offset().top);"></form:input>
                                 <form:errors path="name"></form:errors>
                             </div>
                         </div>
@@ -544,6 +542,7 @@
                         <div class="form-group ${status.error ? 'has-error' : ''}">
                             <spring:message code="label.page-data.product.selectProductMerge" var="label"/>
                             <button id="btnProductMerge" class="btn-default btn-lg btn-block dropdown-toggle"
+                                    onclick="scrollPage($($(this)).offset().top);"
                                     data-toggle="dropdown" value=<c:if test="${not empty productMerge}">"${productMerge.getId()}"</c:if>"">
                             <c:choose>
                                 <c:when test="${not empty productMerge}">

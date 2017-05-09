@@ -54,6 +54,7 @@
     <mvc:view-controller path="/calendar.html" view-name="/statistic/calendar"/>
     <mvc:view-controller path="/login.html" view-name="/login/login"/>
     <mvc:view-controller path="/registraion.html" view-name="/login/registration"/>
+    <mvc:view-controller path="/account.html" view-name="/login/account"/>
 
     <mvc:view-controller path="/edit-page-category.html" view-name="/data/edit-page-category"/>
 

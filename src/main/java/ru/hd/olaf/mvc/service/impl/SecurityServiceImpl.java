@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import ru.hd.olaf.entities.User;
 import ru.hd.olaf.mvc.repository.UserRepository;
 import ru.hd.olaf.mvc.service.SecurityService;
+import ru.hd.olaf.mvc.service.UserService;
 import ru.hd.olaf.util.LogUtil;
 
 /**
@@ -28,6 +29,8 @@ public class SecurityServiceImpl implements SecurityService {
     private UserDetailsService userDetailsService;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UserService userService;
 
     private static final Logger logger = LoggerFactory.getLogger(SecurityServiceImpl.class);
 
@@ -50,6 +53,7 @@ public class SecurityServiceImpl implements SecurityService {
             username = principal.toString();
         }
 
+        logger.debug(String.format("Username: %s", username));
         return username;
     }
 
@@ -61,6 +65,12 @@ public class SecurityServiceImpl implements SecurityService {
 
         //TODO: UserNotFoundException?
         return userRepository.findByUsername(userName);
+    }
+
+    public boolean isPasswordMatches(String password) {
+        logger.debug(LogUtil.getMethodName());
+
+        return userService.isPasswordMatches(password, findLoggedUser());
     }
 
     public void autologin(String username, String password) {

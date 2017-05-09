@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.Map;
 
-/**
+/**TODO: Redudant
  * Created by d.v.hozyashev on 20.04.2017.
  */
 public class MapComparatorByValue implements Comparator<Object> {

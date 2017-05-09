@@ -9,4 +9,6 @@ public interface UserService {
     void save(User user);
 
     User findByUsername(String username);
+
+    boolean isPasswordMatches(String password, User user);
 }

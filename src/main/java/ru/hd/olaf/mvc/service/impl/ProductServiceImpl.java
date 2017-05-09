@@ -6,8 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.hd.olaf.entities.Amount;
-import ru.hd.olaf.entities.Category;
 import ru.hd.olaf.entities.Product;
 import ru.hd.olaf.exception.AuthException;
 import ru.hd.olaf.exception.CrudException;
@@ -16,11 +14,11 @@ import ru.hd.olaf.mvc.repository.ProductRepository;
 import ru.hd.olaf.mvc.service.AmountService;
 import ru.hd.olaf.mvc.service.ProductService;
 import ru.hd.olaf.mvc.service.SecurityService;
+import ru.hd.olaf.mvc.service.UtilService;
 import ru.hd.olaf.util.LogUtil;
 import ru.hd.olaf.util.json.JsonResponse;
 import ru.hd.olaf.util.json.ResponseType;
 
-import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -35,8 +33,10 @@ public class ProductServiceImpl implements ProductService {
     private SecurityService securityService;
     @Autowired
     private AmountService amountService;
+    @Autowired
+    private UtilService utilService;
 
-    private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProductServiceImpl.class);
 
     /**
      * Функция возвращает список всех Product текущего пользователя
@@ -50,29 +50,7 @@ public class ProductServiceImpl implements ProductService {
     public JsonResponse getById(Integer id) {
         logger.debug(LogUtil.getMethodName());
 
-        Product product = null;
-
-        JsonResponse jsonResponse = new JsonResponse();
-        try {
-            product = getOne(id);
-
-            String message = String.format("Запись с id = %d найдена: %s", id, product);
-            jsonResponse.setType(ResponseType.SUCCESS);
-            jsonResponse.setMessage(message);
-            jsonResponse.setEntity(product);
-        } catch (AuthException e) {
-            logger.debug(e.getMessage());
-            jsonResponse.setType(ResponseType.ERROR);
-            jsonResponse.setMessage(e.getMessage());
-        } catch (IllegalArgumentException e) {
-            String message = "Переданный параметр id равен null.";
-            logger.debug(message);
-
-            jsonResponse.setType(ResponseType.INFO);
-            jsonResponse.setMessage(message);
-        }
-
-        return jsonResponse;
+        return utilService.getById(Product.class, id);
     }
 
     /**
@@ -80,7 +58,7 @@ public class ProductServiceImpl implements ProductService {
      * @param id
      * @return
      */
-    private Product getOne(Integer id) throws AuthException, IllegalArgumentException {
+    public Product getOne(Integer id) throws AuthException, IllegalArgumentException {
         logger.debug(LogUtil.getMethodName());
         if (id == null) throw new IllegalArgumentException();
 
