@@ -80,7 +80,7 @@
         elem.append("\<span class=\"caret\">\<\/span>");
     }
     function scrollPage(destination){
-        $('html, body').animate({
+        $('html, body').stop().animate({
             scrollTop: destination - 50
         }, 2000, 'easeInOutExpo');
     }
@@ -120,48 +120,6 @@
             url: '/page-data/save',
             data: data,
             dataType: 'json',
-            beforeSend: function(){
-                displayLoader();
-            },
-            success: function (data) {
-                hideLoader();
-
-                var type = data.type;
-                var message = data.message;
-
-                displayMessage(type, message, "/index");
-            }
-        });
-    }
-    ;
-    function Delete(className, id) {
-        ClearModalPanel();
-        $('#modalBody').append(
-                "<h4><strong><spring:message code="label.page-amount.modal.textDelete" /></strong></h4>"
-        );
-        $('#modalFooter').append(
-                "<button type='button' class='btn btn-default' data-dismiss='modal' " +
-                "onclick=\"SendDeleteQuery('" + className + "', '" + id + "');\">" +
-                "<spring:message code="label.page-amount.modal.btnYes" />" +
-                "</button>" +
-                "<button type='button' class='btn btn-primary' " +
-                "data-dismiss='modal'>" +
-                "<spring:message code="label.page-amount.modal.btnNo" />" +
-                "</button>" +
-                ""
-        );
-        $('#modal').modal('show');
-    }
-    ;
-    function SendDeleteQuery(className, id) {
-        var data = {
-            'className': className,
-            'id': (id == '' ? $('#id').val() : id),
-        }
-        $.ajax({
-            type: "POST",
-            url: '/page-data/delete',
-            data: data,
             beforeSend: function(){
                 displayLoader();
             },

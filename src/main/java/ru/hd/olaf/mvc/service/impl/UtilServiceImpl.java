@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.hd.olaf.entities.Amount;
 import ru.hd.olaf.entities.Category;
-import ru.hd.olaf.entities.Notification;
+import ru.hd.olaf.entities.Limit;
 import ru.hd.olaf.entities.Product;
 import ru.hd.olaf.exception.AuthException;
 import ru.hd.olaf.exception.CrudException;
@@ -27,7 +27,7 @@ public class UtilServiceImpl implements UtilService{
     @Autowired
     private ProductService productService;
     @Autowired
-    private NotificationService notificationService;
+    private LimitService limitService;
 
     private static final Logger logger = LoggerFactory.getLogger(UtilServiceImpl.class);
 
@@ -53,11 +53,11 @@ public class UtilServiceImpl implements UtilService{
 
                 message = String.format("Запись с id = %d найдена: %s", id, product);
                 jsonResponse.setEntity(product);
-            } else if (classez.isAssignableFrom(Notification.class)) {
-                Notification notification = notificationService.getOne(id);
+            } else if (classez.isAssignableFrom(Limit.class)) {
+                Limit limit = limitService.getOne(id);
 
-                message = String.format("Запись с id = %d найдена: %s", id, notification);
-                jsonResponse.setEntity(notification);
+                message = String.format("Запись с id = %d найдена: %s", id, limit);
+                jsonResponse.setEntity(limit);
             }
 
             jsonResponse.setType(ResponseType.SUCCESS);
@@ -84,6 +84,8 @@ public class UtilServiceImpl implements UtilService{
      * @return
      */
     public JsonResponse saveEntity(Object entity) {
+        logger.debug(LogUtil.getMethodName());
+
         try {
             if (entity.getClass().isAssignableFrom(Category.class)) {
                 Category category = (Category) entity;
@@ -94,6 +96,9 @@ public class UtilServiceImpl implements UtilService{
             } else if (entity.getClass().isAssignableFrom(Product.class)) {
                 Product product = (Product) entity;
                 productService.save(product);
+            } else if (entity.getClass().isAssignableFrom(Limit.class)) {
+                Limit limit = (Limit) entity;
+                limitService.save(limit);
             }
         } catch (CrudException e) {
             String message = String.format("Возникла ошибка при сохранении данных в БД. \n" +
@@ -108,5 +113,68 @@ public class UtilServiceImpl implements UtilService{
         logger.debug(message);
 
         return new JsonResponse(ResponseType.SUCCESS, message);
+    }
+
+    /**
+     * функция удаления сущности БД
+     * @param className наименование класса сущности (string)
+     * @param id id сущности
+     * @return JsonResponse
+     */
+    public JsonResponse deleteEntity(String className, Integer id) {
+        logger.debug(LogUtil.getMethodName());
+        JsonResponse response = new JsonResponse();
+
+        try {
+            if (className.equalsIgnoreCase(Amount.class.getSimpleName())) {
+                logger.debug("Инициализация удаления записи Amount");
+
+                response = amountService.getById(id);
+                if (response.getEntity() == null) {
+                    logger.debug(response.getType() + ":" + response.getMessage());
+                    return response;
+                }
+                response = amountService.delete((Amount) response.getEntity());
+
+            } else if (className.equalsIgnoreCase(Category.class.getSimpleName())) {
+                logger.debug("Инициализация удаления записи Category");
+
+                response = categoryService.getById(id);
+                if (response.getEntity() == null) {
+                    logger.debug(response.getType() + ":" + response.getMessage());
+                    return response;
+                }
+                response = categoryService.delete((Category) response.getEntity());
+            } else if (className.equalsIgnoreCase(Product.class.getSimpleName())) {
+                logger.debug("Инициализация удаления записи Product");
+
+                response = productService.getById(id);
+                if (response.getEntity() == null) {
+                    logger.debug(response.getType() + ":" + response.getMessage());
+                    return response;
+                }
+                response = productService.delete((Product) response.getEntity());
+            } else if (className.equalsIgnoreCase(Limit.class.getSimpleName())) {
+                logger.debug("Инициализация удаления записи Limit");
+
+                response = limitService.getById(id);
+                if (response.getEntity() == null) {
+                    logger.debug(response.getType() + ":" + response.getMessage());
+                    return response;
+                }
+                response = limitService.delete((Limit) response.getEntity());
+            }
+        } catch (CrudException e) {
+            String message = String.format("Произошла ошибка: \n%s", e.getMessage());
+
+            logger.error(message);
+
+            response = new JsonResponse();
+            response.setType(ResponseType.ERROR);
+            response.setMessage(message);
+        }
+        logger.debug(response.getMessage());
+
+        return response;
     }
 }

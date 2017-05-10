@@ -8,4 +8,5 @@ import ru.hd.olaf.util.json.JsonResponse;
 public interface UtilService {
     JsonResponse getById(Class classez, Integer id);
     JsonResponse saveEntity(Object entity);
+    JsonResponse deleteEntity(String className, Integer id);
 }

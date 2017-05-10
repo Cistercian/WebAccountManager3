@@ -15,7 +15,8 @@
 <spring:url value="/resources/js/jquery.dataTables.min.js" var="js"/>
 <script src="${js}"></script>
 
-<spring:message code="label.account.notification.submit" var="btnNotificationLabel"/>
+<spring:message code="label.account.limit.submit.ok" var="btnlimitLabelOk"/>
+<spring:message code="label.account.limit.submit.cancel" var="btnlimitLabelCancel"/>
 <script language="javascript" type="text/javascript">
     $(document).ready(function () {
         $.ajaxSetup({
@@ -27,7 +28,7 @@
             displayMessage('info', $('#response').val());
         }
 
-        var table = $('#notifacations').DataTable({
+        var table = $('#limits').DataTable({
             responsive: true,
             language: {
                 "processing": "Подождите...",
@@ -70,21 +71,35 @@
                     "Ok" +
                     "</button>"
             );
+        } else if (type == 'SUCCESS') {
+            $('#modalBody').append(
+                    "<h4><strong>" + message + "</strong></h4>"
+            );
+            $('#modalFooter').append(
+                    "<button type='button' class='btn btn-primary' onclick='location.reload();'>" +
+                    "Ok" +
+                    "</button>"
+            );
+            //alert("должен быть показ");
+            $('#modal').modal('show'); //TODO: wtf?
         } else {
             $('#modalBody').append(message);
             $('#modalFooter').append(
-                    "<button type='button' class='btn btn-primary' data-dismiss='modal' onclick='notificationForm.submit();'>" +
-                    "${btnNotificationLabel}" +
+                    "<button type='button' class='btn btn-primary' onclick='sendLimitSubmit();return false;'>" +
+                    "${btnlimitLabelOk}" +
+                    "</button>" +
+                    "<button type='button' class='btn btn-default' data-dismiss='modal' >" +
+                    "${btnlimitLabelCancel}" +
                     "</button>"
             );
         }
-
         $('#modal').modal('show');
     }
-    function getNotificationWindow(){
+    function getLimitWindow(id){
         $.ajax({
             type: "GET",
             url: '/account/notification',
+            data: {'id' : id},
             beforeSend: function(){
                 displayLoader();
             },
@@ -92,10 +107,33 @@
                 hideLoader();
                 var message = data;
                 var type = '';
+
                 displayMessage(type, message, "/index");
             }
         });
     }
+    function sendLimitSubmit(){
+        $.ajax({
+            type: "POST",
+            url: '/account/notification',
+            data: $("#limitForm").serialize(),
+            beforeSend: function(){
+                //displayLoader();
+            },
+            success: function (data) {
+                hideLoader();
+                var message = data.message;
+                var type = data.type;
+
+                if (type == 'ERROR')
+                    waitingDialog.show(message, {dialogSize: 'm', progressType: 'warning'}, 'error');
+                else
+                    location.reload();
+
+            }
+        });
+    }
+
 </script>
 <!-- Modal Panel -->
 <div id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modallabel" aria-hidden="true">
@@ -171,16 +209,16 @@
         </div>
         <div class="container-fluid">
             <div class="col-xs-12 col-md-12">
-                <h4><strong><spring:message code="label.account.notification.title"/></strong></h4>
+                <h4><strong><spring:message code="label.account.limit.title"/></strong></h4>
             </div>
             <div class="col-xs-12 col-md-4 ">
                 <button class="btn btn-lg btn-primary btn-block wam-btn-2" type="submit"
-                        onclick="getNotificationWindow();return false;">
-                    <spring:message code="label.account.notification.create"/>
+                        onclick="getLimitWindow();return false;">
+                    <spring:message code="label.account.limit.create"/>
                 </button>
             </div>
             <div class="panel-body">
-                <table id="notifications" class="table table-striped table-bordered table-text" cellspacing="0" width="100%">
+                <table id="limits" class="table table-striped table-bordered table-text" cellspacing="0" width="100%">
                     <thead>
                     <tr>
                         <th style="display : none;">id</th>
@@ -188,17 +226,33 @@
                         <th>name</th>
                         <th>sum</th>
                         <th>period</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
                     </tr>
                     </thead>
                     <tbody>
 
-                    <c:forEach items="${notifications}" var="notifications">
+                    <c:forEach items="${limits}" var="limits">
                         <tr>
-                            <td style="display : none;">${notifications.getId()}</td>
-                            <td style="white-space: nowrap;">${notifications.getType()}</td>
-                            <td>${notifications.getName()}</td>
-                            <td>${notifications.getSum()}</td>
-                            <td>${notifications.getPeiod()}</td>
+                            <td style="display : none;">${limits.getId()}</td>
+                            <td style="white-space: nowrap;">${limits.getType()}</td>
+                            <td>${limits.getEntityName()}</td>
+                            <td>${limits.getSum()}</td>
+                            <td>${limits.getPeriod()}</td>
+                            <td><p data-placement="top" data-toggle="tooltip" title="Edit">
+                                <button class="btn btn-primary btn-xs" data-title="Edit"
+                                        onclick="getLimitWindow(${limits.getId()});" >
+                                    <span class="glyphicon glyphicon-pencil"></span>
+                                </button>
+                            </p>
+                            </td>
+                            <td><p data-placement="top" data-toggle="tooltip" title="Delete">
+                                <button class="btn btn-danger btn-xs" data-title="Delete"
+                                        onclick="Delete('Limit', ${limits.getId()})">
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                </button>
+                            </p>
+                            </td>
                         </tr>
                     </c:forEach>
                     </tbody>

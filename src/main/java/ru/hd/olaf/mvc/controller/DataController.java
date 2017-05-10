@@ -84,51 +84,7 @@ public class DataController {
     JsonResponse deleteEntity(@RequestParam(value = "className") String className,
                               @RequestParam(value = "id") Integer id) {
         logger.debug(LogUtil.getMethodName());
-        JsonResponse response = new JsonResponse();
-
-        try {
-            if (className.equalsIgnoreCase(Amount.class.getSimpleName())) {
-                logger.debug("Инициализация удаления записи Amount");
-
-                response = amountService.getById(id);
-                if (response.getEntity() == null) {
-                    logger.debug(response.getType() + ":" + response.getMessage());
-                    return response;
-                }
-                response = amountService.delete((Amount) response.getEntity());
-
-            } else if (className.equalsIgnoreCase(Category.class.getSimpleName())) {
-                logger.debug("Инициализация удаления записи Category");
-
-                response = categoryService.getById(id);
-                if (response.getEntity() == null) {
-                    logger.debug(response.getType() + ":" + response.getMessage());
-                    return response;
-                }
-                response = categoryService.delete((Category) response.getEntity());
-            } else if (className.equalsIgnoreCase(Product.class.getSimpleName())) {
-                logger.debug("Инициализация удаления записи Product");
-
-                response = productService.getById(id);
-                if (response.getEntity() == null) {
-                    logger.debug(response.getType() + ":" + response.getMessage());
-                    return response;
-                }
-                response = productService.delete((Product) response.getEntity());
-            }
-        } catch (CrudException e) {
-            String message = String.format("Произошла ошибка: \n%s", e.getMessage());
-
-            logger.error(message);
-
-            response = new JsonResponse();
-            response.setType(ResponseType.ERROR);
-            response.setMessage(message);
-        }
-
-        logger.debug(response.getMessage());
-
-        return response;
+        return utilService.deleteEntity(className, id);
     }
 
     /**

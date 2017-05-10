@@ -44,14 +44,6 @@
         );
         $('#modal').modal('show');
     }
-    function ClearModalPanel(){
-        $('[id^="modalBody"]').each(function () {
-            $(this).empty();
-        });
-        $('[id^="modalFooter"]').each(function () {
-            $(this).empty();
-        });
-    }
     /**
      * Функция прорисовки календаря с помощью fullcalendar
      */

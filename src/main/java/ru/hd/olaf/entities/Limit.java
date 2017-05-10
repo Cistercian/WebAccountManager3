@@ -9,8 +9,8 @@ import java.math.BigDecimal;
  * Created by Olaf on 08.05.2017.
  */
 @Entity
-@Table(name = "notifications", schema = "web_account_db")
-public class Notification {
+@Table(name = "limits", schema = "web_account_db")
+public class Limit {
     private Integer id;
     private String type;
     private Integer entityId;
@@ -18,14 +18,16 @@ public class Notification {
     private BigDecimal sum;
     private Byte period;
     private User userId;
+    private Product productId;
 
     @Id
     @Column(name = "ID", nullable = false)
-    public int getId() {
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -90,12 +92,23 @@ public class Notification {
         this.userId = userId;
     }
 
+    @ManyToOne()
+    @JoinColumn(name = "product_id")
+    @JsonBackReference
+    public Product getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Product productId) {
+        this.productId = productId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Notification that = (Notification) o;
+        Limit that = (Limit) o;
 
         if (id != that.id) return false;
         if (type != null ? !type.equals(that.type) : that.type != null) return false;
@@ -118,5 +131,18 @@ public class Notification {
         result = 31 * result + (period != null ? period.hashCode() : 0);
         result = 31 * result + (userId != null ? userId.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Limit{" +
+                "id=" + id +
+                ", type='" + type != null ? type : "" + '\'' +
+                ", entityId=" + entityId != null ? entityId.toString() : "" +
+                ", entityName='" + entityName != null ? entityName.toString() : "" + '\'' +
+                ", sum=" + sum +
+                ", period=" + period != null ? period.toString() : "" +
+                ", userId=" + userId != null ? userId.toString() : "" +
+                '}';
     }
 }

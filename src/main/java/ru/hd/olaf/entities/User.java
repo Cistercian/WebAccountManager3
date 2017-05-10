@@ -24,7 +24,7 @@ public class User {
     private Set<Category> categories = new HashSet<Category>();
     private Set<Amount> amounts = new HashSet<Amount>();
     private Set<Product> products = new HashSet<Product>();
-    private Set<Notification> notifications = new HashSet<Notification>();
+    private Set<Limit> limits = new HashSet<Limit>();
 
     @Id
     @Column(name = "ID", nullable = false)
@@ -138,12 +138,12 @@ public class User {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "userId", cascade = CascadeType.REMOVE, orphanRemoval = false)
     @JsonBackReference
-    public Set<Notification> getNotifications() {
-        return notifications;
+    public Set<Limit> getLimits() {
+        return limits;
     }
 
-    public void setNotifications(Set<Notification> notifications) {
-        this.notifications = notifications;
+    public void setLimits(Set<Limit> limits) {
+        this.limits = limits;
     }
 
     @Override

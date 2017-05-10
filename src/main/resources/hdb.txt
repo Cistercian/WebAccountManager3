@@ -45,7 +45,8 @@ ID INT NOT NULL AUTO_INCREMENT
 
 USE web_account_db;
 DROP TABLE IF EXISTS notifications;
-CREATE TABLE notifications (
+DROP TABLE IF EXISTS limits;
+CREATE TABLE limits (
     ID INT NOT NULL AUTO_INCREMENT
   , type VARCHAR(40)
   , entity_id INT
@@ -56,7 +57,7 @@ CREATE TABLE notifications (
   , PRIMARY KEY (id)
 );
 
-
+ALTER TABLE limits ADD product_id INT;
 
 INSERT INTO categories (parent_id, user_id, name, details, type) VALUES (0, 1, 'Категория 1', 'Описание 1', 0);
 INSERT INTO categories (parent_id, user_id, name, details, type) VALUES (1, 1, 'Категория 2', 'Описание 2', 1);

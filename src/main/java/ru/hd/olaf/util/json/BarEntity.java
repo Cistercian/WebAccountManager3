@@ -12,12 +12,14 @@ public class BarEntity {
     private int id;
     private BigDecimal sum;
     private String name;
+    private BigDecimal limit;
 
     public BarEntity(String type, int id, BigDecimal sum, String name) {
         this.type = type;
         this.id = id;
         this.sum = sum;
         this.name = name;
+        this.limit = new BigDecimal("0");
     }
 
     public String getType() {
@@ -52,6 +54,14 @@ public class BarEntity {
         this.name = name;
     }
 
+    public BigDecimal getLimit() {
+        return limit;
+    }
+
+    public void setLimit(BigDecimal limit) {
+        this.limit = limit;
+    }
+
     @Override
     public String toString() {
         return "BarEntity{" +
@@ -59,6 +69,7 @@ public class BarEntity {
                 ", id=" + id +
                 ", sum=" + sum +
                 ", name='" + name + '\'' +
+                ", limit='" + limit + '\'' +
                 '}';
     }
 }

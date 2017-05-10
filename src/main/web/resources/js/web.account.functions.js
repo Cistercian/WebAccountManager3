@@ -22,12 +22,12 @@ function drawBarsByParentId(isChildren, categoryId, after, before) {
             url: url,
             type: "GET",
             data: {
-                'categoryId' : categoryId,
-                'after' : after,
-                'before' : before
+                'categoryId': categoryId,
+                'after': after,
+                'before': before
             },
             dataType: 'json',
-            beforeSend: function(){
+            beforeSend: function () {
                 displayLoader();
             },
             success: function (data) {
@@ -104,7 +104,7 @@ function drawBarsByParentId(isChildren, categoryId, after, before) {
                     if (classType == 'Product') {
                         classTitle = "Товарная группа";
                         //elemLink = 	"<a href='javascript:getViewProduct(" + classId + ");'>" +
-                        elemLink = 	"<a href='/page-product/" + classId + "?after=" + after + "&before=" + before + "'>" +
+                        elemLink = "<a href='/page-product/" + classId + "?after=" + after + "&before=" + before + "'>" +
                             "<strong> (Просмотреть</strong>" +
                             "</a>" + ", " +
                             "<a href='/product?id=" + classId + "'>" +
@@ -114,10 +114,10 @@ function drawBarsByParentId(isChildren, categoryId, after, before) {
                     if (classType.indexOf('Category') + 1) {
                         classTitle = "Категория";
                         classType = 'Category';
-                        elemLink = 	"<a href='javascript:drawBarsByParentId(true, " + classId + "," +
+                        elemLink = "<a href='javascript:drawBarsByParentId(true, " + classId + "," +
                             "\"" + after + "\"," +
-                            "\"" + before +"\")';\">" +
-                            "<strong id='strong" + classType + classId +"'> (Развернуть)</strong>" +
+                            "\"" + before + "\")';\">" +
+                            "<strong id='strong" + classType + classId + "'> (Развернуть)</strong>" +
                             "</a>";
                     }
                     <!-- добавляем прогресс бар -->
@@ -149,7 +149,7 @@ function drawBarsByParentId(isChildren, categoryId, after, before) {
                 totalSum = totalSum.toFixed(2);
                 $('#' + idBarElem).append(
                     "<div class='row'>" +
-                    (isChildren ? "<div class='col-md-12 wam-margin-bottom-2'><h6><span>" : "<div class='col-md-12'><h4><span class='pull-right text-muted'>")  +
+                    (isChildren ? "<div class='col-md-12 wam-margin-bottom-2'><h6><span>" : "<div class='col-md-12'><h4><span class='pull-right text-muted'>") +
                     "ИТОГО " + numberToString(totalSum) + " руб." +
                     "</span>" + (isChildren ? "</h6>" : "</h4>") +
                     "</div><p><p>" +
@@ -262,16 +262,16 @@ function drawChartOfTypes(data, elementId) {
  * @param number исходное число
  * @returns {string} отформатированная строка
  */
-function numberToString(number){
+function numberToString(number) {
     return (number + '').replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ');
 }
 /**
  * Функция вызова waitingDialog.js при выполнении ajax запросов
  */
-function displayLoader(){
+function displayLoader() {
     waitingDialog.show('Загрузка...', {dialogSize: 'sm', progressType: 'warning'});
 }
-function hideLoader(){
+function hideLoader() {
     waitingDialog.hide();
 }
 /**
@@ -285,5 +285,50 @@ function ClearModalPanel() {
     });
     $('[id^="modalFooter"]').each(function () {
         $(this).empty();
+    });
+}
+/**
+ *Функция удаления записи БД
+ *
+ */
+function Delete(className, id) {
+    ClearModalPanel();
+    $('#modalBody').append(
+        "<h4><strong>Вы действительно хотите удалить запись?</strong></h4>"
+    );
+    $('#modalFooter').append(
+        "<button type='button' class='btn btn-default' data-dismiss='modal' " +
+        "onclick=\"SendDeleteQuery('" + className + "', '" + id + "');\">" +
+        "Да" +
+        "</button>" +
+        "<button type='button' class='btn btn-primary' " +
+        "data-dismiss='modal'>" +
+        "Нет" +
+        "</button>" +
+        ""
+    );
+    $('#modal').modal('show');
+}
+;
+function SendDeleteQuery(className, id) {
+    var data = {
+        'className': className,
+        'id': (id == '' ? $('#id').val() : id),
+    }
+    $.ajax({
+        type: "POST",
+        url: '/page-data/delete',
+        data: data,
+        beforeSend: function () {
+            displayLoader();
+        },
+        success: function (data) {
+            hideLoader();
+
+            var type = data.type;
+            var message = data.message;
+
+            displayMessage(type, message, "/index");
+        }
     });
 }

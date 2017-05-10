@@ -5,83 +5,99 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.hd.olaf.entities.Notification;
+import ru.hd.olaf.entities.Limit;
 import ru.hd.olaf.entities.User;
 import ru.hd.olaf.exception.AuthException;
 import ru.hd.olaf.exception.CrudException;
-import ru.hd.olaf.mvc.repository.NotificationRepository;
-import ru.hd.olaf.mvc.service.NotificationService;
+import ru.hd.olaf.mvc.repository.LimitRepository;
+import ru.hd.olaf.mvc.service.LimitService;
 import ru.hd.olaf.mvc.service.SecurityService;
 import ru.hd.olaf.mvc.service.UtilService;
 import ru.hd.olaf.util.LogUtil;
+import ru.hd.olaf.util.json.BarEntity;
 import ru.hd.olaf.util.json.JsonResponse;
 import ru.hd.olaf.util.json.ResponseType;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 
 /**
  * Created by Olaf on 08.05.2017.
  */
 @Service
-public class NotificationServiceImpl implements NotificationService {
+public class LimitServiceImpl implements LimitService {
 
     @Autowired
-    private NotificationRepository notificationRepository;
+    private LimitRepository limitRepository;
     @Autowired
     private SecurityService securityService;
     @Autowired
     private UtilService utilService;
 
-    private static final Logger logger = LoggerFactory.getLogger(NotificationServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(LimitServiceImpl.class);
 
-    public Notification getOne(Integer id) throws AuthException, IllegalArgumentException {
+    public Limit getOne(Integer id) throws AuthException, IllegalArgumentException {
         logger.debug(LogUtil.getMethodName());
 
         if (id == null) throw new IllegalArgumentException();
 
-        Notification notification = notificationRepository.findOne(id);
-        if (notification == null) return null;
+        Limit limit = limitRepository.findOne(id);
+        if (limit == null) return null;
 
-        if (!notification.getUserId().equals(securityService.findLoggedUser()))
+        if (!limit.getUserId().equals(securityService.findLoggedUser()))
             throw new AuthException(String.format("Запрошенный объект с id %d Вам не принадлежит.", id));
 
-        return notification;
+        return limit;
     }
 
     public JsonResponse getById(Integer id) {
         logger.debug(LogUtil.getMethodName());
-        return utilService.getById(Notification.class, id);
+        return utilService.getById(Limit.class, id);
     }
 
-    public List<Notification> getAll() {
+    public List<Limit> getAll() {
         logger.debug(LogUtil.getMethodName());
         User user = securityService.findLoggedUser();
 
-        return notificationRepository.findByUserId(user);
+        return limitRepository.findByUserId(user);
     }
 
-    public Notification save(Notification notification) throws CrudException {
+    public Limit save(Limit limit) throws CrudException {
         logger.debug(LogUtil.getMethodName());
 
-        Notification entity = null;
+        Limit entity = null;
 
         try {
-            entity = notificationRepository.save(notification);
+            entity = limitRepository.save(limit);
         } catch (Exception e) {
+            logger.debug(String.format("Exception handled: %s", e.getMessage()));
             throw new CrudException(ExceptionUtils.getRootCause(e).getMessage());
         }
 
         return entity;
     }
 
-    public JsonResponse delete(Notification notification) throws CrudException {
+    public JsonResponse delete(Limit limit) throws CrudException {
         logger.debug(LogUtil.getMethodName());
 
         try {
-            notificationRepository.delete(notification.getId());
+            limitRepository.delete(limit.getId());
             return new JsonResponse(ResponseType.SUCCESS, "Удаление успешно завершено.");
         } catch (Exception e) {
             throw new CrudException(ExceptionUtils.getRootCause(e).getMessage());
         }
+    }
+
+    public List<BarEntity> getLimit() {
+        User user = securityService.findLoggedUser();
+
+        Date begin = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date end = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+
+        //return limitRepository.findSumAmountByProductId(user, (byte) 1, begin, end);
+        return null;
     }
 }
