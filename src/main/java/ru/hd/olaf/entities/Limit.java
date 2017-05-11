@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Created by Olaf on 08.05.2017.
@@ -19,6 +20,7 @@ public class Limit {
     private Byte period;
     private User userId;
     private Product productId;
+    private Category categoryId;
 
     @Id
     @Column(name = "ID", nullable = false)
@@ -101,6 +103,17 @@ public class Limit {
 
     public void setProductId(Product productId) {
         this.productId = productId;
+    }
+
+    @ManyToOne()
+    @JoinColumn(name = "category_id")
+    @JsonBackReference
+    public Category getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Category categoryId) {
+        this.categoryId = categoryId;
     }
 
     @Override

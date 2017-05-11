@@ -6,6 +6,7 @@ import ru.hd.olaf.exception.CrudException;
 import ru.hd.olaf.util.json.BarEntity;
 import ru.hd.olaf.util.json.JsonResponse;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -15,9 +16,10 @@ public interface LimitService {
 
     Limit getOne(Integer id) throws AuthException, IllegalArgumentException;
     JsonResponse getById(Integer id);
-    List<Limit> getAll();
+    Limit getByPeriodAndEntity(Byte period, Object entity);
 
-    List<BarEntity> getLimit();
+    List<Limit> getAll();
+    List<BarEntity> getLimit(Byte period);
 
     Limit save(Limit limit) throws CrudException;
     JsonResponse delete(Limit limit) throws CrudException;

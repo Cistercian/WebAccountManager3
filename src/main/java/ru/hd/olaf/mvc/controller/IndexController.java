@@ -76,7 +76,7 @@ public class IndexController {
         parentsCategories.addAll(getCategoriesByDate(monthDate.format(formatter), curDate.format(formatter)));
 
         logger.debug(String.format("data for injecting:"));
-        logList(parentsCategories);
+        LogUtil.logList(logger, parentsCategories);
 
         modelAndView.addObject("categories", parentsCategories);
 
@@ -140,7 +140,7 @@ public class IndexController {
         });
 
         logger.debug(String.format("data for injecting:"));
-        logList(parentsCategories);
+        LogUtil.logList(logger, parentsCategories);
 
         return parentsCategories;
     }
@@ -183,15 +183,9 @@ public class IndexController {
         });
 
         logger.debug(String.format("data for injecting:"));
-        logList(categoryContent);
+        LogUtil.logList(logger, categoryContent);
 
         return categoryContent;
-    }
-
-    private <T> void logList(List<T> list) {
-        for (T T : list) {
-            logger.debug(String.format("%s", T));
-        }
     }
 
     @InitBinder

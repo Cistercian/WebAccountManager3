@@ -105,6 +105,7 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><spring:message code="menu.nav.statistic" /> <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li><a href="/statistic/calendar"><spring:message code="menu.nav.calendar" /></a></li>
+                        <li><a href="/statistic/limit-control"><spring:message code="menu.nav.limit-control" /></a></li>
                     </ul>
                 </li>
                 <li class="dropdown">
@@ -113,6 +114,8 @@
                         <li><a href="/amount"><spring:message code="menu.nav.amounts" /></a></li>
                         <li class="divider"></li>
                         <li><a href="/category"><spring:message code="menu.nav.categories" /></a></li>
+                        <li class="divider"></li>
+                        <li><a href="/limits"><spring:message code="menu.nav.limits" /></a></li>
                     </ul>
                 </li>
                 <li class="dropdown">

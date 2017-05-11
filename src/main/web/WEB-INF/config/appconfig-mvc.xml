@@ -55,6 +55,8 @@
     <mvc:view-controller path="/login.html" view-name="/login/login"/>
     <mvc:view-controller path="/registraion.html" view-name="/login/registration"/>
     <mvc:view-controller path="/account.html" view-name="/login/account"/>
+    <mvc:view-controller path="/limits.html" view-name="/data/limits"/>
+    <mvc:view-controller path="/limit-control.html" view-name="/statistic/limit-control"/>
 
     <mvc:view-controller path="/edit-page-category.html" view-name="/data/edit-page-category"/>
 

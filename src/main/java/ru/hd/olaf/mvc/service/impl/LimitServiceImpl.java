@@ -5,7 +5,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.hd.olaf.entities.Category;
 import ru.hd.olaf.entities.Limit;
+import ru.hd.olaf.entities.Product;
 import ru.hd.olaf.entities.User;
 import ru.hd.olaf.exception.AuthException;
 import ru.hd.olaf.exception.CrudException;
@@ -20,6 +22,7 @@ import ru.hd.olaf.util.json.ResponseType;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Date;
 import java.util.List;
 
@@ -90,14 +93,56 @@ public class LimitServiceImpl implements LimitService {
         }
     }
 
-    public List<BarEntity> getLimit() {
+    public List<BarEntity> getLimit(Byte period) {
+        logger.debug(LogUtil.getMethodName());
+
         User user = securityService.findLoggedUser();
 
-        Date begin = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
-        Date end = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
+        //вычисляем период
+        //текущая дата
+        LocalDate curDate = LocalDate.now();
+        LocalDate begDate = null;
+        //начальная дата периода:
+        switch (period){
+            case 0:
+                begDate = curDate;
+                break;
+            case 1:
+                begDate = LocalDate.now().minusDays(LocalDate.now().getDayOfWeek().ordinal());
+                break;
+            default:
+                begDate = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
+                break;
+        }
+        logger.debug(String.format("Интервал: %s - %s", begDate, curDate));
 
+        Date begin = Date.from(begDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date end = Date.from(curDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
-        //return limitRepository.findSumAmountByProductId(user, (byte) 1, begin, end);
-        return null;
+        //TODO: union?
+        List<BarEntity> bars = limitRepository.findLimitAndSumAmountsByProduct(user, period, begin, end);
+        bars.addAll(limitRepository.findLimitAndSumAmountsByCategory(user, period, begin, end));
+
+        return bars;
+    }
+
+    /**
+     * Функция возвращает запись таблицы limit по периоду и подчиненной сущности (используется валидаторов)
+     * @param period Byte period
+     * @param entity Object
+     * @return Limit or null
+     */
+    public Limit getByPeriodAndEntity(Byte period, Object entity) {
+        logger.debug(LogUtil.getMethodName());
+
+        User user = securityService.findLoggedUser();
+        Limit limit = null;
+
+        if (entity instanceof Category)
+            limit = limitRepository.findByUserIdAndPeriodAndCategoryId(user, period, (Category) entity);
+        else if (entity instanceof Product)
+            limit = limitRepository.findByUserIdAndPeriodAndProductId(user, period, (Product) entity);
+
+        return limit;
     }
 }

@@ -65,8 +65,11 @@
     <div class="row">
         <form:form method="POST" modelAttribute="limitForm" class="form-signin">
             <div class="col-xs-12 col-md-12">
-                <h4><strong><spring:message code="label.account.limit.title"/></strong></h4>
+                <h4><strong><spring:message code="label.account.limit.create.title"/></strong></h4>
             </div>
+            <spring:bind path="id">
+                <form:input type="hidden" path="id" class="form-control" placeholder="${id}" ></form:input>
+            </spring:bind>
             <spring:bind path='type'>
                 <spring:message code="label.account.limit.selectType" var="label"/>
                 <form:input type='hidden' path='type' class='form-control' placeholder='${type}' var="type"></form:input>

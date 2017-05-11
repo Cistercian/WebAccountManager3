@@ -58,6 +58,7 @@ CREATE TABLE limits (
 );
 
 ALTER TABLE limits ADD product_id INT;
+ALTER TABLE limits ADD category_id INT;
 
 INSERT INTO categories (parent_id, user_id, name, details, type) VALUES (0, 1, 'Категория 1', 'Описание 1', 0);
 INSERT INTO categories (parent_id, user_id, name, details, type) VALUES (1, 1, 'Категория 2', 'Описание 2', 1);

@@ -22,6 +22,14 @@ public class BarEntity {
         this.limit = new BigDecimal("0");
     }
 
+    public BarEntity(String type, int id, BigDecimal sum, String name, BigDecimal limit) {
+        this.type = type;
+        this.id = id;
+        this.sum = sum;
+        this.name = name;
+        this.limit = limit;
+    }
+
     public String getType() {
         return type;
     }

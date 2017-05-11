@@ -135,7 +135,10 @@
       <column id="41" parent="6" name="product_id">
         <data-type>int(11)</data-type>
       </column>
-      <key id="42" parent="6" name="PRIMARY">
+      <column id="42" parent="6" name="category_id">
+        <data-type>int(11)</data-type>
+      </column>
+      <key id="43" parent="6" name="PRIMARY">
         <columns>ID</columns>
         <primary>1</primary>
       </key>

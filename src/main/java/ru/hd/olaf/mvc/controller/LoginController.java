@@ -9,15 +9,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import ru.hd.olaf.entities.Limit;
 import ru.hd.olaf.entities.User;
-import ru.hd.olaf.mvc.service.LimitService;
 import ru.hd.olaf.mvc.service.SecurityService;
 import ru.hd.olaf.mvc.service.UserService;
 import ru.hd.olaf.mvc.validator.UserValidator;
 import ru.hd.olaf.util.LogUtil;
-
-import java.util.List;
 
 /**
  * Created by d.v.hozyashev on 18.04.2017.
@@ -28,8 +24,6 @@ public class LoginController {
     private UserService userService;
     @Autowired
     private SecurityService securityService;
-    @Autowired
-    private LimitService limitService;
     @Autowired
     private UserValidator userValidator;
 
@@ -91,9 +85,6 @@ public class LoginController {
         logger.debug(LogUtil.getMethodName());
 
         model.addAttribute("passwordForm", new User());
-
-        List<Limit> limits = limitService.getAll();
-        model.addAttribute("limits", limits);
 
         return "login/account";
     }

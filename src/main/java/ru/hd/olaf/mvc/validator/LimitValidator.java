@@ -2,10 +2,16 @@ package ru.hd.olaf.mvc.validator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import ru.hd.olaf.entities.Limit;
+import ru.hd.olaf.entities.Product;
+import ru.hd.olaf.mvc.service.CategoryService;
+import ru.hd.olaf.mvc.service.LimitService;
+import ru.hd.olaf.mvc.service.ProductService;
+import ru.hd.olaf.util.json.JsonResponse;
 
 import java.math.BigDecimal;
 
@@ -14,6 +20,13 @@ import java.math.BigDecimal;
  */
 @Component
 public class LimitValidator implements Validator {
+
+    @Autowired
+    private CategoryService categoryService;
+    @Autowired
+    private ProductService productService;
+    @Autowired
+    private LimitService limitService;
 
     private static final Logger logger = LoggerFactory.getLogger(LimitValidator.class);
 
@@ -24,28 +37,52 @@ public class LimitValidator implements Validator {
     public void validate(Object o, Errors errors) {
         Limit limit = (Limit) o;
 
-        if (limit.getType() == null ||
-                (!"category".equalsIgnoreCase(limit.getType()) && !"product".equalsIgnoreCase(limit.getType()))) {
-            logger.debug("Validation.limit.type");
-            errors.rejectValue("type", "Validation.limit.type");
+        if (limit.getType() == null)
+            setError("type", "Validation.limit.type", errors);
+        else {
+            JsonResponse response = new JsonResponse();
+            if ("category".equalsIgnoreCase(limit.getType())) {
+                try {
+                    response = categoryService.getById(limit.getEntityId());
+                } finally {
+                    if (response.getEntity() == null)
+                        setError("entityId", "Validation.limit.entityId", errors);
+                }
+            } else if ("product".equalsIgnoreCase(limit.getType())) {
+                try {
+                    response = productService.getById(limit.getEntityId());
+                } finally {
+                    if (response.getEntity() == null)
+                        setError("entityId", "Validation.limit.entityId", errors);
+                }
+            }
         }
 
-        if (limit.getEntityId() == null ||
-                (limit.getEntityId() != null && limit.getEntityId() <= 0)) {
-            logger.debug("Validation.limit.entityId");
-            errors.rejectValue("entityId", "Validation.limit.entityId");
+        if (limit.getSum() == null)
+            setError("sum", "Validation.limit.sum", errors);
+        else if (limit.getSum().compareTo(new BigDecimal("0")) < 0)
+            setError("sum", "Validation.limit.sum", errors);
+
+        if (limit.getPeriod() == null)
+            setError("period", "Validation.limit.period", errors);
+        else if (limit.getPeriod() < 0 || limit.getPeriod() > 2){
+            setError("period", "Validation.limit.period", errors);
         }
 
-        if (limit.getSum() == null ||
-                (limit.getSum() != null && limit.getSum().compareTo(new BigDecimal("0")) < 0)) {
-            logger.debug("Validation.limit.sum");
-            errors.rejectValue("entityId", "Validation.limit.sum");
-        }
+        //проверка на дубликат по полям period и categoryId/productId
+        Limit duplicate = null;
+        if (limit.getCategoryId() != null)
+            duplicate = limitService.getByPeriodAndEntity(limit.getPeriod(), limit.getCategoryId());
+        else if (limit.getProductId() != null)
+            duplicate = limitService.getByPeriodAndEntity(limit.getPeriod(), limit.getProductId());
 
-        if (limit.getPeriod() == null ||
-                (limit.getPeriod() != null && (limit.getPeriod() < 0 || limit.getPeriod() > 2))){
-            logger.debug("Validation.limit.period");
-            errors.rejectValue("entityId", "Validation.limit.period");
-        }
+        if (duplicate != null && duplicate.getId() != limit.getId())
+            setError("entityId", "Validation.limit.duplicate", errors);
+
+    }
+
+    private void setError(String elem, String message, Errors errors) {
+        logger.debug(message);
+        errors.rejectValue(elem, message);
     }
 }

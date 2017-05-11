@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -18,6 +19,8 @@ public class Category {
     private String details;
     private Byte type;
     private User userId;
+    private Set<Amount> amounts = new HashSet<Amount>();
+    private List<Limit> limits;
 
     public Category() {
     }
@@ -81,7 +84,6 @@ public class Category {
         this.type = type;
     }
 
-    private Set<Amount> amounts = new HashSet<Amount>();
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "categoryId", cascade = CascadeType.REMOVE, orphanRemoval = false)
     @JsonBackReference
     public Set<Amount> getAmounts() {
@@ -110,6 +112,16 @@ public class Category {
 
     public void setUserId(User userId) {
         this.userId = userId;
+    }
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "categoryId", cascade = CascadeType.REMOVE, orphanRemoval = false)
+    @JsonBackReference
+    public List<Limit> getLimits() {
+        return limits;
+    }
+
+    public void setLimits(List<Limit> limits) {
+        this.limits = limits;
     }
 
     @Override

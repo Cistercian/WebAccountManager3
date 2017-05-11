@@ -24,6 +24,8 @@ public class Amount {
     private User userId;
     private Product productId;
 
+    private Limit limit;
+
     @Id
     @Column(name = "ID", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -114,6 +116,17 @@ public class Amount {
         //convert amounts.date to LocalDate
         Date date = new Date(this.date.getTime());
         return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    }
+
+    @ManyToOne()
+    @JsonBackReference
+    @Transient
+    public Limit getLimit() {
+        return limit;
+    }
+
+    public void setLimit(Limit limit) {
+        this.limit = limit;
     }
 
     @Override

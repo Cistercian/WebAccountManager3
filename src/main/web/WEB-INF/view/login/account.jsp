@@ -27,32 +27,6 @@
         if ($('#response').val() != '') {
             displayMessage('info', $('#response').val());
         }
-
-        var table = $('#limits').DataTable({
-            responsive: true,
-            language: {
-                "processing": "Подождите...",
-                "search": "Поиск:",
-                "lengthMenu": "Показать _MENU_ записей",
-                "info": "Записи с _START_ до _END_ (Всего записей: _TOTAL_).",
-                "infoEmpty": "Записи с 0 до 0 из 0 записей",
-                "infoFiltered": "(отфильтровано из _MAX_ записей)",
-                "infoPostFix": "",
-                "loadingRecords": "Загрузка записей...",
-                "zeroRecords": "Записи отсутствуют.",
-                "emptyTable": "В таблице отсутствуют данные",
-                "paginate": {
-                    "first": "Первая",
-                    "previous": "Предыдущая",
-                    "next": "Следующая",
-                    "last": "Последняя"
-                },
-                "aria": {
-                    "sortAscending": ": активировать для сортировки столбца по возрастанию",
-                    "sortDescending": ": активировать для сортировки столбца по убыванию"
-                }
-            }
-        });
     })
     /**
      * Функция прорисовки модального окна bootstrap
@@ -95,45 +69,6 @@
         }
         $('#modal').modal('show');
     }
-    function getLimitWindow(id){
-        $.ajax({
-            type: "GET",
-            url: '/account/notification',
-            data: {'id' : id},
-            beforeSend: function(){
-                displayLoader();
-            },
-            success: function (data) {
-                hideLoader();
-                var message = data;
-                var type = '';
-
-                displayMessage(type, message, "/index");
-            }
-        });
-    }
-    function sendLimitSubmit(){
-        $.ajax({
-            type: "POST",
-            url: '/account/notification',
-            data: $("#limitForm").serialize(),
-            beforeSend: function(){
-                //displayLoader();
-            },
-            success: function (data) {
-                hideLoader();
-                var message = data.message;
-                var type = data.type;
-
-                if (type == 'ERROR')
-                    waitingDialog.show(message, {dialogSize: 'm', progressType: 'warning'}, 'error');
-                else
-                    location.reload();
-
-            }
-        });
-    }
-
 </script>
 <!-- Modal Panel -->
 <div id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modallabel" aria-hidden="true">
@@ -207,58 +142,7 @@
                 </div>
             </form:form>
         </div>
-        <div class="container-fluid">
-            <div class="col-xs-12 col-md-12">
-                <h4><strong><spring:message code="label.account.limit.title"/></strong></h4>
-            </div>
-            <div class="col-xs-12 col-md-4 ">
-                <button class="btn btn-lg btn-primary btn-block wam-btn-2" type="submit"
-                        onclick="getLimitWindow();return false;">
-                    <spring:message code="label.account.limit.create"/>
-                </button>
-            </div>
-            <div class="panel-body">
-                <table id="limits" class="table table-striped table-bordered table-text" cellspacing="0" width="100%">
-                    <thead>
-                    <tr>
-                        <th style="display : none;">id</th>
-                        <th>type</th>
-                        <th>name</th>
-                        <th>sum</th>
-                        <th>period</th>
-                        <th>Edit</th>
-                        <th>Delete</th>
-                    </tr>
-                    </thead>
-                    <tbody>
 
-                    <c:forEach items="${limits}" var="limits">
-                        <tr>
-                            <td style="display : none;">${limits.getId()}</td>
-                            <td style="white-space: nowrap;">${limits.getType()}</td>
-                            <td>${limits.getEntityName()}</td>
-                            <td>${limits.getSum()}</td>
-                            <td>${limits.getPeriod()}</td>
-                            <td><p data-placement="top" data-toggle="tooltip" title="Edit">
-                                <button class="btn btn-primary btn-xs" data-title="Edit"
-                                        onclick="getLimitWindow(${limits.getId()});" >
-                                    <span class="glyphicon glyphicon-pencil"></span>
-                                </button>
-                            </p>
-                            </td>
-                            <td><p data-placement="top" data-toggle="tooltip" title="Delete">
-                                <button class="btn btn-danger btn-xs" data-title="Delete"
-                                        onclick="Delete('Limit', ${limits.getId()})">
-                                    <span class="glyphicon glyphicon-trash"></span>
-                                </button>
-                            </p>
-                            </td>
-                        </tr>
-                    </c:forEach>
-                    </tbody>
-                </table>
-            </div>
-        </div>
     </div>
 </div>
 
