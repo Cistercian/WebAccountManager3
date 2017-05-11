@@ -59,20 +59,20 @@
         </div>
     </div>
 </div>
-<div class="content container-fluid wam-radius">
+<div class="content container-fluid wam-radius wam-min-height-0">
     <div class='row'>
         <input id="_csrf_token" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         <textarea id="response" name="response" style="display: none;">${response}</textarea>
         <div id=limits class="container-fluid col-sm-12 wow fadeInDown"
              data-wow-duration="1000ms" data-wow-delay="300ms">
-            <div class="col-xs-12 col-md-12">
+            <div class="col-xs-12 col-md-12 wam-min-height-4">
                 <c:set var="styles" value="${['success', 'info', 'warning', 'danger']}" scope="page" />
                 <div id="barsDaily">
                     <c:set var="hasData" value="false" scope="page"/>
+                    <h3><spring:message code="label.limit.daily.title"/></h3>
                     <c:forEach items="${limitsDaily}" var="list">
                         <c:if test="${hasData == 'false'}">
                             <c:set var="hasData" value="true" scope="page"/>
-                            <h3><spring:message code="label.limit.daily.title"/></h3>
                         </c:if>
 
                         <c:set var="id" value="${list.getId()}"/>
@@ -118,13 +118,13 @@
                     </c:if>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-12">
+            <div class="col-xs-12 col-md-12 wam-min-height-4">
                 <div id="barsWeekly">
                     <c:set var="hasData" value="false" scope="page"/>
+                    <h3><spring:message code="label.limit.weekly.title"/></h3>
                     <c:forEach items="${limitsWeekly}" var="list">
                         <c:if test="${hasData == 'false'}">
                             <c:set var="hasData" value="true" scope="page"/>
-                            <h3><spring:message code="label.limit.weekly.title"/></h3>
                         </c:if>
 
                         <c:set var="id" value="${list.getId()}"/>
@@ -170,13 +170,13 @@
                     </c:if>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-12">
+            <div class="col-xs-12 col-md-12 wam-min-height-4">
                 <div id="barsMonthly">
                     <c:set var="hasData" value="false" scope="page"/>
+                    <h3><spring:message code="label.limit.monthly.title"/></h3>
                     <c:forEach items="${limitsMonthly}" var="list">
                         <c:if test="${hasData == 'false'}">
                             <c:set var="hasData" value="true" scope="page"/>
-                            <h3><spring:message code="label.limit.monthly.title"/></h3>
                         </c:if>
 
                         <c:set var="id" value="${list.getId()}"/>

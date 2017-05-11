@@ -10,13 +10,6 @@
 
 <jsp:include page="/WEB-INF/view/tags/header-template.jsp"></jsp:include>
 
-<spring:url value="/resources/js/dataTables.bootstrap.min.js" var="js"/>
-<script src="${js}"></script>
-<spring:url value="/resources/js/jquery.dataTables.min.js" var="js"/>
-<script src="${js}"></script>
-
-<spring:message code="label.account.limit.submit.ok" var="btnlimitLabelOk"/>
-<spring:message code="label.account.limit.submit.cancel" var="btnlimitLabelCancel"/>
 <script language="javascript" type="text/javascript">
     $(document).ready(function () {
         $.ajaxSetup({
@@ -92,7 +85,7 @@
     <!-- /.modal-dialog -->
 </div>
 
-<div class="container-fluid content wam-radius">
+<div class="container-fluid content wam-radius wam-min-height-0">
     <div class='row'>
         <input id="_csrf_token" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         <textarea id="response" name="response" style="display: none;">${response}</textarea>

@@ -56,6 +56,9 @@
 .wam-hidden{
 	display: none;
 }
+.wam-min-height-4{
+	min-height: 150px;
+}
 
 /*FullCalendar
 */
@@ -142,6 +145,21 @@ div.dataTables_filter {
 
 	.wam-margin-left-3 {
 		margin-left: 30px;
+	}
+	.wam-min-height-0{
+		min-height: 800px;
+	}
+	.wam-min-height-1{
+		min-height: 500px;
+	}
+	.wam-min-height-2{
+		min-height: 400px;
+	}
+	.wam-min-height-3{
+		min-height: 300px;
+	}
+	.wam-min-height-4{
+		min-height: 250px;
 	}
 }
 /*Стиль для слайдера фотографий
