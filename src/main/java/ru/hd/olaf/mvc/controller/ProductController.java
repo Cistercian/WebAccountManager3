@@ -15,15 +15,12 @@ import ru.hd.olaf.mvc.service.AmountService;
 import ru.hd.olaf.mvc.service.ProductService;
 import ru.hd.olaf.mvc.service.SecurityService;
 import ru.hd.olaf.util.LogUtil;
-import ru.hd.olaf.util.ParseUtil;
+import ru.hd.olaf.util.DateUtil;
 import ru.hd.olaf.util.json.JsonResponse;
 import ru.hd.olaf.util.json.ResponseType;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-
-import static ru.hd.olaf.util.DatePeriod.getAfterDate;
 
 /**
  * Created by d.v.hozyashev on 21.04.2017.
@@ -46,8 +43,8 @@ public class ProductController {
                                            @RequestParam(value = "before") String endDate) {
         logger.debug(LogUtil.getMethodName());
 
-        LocalDate after = ParseUtil.getParsedDate(beginDate);
-        LocalDate before = ParseUtil.getParsedDate(endDate);
+        LocalDate after = DateUtil.getParsedDate(beginDate);
+        LocalDate before = DateUtil.getParsedDate(endDate);
 
         ModelAndView modelAndView = new ModelAndView("/data/page-product");
 

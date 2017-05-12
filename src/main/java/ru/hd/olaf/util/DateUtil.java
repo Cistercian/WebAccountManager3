@@ -2,17 +2,18 @@ package ru.hd.olaf.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.hd.olaf.mvc.controller.IndexController;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 /**
  * Created by Olaf on 30.04.2017.
  */
-public class ParseUtil {
+public class DateUtil {
 
-    private static final Logger logger = LoggerFactory.getLogger(ParseUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(DateUtil.class);
 
     public static LocalDate getParsedDate(String string){
         logger.debug(LogUtil.getMethodName());
@@ -28,5 +29,15 @@ public class ParseUtil {
 
         logger.debug(String.format("Исходная строка до преобразования: %s, после: %s", string, date.toString()));
         return date;
+    }
+
+    public static String getFormattedDate(LocalDate date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+
+        return date.format(formatter);
+    }
+
+    public static Date getDate(LocalDate date){
+        return Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
 }

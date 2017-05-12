@@ -77,7 +77,7 @@
 
                         <c:set var="id" value="${list.getId()}"/>
                         <c:set var="name" value="${list.getName()}"/>
-
+                        <c:set var="type" value="${list.getType()}"/>
                         <c:set var="sum" value="${list.getSum()}"/>
                         <c:set var="limit" value="${list.getLimit()}"/>
                         <c:choose>
@@ -92,25 +92,39 @@
                         </c:choose>
 
                         <li class="list-unstyled">
-                            <a href="javascript:drawBarsByParentId(false, '${id}', '${afterMonth}', '${curDate}')">
-                                <div>
-                                    <h4><strong id="categoryBarName${id}" value="${name}">
-                                            ${name}
-                                    </strong>
+                            <c:choose>
+                            <c:when test="${type == 'category'}">
+                            <a href="javascript:drawBarsByParentId(false, '${id}', '${dateDaily}', '${curDate}')">
+                                </c:when>
+                                <c:otherwise>
+                                <a href="/page-product/${id}?after=${dateDaily}&before=${curDate}">
+                                    </c:otherwise>
+                                    </c:choose>
+                                    <div>
+                                        <h4><strong id="categoryBarName${id}" value="${name}">
+                                            <c:choose>
+                                                <c:when test="${type == 'category'}">
+                                                    Категория ${name}
+                                                </c:when>
+                                                <c:otherwise>
+                                                    Товарная группа ${name}
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </strong>
 										<span id="categoryBarSum${id}" class="pull-right text-muted"
                                               value="${sum}">
 												${sum} (из ${limit}) руб.
 										</span>
-                                    </h4>
-                                    <div class="progress progress-striped active">
-                                        <div class="progress-bar progress-bar-${styles[step]}" role="progressbar"
-                                             aria-valuenow="${sum}" aria-valuemin="0" aria-valuemax="100"
-                                             style="width: ${normalSum}%" value="${name}">
-                                            <span class="sr-only">${sum}</span>
+                                        </h4>
+                                        <div class="progress progress-striped active">
+                                            <div class="progress-bar progress-bar-${styles[step]}" role="progressbar"
+                                                 aria-valuenow="${sum}" aria-valuemin="0" aria-valuemax="100"
+                                                 style="width: ${normalSum}%" value="${name}">
+                                                <span class="sr-only">${sum}</span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </a>
+                                </a>
                         </li>
                     </c:forEach>
                     <c:if test="${hasData == 'false'}">
@@ -118,7 +132,7 @@
                     </c:if>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-12 wam-min-height-4">
+            <div class="col-xs-12 col-md-12 wam-min-height-4 wam-margin-top-3">
                 <div id="barsWeekly">
                     <c:set var="hasData" value="false" scope="page"/>
                     <h3><spring:message code="label.limit.weekly.title"/></h3>
@@ -128,6 +142,7 @@
                         </c:if>
 
                         <c:set var="id" value="${list.getId()}"/>
+                        <c:set var="type" value="${list.getType()}"/>
                         <c:set var="name" value="${list.getName()}"/>
 
                         <c:set var="sum" value="${list.getSum()}"/>
@@ -144,25 +159,39 @@
                         </c:choose>
 
                         <li class="list-unstyled">
-                            <a href="javascript:drawBarsByParentId(false, '${id}', '${afterMonth}', '${curDate}')">
-                                <div>
-                                    <h4><strong id="categoryBarName${id}" value="${name}">
-                                            ${name}
-                                    </strong>
+                            <c:choose>
+                            <c:when test="${type == 'category'}">
+                            <a href="javascript:drawBarsByParentId(false, '${id}', '${dateWeekly}', '${curDate}')">
+                                </c:when>
+                                <c:otherwise>
+                                <a href="/page-product/${id}?after=${dateWeekly}&before=${curDate}">
+                                    </c:otherwise>
+                                    </c:choose>
+                                    <div>
+                                        <h4><strong id="categoryBarName${id}" value="${name}">
+                                            <c:choose>
+                                                <c:when test="${type == 'category'}">
+                                                    Категория ${name}
+                                                </c:when>
+                                                <c:otherwise>
+                                                    Товарная группа ${name}
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </strong>
 										<span id="categoryBarSum${id}" class="pull-right text-muted"
                                               value="${sum}">
 												${sum} (из ${limit}) руб.
 										</span>
-                                    </h4>
-                                    <div class="progress progress-striped active">
-                                        <div class="progress-bar progress-bar-${styles[step]}" role="progressbar"
-                                             aria-valuenow="${sum}" aria-valuemin="0" aria-valuemax="100"
-                                             style="width: ${normalSum}%" value="${name}">
-                                            <span class="sr-only">${sum}</span>
+                                        </h4>
+                                        <div class="progress progress-striped active">
+                                            <div class="progress-bar progress-bar-${styles[step]}" role="progressbar"
+                                                 aria-valuenow="${sum}" aria-valuemin="0" aria-valuemax="100"
+                                                 style="width: ${normalSum}%" value="${name}">
+                                                <span class="sr-only">${sum}</span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </a>
+                                </a>
                         </li>
                     </c:forEach>
                     <c:if test="${hasData == 'false'}">
@@ -170,7 +199,7 @@
                     </c:if>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-12 wam-min-height-4">
+            <div class="col-xs-12 col-md-12 wam-min-height-4 wam-margin-top-3">
                 <div id="barsMonthly">
                     <c:set var="hasData" value="false" scope="page"/>
                     <h3><spring:message code="label.limit.monthly.title"/></h3>
@@ -181,7 +210,7 @@
 
                         <c:set var="id" value="${list.getId()}"/>
                         <c:set var="name" value="${list.getName()}"/>
-
+                        <c:set var="type" value="${list.getType()}"/>
                         <c:set var="sum" value="${list.getSum()}"/>
                         <c:set var="limit" value="${list.getLimit()}"/>
                         <c:choose>
@@ -196,25 +225,39 @@
                         </c:choose>
 
                         <li class="list-unstyled">
-                            <a href="javascript:drawBarsByParentId(false, '${id}', '${afterMonth}', '${curDate}')">
-                                <div>
-                                    <h4><strong id="categoryBarName${id}" value="${name}">
-                                            ${name}
-                                    </strong>
+                            <c:choose>
+                            <c:when test="${type == 'category'}">
+                            <a href="javascript:drawBarsByParentId(false, '${id}', '${dateMonthly}', '${curDate}')">
+                                </c:when>
+                                <c:otherwise>
+                                <a href="/page-product/${id}?after=${dateMonthly}&before=${curDate}">
+                                    </c:otherwise>
+                                    </c:choose>
+                                    <div>
+                                        <h4><strong id="categoryBarName${id}" value="${name}">
+                                            <c:choose>
+                                                <c:when test="${type == 'category'}">
+                                                    Категория ${name}
+                                                </c:when>
+                                                <c:otherwise>
+                                                    Товарная группа ${name}
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </strong>
 										<span id="categoryBarSum${id}" class="pull-right text-muted"
                                               value="${sum}">
 												${sum} (из ${limit}) руб.
 										</span>
-                                    </h4>
-                                    <div class="progress progress-striped active">
-                                        <div class="progress-bar progress-bar-${styles[step]}" role="progressbar"
-                                             aria-valuenow="${sum}" aria-valuemin="0" aria-valuemax="100"
-                                             style="width: ${normalSum}%" value="${name}">
-                                            <span class="sr-only">${sum}</span>
+                                        </h4>
+                                        <div class="progress progress-striped active">
+                                            <div class="progress-bar progress-bar-${styles[step]}" role="progressbar"
+                                                 aria-valuenow="${sum}" aria-valuemin="0" aria-valuemax="100"
+                                                 style="width: ${normalSum}%" value="${name}">
+                                                <span class="sr-only">${sum}</span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </a>
+                                </a>
                         </li>
                     </c:forEach>
                     <c:if test="${hasData == 'false'}">

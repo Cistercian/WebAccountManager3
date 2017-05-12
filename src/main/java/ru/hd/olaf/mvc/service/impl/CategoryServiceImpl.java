@@ -4,9 +4,11 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.stereotype.Service;
 import ru.hd.olaf.entities.Amount;
 import ru.hd.olaf.entities.Category;
+import ru.hd.olaf.entities.User;
 import ru.hd.olaf.exception.AuthException;
 import ru.hd.olaf.exception.CrudException;
 import ru.hd.olaf.mvc.repository.CategoryRepository;
@@ -14,6 +16,7 @@ import ru.hd.olaf.mvc.service.AmountService;
 import ru.hd.olaf.mvc.service.CategoryService;
 import ru.hd.olaf.mvc.service.SecurityService;
 import ru.hd.olaf.mvc.service.UtilService;
+import ru.hd.olaf.util.DateUtil;
 import ru.hd.olaf.util.LogUtil;
 import ru.hd.olaf.util.json.ResponseType;
 import ru.hd.olaf.util.json.BarEntity;
@@ -42,6 +45,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     /**
      * Функция возвращает список category  с проверкой на текущего пользователя
+     *
      * @return
      */
     public List<Category> getAll() {
@@ -52,6 +56,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     /**
      * Функция возвращает список Category по текущему пользователю
+     *
      * @return
      */
     public List<Category> getAllByCurrentUser() {
@@ -62,8 +67,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     /**
      * Функция возвращает коллекцию служебного класса BarEntity, элемент которой - дочерняя категория, указанной родительской
-     с итоговой по ней суммой за заданный период с исключением нулевых сумм.
-
+     * с итоговой по ней суммой за заданный период с исключением нулевых сумм.
+     *
      * @param parent
      * @param after
      * @param before
@@ -71,10 +76,24 @@ public class CategoryServiceImpl implements CategoryService {
      */
     public List<BarEntity> getBarEntityOfSubCategories(Category parent, LocalDate after, LocalDate before) {
         logger.debug(LogUtil.getMethodName());
-        logger.debug(String.format("Dates: after: %s, before %s", after.toString(), before.toString()));
+        logger.debug(String.format("Dates: after: %s, before %s", after, before));
 
-        List<Category> categories = getByParentId(parent);
+        User user = securityService.findLoggedUser();
         List<BarEntity> parents = new ArrayList<BarEntity>();
+
+        if (parent != null)
+            parents = categoryRepository.getBarEntityByUserIdAndSubCategory(user,
+                    parent,
+                    DateUtil.getDate(after),
+                    DateUtil.getDate(before));
+        else
+            parents = categoryRepository.getBarEntityOfParentsByUserId(user,
+                    DateUtil.getDate(after),
+                    DateUtil.getDate(before));
+
+        /*
+        List<Category> categories = getByParentId(parent);
+
 
         for (Category category : categories) {
             BigDecimal sum = getSumCategory(category, after, before);
@@ -86,11 +105,13 @@ public class CategoryServiceImpl implements CategoryService {
                 parents.add(barEntity);
             }
         }
+        */
         return parents;
     }
 
     /**
      * Функция получения итоговой суммы по категории с учетом вложенных (дочерних) категорий
+     *
      * @param category
      * @param after
      * @param before
@@ -109,7 +130,7 @@ public class CategoryServiceImpl implements CategoryService {
             }
         }
         //учитываем дочерние категории
-        for (Category children : getByParentId(category)){
+        for (Category children : getByParentId(category)) {
 
             sum = sum.add(getSumCategory(children, after, before));
 
@@ -119,6 +140,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     /**
      * Функция возвращает список дочерних категорий
+     *
      * @param parentId
      * @return
      */
@@ -132,10 +154,11 @@ public class CategoryServiceImpl implements CategoryService {
 
     /**
      * Функция возвращения записи category с проверкой на текущего пользователя
+     *
      * @param id
      * @return
      */
-    public Category getOne(Integer id) throws AuthException, IllegalArgumentException{
+    public Category getOne(Integer id) throws AuthException, IllegalArgumentException {
         logger.debug(LogUtil.getMethodName());
         if (id == null) {
             logger.debug("Переданный id = null.");
@@ -159,6 +182,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     /**
      * Функция возвращает объект JsonResponse, содержащий результат поиска объекта и, при возможности, сам объект
+     *
      * @param id id записи
      * @return JsonResponse
      */
@@ -169,10 +193,11 @@ public class CategoryServiceImpl implements CategoryService {
 
     /**
      * Функция создания/обновления записи
+     *
      * @param category
      * @return
      */
-    public Category save(Category category) throws CrudException{
+    public Category save(Category category) throws CrudException {
         logger.debug(LogUtil.getMethodName());
 
         Category entity;
@@ -188,10 +213,11 @@ public class CategoryServiceImpl implements CategoryService {
 
     /**
      * Функция удаления записи Category
+     *
      * @param category
      * @return
      */
-    public JsonResponse delete(Category category) throws CrudException{
+    public JsonResponse delete(Category category) throws CrudException {
         logger.debug(LogUtil.getMethodName());
 
         //Проверка существуют ли записи amount с данной категорией

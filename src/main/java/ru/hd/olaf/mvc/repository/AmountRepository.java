@@ -7,6 +7,7 @@ import ru.hd.olaf.entities.Amount;
 import ru.hd.olaf.entities.Category;
 import ru.hd.olaf.entities.Product;
 import ru.hd.olaf.entities.User;
+import ru.hd.olaf.util.json.BarEntity;
 
 import java.util.Date;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.List;
  */
 public interface AmountRepository extends CrudRepository<Amount, Integer> {
     List<Amount> findByCategoryIdAndUserId(Category category, User user);
+
     List<Amount> findByCategoryIdAndProductIdAndUserId(Category category, Product product, User user);
 
     List<Amount> findByUserId(User user);
@@ -25,4 +27,15 @@ public interface AmountRepository extends CrudRepository<Amount, Integer> {
 
     @Query("Select a from Amount a where a.productId = ?1 and a.userId = ?2 and a.date between ?3 and ?4")
     List<Amount> findByProductIdAndUserIdAndDateBetween(Product product, User user, Date after, Date before);
+
+
+    @Query("SELECT new ru.hd.olaf.util.json.BarEntity('Product', p.id, SUM(a.price), p.name) " +
+            "FROM Amount a LEFT JOIN a.productId p WHERE " +
+            "a.productId = p AND a.userId = ?1 AND a.categoryId = ?2 AND " +
+            "a.date BETWEEN ?3 AND ?4 " +
+            "GROUP BY p.id HAVING COUNT(p.id) > 0")
+    List<BarEntity> getBarEntityByUserIdAndCategoryIdAndDateGroupByProductId(User user,
+                                                                             Category category,
+                                                                             Date after,
+                                                                             Date before);
 }

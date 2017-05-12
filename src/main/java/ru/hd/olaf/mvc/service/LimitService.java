@@ -19,7 +19,7 @@ public interface LimitService {
     Limit getByPeriodAndEntity(Byte period, Object entity);
 
     List<Limit> getAll();
-    List<BarEntity> getLimit(Byte period);
+    List<BarEntity> getLimit(Byte period, LocalDate after, LocalDate before);
 
     Limit save(Limit limit) throws CrudException;
     JsonResponse delete(Limit limit) throws CrudException;

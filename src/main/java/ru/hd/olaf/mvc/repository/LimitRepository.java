@@ -20,7 +20,7 @@ public interface LimitRepository extends JpaRepository<Limit, Integer> {
     Limit findByUserIdAndPeriodAndCategoryId(User user, Byte period, Category categoryId);
     Limit findByUserIdAndPeriodAndProductId(User user, Byte period, Product productId);
 
-    @Query("SELECT new ru.hd.olaf.util.json.BarEntity(l.type, l.id, SUM(a.price), l.entityName, l.sum) " +
+    @Query("SELECT new ru.hd.olaf.util.json.BarEntity(l.type, p.id, SUM(a.price), l.entityName, l.sum) " +
             "FROM Limit l " +
             "LEFT JOIN l.productId p " +
             "LEFT JOIN p.amounts a " +
@@ -31,11 +31,12 @@ public interface LimitRepository extends JpaRepository<Limit, Integer> {
             "HAVING l.sum > 0 ")
     List<BarEntity> findLimitAndSumAmountsByProduct(User user, Byte period, Date after, Date before);
 
-    @Query("SELECT new ru.hd.olaf.util.json.BarEntity(l.type, l.id, SUM(a.price), l.entityName, l.sum) " +
+    @Query("SELECT new ru.hd.olaf.util.json.BarEntity(l.type, c.id, SUM(a.price), l.entityName, l.sum) " +
             "FROM Limit l " +
             "LEFT JOIN l.categoryId c " +
             "LEFT JOIN c.amounts a " +
             "WHERE  a.categoryId = c AND " +
+            "l.categoryId = c AND " +
             "l.type = 'category' AND " +
             "l.userId = ?1 AND l.period = ?2 and a.date BETWEEN ?3 AND ?4 " +
             "GROUP BY l.id " +

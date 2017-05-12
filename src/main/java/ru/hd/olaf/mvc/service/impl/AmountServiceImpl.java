@@ -17,6 +17,7 @@ import ru.hd.olaf.mvc.service.AmountService;
 import ru.hd.olaf.mvc.service.ProductService;
 import ru.hd.olaf.mvc.service.SecurityService;
 import ru.hd.olaf.mvc.service.UtilService;
+import ru.hd.olaf.util.DateUtil;
 import ru.hd.olaf.util.LogUtil;
 import ru.hd.olaf.util.json.ResponseType;
 import ru.hd.olaf.util.json.BarEntity;
@@ -82,13 +83,13 @@ public class AmountServiceImpl implements AmountService {
     public List<Amount> getByProductAndDate(Product product, LocalDate after, LocalDate before) {
         logger.debug(LogUtil.getMethodName());
 
-        after = after == null ? LocalDate.of(1900,1,1) : after;
+        after = after == null ? LocalDate.of(1900, 1, 1) : after;
         before = before == null ? LocalDate.now() : before;
 
         logger.debug(String.format("Dates interval: %s - %s", after.toString(), before.toString()));
 
-        Date begin = Date.from(after.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        Date end = Date.from(before.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date begin = DateUtil.getDate(after);
+        Date end = DateUtil.getDate(before);
 
         List<Amount> amounts = Lists.newArrayList(amountRepository.findByProductIdAndUserIdAndDateBetween(
                 product,
@@ -124,6 +125,14 @@ public class AmountServiceImpl implements AmountService {
         logger.debug(LogUtil.getMethodName());
         List<BarEntity> barEntities = new ArrayList<BarEntity>();
 
+        User user = securityService.findLoggedUser();
+
+        barEntities = amountRepository.getBarEntityByUserIdAndCategoryIdAndDateGroupByProductId(user,
+                category,
+                DateUtil.getDate(after),
+                DateUtil.getDate(before));
+
+        /*
         List<Product> products = productService.getAll();
         for (Product product : products) {
 
@@ -142,6 +151,7 @@ public class AmountServiceImpl implements AmountService {
                 barEntities.add(barEntity);
             }
         }
+        */
 
         return barEntities;
     }

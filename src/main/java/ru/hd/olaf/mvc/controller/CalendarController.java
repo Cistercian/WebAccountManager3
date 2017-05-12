@@ -1,6 +1,5 @@
 package ru.hd.olaf.mvc.controller;
 
-import org.joda.time.Days;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,7 @@ import ru.hd.olaf.entities.User;
 import ru.hd.olaf.mvc.service.AmountService;
 import ru.hd.olaf.mvc.service.SecurityService;
 import ru.hd.olaf.util.LogUtil;
-import ru.hd.olaf.util.ParseUtil;
+import ru.hd.olaf.util.DateUtil;
 import ru.hd.olaf.util.json.CalendarEntity;
 
 import java.math.BigDecimal;
@@ -57,8 +56,8 @@ public class CalendarController {
 
         User user = securityService.findLoggedUser();
 
-        LocalDate after = ParseUtil.getParsedDate(startDate);
-        LocalDate before = ParseUtil.getParsedDate(endDate);
+        LocalDate after = DateUtil.getParsedDate(startDate);
+        LocalDate before = DateUtil.getParsedDate(endDate);
 
         long countOfDays = after.until(before, ChronoUnit.DAYS);
 
@@ -102,8 +101,8 @@ public class CalendarController {
 
         ModelAndView modelAndView = new ModelAndView("/data/page-product");
         User user = securityService.findLoggedUser();
-        LocalDate after = ParseUtil.getParsedDate(startDate);
-        LocalDate before = ParseUtil.getParsedDate(endDate);
+        LocalDate after = DateUtil.getParsedDate(startDate);
+        LocalDate before = DateUtil.getParsedDate(endDate);
 
         List<Amount> amounts = amountService.getByDate(user, after, before);
 

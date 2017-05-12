@@ -12,7 +12,7 @@ import ru.hd.olaf.mvc.service.AmountService;
 import ru.hd.olaf.mvc.service.CategoryService;
 import ru.hd.olaf.mvc.service.SecurityService;
 import ru.hd.olaf.util.LogUtil;
-import ru.hd.olaf.util.ParseUtil;
+import ru.hd.olaf.util.DateUtil;
 import ru.hd.olaf.util.json.BarEntity;
 import ru.hd.olaf.util.json.JsonResponse;
 import ru.hd.olaf.util.json.ResponseType;
@@ -20,7 +20,6 @@ import ru.hd.olaf.util.json.ResponseType;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 
@@ -55,8 +54,6 @@ public class IndexController {
 
         ModelAndView modelAndView = new ModelAndView("index");
 
-        //предуставки даты для выбора отчетного периода
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         //текущая дата
         LocalDate curDate = LocalDate.now();
         //дата начала текущей недели
@@ -66,14 +63,15 @@ public class IndexController {
         //дата начала периода "за все время"
         LocalDate allTimeDate = LocalDate.of(1900,1,1);
 
-        modelAndView.addObject("curDate", curDate.format(formatter));
-        modelAndView.addObject("afterWeek", weekDate.format(formatter));
-        modelAndView.addObject("afterMonth", monthDate.format(formatter));
-        modelAndView.addObject("afterAllTime", allTimeDate.format(formatter));
+        modelAndView.addObject("curDate", DateUtil.getFormattedDate(curDate));
+        modelAndView.addObject("afterWeek", DateUtil.getFormattedDate(weekDate));
+        modelAndView.addObject("afterMonth", DateUtil.getFormattedDate(monthDate));
+        modelAndView.addObject("afterAllTime", DateUtil.getFormattedDate(allTimeDate));
 
         List<BarEntity> parentsCategories = new ArrayList<BarEntity>();
 
-        parentsCategories.addAll(getCategoriesByDate(monthDate.format(formatter), curDate.format(formatter)));
+        parentsCategories.addAll(getCategoriesByDate(DateUtil.getFormattedDate(monthDate),
+                DateUtil.getFormattedDate(curDate)));
 
         logger.debug(String.format("data for injecting:"));
         LogUtil.logList(logger, parentsCategories);
@@ -122,8 +120,8 @@ public class IndexController {
                                         @RequestParam(value = "before") String endDate) {
         logger.debug(LogUtil.getMethodName());
 
-        LocalDate after = ParseUtil.getParsedDate(beginDate);
-        LocalDate before = ParseUtil.getParsedDate(endDate);
+        LocalDate after = DateUtil.getParsedDate(beginDate);
+        LocalDate before = DateUtil.getParsedDate(endDate);
 
         List<BarEntity> parentsCategories = categoryService.getBarEntityOfSubCategories(null,
                 after.minusDays(1),
@@ -165,8 +163,8 @@ public class IndexController {
             return null;
         }
 
-        LocalDate after = ParseUtil.getParsedDate(beginDate);
-        LocalDate before = ParseUtil.getParsedDate(endDate);
+        LocalDate after = DateUtil.getParsedDate(beginDate);
+        LocalDate before = DateUtil.getParsedDate(endDate);
 
         //данные по дочерним категориям
         categoryContent.addAll(categoryService.getBarEntityOfSubCategories(category, after.minusDays(1),

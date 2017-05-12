@@ -22,7 +22,6 @@ import ru.hd.olaf.util.json.ResponseType;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.temporal.TemporalAdjusters;
 import java.util.Date;
 import java.util.List;
 
@@ -93,31 +92,15 @@ public class LimitServiceImpl implements LimitService {
         }
     }
 
-    public List<BarEntity> getLimit(Byte period) {
+    public List<BarEntity> getLimit(Byte period, LocalDate after, LocalDate before) {
         logger.debug(LogUtil.getMethodName());
 
         User user = securityService.findLoggedUser();
 
-        //вычисляем период
-        //текущая дата
-        LocalDate curDate = LocalDate.now();
-        LocalDate begDate = null;
-        //начальная дата периода:
-        switch (period){
-            case 0:
-                begDate = curDate;
-                break;
-            case 1:
-                begDate = LocalDate.now().minusDays(LocalDate.now().getDayOfWeek().ordinal());
-                break;
-            default:
-                begDate = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
-                break;
-        }
-        logger.debug(String.format("Интервал: %s - %s", begDate, curDate));
+        Date begin = Date.from(after.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date end = Date.from(before.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
-        Date begin = Date.from(begDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        Date end = Date.from(curDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        logger.debug(String.format("Интервал: %s - %s", after, before));
 
         //TODO: union?
         List<BarEntity> bars = limitRepository.findLimitAndSumAmountsByProduct(user, period, begin, end);
