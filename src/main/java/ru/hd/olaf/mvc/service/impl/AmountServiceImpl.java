@@ -132,27 +132,6 @@ public class AmountServiceImpl implements AmountService {
                 DateUtil.getDate(after),
                 DateUtil.getDate(before));
 
-        /*
-        List<Product> products = productService.getAll();
-        for (Product product : products) {
-
-            BigDecimal sumAmounts = getSumByCategoryAndProduct(category,
-                    product,
-                    after,
-                    before);
-
-            if (sumAmounts.compareTo(new BigDecimal("0")) > 0) {
-                BarEntity barEntity = new BarEntity(
-                        product.getClass().getSimpleName(),
-                        product.getId(),
-                        sumAmounts,
-                        product.getName());
-
-                barEntities.add(barEntity);
-            }
-        }
-        */
-
         return barEntities;
     }
 

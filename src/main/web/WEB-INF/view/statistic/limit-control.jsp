@@ -100,8 +100,8 @@
                                 <a href="/page-product/${id}?after=${dateDaily}&before=${curDate}">
                                     </c:otherwise>
                                     </c:choose>
-                                    <div>
-                                        <h4><strong id="categoryBarName${id}" value="${name}">
+                                    <div class="col-xs-12 col-md-6">
+                                        <h5><strong id="categoryBarName${id}" value="${name}">
                                             <c:choose>
                                                 <c:when test="${type == 'category'}">
                                                     Категория ${name}
@@ -110,20 +110,22 @@
                                                     Товарная группа ${name}
                                                 </c:otherwise>
                                             </c:choose>
-                                        </strong>
-										<span id="categoryBarSum${id}" class="pull-right text-muted"
-                                              value="${sum}">
+                                        </strong></h5>
+                                        <div class="col-xs-12 col-md-6">
+                                            <h5><span id="categoryBarSum${id}" class="pull-right text-muted"
+                                                      value="${sum}">
 												${sum} (из ${limit}) руб.
-										</span>
-                                        </h4>
-                                        <div class="progress progress-striped active">
-                                            <div class="progress-bar progress-bar-${styles[step]}" role="progressbar"
-                                                 aria-valuenow="${sum}" aria-valuemin="0" aria-valuemax="100"
-                                                 style="width: ${normalSum}%" value="${name}">
-                                                <span class="sr-only">${sum}</span>
+										</span></h5>
+                                        </div>
+                                        <div class="col-xs-12 col-md-12">
+                                            <div class="progress progress-striped active">
+                                                <div class="progress-bar progress-bar-${styles[step]}" role="progressbar"
+                                                     aria-valuenow="${sum}" aria-valuemin="0" aria-valuemax="100"
+                                                     style="width: ${normalSum}%" value="${name}">
+                                                    <span class="sr-only">${sum}</span>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
                                 </a>
                         </li>
                     </c:forEach>
@@ -167,8 +169,8 @@
                                 <a href="/page-product/${id}?after=${dateWeekly}&before=${curDate}">
                                     </c:otherwise>
                                     </c:choose>
-                                    <div>
-                                        <h4><strong id="categoryBarName${id}" value="${name}">
+                                    <div class="col-xs-12 col-md-6">
+                                        <h5><strong id="categoryBarName${id}" value="${name}">
                                             <c:choose>
                                                 <c:when test="${type == 'category'}">
                                                     Категория ${name}
@@ -177,12 +179,15 @@
                                                     Товарная группа ${name}
                                                 </c:otherwise>
                                             </c:choose>
-                                        </strong>
-										<span id="categoryBarSum${id}" class="pull-right text-muted"
-                                              value="${sum}">
+                                        </strong></h5>
+                                    </div>
+                                    <div class="col-xs-12 col-md-6">
+                                        <h5><span id="categoryBarSum${id}" class="pull-right text-muted"
+                                                  value="${sum}">
 												${sum} (из ${limit}) руб.
-										</span>
-                                        </h4>
+										</span></h5>
+                                    </div>
+                                    <div class="col-xs-12 col-md-12">
                                         <div class="progress progress-striped active">
                                             <div class="progress-bar progress-bar-${styles[step]}" role="progressbar"
                                                  aria-valuenow="${sum}" aria-valuemin="0" aria-valuemax="100"
@@ -233,8 +238,8 @@
                                 <a href="/page-product/${id}?after=${dateMonthly}&before=${curDate}">
                                     </c:otherwise>
                                     </c:choose>
-                                    <div>
-                                        <h4><strong id="categoryBarName${id}" value="${name}">
+                                    <div class="col-xs-12 col-md-6">
+                                        <h5><strong id="categoryBarName${id}" value="${name}">
                                             <c:choose>
                                                 <c:when test="${type == 'category'}">
                                                     Категория ${name}
@@ -243,12 +248,15 @@
                                                     Товарная группа ${name}
                                                 </c:otherwise>
                                             </c:choose>
-                                        </strong>
-										<span id="categoryBarSum${id}" class="pull-right text-muted"
-                                              value="${sum}">
+                                        </strong></h5>
+                                    </div>
+                                    <div class="col-xs-12 col-md-6">
+                                        <h5><span id="categoryBarSum${id}" class="pull-right text-muted"
+                                                  value="${sum}">
 												${sum} (из ${limit}) руб.
-										</span>
-                                        </h4>
+										</span></h5>
+                                    </div>
+                                    <div class="col-xs-12 col-md-12">
                                         <div class="progress progress-striped active">
                                             <div class="progress-bar progress-bar-${styles[step]}" role="progressbar"
                                                  aria-valuenow="${sum}" aria-valuemin="0" aria-valuemax="100"

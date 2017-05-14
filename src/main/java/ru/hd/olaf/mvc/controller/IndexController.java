@@ -68,10 +68,8 @@ public class IndexController {
         modelAndView.addObject("afterMonth", DateUtil.getFormattedDate(monthDate));
         modelAndView.addObject("afterAllTime", DateUtil.getFormattedDate(allTimeDate));
 
-        List<BarEntity> parentsCategories = new ArrayList<BarEntity>();
-
-        parentsCategories.addAll(getCategoriesByDate(DateUtil.getFormattedDate(monthDate),
-                DateUtil.getFormattedDate(curDate)));
+        List<BarEntity> parentsCategories = getCategoriesByDate(DateUtil.getFormattedDate(monthDate),
+                DateUtil.getFormattedDate(curDate));
 
         logger.debug(String.format("data for injecting:"));
         LogUtil.logList(logger, parentsCategories);
@@ -79,6 +77,7 @@ public class IndexController {
         modelAndView.addObject("categories", parentsCategories);
 
         //Получение суммарных данных
+        //TODO: jpa query
         BigDecimal sumIncome = new BigDecimal("0");
         BigDecimal maxIncome = new BigDecimal("0");
 
@@ -124,8 +123,8 @@ public class IndexController {
         LocalDate before = DateUtil.getParsedDate(endDate);
 
         List<BarEntity> parentsCategories = categoryService.getBarEntityOfSubCategories(null,
-                after.minusDays(1),
-                before.plusDays(1));
+                after,
+                before);
 
         Collections.sort(parentsCategories, new Comparator<BarEntity>() {
             public int compare(BarEntity o1, BarEntity o2) {
@@ -167,11 +166,11 @@ public class IndexController {
         LocalDate before = DateUtil.getParsedDate(endDate);
 
         //данные по дочерним категориям
-        categoryContent.addAll(categoryService.getBarEntityOfSubCategories(category, after.minusDays(1),
-                before.plusDays(1)));
+        categoryContent.addAll(categoryService.getBarEntityOfSubCategories(category, after,
+                before));
         //данные по товарным группам(amounts с группировкой по product)
-        categoryContent.addAll(amountService.getBarEntitiesByCategory(category, after.minusDays(1),
-                before.plusDays(1)));
+        categoryContent.addAll(amountService.getBarEntitiesByCategory(category, after,
+                before));
 
         //сортировка
         Collections.sort(categoryContent, new Comparator<BarEntity>() {

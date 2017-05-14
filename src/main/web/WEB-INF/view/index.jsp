@@ -361,7 +361,15 @@
                             <c:set var="classPrice" value="${list.getSum()}" />
                             <c:set var="normalPrice" value="${classPrice * 100 / maxIncome}" />
 
-                            <c:set var="step" value="${step + 1}" scope="page"/>
+                            <c:choose>
+                                <c:when test="${step == 3}">
+                                    <c:set var="step" value="0" scope="page"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:set var="step" value="${step + 1}" scope="page"/>
+                                </c:otherwise>
+                            </c:choose>
+
                             <li class="list-unstyled">
                                 <a href="javascript:drawBarsByParentId(false, '${classId}', '${afterMonth}', '${curDate}')">
                                     <div>
@@ -404,7 +412,14 @@
                             <c:set var="classPrice" value="${list.getSum()}" />
                             <c:set var="normalPrice" value="${classPrice * 100 / maxExpense}" />
 
-                            <c:set var="step" value="${step + 1}" scope="page"/>
+                            <c:choose>
+                                <c:when test="${step == 3}">
+                                    <c:set var="step" value="0" scope="page"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:set var="step" value="${step + 1}" scope="page"/>
+                                </c:otherwise>
+                            </c:choose>
                             <li class="list-unstyled">
                                 <a href="javascript:drawBarsByParentId(false, '${classId}', '${afterMonth}', '${curDate}')">
                                     <div>

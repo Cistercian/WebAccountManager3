@@ -21,13 +21,9 @@
     <!-- Bootstrap -->
     <!-- Spring injections -->
     <spring:url value="/resources/css/bootstrap.min.css" var="bootstrapmin"/>
-    <spring:url value="/resources/css/font-awesome.min.css" var="fontawesomemin"/>
-    <spring:url value="/resources/css/font-awesome.css" var="fontawesome"/>
     <spring:url value="/resources/css/animate.css" var="animate"/>
 
     <link rel="stylesheet" href="${bootstrapmin}">
-    <link rel="stylesheet" href="${fontawesomemin}">
-    <link rel="stylesheet" href="${fontawesome}">
     <link rel="stylesheet" href="${animate}">
     <!-- =======================================================
         Theme Name: Anyar
@@ -81,7 +77,7 @@
     <spring:url value="/resources/css/style.css" var="style"/>
     <link rel="stylesheet" href="${style}">
 
-    <link href="https://fonts.googleapis.com/css?family=Baloo" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet">
 
 </head>
 <body>

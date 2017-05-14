@@ -50,7 +50,7 @@ public class CalendarController {
     @RequestMapping(value = "/statistic/calendar/getCalendarData", method = RequestMethod.GET)
     public @ResponseBody List<CalendarEntity> getCalendarData(@RequestParam (value = "start") String startDate,
                                                               @RequestParam (value = "end") String endDate) {
-        logger.debug(LogUtil.getMethodName() + String.format("Интервал: %s - %s", startDate, endDate));
+        logger.debug(LogUtil.getMethodName() + String.format(". Интервал: %s - %s", startDate, endDate));
 
         List<CalendarEntity> calendarEntities = new ArrayList<CalendarEntity>();
 

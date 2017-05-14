@@ -1,5 +1,6 @@
 package ru.hd.olaf.mvc.service.impl;
 
+import com.google.common.collect.Lists;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,63 +80,66 @@ public class CategoryServiceImpl implements CategoryService {
         logger.debug(String.format("Dates: after: %s, before %s", after, before));
 
         User user = securityService.findLoggedUser();
-        List<BarEntity> parents = new ArrayList<BarEntity>();
+        List<BarEntity> bars = new ArrayList<BarEntity>();
 
         if (parent != null)
-            parents = categoryRepository.getBarEntityByUserIdAndSubCategory(user,
+            bars = categoryRepository.getBarEntityByUserIdAndSubCategory(user,
                     parent,
                     DateUtil.getDate(after),
                     DateUtil.getDate(before));
-        else
-            parents = categoryRepository.getBarEntityOfParentsByUserId(user,
+        else {
+            Map<Integer, BarEntity> map = new HashMap<Integer, BarEntity>();
+
+            List<BarEntity> child = categoryRepository.getBarEntityOfParentsByUserId(user,
                     DateUtil.getDate(after),
                     DateUtil.getDate(before));
 
-        /*
-        List<Category> categories = getByParentId(parent);
+            logger.debug("Промежуточный список категорий:");
+            LogUtil.logList(logger, child);
 
+            for (BarEntity entity : child) {
+                BarEntity bar = getParentBar(entity);
 
-        for (Category category : categories) {
-            BigDecimal sum = getSumCategory(category, after, before);
+                if (map.containsKey(bar.getId())) {
 
-            if (sum.compareTo(new BigDecimal("0")) > 0){
-                String type = category.getType() == 0 ? "CategoryIncome" : "CategoryExpense";
+                    BarEntity barMap = map.get(bar.getId());
+                    barMap.setSum(barMap.getSum().add(bar.getSum()));
+                    map.put(bar.getId(), barMap);
 
-                BarEntity barEntity = new BarEntity(type, category.getId(), sum, category.getName());
-                parents.add(barEntity);
+                } else {
+                    map.put(bar.getId(), bar);
+                }
             }
+
+            bars = Lists.newArrayList(map.values());
         }
-        */
-        return parents;
+        return bars;
     }
 
-    /**
-     * Функция получения итоговой суммы по категории с учетом вложенных (дочерних) категорий
-     *
-     * @param category
-     * @param after
-     * @param before
-     * @return
-     */
-    private BigDecimal getSumCategory(Category category, LocalDate after, LocalDate before) {
+    private BarEntity getParentBar(BarEntity entity) {
         logger.debug(LogUtil.getMethodName());
 
-        BigDecimal sum = new BigDecimal(0);
-        for (Amount amount : category.getAmounts()) {
-            //convert amounts.date to LocalDate
-            LocalDate amountDate = amount.getLocalDate();
+        if ("child".equals(entity.getType())){
+            //TODO: refactoring!
+            try {
+                Category parent = getOne(entity.getId()).getParentId();
 
-            if (amountDate.isAfter(after) && amountDate.isBefore(before)) {
-                sum = sum.add(amount.getPrice());
+                entity.setId(parent.getId());
+                entity.setName(parent.getName());
+                String type = parent.getParentId() == null ?
+                        parent.getType() == 0 ? "CategoryIncome" : "CategoryExpense" :
+                        "child";
+                entity.setType(type);
+
+                if ("child".equals(entity.getType()))
+                    entity = getParentBar(entity);
+
+            } catch (AuthException e) {
+                logger.debug(String.format("Логическая ошибка БД - не найдена родительская категория дочерней с id = %d",
+                        entity.getId()));
             }
         }
-        //учитываем дочерние категории
-        for (Category children : getByParentId(category)) {
-
-            sum = sum.add(getSumCategory(children, after, before));
-
-        }
-        return sum;
+        return entity;
     }
 
     /**
