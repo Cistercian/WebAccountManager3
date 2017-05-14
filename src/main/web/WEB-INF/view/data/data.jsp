@@ -21,8 +21,8 @@
         });
 
         //показываем модальное окно при получении ошибки в момент загрузки страницы
-        if ($('#response').val() != '') {
-            displayMessage('error', $('#response').val());
+        if ($(responseMessage).val() != '') {
+            displayMessage($('#responseType').val(), $('#responseMessage').val());
         }
 
         $('#date').datepicker({
@@ -84,55 +84,6 @@
             scrollTop: destination - 50
         }, 2000, 'easeInOutExpo');
     }
-</script>
-<script language="javascript" type="text/javascript">
-    function Save(className) {
-        if (className == 'amount') {
-            var data = {
-                'className': 'amount',
-                'id': $('#id').val(),
-                'categoryId': $('#btnCategories').val(),
-                'productName': $('#productName').val(),
-                'name': $('#amountName').val(),
-                'price': $('#amountPrice').val(),
-                'date': $('#date').val(),
-                'details': $('#amountDetails').val()
-            };
-        } else if (className == 'category') {
-            var data = {
-                'className': 'category',
-                'id': $('#id').val(),
-                'parentId': $('#btnParentCategories').val(),
-                'name': $('#categoryName').val(),
-                'type': $('#typeIncome').prop('checked') ? 0 : 1,
-                'details': $('#categoryDetails').val(),
-            };
-        } else if (className == 'product') {
-            var data = {
-                'className': 'product',
-                'id': $('#id').val(),
-                'name': $('#product').val(),
-                'mergeProductId': $('#btnProductMerge').val()
-            };
-        }
-        $.ajax({
-            type: "POST",
-            url: '/page-data/save',
-            data: data,
-            dataType: 'json',
-            beforeSend: function(){
-                displayLoader();
-            },
-            success: function (data) {
-                hideLoader();
-
-                var type = data.type;
-                var message = data.message;
-
-                displayMessage(type, message, "/index");
-            }
-        });
-    }
     function displayMessage(type, message, Url) {
         ClearModalPanel();
         $('#modalBody').append(
@@ -140,9 +91,14 @@
         );
         var onclick;
         if (type == 'SUCCESS') {
-            onclick = "location.reload();";
+            //alert (type + ":" + document.location.href + ":" + message);
+            if (document.location.href.endsWith("save")) {
+                onclick = "location.href=\"/amount\"";
+            } else {
+                onclick = "location.href=\"/index\"";
+            }
         } else {
-            onclick = "$(\"#response\").val(\"\"); return false;";
+            onclick = "$(\"#responseMessage\").val(\"\"); return false;";
         }
         $('#modalFooter').append(
                 "<button type='button' class='btn btn-default' data-dismiss='modal' " +
@@ -178,7 +134,8 @@
     <div class='row'>
         <input id="_csrf_token" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         <%--<input id="id" type="hidden" name="id" value="${id}"/>--%>
-        <textarea id="response" name="response" style="display: none;">${response}</textarea>
+        <textarea id="responseMessage" name="responseMessage" style="display: none;">${responseMessage}</textarea>
+        <input id="responseType" name="responseType" style="display: none;" value="${responseType}"/>
         <c:if test="${className=='amount'}">
             <div class="container-fluid">
                 <form:form id="amountForm" method="POST" modelAttribute="amountForm" action="/amount/save">

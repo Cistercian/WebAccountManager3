@@ -133,7 +133,9 @@ public class DataController {
             logger.info("Ошибка валидиации!");
         } else {
             response = utilService.saveEntity(categoryForm);
-            modelAndView.addObject("response", response.getMessage());
+
+            modelAndView.addObject("responseMessage", response.getMessage());
+            modelAndView.addObject("responseType", response.getType());
         }
         modelAndView.addObject("parents", categoryService.getAll());
         modelAndView.addObject("parent", parent);
@@ -258,7 +260,8 @@ public class DataController {
         } else {
             response = utilService.saveEntity(amountForm);
 
-            modelAndView.addObject("response", response.getMessage());
+            modelAndView.addObject("responseMessage", response.getMessage());
+            modelAndView.addObject("responseType", response.getType());
         }
 
         modelAndView.addObject("product", amountForm.getProductId());
@@ -350,7 +353,8 @@ public class DataController {
         } else {
             response = utilService.saveEntity(productForm);
 
-            modelAndView.addObject("response", message + " " + response.getMessage());
+            modelAndView.addObject("responseMessage", message + " " + response.getMessage());
+            modelAndView.addObject("responseType", response.getType());
         }
 
         modelAndView.addObject("productForm", productForm);
