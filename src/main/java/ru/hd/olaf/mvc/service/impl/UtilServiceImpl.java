@@ -31,8 +31,13 @@ public class UtilServiceImpl implements UtilService{
 
     private static final Logger logger = LoggerFactory.getLogger(UtilServiceImpl.class);
 
+    /**
+     * Функция поиска объекта с форматированным отвветом в виде объекта JsonResponse
+     * @param classez Класс искомого объекта
+     * @param id id сущности
+     * @return JsonResponse
+     */
     public JsonResponse getById(Class classez, Integer id){
-
         logger.debug(LogUtil.getMethodName());
 
         JsonResponse jsonResponse = new JsonResponse();
@@ -67,13 +72,14 @@ public class UtilServiceImpl implements UtilService{
             jsonResponse.setType(ResponseType.ERROR);
             jsonResponse.setMessage(e.getMessage());
         } catch (IllegalArgumentException e) {
+            //ситуацию не считаем ошибкой, т.к. этот случай возможен при view окна создания сущности.
+            //Но отмечаем тип JsonResponse
             message = "Переданный параметр id равен null.";
             logger.debug(message);
 
             jsonResponse.setType(ResponseType.INFO);
             jsonResponse.setMessage(message);
         }
-
 
         return jsonResponse;
     }

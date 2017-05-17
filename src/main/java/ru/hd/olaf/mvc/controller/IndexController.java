@@ -8,11 +8,12 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import ru.hd.olaf.entities.Category;
+import ru.hd.olaf.entities.User;
 import ru.hd.olaf.mvc.service.AmountService;
 import ru.hd.olaf.mvc.service.CategoryService;
 import ru.hd.olaf.mvc.service.SecurityService;
-import ru.hd.olaf.util.LogUtil;
 import ru.hd.olaf.util.DateUtil;
+import ru.hd.olaf.util.LogUtil;
 import ru.hd.olaf.util.json.BarEntity;
 import ru.hd.olaf.util.json.JsonResponse;
 import ru.hd.olaf.util.json.ResponseType;
@@ -37,16 +38,20 @@ public class IndexController {
 
     private static final Logger logger = LoggerFactory.getLogger(IndexController.class);
 
-
+    /**
+     * Функция возврата favicon.ico (иконка сайта для умных браузеров...)
+     *
+     * @return ico-файл
+     */
     @RequestMapping(value = "favicon.ico", method = RequestMethod.GET)
-    public String getFavicon(){
+    public String getFavicon() {
         return "forward:resources/img/favicon.ico";
     }
 
     /**
      * Функция отрисовки index.html
      *
-     * @return
+     * @return ModelAndView index
      */
     @RequestMapping(value = {"", "/", "/index"}, method = RequestMethod.GET)
     public ModelAndView getViewIndex() {
@@ -61,7 +66,7 @@ public class IndexController {
         //дата начала текущего месяца
         LocalDate monthDate = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
         //дата начала периода "за все время"
-        LocalDate allTimeDate = LocalDate.of(1900,1,1);
+        LocalDate allTimeDate = LocalDate.of(1900, 1, 1);
 
         modelAndView.addObject("curDate", DateUtil.getFormattedDate(curDate));
         modelAndView.addObject("afterWeek", DateUtil.getFormattedDate(weekDate));
@@ -71,31 +76,38 @@ public class IndexController {
         List<BarEntity> parentsCategories = getCategoriesByDate(DateUtil.getFormattedDate(monthDate),
                 DateUtil.getFormattedDate(curDate));
 
-        logger.debug(String.format("data for injecting:"));
+        logger.debug("Список категорий:");
         LogUtil.logList(logger, parentsCategories);
 
         modelAndView.addObject("categories", parentsCategories);
 
         //Получение суммарных данных
-        //TODO: jpa query
-        BigDecimal sumIncome = new BigDecimal("0");
-        BigDecimal maxIncome = new BigDecimal("0");
+        User currentUser = securityService.findLoggedUser();
+        BigDecimal sumIncome = amountService.getSumByCategoryType((byte) 0,
+                currentUser,
+                monthDate,
+                curDate);
 
-        BigDecimal sumExpense = new BigDecimal("0");
+        BigDecimal sumExpense = amountService.getSumByCategoryType((byte) 1,
+                currentUser,
+                monthDate,
+                curDate);
+
+        modelAndView.addObject("sumIncome", sumIncome);
+        modelAndView.addObject("sumExpense", sumExpense);
+
+        //TODO: jpa query
+        BigDecimal maxIncome = new BigDecimal("0");
         BigDecimal maxExpense = new BigDecimal("0");
 
         for (BarEntity barEntity : parentsCategories) {
             if ("CategoryIncome".equalsIgnoreCase(barEntity.getType())) {
-                sumIncome = sumIncome.add(barEntity.getSum());
                 maxIncome = maxIncome.compareTo(barEntity.getSum()) > 0 ? maxIncome : barEntity.getSum();
             } else {
-                sumExpense = sumExpense.add(barEntity.getSum());
                 maxExpense = maxExpense.compareTo(barEntity.getSum()) > 0 ? maxExpense : barEntity.getSum();
             }
         }
 
-        modelAndView.addObject("sumIncome", sumIncome);
-        modelAndView.addObject("sumExpense", sumExpense);
         modelAndView.addObject("maxIncome", maxIncome);
         modelAndView.addObject("maxExpense", maxExpense);
 
@@ -108,8 +120,9 @@ public class IndexController {
     /**
      * Функция возврата json данных для прорисовки прогресс баров на главной странице по корневым категориям доход/расход
      * с сортировкой по типу (CategoryIncome\CategoryExpense) и сумме по убыванию
+     *
      * @param beginDate начальная дата отсечки
-     * @param endDate конечная дата отсечки
+     * @param endDate   конечная дата отсечки
      * @return List<BarEntity>
      */
     @RequestMapping(value = "getCategoriesByDate", method = RequestMethod.GET)
@@ -121,11 +134,14 @@ public class IndexController {
 
         LocalDate after = DateUtil.getParsedDate(beginDate);
         LocalDate before = DateUtil.getParsedDate(endDate);
+        User currentUser = securityService.findLoggedUser();
 
-        List<BarEntity> parentsCategories = categoryService.getBarEntityOfSubCategories(null,
+        List<BarEntity> parentsCategories = categoryService.getBarEntityOfSubCategories(currentUser,
+                null,
                 after,
                 before);
 
+        //сортировка по типу категории (доход/расход) и по сумме
         Collections.sort(parentsCategories, new Comparator<BarEntity>() {
             public int compare(BarEntity o1, BarEntity o2) {
                 int result = o1.getType().compareTo(o2.getType());
@@ -136,7 +152,7 @@ public class IndexController {
             }
         });
 
-        logger.debug(String.format("data for injecting:"));
+        logger.debug("Список категорий:");
         LogUtil.logList(logger, parentsCategories);
 
         return parentsCategories;
@@ -153,7 +169,7 @@ public class IndexController {
 
         List<BarEntity> categoryContent = new ArrayList<BarEntity>();
 
-        Category category = null;
+        Category category;
         JsonResponse response = categoryService.getById(categoryId);
         if (response.getType() == ResponseType.SUCCESS)
             category = (Category) response.getEntity();
@@ -164,12 +180,17 @@ public class IndexController {
 
         LocalDate after = DateUtil.getParsedDate(beginDate);
         LocalDate before = DateUtil.getParsedDate(endDate);
+        User currentUser = securityService.findLoggedUser();
 
         //данные по дочерним категориям
-        categoryContent.addAll(categoryService.getBarEntityOfSubCategories(category, after,
+        categoryContent.addAll(categoryService.getBarEntityOfSubCategories(currentUser,
+                category,
+                after,
                 before));
         //данные по товарным группам(amounts с группировкой по product)
-        categoryContent.addAll(amountService.getBarEntitiesByCategory(category, after,
+        categoryContent.addAll(amountService.getBarEntitiesByCategory(currentUser,
+                category,
+                after,
                 before));
 
         //сортировка
@@ -179,7 +200,7 @@ public class IndexController {
             }
         });
 
-        logger.debug(String.format("data for injecting:"));
+        logger.debug("Список категорий:");
         LogUtil.logList(logger, categoryContent);
 
         return categoryContent;

@@ -35,18 +35,25 @@ public class CalendarController {
 
     private static final Logger logger = LoggerFactory.getLogger(CalendarController.class);
 
+    /**
+     * Функция прорисовки окна просмотра календаря
+     * @return ModelAndView (calendar)
+     */
     @RequestMapping(value = "/statistic/calendar", method = RequestMethod.GET)
     public ModelAndView getViewCalendar(){
         logger.debug(LogUtil.getMethodName());
 
         ModelAndView modelAndView = new ModelAndView("/statistic/calendar");
 
-        //TODO: redudant?
-        //modelAndView.addObject("calendarData", getCalendarData());
-
         return modelAndView;
     }
 
+    /**
+     * Функция заполнения календаря FullCalendar данными
+     * @param startDate начальная дата отсечки периода
+     * @param endDate конечная дата отсечки
+     * @return список CalendarData
+     */
     @RequestMapping(value = "/statistic/calendar/getCalendarData", method = RequestMethod.GET)
     public @ResponseBody List<CalendarEntity> getCalendarData(@RequestParam (value = "start") String startDate,
                                                               @RequestParam (value = "end") String endDate) {

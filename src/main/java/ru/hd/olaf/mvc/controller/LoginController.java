@@ -29,6 +29,11 @@ public class LoginController {
 
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
+    /**
+     * Функция вывода страницы регистрации
+     * @param model model
+     * @return view(registration)
+     */
     @RequestMapping(value = "/registration", method = RequestMethod.GET)
     public String registration(Model model){
         logger.debug(LogUtil.getMethodName());
@@ -36,6 +41,13 @@ public class LoginController {
         return "/login/registration";
     }
 
+    /**
+     * Функция регистрации нового пользователя
+     * @param userForm html форма с атрибутами
+     * @param bindingResult для валидации
+     * @param model model
+     * @return наименование view (registration при ошибках или index при успехе)
+     */
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
     public String registration(@ModelAttribute("userForm") User userForm, BindingResult bindingResult, Model model) {
         logger.debug(LogUtil.getMethodName());
@@ -57,6 +69,13 @@ public class LoginController {
         return "redirect:/index";
     }
 
+    /**
+     * Функция отображения страницы логина
+     * @param model model
+     * @param error ошибки валидации
+     * @param logout ??
+     * @return наименование view (login)
+     */
     @RequestMapping(value = "login", method = RequestMethod.GET)
     public String login(Model model, String error, String logout){
         logger.debug(LogUtil.getMethodName());
@@ -72,14 +91,11 @@ public class LoginController {
         return "/login/login";
     }
 
-//    @RequestMapping(value = {"/", "/index"}, method = RequestMethod.GET)
-//    public String welcome(Model model) {
-//        logger.debug(String.format("Controller: %s, called function: %s",
-//                LoginController.class.getSimpleName(), "welcome"));
-//
-//        return "index";
-//    }
-
+    /**
+     * Функция отрисовки окна профиля (меня пароля)
+     * @param model model
+     * @return наименование view (account)
+     */
     @RequestMapping(value = "account", method = RequestMethod.GET)
     public String getViewAccount(Model model){
         logger.debug(LogUtil.getMethodName());
@@ -89,11 +105,19 @@ public class LoginController {
         return "login/account";
     }
 
+    /**
+     * Функция смены пароля
+     * @param userForm html форма с атрибутами User
+     * @param bindingResult для валидации
+     * @param model model
+     * @return наименование view (account)
+     */
     @RequestMapping(value = "account", method = RequestMethod.POST)
     public String setPassword(@ModelAttribute("passwordForm") User userForm, BindingResult bindingResult, Model model){
         logger.debug(LogUtil.getMethodName());
 
         User currentUser = securityService.findLoggedUser();
+
         userForm.setUsername(currentUser.getUsername());
         userForm.setFullName(currentUser.getFullName());
         userForm.setId(currentUser.getId());
@@ -104,7 +128,6 @@ public class LoginController {
 
         if (bindingResult.hasErrors()){
             logger.debug("Валидация не пройдена");
-
             return "login/account";
         }
 

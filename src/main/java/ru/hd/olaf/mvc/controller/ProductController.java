@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import ru.hd.olaf.entities.Amount;
 import ru.hd.olaf.entities.Product;
+import ru.hd.olaf.entities.User;
 import ru.hd.olaf.mvc.service.AmountService;
 import ru.hd.olaf.mvc.service.ProductService;
 import ru.hd.olaf.mvc.service.SecurityService;
@@ -37,25 +38,35 @@ public class ProductController {
 
     private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
 
+    /**
+     * Прорисовка страницы просмотра состава товарной группы
+     * @param id id сущности
+     * @param beginDate начальная дата отсечки
+     * @param endDate конечная дата отсечки
+     * @return ModelAndView (page-product)
+     */
     @RequestMapping(value = "/page-product/{id}", method = RequestMethod.GET)
     public ModelAndView displayPageProduct(@PathVariable("id") Integer id,
                                            @RequestParam(value = "after") String beginDate,
                                            @RequestParam(value = "before") String endDate) {
         logger.debug(LogUtil.getMethodName());
 
+        User currentUser = securityService.findLoggedUser();
+
         LocalDate after = DateUtil.getParsedDate(beginDate);
         LocalDate before = DateUtil.getParsedDate(endDate);
 
         ModelAndView modelAndView = new ModelAndView("/data/page-product");
 
-        Product product = null;
+        Product product;
         JsonResponse response = productService.getById(id);
 
-        if (response.getType() == ResponseType.SUCCESS)
+        if (response.getType() == ResponseType.SUCCESS) {
             product = (Product) response.getEntity();
 
-        List<Amount> amounts = amountService.getByProductAndDate(product, after, before);
-        modelAndView.addObject("amounts", amounts);
+            List<Amount> amounts = amountService.getByProductAndDate(currentUser, product, after, before);
+            modelAndView.addObject("amounts", amounts);
+        }
 
         return modelAndView;
     }

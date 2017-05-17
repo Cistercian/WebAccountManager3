@@ -69,7 +69,7 @@ public class LimitServiceImpl implements LimitService {
     public Limit save(Limit limit) throws CrudException {
         logger.debug(LogUtil.getMethodName());
 
-        Limit entity = null;
+        Limit entity;
 
         try {
             entity = limitRepository.save(limit);
@@ -92,10 +92,16 @@ public class LimitServiceImpl implements LimitService {
         }
     }
 
-    public List<BarEntity> getLimit(Byte period, LocalDate after, LocalDate before) {
+    /**
+     * Функция возвращает BarEntity для прорисовки прогресс баров по таблице лимитов
+     * @param user пользователь
+     * @param period период (0 - день, 1 - неделя, 2 - месяц)
+     * @param after начальная дата отсечки
+     * @param before конечная дата отсечки
+     * @return список BarEntity
+     */
+    public List<BarEntity> getLimits(User user, Byte period, LocalDate after, LocalDate before) {
         logger.debug(LogUtil.getMethodName());
-
-        User user = securityService.findLoggedUser();
 
         Date begin = Date.from(after.atStartOfDay(ZoneId.systemDefault()).toInstant());
         Date end = Date.from(before.atStartOfDay(ZoneId.systemDefault()).toInstant());

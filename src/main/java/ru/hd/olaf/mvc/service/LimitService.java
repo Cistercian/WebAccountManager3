@@ -1,6 +1,7 @@
 package ru.hd.olaf.mvc.service;
 
 import ru.hd.olaf.entities.Limit;
+import ru.hd.olaf.entities.User;
 import ru.hd.olaf.exception.AuthException;
 import ru.hd.olaf.exception.CrudException;
 import ru.hd.olaf.util.json.BarEntity;
@@ -19,7 +20,7 @@ public interface LimitService {
     Limit getByPeriodAndEntity(Byte period, Object entity);
 
     List<Limit> getAll();
-    List<BarEntity> getLimit(Byte period, LocalDate after, LocalDate before);
+    List<BarEntity> getLimits(User user, Byte period, LocalDate after, LocalDate before);
 
     Limit save(Limit limit) throws CrudException;
     JsonResponse delete(Limit limit) throws CrudException;

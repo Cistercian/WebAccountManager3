@@ -1,5 +1,8 @@
 package ru.hd.olaf.util.json;
 
+import java.math.BigDecimal;
+import java.util.Date;
+
 /**
  * Created by Olaf on 29.04.2017.
  */
@@ -14,6 +17,12 @@ public class CalendarEntity {
         this.allDay = true;
         this.color = "#aedb97";
         this.textColor = "#3d641b";
+    }
+
+    public CalendarEntity(BigDecimal sum, Date date) {
+        this();
+        this.title = sum.toString();
+        this.date = date.toString();
     }
 
     public String getTitle() {

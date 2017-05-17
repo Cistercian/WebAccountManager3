@@ -19,6 +19,7 @@ import ru.hd.olaf.mvc.service.SecurityService;
 import ru.hd.olaf.mvc.service.UtilService;
 import ru.hd.olaf.util.DateUtil;
 import ru.hd.olaf.util.LogUtil;
+import ru.hd.olaf.util.json.CalendarEntity;
 import ru.hd.olaf.util.json.ResponseType;
 import ru.hd.olaf.util.json.BarEntity;
 import ru.hd.olaf.util.json.JsonResponse;
@@ -80,7 +81,7 @@ public class AmountServiceImpl implements AmountService {
      * @param product
      * @return
      */
-    public List<Amount> getByProductAndDate(Product product, LocalDate after, LocalDate before) {
+    public List<Amount> getByProductAndDate(User user, Product product, LocalDate after, LocalDate before) {
         logger.debug(LogUtil.getMethodName());
 
         after = after == null ? LocalDate.of(1900, 1, 1) : after;
@@ -93,7 +94,7 @@ public class AmountServiceImpl implements AmountService {
 
         List<Amount> amounts = Lists.newArrayList(amountRepository.findByProductIdAndUserIdAndDateBetween(
                 product,
-                securityService.findLoggedUser(),
+                user,
                 begin,
                 end
         ));
@@ -121,11 +122,9 @@ public class AmountServiceImpl implements AmountService {
      * @param before
      * @return
      */
-    public List<BarEntity> getBarEntitiesByCategory(Category category, LocalDate after, LocalDate before) {
+    public List<BarEntity> getBarEntitiesByCategory(User user, Category category, LocalDate after, LocalDate before) {
         logger.debug(LogUtil.getMethodName());
-        List<BarEntity> barEntities = new ArrayList<BarEntity>();
-
-        User user = securityService.findLoggedUser();
+        List<BarEntity> barEntities;
 
         barEntities = amountRepository.getBarEntityByUserIdAndCategoryIdAndDateGroupByProductId(user,
                 category,
@@ -240,5 +239,37 @@ public class AmountServiceImpl implements AmountService {
         } catch (Exception e) {
             throw new CrudException(ExceptionUtils.getRootCause(e).getMessage());
         }
+    }
+
+    /**
+     * Функция получения итоговой суммы по типу категорий за период (суммарных доход/расход)
+     *
+     * @param type   Тип категории (0 - доход, 0 - расход)
+     * @param user   Обрабатываемый пользоваль
+     * @param after  начальная дата отсечки
+     * @param before конечная дата отсечки
+     * @return
+     */
+    public BigDecimal getSumByCategoryType(Byte type, User user, LocalDate after, LocalDate before) {
+        logger.debug(LogUtil.getMethodName());
+
+        BigDecimal sum = amountRepository.getSumByTypeAndUserIdAndDate(type,
+                user,
+                DateUtil.getDate(after),
+                DateUtil.getDate(before));
+
+        return sum == null ? new BigDecimal("0") : sum;
+    }
+
+    /**
+     * Получение списка CalendarEntity для заполнения FullCalendar
+     *
+     * @param user       пользователь
+     * @param isNeedNull выводить ли
+     * @param date       дата
+     * @return список CalendarEntity
+     */
+    public List<CalendarEntity> getCalendarEntity(User user, Boolean isNeedNull, Date date) {
+        return null;
     }
 }

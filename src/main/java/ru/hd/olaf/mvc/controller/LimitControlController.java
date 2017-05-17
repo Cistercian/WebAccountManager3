@@ -7,8 +7,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-import ru.hd.olaf.mvc.service.AmountService;
+import ru.hd.olaf.entities.User;
 import ru.hd.olaf.mvc.service.LimitService;
+import ru.hd.olaf.mvc.service.SecurityService;
 import ru.hd.olaf.util.DateUtil;
 import ru.hd.olaf.util.LogUtil;
 import ru.hd.olaf.util.json.BarEntity;
@@ -26,25 +27,31 @@ public class LimitControlController {
     @Autowired
     private LimitService limitService;
     @Autowired
-    private AmountService amountService;
+    private SecurityService securityService;
 
     private static final Logger logger = LoggerFactory.getLogger(LimitControlController.class);
 
+    /**
+     * Функция возвращает страницу просмотра исполнения лимитов
+     * @return ModelAndView(limit-control)
+     */
     @RequestMapping(value = "/statistic/limit-control", method = RequestMethod.GET)
     public ModelAndView getViewLimit(){
         logger.debug(LogUtil.getMethodName());
 
         ModelAndView modelAndView = new ModelAndView("/statistic/limit-control");
+        User currentUser = securityService.findLoggedUser();
 
         //вычисляем период
         //текущая дата
         LocalDate curDate = LocalDate.now();
+        LocalDate begDate;
         modelAndView.addObject("curDate", DateUtil.getFormattedDate(curDate));
-        LocalDate begDate = null;
+
         //начальная дата периода:
         //текущий день
         begDate = curDate;
-        List<BarEntity> limits = limitService.getLimit((byte) 0, begDate, curDate);
+        List<BarEntity> limits = limitService.getLimits(currentUser, (byte) 0, begDate, curDate);
         modelAndView.addObject("limitsDaily", limits);
         modelAndView.addObject("dateDaily", DateUtil.getFormattedDate(begDate));
         logger.debug("Контроль лимитов за день");
@@ -52,7 +59,7 @@ public class LimitControlController {
 
         //текущая неделя
         begDate = LocalDate.now().minusDays(LocalDate.now().getDayOfWeek().ordinal());
-        limits = limitService.getLimit((byte) 1, begDate, curDate);
+        limits = limitService.getLimits(currentUser, (byte) 1, begDate, curDate);
         modelAndView.addObject("limitsWeekly", limits);
         modelAndView.addObject("dateWeekly", DateUtil.getFormattedDate(begDate));
         logger.debug("Контроль лимитов за неделю");
@@ -60,7 +67,7 @@ public class LimitControlController {
 
         //текущий месяц
         begDate = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
-        limits = limitService.getLimit((byte) 2, begDate, curDate);
+        limits = limitService.getLimits(currentUser, (byte) 2, begDate, curDate);
         modelAndView.addObject("limitsMonthly", limits);
         modelAndView.addObject("dateMonthly", DateUtil.getFormattedDate(begDate));
         logger.debug("Контроль лимитов за месяц");

@@ -13,7 +13,6 @@ import org.springframework.web.servlet.ModelAndView;
 import ru.hd.olaf.entities.Category;
 import ru.hd.olaf.entities.Limit;
 import ru.hd.olaf.entities.Product;
-import ru.hd.olaf.entities.User;
 import ru.hd.olaf.mvc.service.*;
 import ru.hd.olaf.mvc.validator.LimitValidator;
 import ru.hd.olaf.util.LogUtil;
@@ -48,6 +47,11 @@ public class LimitsController {
 
     private static final Logger logger = LoggerFactory.getLogger(LimitsController.class);
 
+    /**
+     * Функция отображения страницы просмотра таблицы лимитов
+     * @param model model
+     * @return наименование view(limits)
+     */
     @RequestMapping(value = "limits", method = RequestMethod.GET)
     public String getViewLimits(Model model){
         logger.debug(LogUtil.getMethodName());
@@ -70,16 +74,21 @@ public class LimitsController {
         return "data/limits";
     }
 
+    /**
+     * Функция просмотра сущности таблицы limits
+     * @param id id сущности (необязательно)
+     * @return  ModelAndView(notification)
+     */
     @RequestMapping(value = "/limits/notification", method = RequestMethod.GET)
     public ModelAndView getViewNotification(@RequestParam(value = "id", required = false) Integer id){
         logger.debug(LogUtil.getMethodName());
 
         ModelAndView modelAndView = new ModelAndView("/data/notification");
 
-        Limit limit = null;
+        Limit limit;
         JsonResponse response = limitService.getById(id);
 
-        if (response.getType() != ResponseType.ERROR && response.getEntity() != null) {
+        if (response.getEntity() != null) {
             limit = (Limit) response.getEntity();
             modelAndView.addObject("id", id);
 
@@ -95,6 +104,12 @@ public class LimitsController {
         return modelAndView;
     }
 
+    /**
+     * Функция сохранения сущности таблицы limits
+     * @param limitForm html форма с заполненными атрибутами
+     * @param bindingResult для валидации формы
+     * @return JsonResponse (результат валидации)
+     */
     @RequestMapping(value = "/limits/notification", method = RequestMethod.POST)
     public @ResponseBody JsonResponse saveNotification(@ModelAttribute("limitForm") Limit limitForm,
                                                         BindingResult bindingResult){
@@ -108,7 +123,7 @@ public class LimitsController {
         if ("category".equalsIgnoreCase(limitForm.getType())){
             response = categoryService.getById(limitForm.getEntityId());
 
-            if (response.getType() != ResponseType.ERROR && response.getEntity() != null) {
+            if (response.getEntity() != null) {
                 Category category = (Category) response.getEntity();
                 logger.debug(String.format("Родительская категория: %s", category.toString()));
 
@@ -120,7 +135,7 @@ public class LimitsController {
         } else if ("product".equalsIgnoreCase(limitForm.getType())){
             response = productService.getById(limitForm.getEntityId());
 
-            if (response.getType() != ResponseType.ERROR && response.getEntity() != null) {
+            if (response.getEntity() != null) {
                 Product product = (Product) response.getEntity();
                 logger.debug(String.format("Родительская товарная группа: %s", product.toString()));
 
@@ -156,6 +171,10 @@ public class LimitsController {
         return response;
     }
 
+    /**
+     * Функция заполнения modelAndView данными из БД
+     * @param modelAndView используемая ModelAndView
+     */
     private void fillModelNotification(ModelAndView modelAndView) {
         logger.debug(LogUtil.getMethodName());
 

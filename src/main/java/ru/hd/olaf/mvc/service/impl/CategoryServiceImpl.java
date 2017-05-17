@@ -75,11 +75,10 @@ public class CategoryServiceImpl implements CategoryService {
      * @param before
      * @return
      */
-    public List<BarEntity> getBarEntityOfSubCategories(Category parent, LocalDate after, LocalDate before) {
+    public List<BarEntity> getBarEntityOfSubCategories(User user, Category parent, LocalDate after, LocalDate before) {
         logger.debug(LogUtil.getMethodName());
         logger.debug(String.format("Dates: after: %s, before %s", after, before));
 
-        User user = securityService.findLoggedUser();
         List<BarEntity> bars = new ArrayList<BarEntity>();
 
         if (parent != null)
@@ -247,4 +246,6 @@ public class CategoryServiceImpl implements CategoryService {
             throw new CrudException(ExceptionUtils.getRootCause(e).getMessage());
         }
     }
+
+
 }

@@ -6,6 +6,7 @@ import ru.hd.olaf.entities.Category;
 import ru.hd.olaf.entities.User;
 import ru.hd.olaf.util.json.BarEntity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -44,21 +45,6 @@ public interface CategoryRepository extends CrudRepository<Category, Integer> {
             "WHERE a.categoryId = c AND c.userId = ?1  AND " +
             "a.date BETWEEN ?2 AND ?3 " +
             "GROUP BY c.id HAVING COUNT(c.id) > 0")
-    /*AND c.parentId IS NULL */
     List<BarEntity> getBarEntityOfParentsByUserId(User user, Date after, Date before);
 
-    /*
-    @Query("SELECT new ru.hd.olaf.util.json.BarEntity(" +
-            "CASE WHEN (c.type = 0 AND c.parentId IS NULL) THEN " +
-            "'CategoryIncome' " +
-            "WHEN (c.type = 1 AND c.parentId IS NULL) THEN " +
-            "'CategoryExpense' " +
-            " END " +
-            ", c.id, SUM(a.price), c.name) " +
-            "FROM Amount a LEFT JOIN a.categoryId c " +
-            "WHERE a.categoryId = c AND c.userId = ?1 AND " +
-            "a.date BETWEEN ?2 AND ?3 " +
-            "AND c.parentId IS NULL " +
-            "GROUP BY c.id HAVING COUNT(c.id) > 0")
-    List<BarEntity> getBarEntityOfParentsByUserId(User user, Date after, Date before);*/
 }
