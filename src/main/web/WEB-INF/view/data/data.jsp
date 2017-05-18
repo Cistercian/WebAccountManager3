@@ -22,7 +22,7 @@
 
         //показываем модальное окно при получении ошибки в момент загрузки страницы
         if ($(responseMessage).val() != '') {
-            displayMessage($('#responseType').val(), $('#responseMessage').val());
+            displayMessage($('#responseType').val(), $('#responseMessage').val(), $('#responseUrl').val());
         }
 
         $('#date').datepicker({
@@ -93,7 +93,7 @@
         if (type == 'SUCCESS') {
             //alert (type + ":" + document.location.href + ":" + message);
             if (document.location.href.endsWith("save")) {
-                onclick = "location.href=\"/amount\"";
+                onclick = "location.href=\"" + Url + "\"";
             } else {
                 onclick = "location.href=\"/index\"";
             }
@@ -136,9 +136,12 @@
         <%--<input id="id" type="hidden" name="id" value="${id}"/>--%>
         <textarea id="responseMessage" name="responseMessage" style="display: none;">${responseMessage}</textarea>
         <input id="responseType" name="responseType" style="display: none;" value="${responseType}"/>
+        <input id="responseUrl" name="responseUrl" style="display: none;" value="${responseUrl}"/>
+
         <c:if test="${className=='amount'}">
             <div class="container-fluid">
                 <form:form id="amountForm" method="POST" modelAttribute="amountForm" action="/amount/save">
+                    <input type="hidden" name="referer" class="form-control" value="${previousPage}"/>
                     <%--Название страницы--%>
                     <div class='col-xs-12 wam-margin-bottom-2'>
                         <h3><spring:message code="label.page-amount.title"/></h3>
@@ -148,6 +151,8 @@
                     <spring:bind path="id">
                         <form:input type="hidden" path="id" class="form-control" placeholder="${id}" ></form:input>
                     </spring:bind>
+
+
 
                     <%--Дата--%>
                     <spring:bind path="date">
@@ -275,7 +280,7 @@
                     </button>
                 </div>
                 <div class="col-xs-12 col-md-6">
-                    <button type="submit" class="btn btn-default btn-lg btn-block wam-btn-1" onclick="location.reload();">
+                    <button type="submit" class="btn-default btn-lg btn-block wam-btn-1" onclick="${previousPage}">
                         <spring:message code="label.page-amount.btnCancel"/>
                     </button>
                 </div>
@@ -296,8 +301,25 @@
         <c:if test="${className=='category'}">
             <div class="container-fluid">
                 <form:form id="categoryForm" method="POST" modelAttribute="categoryForm" action="/category/save">
-                    <div class='col-xs-12 wam-margin-bottom-2'>
+                    <input type="hidden" name="referer" class="form-control" value="${previousPage}"/>
+                    <div class='col-xs-12 col-md-6 wam-margin-bottom-2'>
                         <h3><spring:message code="label.page-category.title"/></h3>
+                    </div>
+                    <div class='col-xs-12 col-md-6 wam-margin-top-2'>
+                        <button id="currentCategory" class="btn-default btn-lg btn-block dropdown-toggle"
+                                data-toggle="dropdown" value="${name}">
+                                ${name}
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <c:forEach items="${parents}" var="list">
+                                <li class="wam-text-size-1">
+                                    <a onclick="displayLoader();location.href='/category?id=${list.getId()}';">
+                                            ${list.getName()}
+                                    </a>
+                                </li>
+                            </c:forEach>
+                        </ul>
                     </div>
                     <!-- Скрытые поля -->
                     <spring:bind path="id">
@@ -307,7 +329,7 @@
                     <!-- Родительская категория -->
                     <spring:bind path="parentId">
                         <input id="parentId" type="hidden" name="parent" class="form-control" value="
-                        <c:if test="${not empty parent}">${parent.getId()}></c:if>"</input>
+							<c:if test="${not empty parent}">${parent.getId()}></c:if>"</input>
 
                         <div class="col-md-12">
                             <h4><strong><spring:message code="label.page-category.parentName"/></strong></h4>
@@ -401,8 +423,7 @@
                     </button>
                 </div>
                 <div class="col-xs-12 col-md-6">
-                    <button type="submit" name="btnCancel"
-                            class="btn btn-default btn-lg btn-block wam-btn-1" onclick="location.reload();">
+                    <button type="submit" class="btn-default btn-lg btn-block wam-btn-1" onclick="${previousPage}">
                         <spring:message code="label.page-amount.btnCancel"/>
                     </button>
                 </div>
@@ -424,9 +445,28 @@
         <c:if test="${className=='product'}">
             <div class="container-fluid">
                 <form:form id="productForm" method="POST" modelAttribute="productForm" action="/product/save">
-                    <div class='col-xs-12 wam-margin-bottom-2'>
-                        <h2><spring:message code="label.page-data.product.title"/></h2>
+                    <input type="hidden" name="referer" class="form-control" value="${previousPage}"/>
+
+                    <div class='col-xs-12 col-md-6 wam-margin-bottom-2'>
+                        <h3><spring:message code="label.page-data.product.title"/></h3>
                     </div>
+                    <div class='col-xs-12 col-md-6 wam-margin-top-2'>
+                        <button id="currentProduct" class="btn-default btn-lg btn-block dropdown-toggle"
+                                data-toggle="dropdown" value="${name}">
+                                ${name}
+                            <span class="caret"></span>
+                        </button>
+                        <ul id="dropdownProducts" class="dropdown-menu">
+                            <c:forEach items="${products}" var="list">
+                                <li class="wam-text-size-1">
+                                    <a onclick="displayLoader();location.href='/product?id=${list.getId()}';">
+                                            ${list.getName()}
+                                    </a>
+                                </li>
+                            </c:forEach>
+                        </ul>
+                    </div>
+
                     <!-- Скрытые поля -->
                     <spring:bind path="id">
                         <form:input type="hidden" path="id" class="form-control" placeholder="${id}" ></form:input>
@@ -492,8 +532,7 @@
                     </button>
                 </div>
                 <div class="col-xs-12 col-md-6">
-                    <button type="submit" class="btn btn-default btn-lg btn-block wam-btn-1"
-                            onclick="location.reload();">
+                    <button type="submit" class="btn-default btn-lg btn-block wam-btn-1" onclick="${previousPage}">
                         <spring:message code="label.page-amount.btnCancel"/>
                     </button>
                 </div>

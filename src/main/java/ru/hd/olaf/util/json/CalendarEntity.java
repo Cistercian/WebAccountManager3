@@ -19,10 +19,10 @@ public class CalendarEntity {
         this.textColor = "#3d641b";
     }
 
-    public CalendarEntity(BigDecimal sum, Date date) {
+    public CalendarEntity(String sum, String date) {
         this();
-        this.title = sum.toString();
-        this.date = date.toString();
+        this.title = sum;
+        this.date = date;
     }
 
     public String getTitle() {

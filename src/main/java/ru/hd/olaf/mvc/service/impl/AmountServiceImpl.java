@@ -27,6 +27,7 @@ import ru.hd.olaf.util.json.JsonResponse;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 /**
@@ -265,11 +266,51 @@ public class AmountServiceImpl implements AmountService {
      * Получение списка CalendarEntity для заполнения FullCalendar
      *
      * @param user       пользователь
-     * @param isNeedNull выводить ли
-     * @param date       дата
+     * @param after  начальная дата отсечки
+     * @param before конечная дата отсечки
      * @return список CalendarEntity
      */
-    public List<CalendarEntity> getCalendarEntity(User user, Boolean isNeedNull, Date date) {
-        return null;
+    public List<CalendarEntity> getCalendarEntities(User user, LocalDate after, LocalDate before) {
+        logger.debug(LogUtil.getMethodName());
+
+        List<CalendarEntity> calendarEntities = new ArrayList<CalendarEntity>();
+
+        long countOfDays = after.until(before, ChronoUnit.DAYS);
+
+        boolean isNullNeeded = false;
+        if (countOfDays < 8)
+            isNullNeeded = true;
+
+        logger.debug(String.format("Интервал календаря: %s - %s. Кол-во дней в периоде: %d",
+                after, before, countOfDays));
+
+        while (after.compareTo(before) <= 0) {
+            logger.debug(String.format("Обрабатываемая дата: %s", after));
+            BigDecimal sumIncome = amountRepository.getSumByTypeAndUserIdAndDate((byte) 0,
+                    user,
+                    DateUtil.getDate(after),
+                    DateUtil.getDate(after));
+            BigDecimal sumExpense = amountRepository.getSumByTypeAndUserIdAndDate((byte) 1,
+                    user,
+                    DateUtil.getDate(after),
+                    DateUtil.getDate(after));
+
+            logger.debug(String.format("Сумма поступлений: %s, сумма расходов: %s", sumIncome, sumExpense));
+
+            if (!isNullNeeded &&
+                    sumExpense.compareTo(new BigDecimal("0")) == 0 &&
+                    sumIncome.compareTo(new BigDecimal("0")) == 0) {
+                logger.debug("В календарной дате не было движения - игнорируем запись.");
+
+                after = after.plusDays(1);
+                continue;
+            }
+
+            calendarEntities.add(new CalendarEntity(sumIncome.subtract(sumExpense).toString(), after.toString()));
+
+            after = after.plusDays(1);
+        }
+
+        return calendarEntities;
     }
 }

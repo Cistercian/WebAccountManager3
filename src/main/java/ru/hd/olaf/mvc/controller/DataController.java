@@ -13,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 import ru.hd.olaf.entities.Amount;
 import ru.hd.olaf.entities.Category;
 import ru.hd.olaf.entities.Product;
+import ru.hd.olaf.entities.User;
 import ru.hd.olaf.exception.CrudException;
 import ru.hd.olaf.mvc.service.*;
 import ru.hd.olaf.mvc.validator.AmountValidator;
@@ -75,12 +76,15 @@ public class DataController {
      * Функция сохранения категории
      * @param categoryForm html форма с заполненными данными сущности
      * @param parentId id корневой категории
+     * @param refererParam адрес предыдущей страницы
      * @param bindingResult для отображения ошибок
      * @return ModelAndView "data"
      */
     @RequestMapping(value = "/category/save", method = RequestMethod.POST, produces = "text/plain;charset=UTF-8")
-    public ModelAndView saveCategory(@ModelAttribute("categoryForm") Category categoryForm,
+    public ModelAndView saveCategory(@RequestHeader(value = "Referer", required = false) String refererHeader,
+                                     @ModelAttribute("categoryForm") Category categoryForm,
                                      @RequestParam(value = "parent") Integer parentId,
+                                     @RequestParam(value = "referer", required = false) String refererParam,
                                      BindingResult bindingResult){
         logger.debug(LogUtil.getMethodName());
 
@@ -105,23 +109,31 @@ public class DataController {
 
         categoryValidator.validate(categoryForm, bindingResult);
 
-        checkErrorsAndSave(categoryForm, bindingResult, modelAndView);
+        checkErrorsAndSave(categoryForm, refererHeader, bindingResult, modelAndView);
 
         modelAndView.addObject("parents", categoryService.getAll());
         modelAndView.addObject("parent", parent);
         modelAndView.addObject("category", categoryForm);
+
+        modelAndView.addObject("previousPage", refererParam);
+        if (categoryForm.getId() == null)
+            modelAndView.addObject("name", "Новая запись");
+        else
+            modelAndView.addObject("name", categoryForm.getName());
 
         return modelAndView;
     }
 
     /**
      * Функция просмотра страницы редактирования категории
+     * @param referer адрес предыдущей страницы
      * @param id id записи (необязательно)
      * @param model model?
      * @return Наименование view("data")
      */
     @RequestMapping(value = "/category", method = RequestMethod.GET)
-    public String getViewCategory(@RequestParam(value = "id", required = false) Integer id,
+    public String getViewCategory(@RequestHeader(value = "Referer", required = false) String referer,
+                                  @RequestParam(value = "id", required = false) Integer id,
                                   Model model){
         logger.debug(LogUtil.getMethodName());
 
@@ -132,6 +144,7 @@ public class DataController {
 
             category = (Category) response.getEntity();
             model.addAttribute("id", id);
+            model.addAttribute("name", category.getName());
             model.addAttribute("parent", (category.getParentId() != null ? category.getParentId() : ""));
             logger.debug(String.format("Обрабатывается категория: %s", category.toString()));
 
@@ -139,6 +152,7 @@ public class DataController {
 
             category = new Category();
             category.setType((byte)1);
+            model.addAttribute("name", "Новая запись");
             logger.debug(String.format("Категория с id = %d не найдена. Создаем новую.", id));
 
         }
@@ -147,18 +161,22 @@ public class DataController {
         model.addAttribute("parents", categoryService.getAll());
         model.addAttribute("categoryForm", category);
 
+        model.addAttribute("previousPage", "location.href='" + referer + "';");
+
         return "data/data";
     }
 
     /**
      * Функция просмотра страницы редактирования amount
+     * @param referer адрес предыдущей страницы
      * @param id id записи (необяхательно)
      * @param model текущеая модель
      * @return наименование view("data")
      */
     @RequestMapping(value = "/amount", method = RequestMethod.GET)
-    public String getViewAmount(@RequestParam(value = "id", required = false) Integer id,
-                                  Model model){
+    public String getViewAmount(@RequestHeader(value = "Referer", required = false) String referer,
+                                @RequestParam(value = "id", required = false) Integer id,
+                                Model model){
         logger.debug(LogUtil.getMethodName());
 
         Amount amount;
@@ -184,6 +202,8 @@ public class DataController {
         model.addAttribute("categories", categoryService.getAll());
         model.addAttribute("amountForm", amount);
 
+        model.addAttribute("previousPage", "location.href='" + referer + "';");
+
         return "data/data";
     }
 
@@ -192,13 +212,16 @@ public class DataController {
      * @param amountForm сама сущность
      * @param productName наименование товарной группы
      * @param categoryId id категории
+     * @param refererParam адрес предыдущей страницы
      * @param bindingResult результат валидации
      * @return ModelAndView
      */
     @RequestMapping(value = "/amount/save", method = RequestMethod.POST)
-    public ModelAndView saveAmount(@ModelAttribute("amountForm") Amount amountForm,
+    public ModelAndView saveAmount(@RequestHeader(value = "Referer", required = false) String refererHeader,
+                                   @ModelAttribute("amountForm") Amount amountForm,
                                    @RequestParam(value = "productName") String productName,
                                    @RequestParam(value = "category") Integer categoryId,
+                                   @RequestParam(value = "referer", required = false) String refererParam,
                                    BindingResult bindingResult) {
         logger.debug(LogUtil.getMethodName());
 
@@ -232,7 +255,7 @@ public class DataController {
 
         amountValidator.validate(amountForm, bindingResult);
 
-        checkErrorsAndSave(amountForm, bindingResult, modelAndView);
+        checkErrorsAndSave(amountForm, refererHeader, bindingResult, modelAndView);
 
         modelAndView.addObject("product", amountForm.getProductId());
         modelAndView.addObject("category", amountForm.getCategoryId());
@@ -240,18 +263,22 @@ public class DataController {
 
         modelAndView.addObject("categories", categoryService.getAll());
 
+        modelAndView.addObject("previousPage", refererParam);
+
         return modelAndView;
     }
 
     /**
      * Функция просмотра страницы редактирования товарной группы (product)
+     * @param referer адрес предыдущей страницы
      * @param id id сущности (необязательно)
      * @param model model?
      * @return наименование view("data")
      */
     @RequestMapping(value = "/product", method = RequestMethod.GET)
-    public String getViewProduct(@RequestParam(value = "id", required = false) Integer id,
-                                Model model){
+    public String getViewProduct(@RequestHeader(value = "Referer", required = false) String referer,
+                                 @RequestParam(value = "id", required = false) Integer id,
+                                 Model model){
         logger.debug(LogUtil.getMethodName());
 
         Product product;
@@ -260,9 +287,10 @@ public class DataController {
         if (response.getEntity() != null) {
             product = (Product) response.getEntity();
             model.addAttribute("id", id);
-
+            model.addAttribute("name", product.getName());
             logger.debug(String.format("Обрабатывается запись: %s", product.toString()));
         } else {
+            model.addAttribute("name", "Новая запись");
             logger.debug(String.format("Товарная группа с id = %d не найдена. ", id));
             return "index";
         }
@@ -271,6 +299,8 @@ public class DataController {
         model.addAttribute("products", productService.getAll());
         model.addAttribute("productForm", product);
 
+        model.addAttribute("previousPage", "location.href='" + referer + "';");
+
         return "data/data";
     }
 
@@ -278,16 +308,21 @@ public class DataController {
      * Функция сохранения товарной группы (product)
      * @param productForm html форма с заполненными реквизитами
      * @param mergeId id товарной группы, с которой будем объединять
+     * @param refererParam адрес предыдущей страницы
      * @param bindingResult для отображения ошибок валидации
      * @return ModelAndView(data)
      */
     @RequestMapping(value = "/product/save", method = RequestMethod.POST)
-    public ModelAndView saveProduct(@ModelAttribute("productForm") Product productForm,
-                                   @RequestParam(value = "productMerge") Integer mergeId,
-                                   BindingResult bindingResult) {
+    public ModelAndView saveProduct(@RequestHeader(value = "Referer", required = false) String refererHeader,
+                                    @ModelAttribute("productForm") Product productForm,
+                                    @RequestParam(value = "productMerge") Integer mergeId,
+                                    @RequestParam(value = "referer", required = false) String refererParam,
+                                    BindingResult bindingResult) {
         logger.debug(LogUtil.getMethodName());
 
         ModelAndView modelAndView = new ModelAndView("/data/data");
+        User currentUser = securityService.findLoggedUser();
+
         modelAndView.addObject("className", "product");
 
         //вычисляем объединяемую категорию
@@ -304,7 +339,7 @@ public class DataController {
             if (mergeProduct != null) {
                 logger.debug(String.format("Товарная группа для объединения: %s", mergeProduct));
 
-                for (Amount amount : amountService.getByProductAndDate(mergeProduct, null, null)) {
+                for (Amount amount : amountService.getByProductAndDate(currentUser, mergeProduct, null, null)) {
                     amount.setProductId(productForm);
                     response = utilService.saveEntity(amount);
 
@@ -325,18 +360,20 @@ public class DataController {
             }
         }
 
-        productForm.setUserId(securityService.findLoggedUser());
+        productForm.setUserId(currentUser);
         productValidator.validate(productForm, bindingResult);
 
-        checkErrorsAndSave(productForm, bindingResult, modelAndView);
+        checkErrorsAndSave(productForm, refererHeader, bindingResult, modelAndView);
 
         modelAndView.addObject("productForm", productForm);
         modelAndView.addObject("products", productService.getAll());
 
+        modelAndView.addObject("previousPage", refererParam);
+
         return modelAndView;
     }
 
-    private void checkErrorsAndSave(Object entity, BindingResult bindingResult, ModelAndView modelAndView) {
+    private void checkErrorsAndSave(Object entity, String url, BindingResult bindingResult, ModelAndView modelAndView) {
         JsonResponse response;
         if (bindingResult.hasErrors()) {
             logger.info("Ошибка валидиации!");
@@ -345,6 +382,7 @@ public class DataController {
 
             modelAndView.addObject("responseMessage", response.getMessage());
             modelAndView.addObject("responseType", response.getType());
+            modelAndView.addObject("responseUrl", url);
         }
     }
 

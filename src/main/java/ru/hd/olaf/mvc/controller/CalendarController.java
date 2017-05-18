@@ -59,38 +59,14 @@ public class CalendarController {
                                                               @RequestParam (value = "end") String endDate) {
         logger.debug(LogUtil.getMethodName() + String.format(". Интервал: %s - %s", startDate, endDate));
 
-        List<CalendarEntity> calendarEntities = new ArrayList<CalendarEntity>();
+        List<CalendarEntity> calendarEntities;
 
-        User user = securityService.findLoggedUser();
+        User currentUser = securityService.findLoggedUser();
 
         LocalDate after = DateUtil.getParsedDate(startDate);
         LocalDate before = DateUtil.getParsedDate(endDate);
 
-        long countOfDays = after.until(before, ChronoUnit.DAYS);
-
-        while (after.compareTo(before) <= 0) {
-
-            List<Amount> amounts = amountService.getByDate(user, after, after);
-            //в форме просмотра "за месяц" не отображаем даты с нулевой суммой
-            if (amounts.size() > 0 || countOfDays < 8) {
-
-                BigDecimal sum = new BigDecimal("0");
-
-                for (Amount amount : amounts) {
-                    sum = amount.getCategoryId().getType() == 0 ?
-                            sum.add(amount.getPrice()) :
-                            sum.subtract(amount.getPrice());
-                }
-
-                CalendarEntity calendarEntity = new CalendarEntity();
-                calendarEntity.setTitle(sum.toString());
-                calendarEntity.setDate(after.toString());
-
-                calendarEntities.add(calendarEntity);
-
-            }
-            after = after.plusDays(1);
-        }
+        calendarEntities = amountService.getCalendarEntities(currentUser, after, before);
 
         return calendarEntities;
     }

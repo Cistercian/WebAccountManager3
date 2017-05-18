@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.hd.olaf.entities.Product;
+import ru.hd.olaf.entities.User;
 import ru.hd.olaf.exception.AuthException;
 import ru.hd.olaf.exception.CrudException;
 import ru.hd.olaf.mvc.controller.LoginController;
@@ -154,7 +155,8 @@ public class ProductServiceImpl implements ProductService {
      */
     public JsonResponse delete(Product product) throws CrudException {
         try {
-            if (amountService.getByProductAndDate(product, null, null).size() > 0)
+            User currentUser = securityService.findLoggedUser();
+            if (amountService.getByProductAndDate(currentUser, product, null, null).size() > 0)
                 return new JsonResponse(ResponseType.ERROR, "Откат удаления: обнаружены существующие записи amount " +
                         "с данной товарной группой");
 

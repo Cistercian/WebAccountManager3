@@ -47,5 +47,5 @@ public interface AmountService {
 
     BigDecimal getSumByCategoryType(Byte type, User user, LocalDate after, LocalDate before);
 
-    List<CalendarEntity> getCalendarEntity(User user, Boolean isNeedNull, Date date);
+    List<CalendarEntity> getCalendarEntities(User user, LocalDate after, LocalDate before);
 }
