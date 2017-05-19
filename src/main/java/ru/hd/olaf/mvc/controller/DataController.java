@@ -23,6 +23,11 @@ import ru.hd.olaf.util.LogUtil;
 import ru.hd.olaf.util.json.JsonResponse;
 import ru.hd.olaf.util.json.ResponseType;
 
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -108,30 +113,44 @@ public class DataController {
 
         categoryValidator.validate(categoryForm, bindingResult);
 
-        checkErrorsAndSave(categoryForm, refererParam, bindingResult, modelAndView);
+        //В том случае, если создаем новую запись, то предустанавливаем ее наименование
+        // (на случай корректного отображения при ошике валидации)
+        // и потом при успехе отправляем пользователя в форму создания следующей записи
+        // иначе - на форму просмотра сохраняемой сущности
+        String url;
+        String name;
+        if (categoryForm.getId() == null) {
+            url = "/category?referer=" + refererParam;
+            name = "Новая запись";
+        } else {
+            name = ((Category) utilService.getById(Category.class, categoryForm.getId()).getEntity()).getName();
+            url = "/category?id=" + categoryForm.getId() + "&referer=" + refererParam;
+        }
 
+        checkErrorsAndSave(categoryForm, url, bindingResult, modelAndView);
+
+        modelAndView.addObject("id", categoryForm.getId());
+        modelAndView.addObject("name", name);
         modelAndView.addObject("parents", categoryService.getAll());
         modelAndView.addObject("parent", parent);
         modelAndView.addObject("category", categoryForm);
 
-        modelAndView.addObject("previousPage", refererParam);
-        if (categoryForm.getId() == null)
-            modelAndView.addObject("name", "Новая запись");
-        else
-            modelAndView.addObject("name", categoryForm.getName());
+        addRefAfterSave(refererParam, modelAndView);
 
         return modelAndView;
     }
 
     /**
      * Функция просмотра страницы редактирования категории
-     * @param referer адрес предыдущей страницы
+     * @param refererHeader адрес предыдущей страницы ()
+     * @param refererParam адрес предыдущей страницы
      * @param id id записи (необязательно)
      * @param model model?
      * @return Наименование view("data")
      */
     @RequestMapping(value = "/category", method = RequestMethod.GET)
-    public String getViewCategory(@RequestHeader(value = "Referer", required = false) String referer,
+    public String getViewCategory(@RequestHeader(value = "Referer", required = false) String refererHeader,
+                                  @RequestParam(value = "referer", required = false) String refererParam,
                                   @RequestParam(value = "id", required = false) Integer id,
                                   Model model){
         logger.debug(LogUtil.getMethodName());
@@ -160,20 +179,20 @@ public class DataController {
         model.addAttribute("parents", categoryService.getAll());
         model.addAttribute("categoryForm", category);
 
-        model.addAttribute("previousPage", referer);
+        addRef(refererHeader, refererParam, model);
 
         return "data/data";
     }
 
     /**
      * Функция просмотра страницы редактирования amount
-     * @param referer адрес предыдущей страницы
+     * @param refererHeader адрес предыдущей страницы
      * @param id id записи (необяхательно)
      * @param model текущеая модель
      * @return наименование view("data")
      */
     @RequestMapping(value = "/amount", method = RequestMethod.GET)
-    public String getViewAmount(@RequestHeader(value = "Referer", required = false) String referer,
+    public String getViewAmount(@RequestHeader(value = "Referer", required = false) String refererHeader,
                                 @RequestParam(value = "referer", required = false) String refererParam,
                                 @RequestParam(value = "id", required = false) Integer id,
                                 Model model){
@@ -202,12 +221,42 @@ public class DataController {
         model.addAttribute("categories", categoryService.getAll());
         model.addAttribute("amountForm", amount);
 
-        if (refererParam == null)
-            model.addAttribute("previousPage", referer);
-        else
-            model.addAttribute("previousPage", refererParam);
+        addRef(refererHeader, refererParam, model);
 
         return "data/data";
+    }
+
+    private void addRef(@RequestHeader(value = "Referer", required = false) String refererHeader, @RequestParam(value = "referer", required = false) String refererParam, Model model) {
+        String referer;
+        if (refererParam == null) {
+            try {
+                referer = refererHeader;
+                URL url = new URL(refererHeader);
+                referer = url.getPath() + "?" + URLEncoder.encode(url.getQuery(), "UTF-8");
+
+                logger.debug(String.format("Header referer: %s, URL: %s, path: %s, query: %s",
+                        refererHeader, url, url.getPath(), url.getQuery()));
+            } catch (UnsupportedEncodingException e) {
+                logger.error(String.format("Ошибка URLEncoder.encode: %s", e.getMessage()));
+                referer = refererHeader;
+            } catch (MalformedURLException e) {
+                logger.error(String.format("MalformedURLException: %s", e.getMessage()));
+                referer = refererHeader;
+            }
+
+            model.addAttribute("previousPage", referer);
+            model.addAttribute("previousUrl", refererHeader);
+        }
+        else {
+            referer = refererParam;
+            try {
+                referer = URLDecoder.decode(refererParam, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                logger.error(String.format("Ошибка URLDecoder.decode: %s", e.getMessage()));
+            }
+            model.addAttribute("previousPage", refererParam);
+            model.addAttribute("previousUrl", referer);
+        }
     }
 
     /**
@@ -257,7 +306,12 @@ public class DataController {
 
         amountValidator.validate(amountForm, bindingResult);
 
-        String url = amountForm.getId() ==  null ? "/amount" : refererParam;
+        String url;
+        if (amountForm.getId() == null) {
+            url = "/amount?referer=" + refererParam;
+        } else {
+            url = "/amount?id=" + amountForm.getId() + "&referer=" + refererParam;
+        }
         checkErrorsAndSave(amountForm, url, bindingResult, modelAndView);
 
         modelAndView.addObject("product", amountForm.getProductId());
@@ -266,20 +320,32 @@ public class DataController {
 
         modelAndView.addObject("categories", categoryService.getAll());
 
-        modelAndView.addObject("previousPage", refererParam);
+        addRefAfterSave(refererParam, modelAndView);
 
         return modelAndView;
     }
 
+    private void addRefAfterSave(@RequestParam(value = "referer", required = false) String refererParam, ModelAndView modelAndView) {
+        String referer = refererParam;
+        try {
+            referer = URLDecoder.decode(refererParam, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            logger.error(String.format("Ошибка URLDecoder.decode: %s", e.getMessage()));
+        }
+        modelAndView.addObject("previousPage", refererParam);
+        modelAndView.addObject("previousUrl", referer);
+    }
+
     /**
      * Функция просмотра страницы редактирования товарной группы (product)
-     * @param referer адрес предыдущей страницы
+     * @param refererParam адрес предыдущей страницы
      * @param id id сущности (необязательно)
      * @param model model?
      * @return наименование view("data")
      */
     @RequestMapping(value = "/product", method = RequestMethod.GET)
-    public String getViewProduct(@RequestHeader(value = "Referer", required = false) String referer,
+    public String getViewProduct(@RequestHeader(value = "Referer", required = false) String refererHeader,
+                                 @RequestParam(value = "referer", required = false) String refererParam,
                                  @RequestParam(value = "id", required = false) Integer id,
                                  Model model){
         logger.debug(LogUtil.getMethodName());
@@ -302,7 +368,7 @@ public class DataController {
         model.addAttribute("products", productService.getAll());
         model.addAttribute("productForm", product);
 
-        model.addAttribute("previousPage", referer);
+        addRef(refererHeader, refererParam, model);
 
         return "data/data";
     }
@@ -365,12 +431,18 @@ public class DataController {
         productForm.setUserId(currentUser);
         productValidator.validate(productForm, bindingResult);
 
-        checkErrorsAndSave(productForm, refererParam, bindingResult, modelAndView);
+        String url = "/product?id=" + productForm.getId() + "&referer=" + refererParam;
 
+        checkErrorsAndSave(productForm, url, bindingResult, modelAndView);
+
+        String name = ((Product)utilService.getById(productForm.getClass(), productForm.getId()).getEntity()).getName();
+
+        modelAndView.addObject("id", productForm.getId());
+        modelAndView.addObject("name", name);
         modelAndView.addObject("productForm", productForm);
         modelAndView.addObject("products", productService.getAll());
 
-        modelAndView.addObject("previousPage", refererParam);
+        addRefAfterSave(refererParam, modelAndView);
 
         return modelAndView;
     }

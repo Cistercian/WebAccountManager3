@@ -91,7 +91,6 @@
         );
         var onclick;
         if (type == 'SUCCESS') {
-            //alert (type + ":" + document.location.href + ":" + message);
             if (document.location.href.endsWith("save")) {
                 onclick = "location.href=\"" + Url + "\"";
             } else {
@@ -280,13 +279,13 @@
                     </button>
                 </div>
                 <div class="col-xs-12 col-md-6">
-                    <button type="submit" class="btn-default btn-lg btn-block wam-btn-1" onclick="${previousPage}">
+                    <button type="submit" class="btn-default btn-lg btn-block wam-btn-1 return" onclick="location.href='${previousUrl}'">
                         <spring:message code="label.page-amount.btnCancel"/>
                     </button>
                 </div>
                 <div class="col-xs-12 col-md-6 col-md-push-6">
                     <button type="submit" class="btn-default btn-lg btn-block wam-btn-1"
-                            onclick="location.href='/amount'">
+                            onclick="location.href='/amount?referer=${previousPage}'">
                         <spring:message code="label.page-amount.btnNew"/>
                     </button>
                 </div>
@@ -314,7 +313,7 @@
                         <ul class="dropdown-menu">
                             <c:forEach items="${parents}" var="list">
                                 <li class="wam-text-size-1">
-                                    <a onclick="displayLoader();location.href='/category?id=${list.getId()}';">
+                                    <a onclick="displayLoader();location.href='/category?id=${list.getId()}&referer=${previousPage}';">
                                             ${list.getName()}
                                     </a>
                                 </li>
@@ -423,14 +422,14 @@
                     </button>
                 </div>
                 <div class="col-xs-12 col-md-6">
-                    <button type="submit" class="btn-default btn-lg btn-block wam-btn-1" onclick="${previousPage}">
+                    <button type="submit" class="btn-default btn-lg btn-block wam-btn-1" onclick="location.href='${previousPage}';">
                         <spring:message code="label.page-amount.btnCancel"/>
                     </button>
                 </div>
                 <div class="col-xs-12 col-md-6 col-md-push-6">
                     <button type="submit" name="btnNew"
                             class="btn-default btn-lg btn-block wam-btn-1"
-                            onclick="location.href='/category.html'">
+                            onclick="location.href='/category.html?referer=${previousPage}'">
                         <spring:message code="label.page-amount.btnNew"/>
                     </button>
                 </div>
@@ -459,7 +458,7 @@
                         <ul id="dropdownProducts" class="dropdown-menu">
                             <c:forEach items="${products}" var="list">
                                 <li class="wam-text-size-1">
-                                    <a onclick="displayLoader();location.href='/product?id=${list.getId()}';">
+                                    <a onclick="displayLoader();location.href='/product?id=${list.getId()}&referer=${previousPage}';">
                                             ${list.getName()}
                                     </a>
                                 </li>
@@ -532,7 +531,7 @@
                     </button>
                 </div>
                 <div class="col-xs-12 col-md-6">
-                    <button type="submit" class="btn-default btn-lg btn-block wam-btn-1" onclick="${previousPage}">
+                    <button type="submit" class="btn-default btn-lg btn-block wam-btn-1" onclick="location.href='${previousPage}';">
                         <spring:message code="label.page-amount.btnCancel"/>
                     </button>
                 </div>
