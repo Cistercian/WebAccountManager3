@@ -81,10 +81,9 @@ public class DataController {
      * @return ModelAndView "data"
      */
     @RequestMapping(value = "/category/save", method = RequestMethod.POST, produces = "text/plain;charset=UTF-8")
-    public ModelAndView saveCategory(@RequestHeader(value = "Referer", required = false) String refererHeader,
+    public ModelAndView saveCategory(@RequestParam(value = "referer", required = false) String refererParam,
                                      @ModelAttribute("categoryForm") Category categoryForm,
                                      @RequestParam(value = "parent") Integer parentId,
-                                     @RequestParam(value = "referer", required = false) String refererParam,
                                      BindingResult bindingResult){
         logger.debug(LogUtil.getMethodName());
 
@@ -109,7 +108,7 @@ public class DataController {
 
         categoryValidator.validate(categoryForm, bindingResult);
 
-        checkErrorsAndSave(categoryForm, refererHeader, bindingResult, modelAndView);
+        checkErrorsAndSave(categoryForm, refererParam, bindingResult, modelAndView);
 
         modelAndView.addObject("parents", categoryService.getAll());
         modelAndView.addObject("parent", parent);
@@ -161,7 +160,7 @@ public class DataController {
         model.addAttribute("parents", categoryService.getAll());
         model.addAttribute("categoryForm", category);
 
-        model.addAttribute("previousPage", "location.href='" + referer + "';");
+        model.addAttribute("previousPage", referer);
 
         return "data/data";
     }
@@ -175,6 +174,7 @@ public class DataController {
      */
     @RequestMapping(value = "/amount", method = RequestMethod.GET)
     public String getViewAmount(@RequestHeader(value = "Referer", required = false) String referer,
+                                @RequestParam(value = "referer", required = false) String refererParam,
                                 @RequestParam(value = "id", required = false) Integer id,
                                 Model model){
         logger.debug(LogUtil.getMethodName());
@@ -202,7 +202,10 @@ public class DataController {
         model.addAttribute("categories", categoryService.getAll());
         model.addAttribute("amountForm", amount);
 
-        model.addAttribute("previousPage", "location.href='" + referer + "';");
+        if (refererParam == null)
+            model.addAttribute("previousPage", referer);
+        else
+            model.addAttribute("previousPage", refererParam);
 
         return "data/data";
     }
@@ -217,8 +220,7 @@ public class DataController {
      * @return ModelAndView
      */
     @RequestMapping(value = "/amount/save", method = RequestMethod.POST)
-    public ModelAndView saveAmount(@RequestHeader(value = "Referer", required = false) String refererHeader,
-                                   @ModelAttribute("amountForm") Amount amountForm,
+    public ModelAndView saveAmount(@ModelAttribute("amountForm") Amount amountForm,
                                    @RequestParam(value = "productName") String productName,
                                    @RequestParam(value = "category") Integer categoryId,
                                    @RequestParam(value = "referer", required = false) String refererParam,
@@ -255,7 +257,8 @@ public class DataController {
 
         amountValidator.validate(amountForm, bindingResult);
 
-        checkErrorsAndSave(amountForm, refererHeader, bindingResult, modelAndView);
+        String url = amountForm.getId() ==  null ? "/amount" : refererParam;
+        checkErrorsAndSave(amountForm, url, bindingResult, modelAndView);
 
         modelAndView.addObject("product", amountForm.getProductId());
         modelAndView.addObject("category", amountForm.getCategoryId());
@@ -299,7 +302,7 @@ public class DataController {
         model.addAttribute("products", productService.getAll());
         model.addAttribute("productForm", product);
 
-        model.addAttribute("previousPage", "location.href='" + referer + "';");
+        model.addAttribute("previousPage", referer);
 
         return "data/data";
     }
@@ -313,8 +316,7 @@ public class DataController {
      * @return ModelAndView(data)
      */
     @RequestMapping(value = "/product/save", method = RequestMethod.POST)
-    public ModelAndView saveProduct(@RequestHeader(value = "Referer", required = false) String refererHeader,
-                                    @ModelAttribute("productForm") Product productForm,
+    public ModelAndView saveProduct(@ModelAttribute("productForm") Product productForm,
                                     @RequestParam(value = "productMerge") Integer mergeId,
                                     @RequestParam(value = "referer", required = false) String refererParam,
                                     BindingResult bindingResult) {
@@ -363,7 +365,7 @@ public class DataController {
         productForm.setUserId(currentUser);
         productValidator.validate(productForm, bindingResult);
 
-        checkErrorsAndSave(productForm, refererHeader, bindingResult, modelAndView);
+        checkErrorsAndSave(productForm, refererParam, bindingResult, modelAndView);
 
         modelAndView.addObject("productForm", productForm);
         modelAndView.addObject("products", productService.getAll());
