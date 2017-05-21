@@ -227,7 +227,7 @@ public class DataController {
     }
 
     private void addRef(@RequestHeader(value = "Referer", required = false) String refererHeader, @RequestParam(value = "referer", required = false) String refererParam, Model model) {
-        String referer;
+        String referer = "";
         if (refererParam == null) {
             try {
                 referer = refererHeader;
@@ -241,6 +241,9 @@ public class DataController {
                 referer = refererHeader;
             } catch (MalformedURLException e) {
                 logger.error(String.format("MalformedURLException: %s", e.getMessage()));
+                referer = refererHeader;
+            } catch (NullPointerException e) {
+                logger.error(String.format("NPE: %s, referer: %s", e.getMessage(), referer));
                 referer = refererHeader;
             }
 
