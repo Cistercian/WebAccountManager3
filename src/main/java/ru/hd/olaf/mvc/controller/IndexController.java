@@ -146,7 +146,7 @@ public class IndexController {
             public int compare(BarEntity o1, BarEntity o2) {
                 int result = o1.getType().compareTo(o2.getType());
                 if (result == 0)
-                    result = o2.getSum().compareTo(o1.getSum());
+                    result = o2.getSum().abs().compareTo(o1.getSum().abs());
 
                 return result;
             }

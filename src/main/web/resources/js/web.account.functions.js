@@ -128,15 +128,15 @@ function drawBarsByParentId(isChildren, categoryId, after, before) {
                         classTitle + ": " + className + "" +
                         "</strong1></div></div>" +
                         "<div class='row'><div class='col-xs-12'>" + elemLink + "" +
-                        "<span id='barSum" + classType + classId + "' class='pull-right text-muted' " +
+                        "<strong id='barSum" + classType + classId + "' class='pull-right text-muted' " +
                         "value='" + classSum + "'>" +
                         numberToString(classSum) + " руб." +
-                        "</span>" +
+                        "</strong>" +
                         "</h4></div></div>" +
                         "<div class='progress " + tagClassProgress + " progress-striped active wam-margin-bottom-1' >" +
                         "<div class='progress-bar progress-bar-" + styles[curNumStyle] + "' role='progressbar' " +
                         "aria-valuenow='" + classSum + "'" + "aria-valuemin='0' aria-valuemax='100' " +
-                        "style='width: " + normalSum + "%' " + "value='" + className +
+                        "style='width: " + Math.abs(normalSum) + "%' " + "value='" + className +
                         "'>" +
                         "<span class='sr-only'>" +
                         numberToString(classSum) +
@@ -149,9 +149,9 @@ function drawBarsByParentId(isChildren, categoryId, after, before) {
                 totalSum = totalSum.toFixed(2);
                 $('#' + idBarElem).append(
                     "<div class='row'>" +
-                    (isChildren ? "<div class='col-md-12 wam-margin-bottom-2'><h6><span>" : "<div class='col-md-12'><h4><span class='pull-right text-muted'>") +
+                    (isChildren ? "<div class='col-md-12 wam-margin-bottom-2'><h5><span>" : "<div class='col-md-12'><h4><strong class='pull-right text-muted'>") +
                     "ИТОГО " + numberToString(totalSum) + " руб." +
-                    "</span>" + (isChildren ? "</h6>" : "</h4>") +
+                    "</strong>" + (isChildren ? "</h5>" : "</h4>") +
                     "</div><p><p>" +
                     "</div>"
                 );
