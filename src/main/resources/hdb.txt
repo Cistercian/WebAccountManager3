@@ -57,6 +57,7 @@ CREATE TABLE limits (
   , PRIMARY KEY (id)
 );
 
+ALTER TABLE amounts ADD product_id INT;
 ALTER TABLE limits ADD product_id INT;
 ALTER TABLE limits ADD category_id INT;
 

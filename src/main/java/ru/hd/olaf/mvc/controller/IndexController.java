@@ -96,7 +96,7 @@ public class IndexController {
         modelAndView.addObject("sumIncome", sumIncome);
         modelAndView.addObject("sumExpense", sumExpense);
 
-        //TODO: jpa query
+        //TODO: jpa query, devidebyzero?
         BigDecimal maxIncome = new BigDecimal("0");
         BigDecimal maxExpense = new BigDecimal("0");
 
@@ -104,7 +104,7 @@ public class IndexController {
             if ("CategoryIncome".equalsIgnoreCase(barEntity.getType())) {
                 maxIncome = maxIncome.compareTo(barEntity.getSum()) > 0 ? maxIncome : barEntity.getSum();
             } else {
-                maxExpense = maxExpense.compareTo(barEntity.getSum()) > 0 ? maxExpense : barEntity.getSum();
+                maxExpense = maxExpense.abs().compareTo(barEntity.getSum().abs()) > 0 ? maxExpense : barEntity.getSum();
             }
         }
 

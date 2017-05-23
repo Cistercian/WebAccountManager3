@@ -25,6 +25,18 @@ public class CalendarEntity {
         this.date = date;
     }
 
+    public CalendarEntity(String sum, String date, boolean isNegative) {
+        this();
+        this.title = sum;
+        this.date = date;
+
+        //Если 1, то имеем дело с расходом
+        if (isNegative) {
+            this.color = "#da8b7e";
+            this.textColor = "#631712";
+        }
+    }
+
     public String getTitle() {
         return title;
     }

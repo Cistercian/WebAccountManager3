@@ -128,6 +128,7 @@ public class CategoryServiceImpl implements CategoryService {
                 String type = parent.getParentId() == null ?
                         parent.getType() == 0 ? "CategoryIncome" : "CategoryExpense" :
                         "child";
+
                 entity.setType(type);
 
                 if ("child".equals(entity.getType()))
@@ -138,6 +139,7 @@ public class CategoryServiceImpl implements CategoryService {
                         entity.getId()));
             }
         }
+
         return entity;
     }
 

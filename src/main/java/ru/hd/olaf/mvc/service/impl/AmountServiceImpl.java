@@ -306,7 +306,10 @@ public class AmountServiceImpl implements AmountService {
                 continue;
             }
 
-            calendarEntities.add(new CalendarEntity(sumIncome.subtract(sumExpense).toString(), after.toString()));
+            BigDecimal sumTotal = sumIncome.subtract(sumExpense);
+            calendarEntities.add(new CalendarEntity(sumTotal.toString(),
+                    after.toString(),
+                    sumTotal.compareTo(new BigDecimal("0")) < 0 ? true : false));
 
             after = after.plusDays(1);
         }

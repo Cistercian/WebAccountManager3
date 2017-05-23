@@ -17,7 +17,7 @@
         $('#sumExpense').append(numberToString('${sumExpense}') + " руб.");
 
         $('[id ^= "categoryBarSum"]').each(function () {
-            $(this).text(numberToString($(this).attr('value')) + " руб.");
+            $(this).text(numberToString(Math.abs($(this).attr('value'))) + " руб.");
         });
 
         drawChartOfTypes("<spring:message code='label.index.chart.income.label' />=${sumIncome},<spring:message code='label.index.chart.expense.label' />=${sumExpense}", "typeChart");

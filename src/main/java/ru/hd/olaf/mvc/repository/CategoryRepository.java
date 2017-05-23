@@ -21,11 +21,13 @@ public interface CategoryRepository extends CrudRepository<Category, Integer> {
     List<Category> findByUserId(User user);
 
     @Query("SELECT new ru.hd.olaf.util.json.BarEntity(" +
-                "CASE WHEN (c.type = 0) THEN " +
-                "'CategoryIncome' " +
-                "WHEN (c.type = 1) THEN " +
-                "'CategoryExpense' END " +
-                ", c.id, SUM(a.price), c.name) " +
+            "CASE " +
+                "WHEN (c.type = 0) THEN 'CategoryIncome' " +
+                "WHEN (c.type = 1) THEN 'CategoryExpense' " +
+            "END, " +
+            "c.id, " +
+            "SUM(a.price), " +
+            "c.name) " +
             "FROM Amount a LEFT JOIN a.categoryId c " +
             "WHERE a.categoryId = c AND c.userId = ?1 AND c.parentId = ?2 AND " +
             "a.date BETWEEN ?3 AND ?4 " +
@@ -40,7 +42,12 @@ public interface CategoryRepository extends CrudRepository<Category, Integer> {
                 "WHEN c.type = 1 THEN 'CategoryExpense' " +
                 "" +
             "END " +
-            ", c.id, SUM(a.price), c.name) " +
+            ", c.id, " +
+            "CASE " +
+                "WHEN (c.type = 0) THEN SUM(a.price) "+
+                "ELSE SUM(-a.price) " +
+            "END, " +
+            "c.name) " +
             "FROM Amount a LEFT JOIN a.categoryId c LEFT JOIN c.parentId p " +
             "WHERE a.categoryId = c AND c.userId = ?1  AND " +
             "a.date BETWEEN ?2 AND ?3 " +

@@ -145,10 +145,8 @@ public class LimitsController {
                         limitForm.getEntityId(), response.getMessage()));
             }
         }
-
+        logger.debug(String.format("Обрабатывается сущность: %s", limitForm.toString()));
         limitValidator.validate(limitForm, bindingResult);
-
-        logger.debug(String.format("Обрабатывается сущность: %s", limitForm));
 
         if (bindingResult.hasErrors()) {
             logger.info("Ошибка валидиации!");

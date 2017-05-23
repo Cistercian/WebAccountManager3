@@ -37,7 +37,7 @@ public class LimitValidator implements Validator {
     public void validate(Object o, Errors errors) {
         Limit limit = (Limit) o;
 
-        if (limit.getType() == null)
+        if (limit.getType() == null || limit.getType().length() == 0)
             setError("type", "Validation.limit.type", errors);
         else {
             JsonResponse response = new JsonResponse();
