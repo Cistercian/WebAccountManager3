@@ -107,7 +107,7 @@ public class User {
     }
 
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "userId", cascade = CascadeType.REMOVE, orphanRemoval = false)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "userId", cascade = CascadeType.REMOVE, orphanRemoval = false)
     @JsonBackReference
     public Set<Category> getCategories() {
         return categories;
@@ -117,7 +117,7 @@ public class User {
         this.categories = categories;
     }
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "userId", cascade = CascadeType.REMOVE, orphanRemoval = false)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "userId", cascade = CascadeType.REMOVE, orphanRemoval = false)
     @JsonBackReference
     public Set<Amount> getAmounts() {
         return amounts;
@@ -127,7 +127,7 @@ public class User {
         this.amounts = amounts;
     }
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "userId", cascade = CascadeType.REMOVE, orphanRemoval = false)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "userId", cascade = CascadeType.REMOVE, orphanRemoval = false)
     @JsonBackReference
     public Set<Product> getProducts() {
         return products;
@@ -137,7 +137,7 @@ public class User {
         this.products = products;
     }
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "userId", cascade = CascadeType.REMOVE, orphanRemoval = false)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "userId", cascade = CascadeType.REMOVE, orphanRemoval = false)
     @JsonBackReference
     public Set<Limit> getLimits() {
         return limits;
@@ -147,7 +147,7 @@ public class User {
         this.limits = limits;
     }
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "userId", cascade = CascadeType.REMOVE, orphanRemoval = false)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "userId", cascade = CascadeType.REMOVE, orphanRemoval = false)
     @JsonBackReference
     public Set<Mail> getMail() {
         return mail;
@@ -195,8 +195,6 @@ public class User {
                 ", fullName='" + fullName + '\'' +
                 ", role='" + role + '\'' +
                 ", enabled=" + enabled +
-                ", categories=" + categories +
-                ", amounts=" + amounts +
                 '}';
     }
 }

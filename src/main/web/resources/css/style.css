@@ -50,6 +50,10 @@
 	margin-left: 10px;
 }
 
+.wam-margin-right-3 {
+	margin-right: 20px;
+}
+
 .wam-font-1{
 	font-family: 'Roboto Slab', serif;
 }
@@ -92,8 +96,13 @@
 		border-width: 2px;
 		border-color: #b7b7b7;
 		font-family: 'Roboto Slab', serif;
-		font-size: 15px;
+		font-size: 16px;
 		/*color: #675f6f;*/
+	}
+	.modal-body {
+		padding: 0px;
+		padding-right: 7px;
+		padding-left: 7px
 	}
 }
 /*Принудительно скрываем скролбар*/
@@ -242,4 +251,11 @@ div.dataTables_filter {
 }
 .wam-bold {
 	font-weight: bold;
+}
+.wam-without-truncate1 dt{
+	white-space: normal;
+	width: 40%;
+}
+.wam-without-truncate1 dd{
+	margin-left: 42%
 }

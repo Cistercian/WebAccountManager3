@@ -96,7 +96,7 @@ public class Mail {
         this.isRead = isRead;
     }
 
-    @ManyToOne()
+    @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonBackReference
     public User getUserId() {

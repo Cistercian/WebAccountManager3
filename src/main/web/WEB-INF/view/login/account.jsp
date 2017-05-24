@@ -10,9 +10,11 @@
 
 <jsp:include page="/WEB-INF/view/tags/header-template.jsp"></jsp:include>
 
-<spring:url value="/resources/js/dataTables.bootstrap.min.js" var="js"/>
-<script src="${js}"></script>
+<spring:url value="/resources/css/dataTables.bootstrap.css" var="style"/>
+<link rel="stylesheet" href="${style}">
+
 <spring:url value="/resources/js/jquery.dataTables.min.js" var="js"/>
+
 <script src="${js}"></script>
 
 <script language="javascript" type="text/javascript">
@@ -63,7 +65,7 @@
             success: function (data) {
                 hideLoader();
 
-                displayMessage('SUCCESS', data, "");
+                displayMessage('MAIL', data, "");
             }
         });
     }
@@ -76,9 +78,9 @@
      */
     function displayMessage(type, message, Url) {
         ClearModalPanel();
-        if (type == 'info') {
+        if (type == 'MAIL') {
             $('#modalBody').append(
-                    "<h4><strong>" + message + "</strong></h4>"
+                    message
             );
             $('#modalFooter').append(
                     "<button type='button' class='btn btn-primary' data-dismiss='modal' >" +
@@ -90,22 +92,12 @@
                     "<h4><strong>" + message + "</strong></h4>"
             );
             $('#modalFooter').append(
-                    "<button type='button' class='btn btn-primary' onclick='location.reload();'>" +
+                    "<button type='button' class='btn btn-primary' data-dismiss='modal'>" +
                     "Ok" +
                     "</button>"
             );
             //alert("должен быть показ");
             $('#modal').modal('show'); //TODO: wtf?
-        } else {
-            $('#modalBody').append(message);
-            $('#modalFooter').append(
-                    "<button type='button' class='btn btn-primary' onclick='sendLimitSubmit();return false;'>" +
-                    "${btnlimitLabelOk}" +
-                    "</button>" +
-                    "<button type='button' class='btn btn-default' data-dismiss='modal' >" +
-                    "${btnlimitLabelCancel}" +
-                    "</button>"
-            );
         }
         $('#modal').modal('show');
     }

@@ -109,7 +109,7 @@
                     var type = barData.type;
                     var name = barData.name;
                     var id = barData.id;
-                    var sum = barData.sum;
+                    var sum = Math.abs(barData.sum);
 
                     <!-- меняем цвет баров -->
                     curNumStyle = curNumStyle < 4 ? curNumStyle + 1 : 0;

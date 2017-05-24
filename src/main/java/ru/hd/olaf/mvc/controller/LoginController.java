@@ -122,7 +122,7 @@ public class LoginController {
             }
         });
 
-        model.addAttribute("mail", mailService.getAll());
+        model.addAttribute("mail", list);
 
         return "login/account";
     }

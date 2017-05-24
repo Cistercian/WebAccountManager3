@@ -164,13 +164,15 @@ public class MailServiceImpl implements MailService {
         for (BarEntity entity : list) {
             if (entity.getSum().compareTo(entity.getLimit()) >= 0) {
                 String title = "Уведомление о достижении лимита.";
-                String text = "Зафиксирован перерасход лимита по " +
+                String text = "<p class=\"lead text-justify\">Зафиксирован перерасход лимита по " +
                         (entity.getType().equalsIgnoreCase("product") ? "товарной группе " : "категории ") +
-                        "<strong>" + entity.getName() + "</strong>. " +
-                        "<p class='lead'>Установленный лимит: " + entity.getLimit() + " руб. </p>" +
-                        "<p class='lead'>Текущая сумма: " + entity.getSum() + " руб. </p>" +
-                        "<p><a href='statistic/limit-control'>Перейти к таблице лимитов</a></p>\n" +
-                        "<blockquote class='text-right'>С уважением Уведомлятор v 0.0.1.</blockquote>";
+                        " <strong>" + entity.getName() + "</strong>. </p> " +
+                        "<div class=\"wam-margin-top-3\">" +
+                        "<p class=\"lead wam-margin-bottom-0\">Установленный лимит: " + entity.getLimit() + " руб.</p>" +
+                        "<p class=\"lead\">Текущая сумма: " + entity.getSum() + " руб.</p>" +
+                        "</div>" +
+                        "<p class=\"lead\"><a href=\"statistic/limit-control\">Перейти к таблице лимитов</a></p>" +
+                        "<h3 class=\"text-right wam-margin-right-3\"><small>С уважением Уведомлятор v 0.0.1.</small><h3>";
 
                 logger.debug(text);
 
