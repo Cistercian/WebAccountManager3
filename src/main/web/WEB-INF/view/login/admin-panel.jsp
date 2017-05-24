@@ -22,8 +22,8 @@
         });
 
         //показываем модальное окно при получении ошибки в момент загрузки страницы
-        if ($('#response').val() != '') {
-            displayMessage('info', $('#response').val());
+        if ($('#responseMessage').val() != '') {
+            displayMessage('info', $('#responseMessage').val());
         }
 
         var table = $('#mail').DataTable({
@@ -52,6 +52,23 @@
             }
         });
     })
+    function refreshLimits(){
+        $.ajax({
+            type: "GET",
+            url: '/admin-panel/refreshLimits',
+            data: {},
+            beforeSend: function () {
+                displayLoader();
+            },
+            success: function (data) {
+                hideLoader();
+                var message = data.message;
+                var type = data.type;
+
+                displayMessage(type, message, "/index");
+            }
+        });
+    }
     function getMail(id){
         $.ajax({
             type: "GET",
@@ -66,6 +83,43 @@
                 displayMessage('SUCCESS', data, "");
             }
         });
+    }
+    function sendMail(){
+        $.ajax({
+            type: "POST",
+            url: '/admin-panel/sendMail',
+            data: {
+                'username' : $('#userId').val(),
+                'title' : $('#title').val(),
+                'text' : $('#text').val(),
+            },
+            beforeSend: function () {
+                displayLoader();
+            },
+            success: function (data) {
+                hideLoader();
+
+                displayMessage(data.type, data.message, "");
+            }
+        });
+    }
+    function setDropdownListId(id, name, type) {
+        var elem;
+        switch (type) {
+            case 'users':
+                elem = $('#users');
+                $('#userId').val(id);
+                break;
+        }
+
+        elem.text(name + "  ");
+        elem.val(id);
+        elem.append("\<span class=\"caret\">\<\/span>");
+    }
+    function scrollPage(destination){
+        $('html, body').stop().animate({
+            scrollTop: destination - 50
+        }, 2000, 'easeInOutExpo');
     }
 
     /**
@@ -85,7 +139,7 @@
                     "Ok" +
                     "</button>"
             );
-        } else if (type == 'SUCCESS') {
+        } else {
             $('#modalBody').append(
                     "<h4><strong>" + message + "</strong></h4>"
             );
@@ -96,16 +150,6 @@
             );
             //alert("должен быть показ");
             $('#modal').modal('show'); //TODO: wtf?
-        } else {
-            $('#modalBody').append(message);
-            $('#modalFooter').append(
-                    "<button type='button' class='btn btn-primary' onclick='sendLimitSubmit();return false;'>" +
-                    "${btnlimitLabelOk}" +
-                    "</button>" +
-                    "<button type='button' class='btn btn-default' data-dismiss='modal' >" +
-                    "${btnlimitLabelCancel}" +
-                    "</button>"
-            );
         }
         $('#modal').modal('show');
     }
@@ -133,59 +177,23 @@
 </div>
 
 <div class="container-fluid content wam-radius wam-min-height-0">
+    <input id="_csrf_token" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+    <textarea id="responseMessage" name="responseMessage" style="display: none;">${responseMessage}</textarea>
+    <input id="responseType" name="responseType" style="display: none;" value="${responseType}"/>
+    <input id="responseUrl" name="responseUrl" style="display: none;" value="${responseUrl}"/>
+
     <div class='row'>
-        <input id="_csrf_token" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-        <textarea id="response" name="response" style="display: none;">${response}</textarea>
         <div class="container-fluid">
             <div class='col-xs-12 wam-margin-bottom-2'>
-                <h3><spring:message code="label.account.title"/></h3>
+                <h3><spring:message code="label.admin.title"/></h3>
             </div>
 
-            <form:form method="POST" modelAttribute="passwordForm" class="form-signin">
-                <div class="col-xs-12 col-md-6">
-                    <h4><strong><spring:message code="label.account.password.title"/></strong></h4>
-                </div>
-                <spring:bind path="passwordOld">
-                    <div class="col-xs-12 col-md-6">
-                        <div class="form-group ${status.error ? 'has-error' : ''}">
-                            <spring:message code="label.login.passwordOld" var="passwordOld"/>
-                            <form:input type="password" path="passwordOld" class="form-control"
-                                        placeholder="${passwordOld}"></form:input>
-                            <form:errors path="passwordOld"></form:errors>
-                        </div>
-                    </div>
-                </spring:bind>
-                <spring:bind path="password">
-                    <div class="col-xs-12 col-md-6 col-md-offset-6">
-                        <div class="form-group ${status.error ? 'has-error' : ''}">
-                            <spring:message code="label.login.password" var="password"/>
-                            <form:input type="password" path="password" class="form-control"
-                                        placeholder="${password}"></form:input>
-                            <form:errors path="password"></form:errors>
-                        </div>
-                    </div>
-                </spring:bind>
-                <spring:bind path="passwordConfirm">
-                    <div class="col-xs-12 col-md-6 col-md-offset-6">
-                        <div class="form-group ${status.error ? 'has-error' : ''}">
-                            <spring:message code="label.registration.passwordConfirm" var="passwordConfirm"/>
-                            <form:input type="password" path="passwordConfirm" class="form-control"
-                                        placeholder="${passwordConfirm}"></form:input>
-                            <form:errors path="passwordConfirm"></form:errors>
-                        </div>
-                    </div>
-                </spring:bind>
-                <div class="col-xs-12 col-md-6 col-md-offset-6">
-                    <button class="btn btn-lg btn-primary btn-block wam-btn-2" type="submit">
-                        <spring:message code="label.account.password.submit"/>
-                    </button>
-                </div>
-            </form:form>
-        </div>
-    </div>
+            <div class="col-xs-12 col-md-6 col-md-offset-6">
+                <button class="btn btn-lg btn-primary btn-block wam-btn-2" type="submit" onclick="refreshLimits();return false;">
+                    <spring:message code="label.admin.limits.refresh"/>
+                </button>
+            </div>
 
-    <div class='row'>
-        <div class="container-fluid">
             <div class="col-xs-12 col-md-12">
                 <h4><strong><spring:message code="label.account.mail"/></strong></h4>
             </div>
@@ -218,6 +226,51 @@
                     </c:forEach>
                     </tbody>
                 </table>
+            </div>
+
+            <div class="col-xs-12 col-md-12">
+                <h4><strong><spring:message code="label.admin.mail.title"/></strong></h4>
+            </div>
+            <div class="col-xs-12 col-md-4">
+                <input id="userId" type="hidden" name="username" class="form-control" />
+                <button id="users" class="btn-default btn-lg btn-block dropdown-toggle"
+                        data-toggle="dropdown">
+                    Select User
+                    <span class="caret"></span>
+                </button>
+                <ul id="dropdownUsers" class="dropdown-menu">
+                    <li class="wam-text-size-1">
+                        <a onclick="setDropdownListId(-1, 'Select User', 'users');return false;">
+                            Select User
+                        </a>
+                    </li>
+                    <li class="divider"></li>
+                    <c:forEach items="${users}" var="list">
+                        <li class="wam-text-size-1"><a id='${list.getId()}'
+                                                       onclick="setDropdownListId('${list.getUsername()}','${list.getUsername()}', 'users');
+                                                               return false;">${list.getUsername()}</a></li>
+                    </c:forEach>
+                    <li class="divider"></li>
+                    <li class="wam-text-size-1">
+                        <a onclick="setDropdownListId('ALL', 'ALL', 'users');return false;">
+                            ALL USERS
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-xs-12 col-md-6 ">
+                <input type="text" class="form-control form input-lg" id="title"
+                       placeholder="title"/>
+            </div>
+            <div class="col-xs-12 col-md-12">
+				<textarea type="text" class="form-control input-lg" rows="20" id="text"
+                          placeholder="text"></textarea>
+            </div>
+            <div class="col-xs-12 col-md-6 col-md-offset-6">
+                <button type="submit" class="btn btn-primary btn-lg btn-block wam-btn-1"
+                        onclick="sendMail();">
+                    <spring:message code="label.admin.mail.submit"/>
+                </button>
             </div>
         </div>
     </div>

@@ -4,10 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.hd.olaf.entities.Amount;
-import ru.hd.olaf.entities.Category;
-import ru.hd.olaf.entities.Limit;
-import ru.hd.olaf.entities.Product;
+import ru.hd.olaf.entities.*;
 import ru.hd.olaf.exception.AuthException;
 import ru.hd.olaf.exception.CrudException;
 import ru.hd.olaf.mvc.service.*;
@@ -28,8 +25,12 @@ public class UtilServiceImpl implements UtilService{
     private ProductService productService;
     @Autowired
     private LimitService limitService;
+    @Autowired
+    private MailService mailService;
 
     private static final Logger logger = LoggerFactory.getLogger(UtilServiceImpl.class);
+
+
 
     /**
      * Функция поиска объекта с форматированным отвветом в виде объекта JsonResponse
@@ -63,6 +64,11 @@ public class UtilServiceImpl implements UtilService{
 
                 message = String.format("Запись с id = %d найдена: %s", id, limit);
                 jsonResponse.setEntity(limit);
+            } else if (classez.isAssignableFrom(Mail.class)) {
+                Mail mail = mailService.getOne(id);
+
+                message = String.format("Запись с id = %d найдена: %s", id, mail);
+                jsonResponse.setEntity(mail);
             }
 
             jsonResponse.setType(ResponseType.SUCCESS);
@@ -105,6 +111,9 @@ public class UtilServiceImpl implements UtilService{
             } else if (entity.getClass().isAssignableFrom(Limit.class)) {
                 Limit limit = (Limit) entity;
                 limitService.save(limit);
+            } else if (entity.getClass().isAssignableFrom(Mail.class)) {
+                Mail mail = (Mail) entity;
+                mailService.save(mail);
             }
         } catch (CrudException e) {
             String message = String.format("Возникла ошибка при сохранении данных в БД. \n" +

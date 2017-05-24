@@ -22,6 +22,8 @@
             headers: {'X-CSRF-TOKEN': document.getElementById('_csrf_token').value}
         });
 
+        getAlerts();
+
         //показываем модальное окно при получении ошибки в момент загрузки страницы
         if ($('#response').val() != '') {
             displayMessage('info', $('#response').val());
@@ -172,12 +174,12 @@
                     <thead>
                     <tr>
                         <th style="display : none;">id</th>
-                        <th>type</th>
-                        <th>name</th>
-                        <th>sum</th>
-                        <th>period</th>
-                        <th>Edit</th>
-                        <th>Delete</th>
+                        <th>Тип</th>
+                        <th>Наименование</th>
+                        <th>Лимит</th>
+                        <th>Период</th>
+                        <th>Редактировать</th>
+                        <th>Удалить</th>
                     </tr>
                     </thead>
                     <tbody>

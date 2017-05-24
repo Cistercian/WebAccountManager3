@@ -30,6 +30,9 @@
         $.ajaxSetup({
             headers: {'X-CSRF-TOKEN': document.getElementById('_csrf_token').value}
         });
+
+        getAlerts();
+
         var table = $('#amounts').DataTable({
             responsive: true,
             language: {

@@ -45,31 +45,27 @@ public class LimitControlController {
         //вычисляем период
         //текущая дата
         LocalDate curDate = LocalDate.now();
-        LocalDate begDate;
         modelAndView.addObject("curDate", DateUtil.getFormattedDate(curDate));
 
         //начальная дата периода:
         //текущий день
-        begDate = curDate;
-        List<BarEntity> limits = limitService.getLimits(currentUser, (byte) 0, begDate, curDate);
+        List<BarEntity> limits = limitService.getLimits(currentUser, (byte) 0, curDate, curDate);
         modelAndView.addObject("limitsDaily", limits);
-        modelAndView.addObject("dateDaily", DateUtil.getFormattedDate(begDate));
+        modelAndView.addObject("dateDaily", DateUtil.getFormattedDate(curDate));
         logger.debug("Контроль лимитов за день");
         LogUtil.logList(logger, limits);
 
         //текущая неделя
-        begDate = LocalDate.now().minusDays(LocalDate.now().getDayOfWeek().ordinal());
-        limits = limitService.getLimits(currentUser, (byte) 1, begDate, curDate);
+        limits = limitService.getLimits(currentUser, (byte) 1, DateUtil.getStartOfWeek(), curDate);
         modelAndView.addObject("limitsWeekly", limits);
-        modelAndView.addObject("dateWeekly", DateUtil.getFormattedDate(begDate));
+        modelAndView.addObject("dateWeekly", DateUtil.getFormattedDate(DateUtil.getStartOfWeek()));
         logger.debug("Контроль лимитов за неделю");
         LogUtil.logList(logger, limits);
 
         //текущий месяц
-        begDate = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
-        limits = limitService.getLimits(currentUser, (byte) 2, begDate, curDate);
+        limits = limitService.getLimits(currentUser, (byte) 2, DateUtil.getStartOfMonth(), curDate);
         modelAndView.addObject("limitsMonthly", limits);
-        modelAndView.addObject("dateMonthly", DateUtil.getFormattedDate(begDate));
+        modelAndView.addObject("dateMonthly", DateUtil.getFormattedDate(DateUtil.getStartOfMonth()));
         logger.debug("Контроль лимитов за месяц");
         LogUtil.logList(logger, limits);
 

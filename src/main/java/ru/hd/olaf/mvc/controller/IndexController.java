@@ -11,6 +11,7 @@ import ru.hd.olaf.entities.Category;
 import ru.hd.olaf.entities.User;
 import ru.hd.olaf.mvc.service.AmountService;
 import ru.hd.olaf.mvc.service.CategoryService;
+import ru.hd.olaf.mvc.service.MailService;
 import ru.hd.olaf.mvc.service.SecurityService;
 import ru.hd.olaf.util.DateUtil;
 import ru.hd.olaf.util.LogUtil;
@@ -35,6 +36,8 @@ public class IndexController {
     private AmountService amountService;
     @Autowired
     private SecurityService securityService;
+    @Autowired
+    private MailService mailService;
 
     private static final Logger logger = LoggerFactory.getLogger(IndexController.class);
 
@@ -62,9 +65,9 @@ public class IndexController {
         //текущая дата
         LocalDate curDate = LocalDate.now();
         //дата начала текущей недели
-        LocalDate weekDate = LocalDate.now().minusDays(LocalDate.now().getDayOfWeek().ordinal());
+        LocalDate weekDate = DateUtil.getStartOfWeek();
         //дата начала текущего месяца
-        LocalDate monthDate = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
+        LocalDate monthDate = DateUtil.getStartOfMonth();
         //дата начала периода "за все время"
         LocalDate allTimeDate = LocalDate.of(1900, 1, 1);
 
@@ -204,6 +207,15 @@ public class IndexController {
         LogUtil.logList(logger, categoryContent);
 
         return categoryContent;
+    }
+
+    @RequestMapping(value = "/index/getAlerts", method = RequestMethod.GET)
+    public @ResponseBody List<String> getAlerts(){
+        logger.debug(LogUtil.getMethodName());
+
+        User currentUser = securityService.findLoggedUser();
+
+        return mailService.getUnreadTitle(currentUser);
     }
 
     @InitBinder

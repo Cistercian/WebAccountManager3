@@ -20,6 +20,8 @@
             $(this).text(numberToString(Math.abs($(this).attr('value'))) + " руб.");
         });
 
+        getAlerts();
+
         drawChartOfTypes("<spring:message code='label.index.chart.income.label' />=${sumIncome},<spring:message code='label.index.chart.expense.label' />=${sumExpense}", "typeChart");
 
         //datepicker

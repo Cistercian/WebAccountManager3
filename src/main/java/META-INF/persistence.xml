@@ -3,6 +3,7 @@
 
     <persistence-unit name="NewPersistenceUnit">
         <class>ru.hd.olaf.entities.Product</class>
+        <class>ru.hd.olaf.entities.Mail</class>
         <properties>
             <property name="toplink.jdbc.url" value="jdbc:mysql://localhost:3306/web_account_db"/>
             <property name="toplink.jdbc.driver" value="com.mysql.jdbc.Driver"/>

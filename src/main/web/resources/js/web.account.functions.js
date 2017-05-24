@@ -332,3 +332,28 @@ function SendDeleteQuery(className, id) {
         }
     });
 }
+function getAlerts() {
+    $.ajax({
+        type: "GET",
+        url: '/index/getAlerts',
+        data: {},
+        success: function (data) {
+            $.each(data, function(index, alert) {
+                $('#alerts').append(
+                    "<div class='wam-margin-top-1 wam-hidden alert alert-warning alert-dismissable'>" +
+                    "<button type='button' class='close' aria-hidden='true' onclick='javascript:$(this).parent().fadeOut(\"slow\");'>" +
+                    "&times;" +
+                    "</button>" +
+                    "<p>Новое сообщение: <a href=\"/account\">" + alert + "</a></p>" +
+                    "</div>"
+                );
+            })
+
+            $('.alert').each(function() {
+                $(this).fadeIn('slow');
+            });
+        }
+    });
+
+
+}

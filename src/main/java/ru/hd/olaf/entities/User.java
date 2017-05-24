@@ -25,6 +25,7 @@ public class User {
     private Set<Amount> amounts = new HashSet<Amount>();
     private Set<Product> products = new HashSet<Product>();
     private Set<Limit> limits = new HashSet<Limit>();
+    private Set<Mail> mail = new HashSet<Mail>();
 
     @Id
     @Column(name = "ID", nullable = false)
@@ -144,6 +145,16 @@ public class User {
 
     public void setLimits(Set<Limit> limits) {
         this.limits = limits;
+    }
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "userId", cascade = CascadeType.REMOVE, orphanRemoval = false)
+    @JsonBackReference
+    public Set<Mail> getMail() {
+        return mail;
+    }
+
+    public void setMail(Set<Mail> mail) {
+        this.mail = mail;
     }
 
     @Override

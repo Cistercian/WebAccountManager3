@@ -120,11 +120,21 @@
                     <ul class="dropdown-menu">
                         <li><a href="/account"><spring:message code="menu.nav.login" /></a></li>
                         <li class="divider"></li>
+                        <c:if test="${not empty pageContext.request.userPrincipal}">
+                            <c:if test="${pageContext.request.isUserInRole('ROLE_ADMIN')}">
+                                <li><a href="/admin-panel"><spring:message code="menu.nav.admin" /></a></li>
+                                <li class="divider"></li>
+                            </c:if>
+                        </c:if>
+
                         <li><a href="javascript:document.forms['logoutForm'].submit()"><spring:message code="menu.nav.login.logout" /></a></li>
                     </ul>
                 </li>
             </ul>
+
         </div><!-- /.navbar-collapse -->
+        <div id="alerts" class="wam-ontop col-sm-6 col-sm-offset-6">
+        </div>
     </nav>
 </header>
 

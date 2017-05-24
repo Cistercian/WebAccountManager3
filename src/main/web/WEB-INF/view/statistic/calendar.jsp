@@ -19,6 +19,8 @@
             displayMessage('error', $('#response').val());
         }
 
+        getAlerts();
+
         //fullcalendar
         drawCalendar();
     });

@@ -236,3 +236,10 @@ div.dataTables_filter {
 .carousel-control.right {
 	background: none;
 }
+.wam-ontop {
+	z-index: 100;
+	position: absolute;
+}
+.wam-bold {
+	font-weight: bold;
+}

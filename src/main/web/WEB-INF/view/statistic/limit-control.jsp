@@ -18,6 +18,8 @@
         if ($('#response').val() != '') {
             displayMessage('error', $('#response').val());
         }
+
+        getAlerts();
     });
 
     function displayMessage(type, message, Url) {

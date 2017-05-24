@@ -13,10 +13,7 @@ import ru.hd.olaf.entities.User;
 import ru.hd.olaf.exception.AuthException;
 import ru.hd.olaf.exception.CrudException;
 import ru.hd.olaf.mvc.repository.AmountRepository;
-import ru.hd.olaf.mvc.service.AmountService;
-import ru.hd.olaf.mvc.service.ProductService;
-import ru.hd.olaf.mvc.service.SecurityService;
-import ru.hd.olaf.mvc.service.UtilService;
+import ru.hd.olaf.mvc.service.*;
 import ru.hd.olaf.util.DateUtil;
 import ru.hd.olaf.util.LogUtil;
 import ru.hd.olaf.util.json.CalendarEntity;
@@ -44,6 +41,8 @@ public class AmountServiceImpl implements AmountService {
     private SecurityService securityService;
     @Autowired
     private UtilService utilService;
+    @Autowired
+    private MailService mailService;
 
     private static final Logger logger = LoggerFactory.getLogger(AmountServiceImpl.class);
 
@@ -208,16 +207,21 @@ public class AmountServiceImpl implements AmountService {
     /**
      * Функция сохраняет(обновляет) запись amount
      *
-     * @param amount
-     * @return
+     * @param amount Сохраняемая сущность
+     * @return ссылка на сохраненный объект
      */
     public Amount save(Amount amount) throws CrudException {
         logger.debug(LogUtil.getMethodName());
 
-        Amount entity = null;
+        Amount entity;
 
         try {
             entity = amountRepository.save(amount);
+
+            //дополнительно после сохранения изменений в таблице amount проверяем лимиты
+            User currentUser = securityService.findLoggedUser();
+            mailService.checkLimit(currentUser, amount.getProductId());
+            mailService.checkLimit(currentUser, amount.getCategoryId());
         } catch (Exception e) {
             throw new CrudException(ExceptionUtils.getRootCause(e).getMessage());
         }
@@ -228,8 +232,8 @@ public class AmountServiceImpl implements AmountService {
     /**
      * Функция удаления записи из БД
      *
-     * @param amount
-     * @return
+     * @param amount Удаляемая сущность
+     * @return ответ JsonResponse
      */
     public JsonResponse delete(Amount amount) throws CrudException {
         logger.debug(LogUtil.getMethodName());

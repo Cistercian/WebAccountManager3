@@ -57,6 +57,18 @@ CREATE TABLE limits (
   , PRIMARY KEY (id)
 );
 
+DROP TABLE IF EXISTS mail;
+CREATE TABLE mail (
+    ID INT NOT NULL AUTO_INCREMENT
+  , date DATE
+  , sender VARCHAR(40)
+  , title VARCHAR(255)
+  , text TEXT
+  , is_read TINYINT(1) DEFAULT 0
+  , user_id INT
+  , PRIMARY KEY (id)
+);
+
 ALTER TABLE amounts ADD product_id INT;
 ALTER TABLE limits ADD product_id INT;
 ALTER TABLE limits ADD category_id INT;

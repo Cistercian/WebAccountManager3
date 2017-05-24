@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Date;
 
 /**
@@ -39,5 +40,21 @@ public class DateUtil {
 
     public static Date getDate(LocalDate date){
         return Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant());
+    }
+
+    /**
+     * Функция возвращает дату начала текущей недели
+     * @return LocalDate
+     */
+    public static LocalDate getStartOfWeek(){
+        return LocalDate.now().minusDays(LocalDate.now().getDayOfWeek().ordinal());
+    }
+
+    /**
+     * Функция возвращает дату начала текущего месяца
+     * @return LocalDate
+     */
+    public static LocalDate getStartOfMonth(){
+        return LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
     }
 }

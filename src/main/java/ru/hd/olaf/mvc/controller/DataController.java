@@ -469,6 +469,4 @@ public class DataController {
         sdf.setLenient(true);
         binder.registerCustomEditor(Date.class, new CustomDateEditor(sdf, true));
     }
-
-
 }

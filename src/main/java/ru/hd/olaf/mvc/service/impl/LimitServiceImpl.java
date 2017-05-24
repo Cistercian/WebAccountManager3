@@ -1,5 +1,6 @@
 package ru.hd.olaf.mvc.service.impl;
 
+import com.google.common.collect.Lists;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,8 +14,10 @@ import ru.hd.olaf.exception.AuthException;
 import ru.hd.olaf.exception.CrudException;
 import ru.hd.olaf.mvc.repository.LimitRepository;
 import ru.hd.olaf.mvc.service.LimitService;
+import ru.hd.olaf.mvc.service.MailService;
 import ru.hd.olaf.mvc.service.SecurityService;
 import ru.hd.olaf.mvc.service.UtilService;
+import ru.hd.olaf.util.DateUtil;
 import ru.hd.olaf.util.LogUtil;
 import ru.hd.olaf.util.json.BarEntity;
 import ru.hd.olaf.util.json.JsonResponse;
@@ -37,6 +40,8 @@ public class LimitServiceImpl implements LimitService {
     private SecurityService securityService;
     @Autowired
     private UtilService utilService;
+    @Autowired
+    private MailService mailService;
 
     private static final Logger logger = LoggerFactory.getLogger(LimitServiceImpl.class);
 
@@ -73,6 +78,13 @@ public class LimitServiceImpl implements LimitService {
 
         try {
             entity = limitRepository.save(limit);
+
+            //дополнительно после сохранения проверяем выполнение текущего лимита
+            User currentUser = securityService.findLoggedUser();
+            if (limit.getCategoryId() != null)
+                mailService.checkLimit(currentUser, limit.getCategoryId());
+            else if (limit.getProductId() != null)
+                mailService.checkLimit(currentUser, limit.getProductId());
         } catch (Exception e) {
             logger.debug(String.format("Exception handled: %s", e.getMessage()));
             throw new CrudException(ExceptionUtils.getRootCause(e).getMessage());
@@ -109,8 +121,8 @@ public class LimitServiceImpl implements LimitService {
         logger.debug(String.format("Интервал: %s - %s", after, before));
 
         //TODO: union?
-        List<BarEntity> bars = limitRepository.findLimitAndSumAmountsByProduct(user, period, begin, end);
-        bars.addAll(limitRepository.findLimitAndSumAmountsByCategory(user, period, begin, end));
+        List<BarEntity> bars = limitRepository.findLimitAndSumAmountsGroupByProduct(user, period, begin, end);
+        bars.addAll(limitRepository.findLimitAndSumAmountsGroupByCategory(user, period, begin, end));
 
         return bars;
     }
@@ -133,5 +145,36 @@ public class LimitServiceImpl implements LimitService {
             limit = limitRepository.findByUserIdAndPeriodAndProductId(user, period, (Product) entity);
 
         return limit;
+    }
+
+    /**
+     * Функция возвращает список объектов BarEntity с информацией по текущему расходу лимитов по отдельно взятой группе
+     * @param user Пользователь
+     * @param product Рассматриваемая товарная группа
+     * @return Список
+     */
+    public List<BarEntity> getLimitsByProduct(User user, Product product) {
+        return limitRepository.findLimitAndSumAmountsByProduct(user,
+                product,
+                DateUtil.getDate(LocalDate.now()),
+                DateUtil.getDate(DateUtil.getStartOfWeek()),
+                DateUtil.getDate(DateUtil.getStartOfMonth()),
+                DateUtil.getDate(LocalDate.now()));
+    }
+
+    /**
+     * Функция возвращает список объектов BarEntity с информацией по текущему расходу лимитов по отдельно взятой
+     * категории
+     * @param user Пользователь
+     * @param category Рассматриваемая категория
+     * @return Список
+     */
+    public List<BarEntity> getLimitsByCategory(User user, Category category) {
+        return limitRepository.findLimitAndSumAmountsByCategory(user,
+                category,
+                DateUtil.getDate(LocalDate.now()),
+                DateUtil.getDate(DateUtil.getStartOfWeek()),
+                DateUtil.getDate(DateUtil.getStartOfMonth()),
+                DateUtil.getDate(LocalDate.now()));
     }
 }

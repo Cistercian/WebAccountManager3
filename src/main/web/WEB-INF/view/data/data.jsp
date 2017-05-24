@@ -20,6 +20,8 @@
             headers: {'X-CSRF-TOKEN': document.getElementById('_csrf_token').value}
         });
 
+        getAlerts();
+
         //показываем модальное окно при получении ошибки в момент загрузки страницы
         if ($(responseMessage).val() != '') {
             displayMessage($('#responseType').val(), $('#responseMessage').val(), $('#responseUrl').val());

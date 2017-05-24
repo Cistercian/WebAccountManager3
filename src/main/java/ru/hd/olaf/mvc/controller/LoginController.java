@@ -6,14 +6,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+import ru.hd.olaf.entities.Mail;
 import ru.hd.olaf.entities.User;
+import ru.hd.olaf.mvc.service.MailService;
 import ru.hd.olaf.mvc.service.SecurityService;
 import ru.hd.olaf.mvc.service.UserService;
+import ru.hd.olaf.mvc.service.UtilService;
 import ru.hd.olaf.mvc.validator.UserValidator;
 import ru.hd.olaf.util.LogUtil;
+import ru.hd.olaf.util.json.JsonResponse;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * Created by d.v.hozyashev on 18.04.2017.
@@ -26,6 +34,10 @@ public class LoginController {
     private SecurityService securityService;
     @Autowired
     private UserValidator userValidator;
+    @Autowired
+    private MailService mailService;
+    @Autowired
+    private UtilService utilService;
 
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
@@ -102,6 +114,16 @@ public class LoginController {
 
         model.addAttribute("passwordForm", new User());
 
+        List<Mail> list = mailService.getAll();
+
+        Collections.sort(list, new Comparator<Mail>() {
+            public int compare(Mail o1, Mail o2) {
+                return o1.getId().compareTo(o2.getId());
+            }
+        });
+
+        model.addAttribute("mail", mailService.getAll());
+
         return "login/account";
     }
 
@@ -142,5 +164,27 @@ public class LoginController {
         model.addAttribute("response", "Пароль успешно изменен");
 
         return "login/account";
+    }
+
+    @RequestMapping(value = "/account/getMail", method = RequestMethod.GET)
+    public ModelAndView getMail(@RequestParam(value = "id") Integer id){
+        logger.debug(LogUtil.getMethodName());
+
+        ModelAndView modelAndView = new ModelAndView("/login/mail");
+
+        JsonResponse response = utilService.getById(Mail.class, id);
+        if (response.getEntity() != null){
+            Mail mail = (Mail) response.getEntity();
+            logger.debug(String.format("Обрабатываемый объект: %s", mail));
+
+            modelAndView.addObject("mail", mail);
+
+            mail.setIsRead((byte)1);
+            response = utilService.saveEntity(mail);
+
+            logger.debug(String.format("Уведомление прочитано. Результат сохранения: %s", response.getMessage()));
+        }
+
+        return modelAndView;
     }
 }
