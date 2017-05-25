@@ -32,7 +32,7 @@ public class CategoryValidator implements Validator {
         Category category = (Category) o;
 
         //валидация длины наименования
-        if (category.getName().length() < 5 || category.getName().length() > 40) {
+        if (category.getName().length() < 3 || category.getName().length() > 40) {
             logger.debug("Validation.size.name");
             errors.rejectValue("name", "Validation.size.name");
         }

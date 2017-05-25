@@ -1,3 +1,6 @@
+.wam-no-wrap {
+	white-space: nowrap;
+}
 .dropdown-menu > li > a {
 	padding: 3px 10px;
 }
@@ -10,6 +13,7 @@
 	font-size : 20px;
 }
 
+
 .wam-btn-1 {
 	margin-top: 10px;
 }
@@ -17,7 +21,9 @@
 	margin-top: 10px;
 	margin-bottom: 10px;
 }
-
+.wam-margin-top-0 {
+	margin-top: 0px;
+}
 .wam-margin-top-1 {
 	margin-top: 5px;
 }
@@ -33,7 +39,9 @@
 .wam-margin-bottom-0 {
 	margin-bottom: 0px;
 }
-
+.wam-margin-bottom-0-1 {
+	margin-bottom: 5px;
+}
 .wam-margin-bottom-1 {
 	margin-bottom: 15px;
 }
@@ -45,11 +53,19 @@
 .wam-margin-bottom-3 {
 	margin-bottom: 50px;
 }
+.wam-margin-left-2 {
+	margin-left: 5px;
+}
 
 .wam-margin-left-3 {
 	margin-left: 10px;
 }
-
+.wam-margin-right-1 {
+	margin-right: 5px;
+}
+.wam-margin-right-2 {
+	margin-right: 10px;
+}
 .wam-margin-right-3 {
 	margin-right: 20px;
 }
@@ -103,6 +119,12 @@
 		padding: 0px;
 		padding-right: 7px;
 		padding-left: 7px
+	}
+	.wam-not-padding {
+		padding: 0px;
+	}
+	.wam-font-size {
+		font-size: 14px;
 	}
 }
 /*Принудительно скрываем скролбар*/

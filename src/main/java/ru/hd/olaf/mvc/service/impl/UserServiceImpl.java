@@ -45,10 +45,17 @@ public class UserServiceImpl implements UserService {
     }
 
     public boolean isPasswordMatches(String password, User user) {
+        logger.debug(LogUtil.getMethodName());
         return bCryptPasswordEncoder.matches(password, user.getPassword());
     }
 
     public User findByUsername(String username) {
+        logger.debug(LogUtil.getMethodName());
         return userRepository.findByUsername(username);
+    }
+
+    public List<User> getAdmins() {
+        logger.debug(LogUtil.getMethodName());
+        return userRepository.findAdmins();
     }
 }

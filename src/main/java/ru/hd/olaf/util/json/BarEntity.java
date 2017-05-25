@@ -25,7 +25,7 @@ public class BarEntity {
     public BarEntity(String type, int id, BigDecimal sum, String name, BigDecimal limit) {
         this.type = type;
         this.id = id;
-        this.sum = sum;
+        this.sum = sum == null ? new BigDecimal("0") : sum;
         this.name = name;
         this.limit = limit;
     }

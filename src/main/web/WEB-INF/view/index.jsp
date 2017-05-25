@@ -201,7 +201,7 @@
     </div>
     <!-- /.modal-dialog -->
 </div>
-<div class="content wam-radius">
+<div class="content container-fluid wam-radius wam-min-height-0 wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="300ms">
     <div class="slider wam-top-radius">
         <div id="about-slider" >
             <div id="carousel-slider" class="carousel slide" data-ride="carousel">
@@ -244,8 +244,7 @@
         </div>
     </div>
 
-    <div class="container-fluid wow fadeInDown " data-wow-duration="1000ms"
-         data-wow-delay="300ms">
+    <div class="container-fluid">
         <div id="dataRow" class="row">
             <div class="col-xs-12 col-md-6">
                 <div class="col-xs-12 col-md-12">
@@ -282,7 +281,7 @@
 
 
     <div class="container-fluid">
-        <div class="row wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="300ms">
+        <div class="row">
             <div class="col-xs-12 col-md-8">
                 <h2><spring:message code="label.index.categories.title" /></h2>
             </div>

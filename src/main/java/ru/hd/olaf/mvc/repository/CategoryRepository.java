@@ -29,7 +29,7 @@ public interface CategoryRepository extends CrudRepository<Category, Integer> {
             "SUM(a.price), " +
             "c.name) " +
             "FROM Amount a LEFT JOIN a.categoryId c " +
-            "WHERE a.categoryId = c AND c.userId = ?1 AND c.parentId = ?2 AND " +
+            "WHERE c.userId = ?1 AND c.parentId = ?2 AND " +
             "a.date BETWEEN ?3 AND ?4 " +
             "GROUP BY c.id HAVING COUNT(c.id) > 0")
     List<BarEntity> getBarEntityByUserIdAndSubCategory(User user, Category category, Date after, Date before);
@@ -49,7 +49,7 @@ public interface CategoryRepository extends CrudRepository<Category, Integer> {
             "END, " +
             "c.name) " +
             "FROM Amount a LEFT JOIN a.categoryId c LEFT JOIN c.parentId p " +
-            "WHERE a.categoryId = c AND c.userId = ?1  AND " +
+            "WHERE c.userId = ?1  AND " +
             "a.date BETWEEN ?2 AND ?3 " +
             "GROUP BY c.id HAVING COUNT(c.id) > 0")
     List<BarEntity> getBarEntityOfParentsByUserId(User user, Date after, Date before);

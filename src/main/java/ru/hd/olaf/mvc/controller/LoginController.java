@@ -34,10 +34,6 @@ public class LoginController {
     private SecurityService securityService;
     @Autowired
     private UserValidator userValidator;
-    @Autowired
-    private MailService mailService;
-    @Autowired
-    private UtilService utilService;
 
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
@@ -101,90 +97,5 @@ public class LoginController {
         }
 
         return "/login/login";
-    }
-
-    /**
-     * Функция отрисовки окна профиля (меня пароля)
-     * @param model model
-     * @return наименование view (account)
-     */
-    @RequestMapping(value = "account", method = RequestMethod.GET)
-    public String getViewAccount(Model model){
-        logger.debug(LogUtil.getMethodName());
-
-        model.addAttribute("passwordForm", new User());
-
-        List<Mail> list = mailService.getAll();
-
-        Collections.sort(list, new Comparator<Mail>() {
-            public int compare(Mail o1, Mail o2) {
-                return o1.getId().compareTo(o2.getId());
-            }
-        });
-
-        model.addAttribute("mail", list);
-
-        return "login/account";
-    }
-
-    /**
-     * Функция смены пароля
-     * @param userForm html форма с атрибутами User
-     * @param bindingResult для валидации
-     * @param model model
-     * @return наименование view (account)
-     */
-    @RequestMapping(value = "account", method = RequestMethod.POST)
-    public String setPassword(@ModelAttribute("passwordForm") User userForm, BindingResult bindingResult, Model model){
-        logger.debug(LogUtil.getMethodName());
-
-        User currentUser = securityService.findLoggedUser();
-
-        userForm.setUsername(currentUser.getUsername());
-        userForm.setFullName(currentUser.getFullName());
-        userForm.setId(currentUser.getId());
-        userForm.setEnabled(currentUser.getEnabled());
-        userForm.setRole(currentUser.getRole());
-
-        userValidator.validate(userForm, bindingResult);
-
-        if (bindingResult.hasErrors()){
-            logger.debug("Валидация не пройдена");
-            return "login/account";
-        }
-
-        logger.debug(String.format("Сохранение записи %s", userForm));
-
-        userService.save(userForm);
-
-        userForm.setPassword("");
-        userForm.setPasswordConfirm("");
-        userForm.setPasswordOld("");
-
-        model.addAttribute("response", "Пароль успешно изменен");
-
-        return "login/account";
-    }
-
-    @RequestMapping(value = "/account/getMail", method = RequestMethod.GET)
-    public ModelAndView getMail(@RequestParam(value = "id") Integer id){
-        logger.debug(LogUtil.getMethodName());
-
-        ModelAndView modelAndView = new ModelAndView("/login/mail");
-
-        JsonResponse response = utilService.getById(Mail.class, id);
-        if (response.getEntity() != null){
-            Mail mail = (Mail) response.getEntity();
-            logger.debug(String.format("Обрабатываемый объект: %s", mail));
-
-            modelAndView.addObject("mail", mail);
-
-            mail.setIsRead((byte)1);
-            response = utilService.saveEntity(mail);
-
-            logger.debug(String.format("Уведомление прочитано. Результат сохранения: %s", response.getMessage()));
-        }
-
-        return modelAndView;
     }
 }

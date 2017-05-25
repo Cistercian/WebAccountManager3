@@ -354,6 +354,23 @@ function getAlerts() {
             });
         }
     });
+}
+function sendMail(){
+    $.ajax({
+        type: "POST",
+        url: '/account/sendMail',
+        data: {
+            'username' : $('#userId').val(),
+            'title' : $('#title').val(),
+            'text' : $('#text').val(),
+        },
+        beforeSend: function () {
+            displayLoader();
+        },
+        success: function (data) {
+            hideLoader();
 
-
+            displayMessage(data.type, data.message, "");
+        }
+    });
 }

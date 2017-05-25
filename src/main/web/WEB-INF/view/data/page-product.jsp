@@ -81,7 +81,7 @@
     <!-- /.modal-dialog -->
 </div>
 
-<div class="content wam-radius">
+<div class="content container-fluid wam-radius wam-min-height-0 wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="300ms">
     <div id="services" class="container-fluid">
         <div class='row'>
             <input id="_csrf_token" type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
@@ -106,7 +106,7 @@
                         <c:forEach items="${amounts}" var="amount">
                             <tr onclick="location.href='/amount?id=${amount.getId()}';">
                                 <td style="display : none;">${amount.getId()}</td>
-                                <td style="white-space: nowrap;">${amount.getDate()}</td>
+                                <td class="wam-no-wrap">${amount.getDate()}</td>
                                 <td>${amount.getName()}</td>
                                 <td>${amount.getPrice()}</td>
                                 <td>${amount.getCategoryId().getName()}</td>

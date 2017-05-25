@@ -61,17 +61,35 @@
         </div>
     </div>
 </div>
-<div class="content container-fluid wam-radius wam-min-height-0">
+
+<div class="content container-fluid wam-radius wam-min-height-0 wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="300ms">
     <div class='row'>
         <input id="_csrf_token" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         <textarea id="response" name="response" style="display: none;">${response}</textarea>
-        <div id=limits class="container-fluid col-sm-12 wow fadeInDown"
+
+        <div id=limits class="container-fluid col-sm-12 wam-not-padding"
              data-wow-duration="1000ms" data-wow-delay="300ms">
-            <div class="col-xs-12 col-md-12 wam-min-height-4">
-                <c:set var="styles" value="${['success', 'info', 'warning', 'danger']}" scope="page" />
-                <div id="barsDaily">
+            <div class="panel panel-default wam-margin-left-2 wam-margin-right-2 wam-margin-top-1">
+                <div class="panel-heading ">
+                    <h3 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.limit.control.title"/></h3>
+                </div>
+                <div class="wam-not-padding panel-body">
+                    <div class="col-xs-12 col-md-12">
+						<span class="wam-text">
+							<spring:message code="label.limit.control.details"/>
+						</span>
+                    </div>
+                </div>
+            </div>
+
+            <c:set var="styles" value="${['success', 'info', 'warning', 'danger']}" scope="page" />
+            <div class="panel panel-default wam-margin-left-2 wam-margin-right-1 wam-margin-top-1">
+                <div class="panel-heading ">
+                    <h4 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.limit.daily.title"/></h4>
+                </div>
+                <div class="wam-not-padding panel-body">
                     <c:set var="hasData" value="false" scope="page"/>
-                    <h3><spring:message code="label.limit.daily.title"/></h3>
+
                     <c:forEach items="${limitsDaily}" var="list">
                         <c:if test="${hasData == 'false'}">
                             <c:set var="hasData" value="true" scope="page"/>
@@ -102,44 +120,48 @@
                                 <a href="/page-product/${id}?after=${dateDaily}&before=${curDate}">
                                     </c:otherwise>
                                     </c:choose>
-                                    <div class="col-xs-12 col-md-6">
-                                        <h5><strong id="categoryBarName${id}" value="${name}">
+                                    <div class="col-xs-12 col-md-12">
+                                        <h5 class="wam-margin-bottom-0"><strong id="categoryBarName${id}" value="${name}">
                                             <c:choose>
-                                                <c:when test="${type == 'category'}">
-                                                    Категория ${name}
-                                                </c:when>
-                                                <c:otherwise>
-                                                    Товарная группа ${name}
-                                                </c:otherwise>
+                                            <c:when test="${type == 'category'}">
+                                            Кат. ${name}
+                                            </c:when>
+                                            <c:otherwise>
+                                            Гр. ${name}
+                                            </c:otherwise>
                                             </c:choose>
-                                        </strong></h5>
-                                        <div class="col-xs-12 col-md-6">
-                                            <h5><span id="categoryBarSum${id}" class="pull-right text-muted"
-                                                      value="${sum}">
+											<span id="categoryBarSum${id}" class="pull-right text-muted"
+                                                  value="${sum}">
 												${sum} (из ${limit}) руб.
-										</span></h5>
-                                        </div>
-                                        <div class="col-xs-12 col-md-12">
-                                            <div class="progress progress-striped active">
-                                                <div class="progress-bar progress-bar-${styles[step]}" role="progressbar"
-                                                     aria-valuenow="${sum}" aria-valuemin="0" aria-valuemax="100"
-                                                     style="width: ${normalSum}%" value="${name}">
-                                                    <span class="sr-only">${sum}</span>
-                                                </div>
+											</span>
+                                        </h5>
+                                    </div>
+                                    <div class="col-xs-12 col-md-12">
+                                        <div class="progress progress-striped active wam-margin-bottom-0-1">
+                                            <div class="progress-bar progress-bar-${styles[step]}" role="progressbar"
+                                                 aria-valuenow="${sum}" aria-valuemin="0" aria-valuemax="100"
+                                                 style="width: ${normalSum}%" value="${name}">
+                                                <span class="sr-only">${sum}</span>
                                             </div>
                                         </div>
+                                    </div>
                                 </a>
                         </li>
                     </c:forEach>
                     <c:if test="${hasData == 'false'}">
-                        <h4><spring:message code="label.limit.monthly.emptyData"/></h4>
+                        <div class="col-xs-12 col-md-12">
+                            <h5><span class="text-muted"><spring:message code="label.limit.emptyData"/><span></h5>
+                        </div>
                     </c:if>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-12 wam-min-height-4 wam-margin-top-3">
-                <div id="barsWeekly">
+            <div class="panel panel-default wam-margin-left-2 wam-margin-right-1 ">
+                <div class="panel-heading ">
+                    <h4 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.limit.weekly.title"/></h4>
+                </div>
+                <div class="wam-not-padding panel-body">
                     <c:set var="hasData" value="false" scope="page"/>
-                    <h3><spring:message code="label.limit.weekly.title"/></h3>
+
                     <c:forEach items="${limitsWeekly}" var="list">
                         <c:if test="${hasData == 'false'}">
                             <c:set var="hasData" value="true" scope="page"/>
@@ -171,26 +193,24 @@
                                 <a href="/page-product/${id}?after=${dateWeekly}&before=${curDate}">
                                     </c:otherwise>
                                     </c:choose>
-                                    <div class="col-xs-12 col-md-6">
-                                        <h5><strong id="categoryBarName${id}" value="${name}">
+                                    <div class="col-xs-12 col-md-12">
+                                        <h5 class="wam-margin-bottom-0"><strong id="categoryBarName${id}" value="${name}">
                                             <c:choose>
-                                                <c:when test="${type == 'category'}">
-                                                    Категория ${name}
-                                                </c:when>
-                                                <c:otherwise>
-                                                    Товарная группа ${name}
-                                                </c:otherwise>
+                                            <c:when test="${type == 'category'}">
+                                            Кат. ${name}
+                                            </c:when>
+                                            <c:otherwise>
+                                            Гр. ${name}
+                                            </c:otherwise>
                                             </c:choose>
-                                        </strong></h5>
-                                    </div>
-                                    <div class="col-xs-12 col-md-6">
-                                        <h5><span id="categoryBarSum${id}" class="pull-right text-muted"
+											<span id="categoryBarSum${id}" class="pull-right text-muted"
                                                   value="${sum}">
 												${sum} (из ${limit}) руб.
-										</span></h5>
+											</span>
+                                        </h5>
                                     </div>
                                     <div class="col-xs-12 col-md-12">
-                                        <div class="progress progress-striped active">
+                                        <div class="progress progress-striped active wam-margin-bottom-0-1">
                                             <div class="progress-bar progress-bar-${styles[step]}" role="progressbar"
                                                  aria-valuenow="${sum}" aria-valuemin="0" aria-valuemax="100"
                                                  style="width: ${normalSum}%" value="${name}">
@@ -202,14 +222,19 @@
                         </li>
                     </c:forEach>
                     <c:if test="${hasData == 'false'}">
-                        <h4><spring:message code="label.limit.monthly.emptyData"/></h4>
+                        <div class="col-xs-12 col-md-12">
+                            <h5><span class="text-muted"><spring:message code="label.limit.emptyData"/><span></h5>
+                        </div>
                     </c:if>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-12 wam-min-height-4 wam-margin-top-3">
-                <div id="barsMonthly">
+            <div class="panel panel-default wam-margin-left-2 wam-margin-right-1 wam-margin-top-1">
+                <div class="panel-heading ">
+                    <h4 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.limit.monthly.title"/></h4>
+                </div>
+                <div class="wam-not-padding panel-body">
                     <c:set var="hasData" value="false" scope="page"/>
-                    <h3><spring:message code="label.limit.monthly.title"/></h3>
+
                     <c:forEach items="${limitsMonthly}" var="list">
                         <c:if test="${hasData == 'false'}">
                             <c:set var="hasData" value="true" scope="page"/>
@@ -240,26 +265,24 @@
                                 <a href="/page-product/${id}?after=${dateMonthly}&before=${curDate}">
                                     </c:otherwise>
                                     </c:choose>
-                                    <div class="col-xs-12 col-md-6">
-                                        <h5><strong id="categoryBarName${id}" value="${name}">
+                                    <div class="col-xs-12 col-md-12">
+                                        <h5 class="wam-margin-bottom-0"><strong id="categoryBarName${id}" value="${name}">
                                             <c:choose>
-                                                <c:when test="${type == 'category'}">
-                                                    Категория ${name}
-                                                </c:when>
-                                                <c:otherwise>
-                                                    Товарная группа ${name}
-                                                </c:otherwise>
+                                            <c:when test="${type == 'category'}">
+                                            Кат. ${name}
+                                            </c:when>
+                                            <c:otherwise>
+                                            Гр. ${name}
+                                            </c:otherwise>
                                             </c:choose>
-                                        </strong></h5>
-                                    </div>
-                                    <div class="col-xs-12 col-md-6">
-                                        <h5><span id="categoryBarSum${id}" class="pull-right text-muted"
+											<span id="categoryBarSum${id}" class="pull-right text-muted"
                                                   value="${sum}">
 												${sum} (из ${limit}) руб.
-										</span></h5>
+											</span>
+                                        </h5>
                                     </div>
                                     <div class="col-xs-12 col-md-12">
-                                        <div class="progress progress-striped active">
+                                        <div class="progress progress-striped active wam-margin-bottom-0-1">
                                             <div class="progress-bar progress-bar-${styles[step]}" role="progressbar"
                                                  aria-valuenow="${sum}" aria-valuemin="0" aria-valuemax="100"
                                                  style="width: ${normalSum}%" value="${name}">
@@ -271,7 +294,9 @@
                         </li>
                     </c:forEach>
                     <c:if test="${hasData == 'false'}">
-                        <h4><spring:message code="label.limit.monthly.emptyData"/></h4>
+                        <div class="col-xs-12 col-md-12">
+                            <h5><span class="text-muted"><spring:message code="label.limit.emptyData"/><span></h5>
+                        </div>
                     </c:if>
                 </div>
             </div>

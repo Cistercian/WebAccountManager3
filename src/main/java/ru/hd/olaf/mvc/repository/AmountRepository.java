@@ -37,7 +37,7 @@ public interface AmountRepository extends CrudRepository<Amount, Integer> {
                 "SUM(a.price), " +
                 "p.name) " +
             "FROM Amount a LEFT JOIN a.productId p WHERE " +
-            "a.productId = p AND a.userId = ?1 AND a.categoryId = ?2 AND " +
+            "a.userId = ?1 AND a.categoryId = ?2 AND " +
             "a.date BETWEEN ?3 AND ?4 " +
             "GROUP BY p.id HAVING COUNT(p.id) > 0")
     List<BarEntity> getBarEntityByUserIdAndCategoryIdAndDateGroupByProductId(User user,

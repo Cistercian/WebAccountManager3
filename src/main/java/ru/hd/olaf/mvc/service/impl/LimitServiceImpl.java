@@ -154,6 +154,7 @@ public class LimitServiceImpl implements LimitService {
      * @return Список
      */
     public List<BarEntity> getLimitsByProduct(User user, Product product) {
+        logger.debug(LogUtil.getMethodName());
         return limitRepository.findLimitAndSumAmountsByProduct(user,
                 product,
                 DateUtil.getDate(LocalDate.now()),
@@ -170,6 +171,7 @@ public class LimitServiceImpl implements LimitService {
      * @return Список
      */
     public List<BarEntity> getLimitsByCategory(User user, Category category) {
+        logger.debug(LogUtil.getMethodName());
         return limitRepository.findLimitAndSumAmountsByCategory(user,
                 category,
                 DateUtil.getDate(LocalDate.now()),

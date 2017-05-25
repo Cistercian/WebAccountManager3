@@ -66,36 +66,4 @@ public class AdminController {
 
         return response;
     }
-
-    @RequestMapping(value = "/admin-panel/sendMail", method = RequestMethod.POST)
-    public @ResponseBody JsonResponse sendMail(@RequestParam(value = "username") String username,
-                                               @RequestParam(value = "title") String title,
-                                               @RequestParam(value = "text") String text){
-        logger.debug(LogUtil.getMethodName());
-
-        //TODO: handle exception!
-        if (title == null || text == null)
-            return new JsonResponse(ResponseType.ERROR, "Переданы некоррекные параметры.");
-
-        JsonResponse response = new JsonResponse();
-        if (username.equalsIgnoreCase("ALL")) {
-            for (User user : userService.getAll()) {
-                Mail mail = new Mail("Admin", title, text, user);
-                JsonResponse response1 = utilService.saveEntity(mail);
-                response.setMessage(response.getMessage() + ". User: " + user.getUsername() +
-                        ", result: " +
-                        response1.getMessage());
-            }
-        } else {
-            User user = userService.findByUsername(username);
-            if (user != null) {
-                Mail mail = new Mail("Admin", title, text, user);
-                response = utilService.saveEntity(mail);
-            } else
-                response.setMessage("Пользователь не найден");
-        }
-
-        response.setType(ResponseType.INFO);
-        return response;
-    }
 }

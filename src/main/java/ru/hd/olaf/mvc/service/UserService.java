@@ -14,5 +14,7 @@ public interface UserService {
 
     User findByUsername(String username);
 
+    List<User> getAdmins();
+
     boolean isPasswordMatches(String password, User user);
 }

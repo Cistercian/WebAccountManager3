@@ -162,6 +162,8 @@ public class MailServiceImpl implements MailService {
         logger.debug(LogUtil.getMethodName());
 
         for (BarEntity entity : list) {
+            logger.debug(entity.toString());
+
             if (entity.getSum().compareTo(entity.getLimit()) >= 0) {
                 String title = "Уведомление о достижении лимита.";
                 String text = "<p class=\"lead text-justify\">Зафиксирован перерасход лимита по " +

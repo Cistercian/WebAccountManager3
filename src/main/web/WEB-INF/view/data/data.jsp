@@ -131,7 +131,7 @@
     <!-- /.modal-dialog -->
 </div>
 
-<div id="services" class="container-fluid content wam-radius">
+<div class="content container-fluid wam-radius wam-min-height-0 wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="300ms">
     <div class='row'>
         <input id="_csrf_token" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         <%--<input id="id" type="hidden" name="id" value="${id}"/>--%>
