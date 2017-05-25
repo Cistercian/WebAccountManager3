@@ -13,8 +13,8 @@
 <script language="javascript" type="text/javascript">
     $(document).ready(function () {
         //formatting sums
-        $('#sumIncome').append(numberToString('${sumIncome}') + " руб.");
-        $('#sumExpense').append(numberToString('${sumExpense}') + " руб.");
+        $('#sumIncome').append('<strong>' + numberToString('${sumIncome}') + "</strong> руб.");
+        $('#sumExpense').append('<strong>' + numberToString('${sumExpense}') + "</strong> руб.");
 
         $('[id ^= "categoryBarSum"]').each(function () {
             $(this).text(numberToString(Math.abs($(this).attr('value'))) + " руб.");
@@ -35,6 +35,8 @@
             autoclose: true,
             todayHighlight: true
         });
+
+        formatTooLongText();
     });
 
     function selectPeriod(hasDates, after, before, idElem){
@@ -130,7 +132,7 @@
                             "<li class='list-unstyled'>" +
                             "<a href='javascript:drawBarsByParentId(false, \"" + id + "\",\"" + after + "\",\"" + before + "\");'>" +
                             "<div>" +
-                            "<h4><strong id='categoryBarName" + id + "' value='" + name + "'>" +
+                            "<h4 class='needToFormat'><strong id='categoryBarName" + id + "' value='" + name + "'>" +
                             name +
                             "</strong>" +
                             "<span id='categoryBarSum" + id + "' class='pull-right text-muted' " +
@@ -158,13 +160,15 @@
                 else
                     $('#dropDownCategoryBarsExpense').show();
 
-                $('#textTotalIncome').append("Доходы <strong>" + numberToString(totalIncomeSum.toFixed(2)) + "</strong> руб.");
-                $('#textTotalExpense').append("Расходы <strong>" + numberToString(totalExpenseSum.toFixed(2)) + "</strong> руб.");
+                $('#textTotalIncome').append("<span class='pull-right'><strong>" + numberToString(totalIncomeSum.toFixed(2)) + "</strong> руб.</span>");
+                $('#textTotalExpense').append("<span class='pull-right'><strong>" + numberToString(totalExpenseSum.toFixed(2)) + "</strong> руб.</span>");
 
                 //рисуем диаграмму
                 drawChartOfTypes("<spring:message code='label.index.chart.income.label' />=" + totalIncomeSum + "," +
                         "<spring:message code='label.index.chart.expense.label' />=" + totalExpenseSum + "",
                         "typeChart");
+
+                formatTooLongText();
             }
         });
     }
@@ -201,7 +205,7 @@
     </div>
     <!-- /.modal-dialog -->
 </div>
-<div class="content container-fluid wam-radius wam-min-height-0 wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="300ms">
+<div class="content container-fluid wam-radius wam-min-height-0 wow fadeInDown wam-not-padding-xs" data-wow-duration="1000ms" data-wow-delay="300ms">
     <div class="slider wam-top-radius">
         <div id="about-slider" >
             <div id="carousel-slider" class="carousel slide" data-ride="carousel">
@@ -234,46 +238,62 @@
             </div> <!--/#carousel-slider-->
         </div><!--/#about-slider-->
     </div>
-    <div class="container-fluid">
-        <div class="center">
-            <div class="col-md-12">
-                <h2><spring:message code="label.index.title" /></h2>
-                <hr>
-                <p class="lead"><spring:message code="label.index.details" /></p>
-            </div>
+    <div class="container-fluid wam-not-padding-xs">
+        <div class="col-md-12 ">
+            <h2 class=""><spring:message code="label.index.title" /></h2>
+            <hr>
+            <p class="lead text-justify"><spring:message code="label.index.details" /></p>
         </div>
-    </div>
-
-    <div class="container-fluid">
-        <div id="dataRow" class="row">
-            <div class="col-xs-12 col-md-6">
-                <div class="col-xs-12 col-md-12">
-                    <h3><spring:message code="label.index.chartIncomeExpense.title" /></h3>
+        <div class="col-xs-12 col-md-12 ">
+            <div id="dataRow" class="login-panel panel panel-default wam-not-padding-xs ">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-12 col-md-12 ">
+                            <h3><spring:message code="label.index.chartIncomeExpense.title" /></h3>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-xs-12 col-md-12">
-                    <canvas id="typeChart"></canvas>
-                </div>
-            </div>
-            <div class="col-xs-12 col-md-6">
-                <div class="col-xs-12 col-md-12">
-                    <h3><spring:message code="label.index.total.title" /></h3>
-                </div>
-                <div class="col-xs-12 col-md-12">
-                    <h3 id="textTotalIncome"><spring:message code="label.index.total.income" />
-                        <c:if test="${not empty sumIncome}">
-                            <span id="sumIncome"></span>
-                        </c:if>
-                    </h3>
-                    <h3 id="textTotalExpense"><spring:message code="label.index.total.expense" />
-                        <c:if test="${not empty sumExpense}">
-                            <span id="sumExpense"></span>
-                        </c:if>
-                    </h3>
-                    <h3><spring:message code="label.index.total.date" />
-                        <c:if test="${not empty curDate}">
-                            <span>${curDate}</span>
-                        </c:if>
-                    </h3>
+                <div class="panel-body">
+                    <div class="col-xs-12 col-md-12 wam-not-padding wam-margin-left-2-1 wam-margin-right-2">
+                        <div class="col-xs-12 col-md-6">
+                            <canvas id="typeChart"></canvas>
+                        </div>
+                        <div class="col-xs-12 col-md-6 ">
+                            <div class="row">
+                                <div class="col-xs-6 col-md-6 wam-not-padding-xs">
+                                    <h3><span class="glyphicon glyphicon-stop wam-color-income"></span><spring:message code="label.index.total.income" /></h3>
+                                </div>
+                                <div class="col-xs-6 col-md-6 wam-not-padding-xs">
+                                    <h3 id="textTotalIncome">
+                                        <c:if test="${not empty sumIncome}">
+                                            <span id="sumIncome" class="pull-right "></span>
+                                        </c:if>
+                                    </h3>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6 col-md-6 wam-not-padding-xs">
+                                    <h3><span class="glyphicon glyphicon-stop wam-color-expense"></span><spring:message code="label.index.total.expense" /></h3>
+                                </div>
+                                <div class="col-xs-6 col-md-6 wam-not-padding-xs">
+                                    <h3 id="textTotalExpense">
+                                        <c:if test="${not empty sumExpense}">
+                                            <span id="sumExpense" class="pull-right "></span>
+                                        </c:if>
+                                    </h3>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12 col-md-12 wam-not-padding-xs">
+                                    <h3><spring:message code="label.index.total.date" />
+                                        <c:if test="${not empty curDate}">
+                                            <span class="wam-margin-left-3">${curDate}</span>
+                                        </c:if>
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -282,10 +302,10 @@
 
     <div class="container-fluid">
         <div class="row">
-            <div class="col-xs-12 col-md-8">
+            <div class="col-xs-12 col-md-8 ">
                 <h2><spring:message code="label.index.categories.title" /></h2>
             </div>
-            <div class="col-xs-12 col-md-4 dropup">
+            <div class="col-xs-12 col-md-4 dropup ">
                 <spring:message code="label.index.categories.period.default" var="periodDefault" />
                 <button id="btnPeriod" class="btn-default btn-lg btn-block dropdown-toggle"
                         data-toggle="dropdown" value="month">
@@ -342,7 +362,7 @@
                     </button>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-12" id="categoryBars">
+            <div class="col-xs-12 col-md-12 " id="categoryBars">
                 <div id="dropDownCategoryBarsIncome">
 
                     <c:set var="styles" value="${['success', 'info', 'warning', 'danger']}" scope="page" />
@@ -374,7 +394,7 @@
                             <li class="list-unstyled">
                                 <a href="javascript:drawBarsByParentId(false, '${classId}', '${afterMonth}', '${curDate}')">
                                     <div>
-                                        <h4><strong id="categoryBarName${classId}" value="${className}">
+                                        <h4 class="needToFormat"><strong id="categoryBarName${classId}" value="${className}">
                                                 ${className}
                                         </strong>
                                             <span id="categoryBarSum${classId}" class="pull-right text-muted"
@@ -424,7 +444,7 @@
                             <li class="list-unstyled">
                                 <a href="javascript:drawBarsByParentId(false, '${classId}', '${afterMonth}', '${curDate}')">
                                     <div>
-                                        <h4><strong id="categoryBarName${classId}" value="${className}">
+                                        <h4 class="needToFormat"><strong id="categoryBarName${classId}" value="${className}">
                                                 ${className}
                                         </strong>
                                             <span id="categoryBarSum${classId}" class="pull-right text-muted"

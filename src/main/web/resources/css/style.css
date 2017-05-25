@@ -56,7 +56,9 @@
 .wam-margin-left-2 {
 	margin-left: 5px;
 }
-
+.wam-margin-left-2-1{
+	margin-left: 10px;
+}
 .wam-margin-left-3 {
 	margin-left: 10px;
 }
@@ -90,7 +92,10 @@
 .wam-min-height-4{
 	min-height: 150px;
 }
-
+.wam-not-padding {
+	padding: 4px;
+	margin-bottom: 4px;
+}
 /*FullCalendar
 */
 /*Общие настройки таблицы*/
@@ -120,11 +125,12 @@
 		padding-right: 7px;
 		padding-left: 7px
 	}
-	.wam-not-padding {
-		padding: 0px;
-	}
 	.wam-font-size {
 		font-size: 14px;
+	}
+	.wam-not-padding-xs {
+		padding: 0px;
+		margin-bottom: 0px;
 	}
 }
 /*Принудительно скрываем скролбар*/
@@ -280,4 +286,10 @@ div.dataTables_filter {
 }
 .wam-without-truncate1 dd{
 	margin-left: 42%
+}
+.wam-color-income {
+	color: #5cb85c;
+}
+.wam-color-expense {
+	color: #f0ad4e;
 }

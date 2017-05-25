@@ -189,11 +189,11 @@
         </div>
     </div>
 </div>
-<div class="content container-fluid wam-radius wam-min-height-0 wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="300ms">
+<div class="content container-fluid wam-radius wam-min-height-0 wow fadeInDown " data-wow-duration="1000ms" data-wow-delay="300ms">
     <div class='row'>
         <input id="_csrf_token" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         <textarea id="response" name="response" style="display: none;">${response}</textarea>
-        <div class="container-fluid">
+        <div class="container-fluid wam-not-padding-xs">
             <div class="panel panel-default wam-margin-left-2 wam-margin-right-2 wam-margin-top-1">
                 <div class="panel-heading ">
                     <h4><strong><spring:message code="label.limits.title"/></strong></h4>

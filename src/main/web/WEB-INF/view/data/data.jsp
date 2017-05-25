@@ -131,8 +131,8 @@
     <!-- /.modal-dialog -->
 </div>
 
-<div class="content container-fluid wam-radius wam-min-height-0 wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="300ms">
-    <div class='row'>
+<div class="content container-fluid wam-radius wam-min-height-0 wow fadeInDown " data-wow-duration="1000ms" data-wow-delay="300ms">
+    <div class='row '>
         <input id="_csrf_token" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         <%--<input id="id" type="hidden" name="id" value="${id}"/>--%>
         <textarea id="responseMessage" name="responseMessage" style="display: none;">${responseMessage}</textarea>
@@ -140,7 +140,7 @@
         <input id="responseUrl" name="responseUrl" style="display: none;" value="${responseUrl}"/>
 
         <c:if test="${className=='amount'}">
-            <div class="container-fluid">
+            <div class="container-fluid wam-not-padding-xs">
                 <form:form id="amountForm" method="POST" modelAttribute="amountForm" action="/amount/save">
                     <input type="hidden" name="referer" class="form-control" value="${previousPage}"/>
                     <%--Название страницы--%>
@@ -300,7 +300,7 @@
             </div>
         </c:if>
         <c:if test="${className=='category'}">
-            <div class="container-fluid">
+            <div class="container-fluid wam-not-padding-xs">
                 <form:form id="categoryForm" method="POST" modelAttribute="categoryForm" action="/category/save">
                     <input type="hidden" name="referer" class="form-control" value="${previousPage}"/>
                     <div class='col-xs-12 col-md-6 wam-margin-bottom-2'>
@@ -444,7 +444,7 @@
             </div>
         </c:if>
         <c:if test="${className=='product'}">
-            <div class="container-fluid">
+            <div class="container-fluid wam-not-padding-xs">
                 <form:form id="productForm" method="POST" modelAttribute="productForm" action="/product/save">
                     <input type="hidden" name="referer" class="form-control" value="${previousPage}"/>
 

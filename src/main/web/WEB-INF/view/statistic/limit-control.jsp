@@ -19,6 +19,8 @@
             displayMessage('error', $('#response').val());
         }
 
+        formatTooLongText();
+
         getAlerts();
     });
 
@@ -62,22 +64,22 @@
     </div>
 </div>
 
-<div class="content container-fluid wam-radius wam-min-height-0 wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="300ms">
+<div class="content container-fluid wam-radius wam-min-height-0 wow fadeInDown " data-wow-duration="1000ms" data-wow-delay="300ms">
     <div class='row'>
         <input id="_csrf_token" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         <textarea id="response" name="response" style="display: none;">${response}</textarea>
 
-        <div id=limits class="container-fluid col-sm-12 wam-not-padding"
-             data-wow-duration="1000ms" data-wow-delay="300ms">
-            <div class="panel panel-default wam-margin-left-2 wam-margin-right-2 wam-margin-top-1">
+
+        <div id=limits class="container-fluid wam-not-padding-xs">
+            <div class="panel panel-default wam-margin-left-2 wam-margin-right-1 wam-margin-top-1">
                 <div class="panel-heading ">
                     <h3 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.limit.control.title"/></h3>
                 </div>
                 <div class="wam-not-padding panel-body">
                     <div class="col-xs-12 col-md-12">
-						<span class="wam-text">
-							<spring:message code="label.limit.control.details"/>
-						</span>
+							<span class="wam-text">
+								<spring:message code="label.limit.control.details"/>
+							</span>
                     </div>
                 </div>
             </div>
@@ -121,15 +123,16 @@
                                     </c:otherwise>
                                     </c:choose>
                                     <div class="col-xs-12 col-md-12">
-                                        <h5 class="wam-margin-bottom-0"><strong id="categoryBarName${id}" value="${name}">
+                                        <h5 class="wam-margin-bottom-0 needToFormat"><strong id="categoryBarName${id}" value="${name}">
                                             <c:choose>
-                                            <c:when test="${type == 'category'}">
-                                            Кат. ${name}
-                                            </c:when>
-                                            <c:otherwise>
-                                            Гр. ${name}
-                                            </c:otherwise>
+                                                <c:when test="${type == 'category'}">
+                                                    Кат. ${name}
+                                                </c:when>
+                                                <c:otherwise>
+                                                    Гр. ${name}
+                                                </c:otherwise>
                                             </c:choose>
+                                        </strong>
 											<span id="categoryBarSum${id}" class="pull-right text-muted"
                                                   value="${sum}">
 												${sum} (из ${limit}) руб.
@@ -194,15 +197,16 @@
                                     </c:otherwise>
                                     </c:choose>
                                     <div class="col-xs-12 col-md-12">
-                                        <h5 class="wam-margin-bottom-0"><strong id="categoryBarName${id}" value="${name}">
+                                        <h5 class="wam-margin-bottom-0 needToFormat"><strong id="categoryBarName${id}" value="${name}">
                                             <c:choose>
-                                            <c:when test="${type == 'category'}">
-                                            Кат. ${name}
-                                            </c:when>
-                                            <c:otherwise>
-                                            Гр. ${name}
-                                            </c:otherwise>
+                                                <c:when test="${type == 'category'}">
+                                                    Кат. ${name}
+                                                </c:when>
+                                                <c:otherwise>
+                                                    Гр. ${name}
+                                                </c:otherwise>
                                             </c:choose>
+                                        </strong>
 											<span id="categoryBarSum${id}" class="pull-right text-muted"
                                                   value="${sum}">
 												${sum} (из ${limit}) руб.
@@ -266,15 +270,16 @@
                                     </c:otherwise>
                                     </c:choose>
                                     <div class="col-xs-12 col-md-12">
-                                        <h5 class="wam-margin-bottom-0"><strong id="categoryBarName${id}" value="${name}">
+                                        <h5 class="wam-margin-bottom-0 needToFormat"><strong id="categoryBarName${id}" value="${name}">
                                             <c:choose>
-                                            <c:when test="${type == 'category'}">
-                                            Кат. ${name}
-                                            </c:when>
-                                            <c:otherwise>
-                                            Гр. ${name}
-                                            </c:otherwise>
+                                                <c:when test="${type == 'category'}">
+                                                    Кат. ${name}
+                                                </c:when>
+                                                <c:otherwise>
+                                                    Гр. ${name}
+                                                </c:otherwise>
                                             </c:choose>
+                                        </strong>
 											<span id="categoryBarSum${id}" class="pull-right text-muted"
                                                   value="${sum}">
 												${sum} (из ${limit}) руб.

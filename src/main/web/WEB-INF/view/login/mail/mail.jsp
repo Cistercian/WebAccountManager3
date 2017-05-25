@@ -13,20 +13,23 @@
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-xs-12 col-md-12">
-            <h4><spring:message code="label.account.mail.from"/><strong>: ${mail.getSender()}</strong></h4>
-        </div>
-        <div class="col-xs-12 col-md-12 text-muted">
-            <h5>${mail.getDate()}</h5>
-        </div>
-
-        <div class="col-xs-12 col-md-12 text-center wam-margin-bottom-1">
-            <h3><strong>${mail.getTitle()}</strong></h3>
-        </div>
-
-        <div class="col-xs-12 col-md-12">
-            <h4>${mail.getText()}</h4>
+        <div class="login-panel panel panel-default wam-not-padding wam-margin-left-2-1 wam-margin-right-2">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-12 col-md-4">
+                        <h4 class="text-muted"><spring:message code="label.account.mail.from"/><strong>: ${mail.getSender()}</strong></h4>
+                        <h5 class="text-muted">${mail.getDate()}</h5>
+                    </div>
+                    <div class="col-xs-12 col-md-8">
+                        <h3><strong class="pull-right text-muted">${mail.getTitle()}</strong></h3>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="col-xs-12 col-md-12">
+                    <h4>${mail.getText()}</h4>
+                </div>
+            </div>
         </div>
     </div>
-
 </div>

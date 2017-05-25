@@ -112,9 +112,9 @@
     <div class="form-group">
         <input id="_csrf_token" type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
         <textarea id="response" name="response" style="display: none;">${response}</textarea>
-        <div class="container-fluid">
+        <div class="container-fluid wam-not-padding-xs">
             <div class="row">
-                <div class="col-sm-12">
+                <div class="col-sm-12 ">
                     <spring:message code="label.calendar.details" />
                     <div id="calendar">
                     </div>

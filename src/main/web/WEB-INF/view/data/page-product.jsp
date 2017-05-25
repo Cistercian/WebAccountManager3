@@ -81,16 +81,16 @@
     <!-- /.modal-dialog -->
 </div>
 
-<div class="content container-fluid wam-radius wam-min-height-0 wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="300ms">
+<div class="content container-fluid wam-radius wam-min-height-0 wow fadeInDown " data-wow-duration="1000ms" data-wow-delay="300ms">
     <div id="services" class="container-fluid">
-        <div class='row'>
+        <div class='row '>
             <input id="_csrf_token" type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
             <input id="id" type="hidden"  name="id" value="${id}"/>
             <section id='section'>
-                <div class='col-xs-12 wam-margin-bottom-2'>
+                <div class='col-xs-12 wam-margin-bottom-2 wam-not-padding-xs'>
                     <h3><spring:message code="label.page-product.title" /></h3>
                 </div>
-                <div class="panel-body">
+                <div class="panel-body wam-not-padding-xs">
                     <table id="amounts" class="table table-striped table-bordered table-text" cellspacing="0" width="100%">
                         <thead>
                         <tr>

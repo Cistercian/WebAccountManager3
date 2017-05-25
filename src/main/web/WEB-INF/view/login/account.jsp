@@ -159,8 +159,8 @@
     <input id="_csrf_token" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
     <textarea id="response" name="response" style="display: none;">${response}</textarea>
     <div class='row'>
-        <div class="container-fluid">
-            <div class="panel panel-default wam-margin-left-2 wam-margin-right-2 wam-margin-top-1">
+        <div class="container-fluid wam-not-padding-xs">
+            <div class="panel panel-default wam-margin-left-2 wam-margin-right-2 wam-margin-top-1 ">
                 <div class="panel-heading ">
                     <h3><spring:message code="label.account.title"/></h3>
                 </div>
@@ -170,8 +170,8 @@
                 <div class="panel-heading ">
                     <h4><strong><spring:message code="label.account.mail"/></strong></h4>
                 </div>
-                <div class="wam-not-padding panel-body">
-                    <table id="mail" class="table table-striped table-bordered table-text wam-not-padding wam-font-size" cellspacing="0" width="100%">
+                <div class="panel-body wam-not-padding">
+                    <table id="mail" class="table table-striped table-bordered table-text  wam-font-size" cellspacing="0" width="100%">
                         <thead>
                         <tr>
                             <th style="display : none;">id</th>
@@ -217,7 +217,7 @@
         </div>
     </div>
     <div class='row'>
-        <div class="container-fluid">
+        <div class="container-fluid wam-not-padding-xs">
             <form:form method="POST" modelAttribute="passwordForm" class="form-signin">
                 <div class="panel panel-default wam-margin-left-2 wam-margin-right-2">
                     <div class="panel-heading">

@@ -123,7 +123,7 @@ function drawBarsByParentId(isChildren, categoryId, after, before) {
                     <!-- добавляем прогресс бар -->
                     $('#' + idBarElem).append(
                         "<li id='progressBar" + classType + classId + "' class='list-unstyled'>" +
-                        "<div class='row'><div class='col-xs-12'><h4 class='wam-margin-top-1 wam-margin-bottom-0'>" +
+                        "<div class='row'><div class='col-xs-12'><h4 class='wam-margin-top-1 wam-margin-bottom-0 needToFormat'>" +
                         "<strong1 id='barName" + classType + classId + "' value='" + className + "'>" +
                         classTitle + ": " + className + "" +
                         "</strong1></div></div>" +
@@ -371,6 +371,23 @@ function sendMail(){
             hideLoader();
 
             displayMessage(data.type, data.message, "");
+        }
+    });
+}
+function formatTooLongText(){
+    //formatting text for mobile
+    $('.needToFormat').each(function () {
+        var parentWidth = $(this).width();
+        var currentWidth = 0;
+        var countChars = 0;
+        $(this).children().each(function () {
+            currentWidth += $(this).width() + 10;
+            countChars += $(this).text().trim().length;
+        });
+        if (currentWidth > parentWidth) {
+            var size = countChars - parentWidth * countChars / currentWidth + 5;
+            var length = $(this).children('strong').text().trim().length;
+            $(this).children('strong').text($(this).children('strong').text().trim().substring(0, Math.floor(length - size)) + '...');
         }
     });
 }
