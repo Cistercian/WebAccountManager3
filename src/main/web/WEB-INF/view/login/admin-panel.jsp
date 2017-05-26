@@ -84,25 +84,6 @@
             }
         });
     }
-    function sendMail(){
-        $.ajax({
-            type: "POST",
-            url: '/admin-panel/sendMail',
-            data: {
-                'username' : $('#userId').val(),
-                'title' : $('#title').val(),
-                'text' : $('#text').val(),
-            },
-            beforeSend: function () {
-                displayLoader();
-            },
-            success: function (data) {
-                hideLoader();
-
-                displayMessage(data.type, data.message, "");
-            }
-        });
-    }
     function setDropdownListId(id, name, type) {
         var elem;
         switch (type) {
@@ -132,21 +113,25 @@
         ClearModalPanel();
         if (type == 'info') {
             $('#modalBody').append(
-                    "<h4><strong>" + message + "</strong></h4>"
+                    "<div class='col-xs-12'>" +
+                    "<h4><strong>" + message + "</strong></h4>" +
+                    "</div>"
             );
             $('#modalFooter').append(
-                    "<button type='button' class='btn btn-primary' data-dismiss='modal' >" +
-                    "Ok" +
-                    "</button>"
+                    "<div class='col-xs-12 col-md-4 col-md-offset-8 wam-not-padding'>" +
+                    "<button type='button' class='btn btn-primary btn-lg btn-block' data-dismiss='modal'>Закрыть</button>" +
+                    "</div>"
             );
         } else {
             $('#modalBody').append(
-                    "<h4><strong>" + message + "</strong></h4>"
+                    "<div class='col-xs-12'>" +
+                    "<h4><strong>" + message + "</strong></h4>" +
+                    "</div>"
             );
             $('#modalFooter').append(
-                    "<button type='button' class='btn btn-primary' onclick='location.reload();'>" +
-                    "Ok" +
-                    "</button>"
+                    "<div class='col-xs-12 col-md-4 col-md-offset-8 wam-not-padding'>" +
+                    "<button type='button' class='btn btn-primary btn-lg btn-block' onclick='location.reload();'>Закрыть</button>" +
+                    "</div>"
             );
             //alert("должен быть показ");
             $('#modal').modal('show'); //TODO: wtf?
@@ -154,27 +139,7 @@
         $('#modal').modal('show');
     }
 </script>
-<!-- Modal Panel -->
-<div id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modallabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content wam-radius">
-            <div id="modalHeader" class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 id="modalTitle" class="modal-title">
-                    <spring:message code="label.page-amount.modal.title"/>
-                </h4>
-            </div>
-            <div id="modalBody" class="modal-body">
-                Loading data...
-            </div>
-            <div id="modalFooter" class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-            </div>
-        </div>
-        <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
+
 
 <div class="container-fluid content wam-radius wam-min-height-0">
     <input id="_csrf_token" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>

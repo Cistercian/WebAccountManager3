@@ -89,7 +89,9 @@
     function displayMessage(type, message, Url) {
         ClearModalPanel();
         $('#modalBody').append(
-                "<h4><strong>" + message + "</strong></h4>"
+                "<div class='col-xs-12'>" +
+                "<h4><strong>" + message + "</strong></h4>" +
+                "</div>"
         );
         var onclick;
         if (type == 'SUCCESS') {
@@ -102,34 +104,13 @@
             onclick = "$(\"#responseMessage\").val(\"\"); return false;";
         }
         $('#modalFooter').append(
-                "<button type='button' class='btn btn-default' data-dismiss='modal' " +
-                "onclick='" + onclick + "'>" +
-                "Ok" +
-                "</button>"
+                "<div class='col-xs-12 col-md-4 col-md-offset-8 wam-not-padding'>" +
+                "<button type='button' class='btn btn-primary btn-lg btn-block' data-dismiss='modal' onclick='" + onclick + "'>Закрыть</button>" +
+                "</div>"
         );
         $('#modal').modal('show');
     }
 </script>
-<!-- Modal Panel -->
-<div id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modallabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content wam-radius">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 id="mpdalcategoryTitle" class="modal-title"><spring:message
-                        code="label.page-amount.modal.title"/></h4>
-            </div>
-            <div id="modalBody" class="modal-body">
-                Loading data...
-            </div>
-            <div id="modalFooter" class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-            </div>
-        </div>
-        <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
 
 <div class="content container-fluid wam-radius wam-min-height-0 wow fadeInDown " data-wow-duration="1000ms" data-wow-delay="300ms">
     <div class='row '>

@@ -66,6 +66,9 @@ public class ProductController {
 
             List<Amount> amounts = amountService.getByProductAndDate(currentUser, product, after, before);
             modelAndView.addObject("amounts", amounts);
+
+            modelAndView.addObject("id", product.getId());
+            modelAndView.addObject("name", product.getName());
         }
 
         return modelAndView;

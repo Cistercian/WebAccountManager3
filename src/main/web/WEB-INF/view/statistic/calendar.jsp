@@ -28,7 +28,9 @@
     function displayMessage(type, message, Url) {
         ClearModalPanel();
         $('#modalBody').append(
-                "<h4><strong>" + message + "</strong></h4>"
+                "<div class='col-xs-12'>" +
+                "<h4><strong>" + message + "</strong></h4>" +
+                "</div>"
         );
 
         var onclick;
@@ -39,10 +41,9 @@
             onclick = "$(\"#response\").val(\"\"); return false;";
         }
         $('#modalFooter').append(
-                "<button type='button' class='btn btn-default' data-dismiss='modal' " +
-                "onclick='" + onclick + "'>" +
-                "Ok" +
-                "</button>"
+                "<div class='col-xs-12 col-md-4 col-md-offset-8 wam-not-padding'>" +
+                "<button type='button' class='btn btn-primary btn-lg btn-block' data-dismiss='modal' onclick='" + onclick + "'>Закрыть</button>" +
+                "</div>"
         );
         $('#modal').modal('show');
     }
@@ -59,7 +60,7 @@
                 right: ''
             },
             defaultView : calendarView,
-            height: calendarView == 'listWeek' ? 630 : 850,
+            height: calendarView == 'listWeek' ? 645 : 860,
             theme: false,
             defaultDate: new Date(),
             locale: 'ru',
@@ -91,33 +92,27 @@
         });
     }
 </script>
-<!-- Modal Panel -->
-<div id="modal" class="modal fade " tabindex="-1" role="dialog" aria-labelledby="modallabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg ">
-        <div class="modal-content wam-radius">
-            <div id="modalHeader" class="modal-header ">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 id="modalcategoryTitle" class="modal-title"><spring:message code="label.page-amount.modal.title" /></h4>
-            </div>
-            <div id="modalBody" class="modal-body">
-                Loading data...
-            </div>
-            <div id="modalFooter" class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-            </div>
-        </div>
-    </div>
-</div>
+
 <div class="content container-fluid wam-radius wam-min-height-0 wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="300ms">
-    <div class="form-group">
+    <div class="row">
         <input id="_csrf_token" type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
         <textarea id="response" name="response" style="display: none;">${response}</textarea>
+
         <div class="container-fluid wam-not-padding-xs">
-            <div class="row">
-                <div class="col-sm-12 ">
-                    <spring:message code="label.calendar.details" />
-                    <div id="calendar">
+            <div class="panel panel-default wam-margin-left-2 wam-margin-right-2 wam-margin-top-1">
+                <div class="panel-heading ">
+                    <h3 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.calendar.title"/></strong></h3>
+                </div>
+                <div class="wam-not-padding panel-body">
+                    <div class="col-xs-12 col-md-12">
+						<span class="wam-text">
+							<spring:message code="label.calendar.details" />
+						</span>
                     </div>
+                </div>
+            </div>
+            <div class="col-sm-12 ">
+                <div id="calendar">
                 </div>
             </div>
         </div>

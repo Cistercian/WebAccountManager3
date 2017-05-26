@@ -11,23 +11,25 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
-<div class="container-fluid">
+<div class="container-fluid wam-not-padding-xs">
     <div class="row">
         <div class="login-panel panel panel-default wam-not-padding wam-margin-left-2-1 wam-margin-right-2">
             <div class="panel-heading">
                 <div class="row">
-                    <div class="col-xs-12 col-md-4">
-                        <h4 class="text-muted"><spring:message code="label.account.mail.from"/><strong>: ${mail.getSender()}</strong></h4>
-                        <h5 class="text-muted">${mail.getDate()}</h5>
+                    <div class="col-xs-4 col-md-4">
+                        <h6 class="wam-margin-bottom-0 wam-margin-top-0 text-muted">
+                            <spring:message code="label.account.mail.from"/><strong>: ${mail.getSender()}</strong>
+                        </h6>
+                        <h6 class="wam-margin-bottom-0 wam-margin-top-1 text-muted">${mail.getDate()}</h6>
                     </div>
-                    <div class="col-xs-12 col-md-8">
-                        <h3><strong class="pull-right text-muted">${mail.getTitle()}</strong></h3>
+                    <div class="col-xs-8 col-md-8">
+                        <h4 class='wam-margin-bottom-0 wam-margin-top-0 wam-font-size-2'><strong class="pull-right text-muted">${mail.getTitle()}</strong></h4>
                     </div>
                 </div>
             </div>
-            <div class="panel-body">
+            <div class="panel-body wam-not-padding">
                 <div class="col-xs-12 col-md-12">
-                    <h4>${mail.getText()}</h4>
+                    <p class='lead'>${mail.getText()}</p>
                 </div>
             </div>
         </div>

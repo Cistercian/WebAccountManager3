@@ -13,14 +13,12 @@ import ru.hd.olaf.entities.Amount;
 import ru.hd.olaf.entities.User;
 import ru.hd.olaf.mvc.service.AmountService;
 import ru.hd.olaf.mvc.service.SecurityService;
-import ru.hd.olaf.util.LogUtil;
 import ru.hd.olaf.util.DateUtil;
+import ru.hd.olaf.util.LogUtil;
 import ru.hd.olaf.util.json.CalendarEntity;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.List;
 
 /**
  * Created by Olaf on 30.04.2017.
@@ -89,13 +87,8 @@ public class CalendarController {
 
         List<Amount> amounts = amountService.getByDate(user, after, before);
 
-        Collections.sort(amounts, new Comparator<Amount>() {
-            public int compare(Amount o1, Amount o2) {
-                return o2.getPrice().compareTo(o1.getPrice());
-            }
-        });
-
         modelAndView.addObject("amounts", amounts);
+        modelAndView.addObject("date", DateUtil.getString(after));
 
         return modelAndView;
     }

@@ -15485,6 +15485,8 @@
 					) :
 					'') +
 				'</td>' +
+					/*hd*/
+
 				'</tr>';
 		},
 
@@ -15518,19 +15520,22 @@
 			}
 
 			return '<tr class="' + classes.join(' ') + '">' +
-				(this.displayEventTime ?
-				'<td class="fc-list-item-time ' + view.widgetContentClass + '">' +
-				(timeHtml || '') +
-				'</td>' :
-					'') +
-				'<td class="fc-list-item-marker ' + view.widgetContentClass + '">' +
-				'<span class="fc-event-dot"' +
+					/*(this.displayEventTime ?
+					 '<td class="fc-list-item-time ' + view.widgetContentClass + '">' +
+					 (timeHtml || '') +
+					 '</td>' :
+					 '') +
+					 '<td class="fc-list-item-marker ' + view.widgetContentClass + '">' +
+					 '<span class="fc-event-dot"' +
+					 (bgColor ?
+					 ' style="background-color:' + bgColor + '"' :
+					 '') +
+					 '></span>' +*/
+				'</td>' +
+				'<td class="text-center fc-list-item-title ' + view.widgetContentClass + '" ' +
 				(bgColor ?
 				' style="background-color:' + bgColor + '"' :
-					'') +
-				'></span>' +
-				'</td>' +
-				'<td class="fc-list-item-title ' + view.widgetContentClass + '">' +
+					'') + '>' +
 				'<a' + (url ? ' href="' + htmlEscape(url) + '"' : '') + '>' +
 				htmlEscape(seg.event.title || '') +
 				'</a>' +

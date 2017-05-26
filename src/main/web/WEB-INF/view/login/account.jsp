@@ -85,30 +85,36 @@
                     message
             );
             $('#modalFooter').append(
-                    "<button type='button' class='btn btn-primary' data-dismiss='modal' >" +
-                    "Ok" +
-                    "</button>"
+                    "<div class='col-xs-12 col-md-4 col-md-offset-8 wam-not-padding'>" +
+                    "<button type='button' class='btn btn-primary btn-lg btn-block' data-dismiss='modal'>Закрыть</button>" +
+                    "</div>"
             );
         } else if (type == 'NEWMAIL') {
             $('#modalBody').append(
                     message
             );
             $('#modalFooter').append(
-                    "<button type='button' class='btn btn-primary' data-dismiss='modal' onclick='sendMail();return false;'>" +
+                    "<div class='col-xs-12 col-md-4 col-md-offset-4 wam-not-padding'>" +
+                    "<button type='button' class='btn btn-primary btn-lg btn-block' data-dismiss='modal' onclick='sendMail();return false;'>" +
                     "${mailSubmit}" +
                     "</button>" +
-                    "<button type='button' class='btn btn-default' data-dismiss='modal'>" +
+                    "</div>" +
+                    "<div class='col-xs-12 col-md-4 wam-not-padding'>" +
+                    "<button type='button' class='btn btn-default btn-lg btn-block' data-dismiss='modal'>" +
                     "${mailCancel}" +
-                    "</button>"
+                    "</button>" +
+                    "</div>"
             );
         } else {
             $('#modalBody').append(
-                    "<h4><strong>" + message + "</strong></h4>"
+                    "<div class='col-xs-12'>" +
+                    "<h4><strong>" + message + "</strong></h4>" +
+                    "</div>"
             );
             $('#modalFooter').append(
-                    "<button type='button' class='btn btn-primary' data-dismiss='modal'>" +
-                    "Ok" +
-                    "</button>"
+                    "<div class='col-xs-12 col-md-4 col-md-offset-8 wam-not-padding'>" +
+                    "<button type='button' class='btn btn-primary btn-lg btn-block' data-dismiss='modal'>Закрыть</button>" +
+                    "</div>"
             );
             //alert("должен быть показ");
             $('#modal').modal('show'); //TODO: wtf?
@@ -133,40 +139,19 @@
         });
     }
 </script>
-<!-- Modal Panel -->
-<div id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modallabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content wam-radius">
-            <div id="modalHeader" class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 id="modalTitle" class="modal-title">
-                    <spring:message code="label.page-amount.modal.title"/>
-                </h4>
-            </div>
-            <div id="modalBody" class="modal-body">
-                Loading data...
-            </div>
-            <div id="modalFooter" class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-            </div>
-        </div>
-        <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
 
 <div class="content container-fluid wam-radius wam-min-height-0 wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="300ms">
     <input id="_csrf_token" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
     <textarea id="response" name="response" style="display: none;">${response}</textarea>
     <div class='row'>
         <div class="container-fluid wam-not-padding-xs">
-            <div class="panel panel-default wam-margin-left-2 wam-margin-right-2 wam-margin-top-1 ">
+            <div class="panel panel-default wam-margin-left-2 wam-margin-right-1 wam-margin-top-1 ">
                 <div class="panel-heading ">
-                    <h3><spring:message code="label.account.title"/></h3>
+                    <h3 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.account.title"/></h3>
                 </div>
             </div>
 
-            <div class="panel panel-default wam-margin-left-2 wam-margin-right-2 wam-margin-top-1">
+            <div class="panel panel-default wam-margin-left-2 wam-margin-right-1 wam-margin-top-1">
                 <div class="panel-heading ">
                     <h4><strong><spring:message code="label.account.mail"/></strong></h4>
                 </div>
@@ -207,9 +192,10 @@
                 </div>
                 <div class="panel-body">
                     <div class="col-xs-12 col-md-6">
+                        <p class='text-justify'><spring:message code="label.account.feedback.details"/></p>
                         <button class="btn btn-lg btn-primary btn-block wam-btn-2" type="submit"
                                 onclick="getMailForm();return false;">
-                            <spring:message code="label.account.feedback"/>
+                            <span class='wam-font-size-2'><spring:message code="label.account.feedback"/></span>
                         </button>
                     </div>
                 </div>
@@ -219,11 +205,11 @@
     <div class='row'>
         <div class="container-fluid wam-not-padding-xs">
             <form:form method="POST" modelAttribute="passwordForm" class="form-signin">
-                <div class="panel panel-default wam-margin-left-2 wam-margin-right-2">
+                <div class="panel panel-default wam-margin-left-2 wam-margin-right-1">
                     <div class="panel-heading">
                         <h4 class="panel-title"><strong><spring:message code="label.account.password.title"/></strong></h4>
                     </div>
-                    <div class="panel-body">
+                    <div class="panel-body ">
                         <spring:bind path="passwordOld">
                             <div class="col-xs-12 col-md-12">
                                 <div class="col-xs-12 col-md-6">

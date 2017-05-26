@@ -44,18 +44,42 @@ function drawBarsByParentId(isChildren, categoryId, after, before) {
                     tagClassProgress = "";
 
                     if (categoryId != null)
-                    /*
-                     categoryName = "<strong>" + $('#' + idNameElem).attr('value') + " </strong><a href='/page-data/display/category/" +
-                     categoryId + "'>(редактировать)</a>";
-                     */
-                        categoryName = "<strong>" + $('#' + idNameElem).attr('value') + " </strong><a href='/category?id=" +
-                            categoryId + "'>(редактировать)</a>";
+                        categoryName = "<div class='row'>" +
+                            "<div class='col-xs-12'>" +
+                            "<p class='wam-font-size text-muted'>Детализация категории</p>" +
+                            "</div>" +
+                            "<div class='col-xs-12'>" +
+                            "<p class=' wam-margin-bottom-0'><h3 class='wam-margin-top-1'><strong class='pull-right'>" +
+                            $('#' + idNameElem).attr('value') +
+                            "</h3></strong></p>" +
+                            "</div>" +
+                            "<div class='col-xs-12'>" +
+                            "<p class='wam-font-size pull-right wam-margin-bottom-0'>" +
+                            "<a href='/category?id=" + categoryId + "'>(редактировать)</a>" +
+                            "</p>" +
+                            "</div>" +
+                            "</div>";
                     else
-                        categoryName = "Детализация за дату <p>" + after + " <a href='/statistic/calendar/getAmountsByDate?start=" + after + "&end=" + after + "'>(Просмотреть)</a>";
+                        categoryName = "<div class='row'>" +
+                            "<div class='col-xs-12'>" +
+                            "<p class='wam-font-size text-muted'>Детализация за дату</p>" +
+                            "</div>" +
+                            "<div class='col-xs-12'>" +
+                            "<p class=' wam-margin-bottom-0'><h3 class='wam-margin-top-1'><strong class='pull-right'>" +
+                            moment(after).locale('ru').format('DD MMMM YYYY') +
+                            "</h3></strong></p>" +
+                            "</div>" +
+                            "<div class='col-xs-12'>" +
+                            "<p class='wam-font-size pull-right wam-margin-bottom-0'>" +
+                            "<a href='/statistic/calendar/getAmountsByDate?start=" +
+                            after + "&end=" + after + "'>(Просмотреть)</a>" +
+                            "</p>" +
+                            "</div>" +
+                            "</div>";
 
                     //заголовок
-                    $('#modalHeader').append(
-                        "<h3 class='wam-font-1'>" + categoryName + "</h3>"
+                    $('#header').append(
+                        "<h4 class='wam-not-padding-xs'>" + categoryName + "</h4>"
                     );
 
                 } else {
@@ -71,13 +95,13 @@ function drawBarsByParentId(isChildren, categoryId, after, before) {
 
                     //заголовок
                     $('#childrenCategoryDetails').append(
-                        "<h4><strong>" + categoryName + " <a href='/category?id=" + categoryId +
-                        "'>(редактировать)</a></strong></h4>"
+                        "<h4><span>" + categoryName + " <a href='/category?id=" + categoryId +
+                        "'>(редактировать)</a></span></h4>"
                     );
                     $('#strongCategory' + categoryId).text("(Свернуть, ");
                     $('#strongCategory' + categoryId).parent().parent()
-                        .append("<strong id='strongCategory" + categoryId + "children'>" +
-                            "<a href='/category?id=" + categoryId + "'>редактировать)</a></strong>");
+                        .append("<span id='strongCategory" + categoryId + "children'>" +
+                            "<a href='/category?id=" + categoryId + "'>редактировать)</a></span>");
                 }
 
 
@@ -94,10 +118,10 @@ function drawBarsByParentId(isChildren, categoryId, after, before) {
 
                     totalSum += classSum;
 
-                    <!-- нормализуем суммы -->
+                    // нормализуем суммы
                     if (maxSum == 0) maxSum = classSum;
                     normalSum = classSum * 100 / maxSum;
-                    <!-- меняем цвет баров -->
+                    // меняем цвет баров
                     curNumStyle = curNumStyle < 4 ? curNumStyle + 1 : 0;
 
                     var elemLink;
@@ -105,10 +129,10 @@ function drawBarsByParentId(isChildren, categoryId, after, before) {
                         classTitle = "Товарная группа";
                         //elemLink = 	"<a href='javascript:getViewProduct(" + classId + ");'>" +
                         elemLink = "<a href='/page-product/" + classId + "?after=" + after + "&before=" + before + "'>" +
-                            "<strong> (Просмотреть</strong>" +
+                            "<span> (Просмотреть</span>" +
                             "</a>" + ", " +
                             "<a href='/product?id=" + classId + "'>" +
-                            "<strong>редактировать)</strong>" +
+                            "<span>редактировать)</span>" +
                             "</a>";
                     }
                     if (classType.indexOf('Category') + 1) {
@@ -117,16 +141,17 @@ function drawBarsByParentId(isChildren, categoryId, after, before) {
                         elemLink = "<a href='javascript:drawBarsByParentId(true, " + classId + "," +
                             "\"" + after + "\"," +
                             "\"" + before + "\")';\">" +
-                            "<strong id='strong" + classType + classId + "'> (Развернуть)</strong>" +
+                            "<span id='strong" + classType + classId + "'> (Развернуть)</span>" +
                             "</a>";
                     }
                     <!-- добавляем прогресс бар -->
                     $('#' + idBarElem).append(
                         "<li id='progressBar" + classType + classId + "' class='list-unstyled'>" +
                         "<div class='row'><div class='col-xs-12'><h4 class='wam-margin-top-1 wam-margin-bottom-0 needToFormat'>" +
-                        "<strong1 id='barName" + classType + classId + "' value='" + className + "'>" +
-                        classTitle + ": " + className + "" +
-                        "</strong1></div></div>" +
+                        "<span class='wam-font-size text-muted'>" + classTitle + ": </span>" +
+                        "<span id='barName" + classType + classId + "' value='" + className + "' class='wam-font-size-2'>" +
+                        className + "" +
+                        "</span></div></div>" +
                         "<div class='row'><div class='col-xs-12'>" + elemLink + "" +
                         "<strong id='barSum" + classType + classId + "' class='pull-right text-muted' " +
                         "value='" + classSum + "'>" +
@@ -173,9 +198,19 @@ function ClearModal() {
         $(this).empty();
     });
     $('#modalHeader').empty();
+    $('#modalHeader').append(
+        "<div class='login-panel panel panel-default wam-not-padding '>" +
+        "<div id='header' class='panel-heading'>" +
+        "</div>" +
+        "</div>");
+
     //рисуем структуру вывода данных
     $('#modalBody').append(
+        "<div class='login-panel panel panel-default wam-not-padding '>" +
+        "<div class='panel-body wam-not-padding'>" +
         "<div id='parentBars'" +
+        "</div>" +
+        "</div>" +
         "</div>");
 }
 /**
@@ -294,18 +329,22 @@ function ClearModalPanel() {
 function Delete(className, id) {
     ClearModalPanel();
     $('#modalBody').append(
-        "<h4><strong>Вы действительно хотите удалить запись?</strong></h4>"
+        "<div class='col-xs-12'>" +
+        "<h4><strong>Вы действительно хотите удалить запись?</strong></h4>" +
+        "</div>"
     );
     $('#modalFooter').append(
-        "<button type='button' class='btn btn-default' data-dismiss='modal' " +
+        "<div class='col-xs-12 col-md-4 col-md-offset-4 wam-not-padding'>" +
+        "<button type='button' class='btn btn-default btn-lg btn-block' data-dismiss='modal' " +
         "onclick=\"SendDeleteQuery('" + className + "', '" + id + "');\">" +
         "Да" +
         "</button>" +
-        "<button type='button' class='btn btn-primary' " +
-        "data-dismiss='modal'>" +
+        "</div>" +
+        "<div class='col-xs-12 col-md-4 wam-not-padding'>" +
+        "<button type='button' class='btn btn-primary btn-lg btn-block' data-dismiss='modal'>" +
         "Нет" +
         "</button>" +
-        ""
+        "</div>"
     );
     $('#modal').modal('show');
 }

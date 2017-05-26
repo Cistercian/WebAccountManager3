@@ -6,8 +6,10 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by Olaf on 30.04.2017.
@@ -36,6 +38,12 @@ public class DateUtil {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
         return date.format(formatter);
+    }
+
+    public static String getString(LocalDate date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, d MMM yyyy");
+
+        return formatter.format(date);
     }
 
     public static Date getDate(LocalDate date){

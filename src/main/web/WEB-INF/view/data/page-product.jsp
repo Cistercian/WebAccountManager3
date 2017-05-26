@@ -56,68 +56,77 @@
                     "sortAscending": ": активировать для сортировки столбца по возрастанию",
                     "sortDescending": ": активировать для сортировки столбца по убыванию"
                 }
-            }
+            },
+            "sort": true,
+            "order": [[ 1, "DESC" ]],
         });
     });
 </script>
 
-<!-- Modal Panel -->
-<div id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modallabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content wam-radius">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 id="mpdalcategoryTitle" class="modal-title"><spring:message code="label.page-amount.modal.title" /></h4>
-            </div>
-            <div id="modalBody" class="modal-body">
-                Loading data...
-            </div>
-            <div id="modalFooter" class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+<div class="content container-fluid wam-radius wam-min-height-0 wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="300ms">
+    <div class='row '>
+        <input id="_csrf_token" type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
+        <input id="id" type="hidden"  name="id" value="${id}"/>
+
+        <div class="container-fluid wam-not-padding-xs">
+            <div class="panel panel-default wam-margin-left-2 wam-margin-right-1 wam-margin-top-1 ">
+                <div class="panel-heading ">
+                    <div class='row '>
+                        <div class='col-xs-12'>
+
+                            <c:choose>
+                            <c:when test="${not empty data}">
+                            <h4 class="wam-margin-bottom-0 wam-margin-top-0">Просмотр товарной группы</h4>
+                        </div>
+                        <div class='col-xs-12'>
+                            <p class='lead'><h3 class='wam-margin-top-1'><strong class='pull-right'>${name}</strong></h3></p>
+                        </div>
+                        <div class='col-xs-12'>
+                            <p class='wam-font-size pull-right wam-margin-bottom-0'>
+                                <a href='/product?id=${id}'>(редактировать)</a>
+                            </p>
+                        </div>
+                        </c:when>
+                        <c:otherwise>
+                        <h4 class="wam-margin-bottom-0 wam-margin-top-0">Просмотр движений за дату</h4>
+                    </div>
+                    <div class='col-xs-12'>
+                        <p class='lead'><h3 class='wam-margin-top-1'><strong class='pull-right'>${date}</strong></h3></p>
+                    </div>
+                    </c:otherwise>
+                    </c:choose>
+
+
+                </div>
             </div>
         </div>
-        <!-- /.modal-content -->
+        <div class="panel-body ">
+            <table id="amounts" class="table table-striped table-bordered table-text  wam-font-size " cellspacing="0" width="100%">
+                <thead>
+                <tr>
+                    <th style="display : none;"><spring:message code="label.page-product.table.id" /></th>
+                    <th><spring:message code="label.page-product.table.date" /></th>
+                    <th><spring:message code="label.page-product.table.name" /></th>
+                    <th><spring:message code="label.page-product.table.price" /></th>
+                    <th><spring:message code="label.page-product.table.category" /></th>
+                </tr>
+                </thead>
+                <tbody>
+
+                <c:forEach items="${amounts}" var="amount">
+                    <tr onclick="location.href='/amount?id=${amount.getId()}';">
+                        <td style="display : none;">${amount.getId()}</td>
+                        <td class="wam-no-wrap">${amount.getDate()}</td>
+                        <td>${amount.getName()}</td>
+                        <td>${amount.getPrice()}</td>
+                        <td>${amount.getCategoryId().getName()}</td>
+                    </tr>
+                </c:forEach>
+                </tbody>
+            </table>
+        </div>
     </div>
-    <!-- /.modal-dialog -->
 </div>
-
-<div class="content container-fluid wam-radius wam-min-height-0 wow fadeInDown " data-wow-duration="1000ms" data-wow-delay="300ms">
-    <div id="services" class="container-fluid">
-        <div class='row '>
-            <input id="_csrf_token" type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
-            <input id="id" type="hidden"  name="id" value="${id}"/>
-            <section id='section'>
-                <div class='col-xs-12 wam-margin-bottom-2 wam-not-padding-xs'>
-                    <h3><spring:message code="label.page-product.title" /></h3>
-                </div>
-                <div class="panel-body wam-not-padding-xs">
-                    <table id="amounts" class="table table-striped table-bordered table-text" cellspacing="0" width="100%">
-                        <thead>
-                        <tr>
-                            <th style="display : none;"><spring:message code="label.page-product.table.id" /></th>
-                            <th><spring:message code="label.page-product.table.date" /></th>
-                            <th><spring:message code="label.page-product.table.name" /></th>
-                            <th><spring:message code="label.page-product.table.price" /></th>
-                            <th><spring:message code="label.page-product.table.category" /></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-
-                        <c:forEach items="${amounts}" var="amount">
-                            <tr onclick="location.href='/amount?id=${amount.getId()}';">
-                                <td style="display : none;">${amount.getId()}</td>
-                                <td class="wam-no-wrap">${amount.getDate()}</td>
-                                <td>${amount.getName()}</td>
-                                <td>${amount.getPrice()}</td>
-                                <td>${amount.getCategoryId().getName()}</td>
-                            </tr>
-                        </c:forEach>
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-        </div>
-    </div>
 </div>
 
 

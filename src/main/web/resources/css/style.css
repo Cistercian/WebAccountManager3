@@ -99,7 +99,7 @@
 /*FullCalendar
 */
 /*Общие настройки таблицы*/
-@media (min-width: 1000px) {
+@media (min-width: 992px) {
 	.fc th, .fc td {
 		border-width: 2px;
 		border-color: #b7b7b7;
@@ -112,7 +112,7 @@
 		height: 100px;
 	}
 }
-@media (max-width: 1000px) {
+@media (max-width: 992px) {
 	.fc th, .fc td {
 		border-width: 2px;
 		border-color: #b7b7b7;
@@ -124,13 +124,37 @@
 		padding: 0px;
 		padding-right: 7px;
 		padding-left: 7px
+
+	}
+	.modal-header {
+		padding: 7px;
+
 	}
 	.wam-font-size {
 		font-size: 14px;
 	}
+	.wam-font-size-2 {
+		font-size: 16px;
+	}
 	.wam-not-padding-xs {
 		padding: 0px;
 		margin-bottom: 0px;
+		margin-top: 0px;
+	}
+	h3, .h3 {
+		font-size: 20px;
+	}
+	h4, .h4 {
+		font-size: 18px;
+	}
+	.wam-margin-bottom-1 {
+		margin-bottom: 5px;
+	}
+	.fc-event-dot {
+		display: inline-block;
+		width: 20px;
+		height: 20px;
+		border-radius: 0px;
 	}
 }
 /*Принудительно скрываем скролбар*/
@@ -139,7 +163,10 @@
 }
 /*Возврат фокуса на модальное окно после закрытия второго, убирание сдвигания страницы при открытии модального окна
 */
-.modal { overflow: auto !important; }
+.modal {
+	overflow: auto !important;
+	font-family: 'Roboto Slab', serif;
+}
 .modal-open{overflow-y: visible;}
 .modal-open {
 	padding-right: 0px !important;
@@ -171,12 +198,15 @@ div.dataTables_filter {
 	font-family: 'Roboto Slab', serif;
 }
 /*настройки для широкого экрана*/
-@media (min-width: 1000px) {
+@media (min-width: 992px) {
 	body {
 		background-color: #e6e6e6;
 	}
+	.modal-lg {
+		width: 800px;
+	}
 	.content {
-		width : 1000px;
+		width : 992px;
 		background-color : #fff;
 		margin: 0 auto;
 		padding: 0;

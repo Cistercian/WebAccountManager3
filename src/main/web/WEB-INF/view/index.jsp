@@ -183,28 +183,7 @@
         $('#dropDownCategoryBarsExpense').append("<h3><spring:message code="label.index.categoryBars.expense" /></h3>");
     }
 </script>
-<!-- modal panel -->
-<div id="modal" class="modal fade " tabindex="-1" role="dialog" aria-labelledby="modallabel"
-     aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content wam-radius">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h3 id="mopdalTitle" class="modal-title"><spring:message code="label.index.modal.title" /></h3>
-                <div id="modalHeader" class="modal-title">
-                </div>
-            </div>
-            <div id="modalBody" class="modal-body">
-                Loading data...
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-            </div>
-        </div>
-        <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
+
 <div class="content container-fluid wam-radius wam-min-height-0 wow fadeInDown wam-not-padding-xs" data-wow-duration="1000ms" data-wow-delay="300ms">
     <div class="slider wam-top-radius">
         <div id="about-slider" >
@@ -253,17 +232,17 @@
                         </div>
                     </div>
                 </div>
-                <div class="panel-body">
-                    <div class="col-xs-12 col-md-12 wam-not-padding wam-margin-left-2-1 wam-margin-right-2">
+                <div class="panel-body wam-not-padding-xs">
+                    <div class="col-xs-12 col-md-12 wam-not-padding wam-margin-left-2-1 wam-margin-right-2 wam-not-padding-xs">
                         <div class="col-xs-12 col-md-6">
                             <canvas id="typeChart"></canvas>
                         </div>
                         <div class="col-xs-12 col-md-6 ">
                             <div class="row">
-                                <div class="col-xs-6 col-md-6 wam-not-padding-xs">
+                                <div class="col-xs-6 col-md-6 ">
                                     <h3><span class="glyphicon glyphicon-stop wam-color-income"></span><spring:message code="label.index.total.income" /></h3>
                                 </div>
-                                <div class="col-xs-6 col-md-6 wam-not-padding-xs">
+                                <div class="col-xs-6 col-md-6 ">
                                     <h3 id="textTotalIncome">
                                         <c:if test="${not empty sumIncome}">
                                             <span id="sumIncome" class="pull-right "></span>
@@ -272,10 +251,10 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-xs-6 col-md-6 wam-not-padding-xs">
+                                <div class="col-xs-6 col-md-6 ">
                                     <h3><span class="glyphicon glyphicon-stop wam-color-expense"></span><spring:message code="label.index.total.expense" /></h3>
                                 </div>
-                                <div class="col-xs-6 col-md-6 wam-not-padding-xs">
+                                <div class="col-xs-6 col-md-6 ">
                                     <h3 id="textTotalExpense">
                                         <c:if test="${not empty sumExpense}">
                                             <span id="sumExpense" class="pull-right "></span>
@@ -284,7 +263,7 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-xs-12 col-md-12 wam-not-padding-xs">
+                                <div class="col-xs-12 col-md-12 ">
                                     <h3><spring:message code="label.index.total.date" />
                                         <c:if test="${not empty curDate}">
                                             <span class="wam-margin-left-3">${curDate}</span>
@@ -402,7 +381,7 @@
                                                     ${classPrice} руб.
                                             </span></h4>
                                         <div class="progress progress-striped active">
-                                            <div class="progress-bar progress-bar-${styles[step]}" role="progressbar"
+                                            <div class="progress-bar progress-bar-${styles[0]}" role="progressbar"
                                                  aria-valuenow="${classPrice}" aria-valuemin="0" aria-valuemax="100"
                                                  style="width: ${normalPrice}%" value="${className}">
                                                 <span class="sr-only">${classPrice}</span>
@@ -453,7 +432,7 @@
                                             </span>
                                         </h4>
                                         <div class="progress progress-striped active">
-                                            <div class="progress-bar progress-bar-${styles[step]}" role="progressbar"
+                                            <div class="progress-bar progress-bar-${styles[2]}" role="progressbar"
                                                  aria-valuenow="${classPrice}" aria-valuemin="0" aria-valuemax="100"
                                                  style="width: ${normalPrice}%" value="${className}">
                                                 <span class="sr-only">${classPrice}</span>

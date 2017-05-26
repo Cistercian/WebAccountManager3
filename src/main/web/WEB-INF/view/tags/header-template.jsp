@@ -139,7 +139,30 @@
 </header>
 
 <c:if test="${pageContext.request.userPrincipal.name != null}">
-    <form id="logoutForm" method="POST" action="${contextPath}/logout">
-        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-    </form>
+<form id="logoutForm" method="POST" action="${contextPath}/logout">
+    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+</form>
 </c:if>
+
+<!-- Modal Panel -->
+<div id="modal" class="modal fade " tabindex="-1" role="dialog" aria-labelledby="modallabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content wam-radius">
+            <div class="modal-header ">
+                <div id="modalHeader" class="modal-title">
+                </div>
+            </div>
+            <div id="modalBody" class="modal-body wam-not-padding">
+                Loading data...
+            </div>
+            <div id='modalFooter' class="modal-footer wam-not-padding">
+                <div class="col-xs-12 col-md-4 col-md-offset-8 wam-not-padding">
+                    <button type="button" class="btn btn-primary btn-lg btn-block" data-dismiss="modal">Закрыть</button>
+                </div>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>

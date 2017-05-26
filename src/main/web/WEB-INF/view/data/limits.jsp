@@ -86,22 +86,27 @@
         ClearModalPanel();
         if (type == 'info') {
             $('#modalBody').append(
-                    "<h4><strong>" + message + "</strong></h4>"
+                    "<div class='col-xs-12'>" +
+                    "<h4><strong>" + message + "</strong></h4>" +
+                    "</div>"
             );
             $('#modalFooter').append(
-                    "<button type='button' class='btn btn-primary' data-dismiss='modal' >" +
-                    "Ok" +
-                    "</button>"
+                    "<div class='col-xs-12 col-md-4 col-md-offset-8 wam-not-padding'>" +
+                    "<button type='button' class='btn btn-primary btn-lg btn-block' data-dismiss='modal'>Закрыть</button>" +
+                    "</div>"
             );
         } else if (type == 'SUCCESS') {
             $('#modalBody').append(
-                    "<h4><strong>" + message + "</strong></h4>"
+                    "<div class='col-xs-12'>" +
+                    "<h4><strong>" + message + "</strong></h4>" +
+                    "</div>"
             );
             $('#modalFooter').append(
-                    "<button type='button' class='btn btn-primary' onclick='location.reload();'>" +
-                    "Ok" +
-                    "</button>"
+                    "<div class='col-xs-12 col-md-4 col-md-offset-8 wam-not-padding'>" +
+                    "<button type='button' class='btn btn-primary btn-lg btn-block' onclick='location.reload();'>Закрыть</button>" +
+                    "</div>"
             );
+
             //alert("должен быть показ");
             $('#modal').modal('show'); //TODO: wtf?
         } else if (type == 'DIALOG') {
@@ -121,12 +126,16 @@
         } else {
             $('#modalBody').append(message);
             $('#modalFooter').append(
-                    "<button type='button' class='btn btn-primary' onclick='sendLimitSubmit();return false;'>" +
+                    "<div class='col-xs-12 col-md-4 col-md-offset-4 wam-not-padding'>" +
+                    "<button type='button' class='btn btn-primary btn-lg btn-block' onclick='sendLimitSubmit();return false;'>" +
                     "${btnlimitLabelOk}" +
                     "</button>" +
-                    "<button type='button' class='btn btn-default' data-dismiss='modal' >" +
+                    "</div>" +
+                    "<div class='col-xs-12 col-md-4 wam-not-padding'>" +
+                    "<button type='button' class='btn btn-default btn-lg btn-block' data-dismiss='modal'>" +
                     "${btnlimitLabelCancel}" +
-                    "</button>"
+                    "</button>" +
+                    "</div>"
             );
         }
         $('#modal').modal('show');
@@ -171,32 +180,15 @@
     }
 
 </script>
-<!-- Modal Panel -->
-<div id="modal" class="modal fade " tabindex="-1" role="dialog" aria-labelledby="modallabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg ">
-        <div class="modal-content wam-radius">
-            <div id="modalHeader" class="modal-header ">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 id="modalcategoryTitle" class="modal-title"><spring:message
-                        code="label.page-amount.modal.title"/></h4>
-            </div>
-            <div id="modalBody" class="modal-body">
-                Loading data...
-            </div>
-            <div id="modalFooter" class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-            </div>
-        </div>
-    </div>
-</div>
+
 <div class="content container-fluid wam-radius wam-min-height-0 wow fadeInDown " data-wow-duration="1000ms" data-wow-delay="300ms">
     <div class='row'>
         <input id="_csrf_token" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         <textarea id="response" name="response" style="display: none;">${response}</textarea>
         <div class="container-fluid wam-not-padding-xs">
-            <div class="panel panel-default wam-margin-left-2 wam-margin-right-2 wam-margin-top-1">
+            <div class="panel panel-default wam-margin-left-2 wam-margin-right-1 wam-margin-top-1">
                 <div class="panel-heading ">
-                    <h4><strong><spring:message code="label.limits.title"/></strong></h4>
+                    <h3 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.limits.title"/></h3>
                 </div>
                 <div class="wam-not-padding panel-body">
                     <div class="col-xs-12 col-md-12">
@@ -221,8 +213,8 @@
                         <th>Наименование</th>
                         <th>Лимит</th>
                         <th>Период</th>
-                        <th class="hidden-xs">Редактировать</th>
-                        <th class="hidden-xs">Удалить</th>
+                        <th class="hidden-xs"  style="display : none;">Редактировать</th>
+                        <th class="hidden-xs"  style="display : none;">Удалить</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -234,7 +226,7 @@
                             <td class="wam-no-wrap">${limits.getSum()}</td>
                             <td>${periods.get(limits.getPeriod())}</td>
 
-                            <td class="hidden-xs">
+                            <td class="hidden-xs"  style="display : none;">
                                 <p data-placement="top" data-toggle="tooltip" title="Edit">
                                     <button class="btn btn-primary btn-xs" data-title="Edit"
                                             onclick="getLimitWindow(${limits.getId()});">
@@ -242,7 +234,7 @@
                                     </button>
                                 </p>
                             </td>
-                            <td class="hidden-xs">
+                            <td class="hidden-xs"  style="display : none;">
                                 <p data-placement="top" data-toggle="tooltip" title="Delete">
                                     <button class="btn btn-danger btn-xs" data-title="Delete"
                                             onclick="Delete('Limit', ${limits.getId()})">
