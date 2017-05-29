@@ -27,7 +27,6 @@
 .wam-margin-top-1 {
 	margin-top: 5px;
 }
-
 .wam-margin-top-2 {
 	margin-top: 15px;
 }
@@ -53,10 +52,10 @@
 .wam-margin-bottom-3 {
 	margin-bottom: 50px;
 }
-.wam-margin-left-2 {
+.wam-margin-left-1 {
 	margin-left: 5px;
 }
-.wam-margin-left-2-1{
+.wam-margin-left-2{
 	margin-left: 10px;
 }
 .wam-margin-left-3 {
@@ -111,6 +110,14 @@
 	.fc-event {
 		height: 100px;
 	}
+
+	.wam-font-size-1 {
+		font-size: 14px;
+	}
+
+	.wam-font-size-2 {
+		font-size: 20px;
+	}
 }
 @media (max-width: 992px) {
 	.fc th, .fc td {
@@ -124,7 +131,6 @@
 		padding: 0px;
 		padding-right: 7px;
 		padding-left: 7px
-
 	}
 	.modal-header {
 		padding: 7px;
@@ -132,6 +138,9 @@
 	}
 	.wam-font-size {
 		font-size: 14px;
+	}
+	.wam-font-size-1 {
+		font-size: 12px;
 	}
 	.wam-font-size-2 {
 		font-size: 16px;
@@ -322,4 +331,17 @@ div.dataTables_filter {
 }
 .wam-color-expense {
 	color: #f0ad4e;
+}
+#amounts_filter,
+#searchDataTable {
+	width: 100%;
+	padding: 0px;
+	padding-right: 0px;
+	padding-left: 0px;
+}
+.wam-padding-left-0 {
+	padding-left: 0px
+}
+.wam-padding-right-0 {
+	padding-right: 0px;
 }

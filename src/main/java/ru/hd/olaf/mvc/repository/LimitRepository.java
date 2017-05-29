@@ -48,7 +48,7 @@ public interface LimitRepository extends JpaRepository<Limit, Integer> {
                 "l.productId = ?2  AND " +
                 "((l.period = 0 and a.date BETWEEN ?3 AND ?6) OR " +
                 "(l.period = 1 and a.date BETWEEN ?4 AND ?6) OR " +
-                "(l.period = 3 and a.date BETWEEN ?5 AND ?6)) " +
+                "(l.period = 2 and a.date BETWEEN ?5 AND ?6)) " +
             "GROUP BY l.period " +
             "HAVING l.sum > 0 ")
     List<BarEntity> findLimitAndSumAmountsByProduct(User user,
@@ -69,7 +69,7 @@ public interface LimitRepository extends JpaRepository<Limit, Integer> {
                 "l.categoryId = ?2 AND " +
                 "((l.period = 0 and a.date BETWEEN ?3 AND ?6) OR " +
                 "(l.period = 1 and a.date BETWEEN ?4 AND ?6) OR " +
-                "(l.period = 3 and a.date BETWEEN ?5 AND ?6)) " +
+                "(l.period = 2 and a.date BETWEEN ?5 AND ?6)) " +
             "GROUP BY l.period " +
             "HAVING l.sum > 0 ")
     List<BarEntity> findLimitAndSumAmountsByCategory(User user,

@@ -99,9 +99,9 @@
         <textarea id="response" name="response" style="display: none;">${response}</textarea>
 
         <div class="container-fluid wam-not-padding-xs">
-            <div class="panel panel-default wam-margin-left-2 wam-margin-right-2 wam-margin-top-1">
+            <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1">
                 <div class="panel-heading ">
-                    <h3 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.calendar.title"/></strong></h3>
+                    <h3 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.calendar.title"/></h3>
                 </div>
                 <div class="wam-not-padding panel-body">
                     <div class="col-xs-12 col-md-12">

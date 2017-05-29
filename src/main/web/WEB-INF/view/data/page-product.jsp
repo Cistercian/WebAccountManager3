@@ -35,6 +35,7 @@
 
         var table = $('#amounts').DataTable({
             responsive: true,
+            "bLengthChange": false,
             language: {
                 "processing": "Подождите...",
                 "search": "Поиск:",
@@ -60,6 +61,16 @@
             "sort": true,
             "order": [[1, "DESC"]],
         });
+        $('#amounts_filter').empty();
+
+        $('#amounts_filter').append(
+                "<div class='col-xs-2 col-md-4 wam-padding-left-0 wam-padding-right-0'>" +
+                "<h5>Поиск: </h5>" +
+                "</div>" +
+                "<div class='col-xs-10 col-md-8 wam-padding-left-0 wam-padding-right-0'>" +
+                "<input id='searchDataTable' type='search' class='form-control' placeholder='' aria-controls='amounts'>" +
+                "</div>"
+        );
     });
 </script>
 
@@ -70,7 +81,7 @@
         <input id="id" type="hidden" name="id" value="${id}"/>
 
         <div class="container-fluid wam-not-padding-xs">
-            <div class="panel panel-default wam-margin-left-2 wam-margin-right-1 wam-margin-top-1 ">
+            <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1 ">
                 <div class="panel-heading ">
                     <div class='row '>
                         <div class='col-xs-12'>
@@ -103,7 +114,7 @@
                 </div>
             </div>
         </div>
-        <div class="panel-body ">
+        <div class="panel-body">
             <table id="amounts" class="table table-striped table-bordered table-text  wam-font-size " cellspacing="0"
                    width="100%">
                 <thead>

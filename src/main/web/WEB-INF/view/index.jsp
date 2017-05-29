@@ -113,19 +113,18 @@
                     var id = barData.id;
                     var sum = Math.abs(barData.sum);
 
-                    <!-- меняем цвет баров -->
-                    curNumStyle = curNumStyle < 4 ? curNumStyle + 1 : 0;
-
                     if (type == 'CategoryIncome') {
                         idBarsElem = 'dropDownCategoryBarsIncome';
                         maxIncomeSum = maxIncomeSum == 0 ? sum : maxIncomeSum;
                         normalSum = sum * 100 / maxIncomeSum;
                         totalIncomeSum += sum;
+                        curNumStyle = 0;
                     } else {
                         idBarsElem = 'dropDownCategoryBarsExpense';
                         maxExpenseSum = maxExpenseSum == 0 ? sum : maxExpenseSum;
                         normalSum = sum * 100 / maxExpenseSum;
                         totalExpenseSum += sum;
+                        curNumStyle = 2;
                     }
 
                     $('#' + idBarsElem).append(
@@ -233,7 +232,7 @@
                     </div>
                 </div>
                 <div class="panel-body wam-not-padding-xs">
-                    <div class="col-xs-12 col-md-12 wam-not-padding wam-margin-left-2-1 wam-margin-right-2 wam-not-padding-xs">
+                    <div class="col-xs-12 col-md-12 wam-not-padding wam-margin-left-1 wam-margin-right-1 wam-not-padding-xs">
                         <div class="col-xs-12 col-md-6">
                             <canvas id="typeChart"></canvas>
                         </div>

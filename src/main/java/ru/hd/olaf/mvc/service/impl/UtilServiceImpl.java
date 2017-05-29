@@ -30,8 +30,6 @@ public class UtilServiceImpl implements UtilService{
 
     private static final Logger logger = LoggerFactory.getLogger(UtilServiceImpl.class);
 
-
-
     /**
      * Функция поиска объекта с форматированным отвветом в виде объекта JsonResponse
      * @param classez Класс искомого объекта
@@ -98,12 +96,23 @@ public class UtilServiceImpl implements UtilService{
     public JsonResponse saveEntity(Object entity) {
         logger.debug(LogUtil.getMethodName());
 
+        JsonResponse response = new JsonResponse();
         try {
             if (entity.getClass().isAssignableFrom(Category.class)) {
                 Category category = (Category) entity;
+                //Проверяем редактируем ли мы запись или создаем новую
+                if (category.getId() ==  null) {
+                    logger.debug("Создается новая запись.");
+                    response.setType(ResponseType.SUCCESS_CREATE_NEW_ENTITY);
+                }
                 categoryService.save(category);
             } else if (entity.getClass().isAssignableFrom(Amount.class)) {
                 Amount amount = (Amount) entity;
+
+                if (amount.getId() ==  null) {
+                    logger.debug("Создается новая запись.");
+                    response.setType(ResponseType.SUCCESS_CREATE_NEW_ENTITY);
+                }
                 amountService.save(amount);
             } else if (entity.getClass().isAssignableFrom(Product.class)) {
                 Product product = (Product) entity;
@@ -121,13 +130,20 @@ public class UtilServiceImpl implements UtilService{
             logger.error(message);
             logger.error(e.toString());
 
-            return new JsonResponse(ResponseType.ERROR, message);
+            response.setMessage(message);
+            response.setType(ResponseType.ERROR);
+
+            return response;
         }
 
         String message = "Запись успешно сохранена в БД.";
         logger.debug(message);
 
-        return new JsonResponse(ResponseType.SUCCESS, message);
+        response.setMessage(message);
+        if (response.getType() == null)
+            response.setType(ResponseType.SUCCESS);
+
+        return response;
     }
 
     /**

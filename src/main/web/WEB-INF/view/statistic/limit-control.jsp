@@ -54,7 +54,7 @@
 
 
         <div id=limits class="container-fluid wam-not-padding-xs">
-            <div class="panel panel-default wam-margin-left-2 wam-margin-right-1 wam-margin-top-1">
+            <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1">
                 <div class="panel-heading ">
                     <h3 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.limit.control.title"/></h3>
                 </div>
@@ -68,7 +68,7 @@
             </div>
 
             <c:set var="styles" value="${['success', 'info', 'warning', 'danger']}" scope="page" />
-            <div class="panel panel-default wam-margin-left-2 wam-margin-right-1 wam-margin-top-1">
+            <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1">
                 <div class="panel-heading ">
                     <h4 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.limit.daily.title"/></h4>
                 </div>

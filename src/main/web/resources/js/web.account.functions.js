@@ -413,20 +413,28 @@ function sendMail(){
         }
     });
 }
+//formatting text for mobile
 function formatTooLongText(){
-    //formatting text for mobile
     $('.needToFormat').each(function () {
-        var parentWidth = $(this).width();
+        var parentWidth = $(this).offsetParent().width();
         var currentWidth = 0;
         var countChars = 0;
         $(this).children().each(function () {
-            currentWidth += $(this).width() + 10;
+            currentWidth += $(this).width();
             countChars += $(this).text().trim().length;
         });
+
         if (currentWidth > parentWidth) {
-            var size = countChars - parentWidth * countChars / currentWidth + 5;
-            var length = $(this).children('strong').text().trim().length;
-            $(this).children('strong').text($(this).children('strong').text().trim().substring(0, Math.floor(length - size)) + '...');
+            var size = countChars - parentWidth * countChars / currentWidth + 3;
+            var childClass = '';
+            if ($(this).children().is('strong')) {
+                childClass = 'strong';
+            } else if ($(this).children().is('a')) {
+                alert('a');
+                childClass = 'a';
+            }
+            var length = $(this).children(childClass).text().trim().length;
+            $(this).children(childClass).text($(this).children(childClass).text().trim().substring(0, Math.floor(length - size)) + '...');
         }
     });
 }

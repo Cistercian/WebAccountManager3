@@ -28,6 +28,7 @@
 
         var table = $('#mail').DataTable({
             responsive: true,
+            "bLengthChange": false,
             language: {
                 "processing": "Подождите...",
                 "search": "Поиск:",

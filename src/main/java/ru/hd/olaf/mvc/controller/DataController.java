@@ -68,20 +68,23 @@ public class DataController {
 
     /**
      * Функция возвращает список товарных групп для автозаполнения поля
+     *
      * @param query строка для поиска
      * @return лист продуктов
      */
     @RequestMapping(value = "/page-data/getProducts", method = RequestMethod.GET)
-    public @ResponseBody
+    public
+    @ResponseBody
     List<Product> getProducts(@RequestParam("query") String query) {
         return productService.getByContainedName(query);
     }
 
     /**
      * Функция сохранения категории
-     * @param categoryForm html форма с заполненными данными сущности
-     * @param parentId id корневой категории
-     * @param refererParam адрес предыдущей страницы
+     *
+     * @param categoryForm  html форма с заполненными данными сущности
+     * @param parentId      id корневой категории
+     * @param refererParam  адрес предыдущей страницы
      * @param bindingResult для отображения ошибок
      * @return ModelAndView "data"
      */
@@ -89,7 +92,7 @@ public class DataController {
     public ModelAndView saveCategory(@RequestParam(value = "referer", required = false) String refererParam,
                                      @ModelAttribute("categoryForm") Category categoryForm,
                                      @RequestParam(value = "parent") Integer parentId,
-                                     BindingResult bindingResult){
+                                     BindingResult bindingResult) {
         logger.debug(LogUtil.getMethodName());
 
         logger.debug("Обрабатываем родительскую категорию");
@@ -142,17 +145,18 @@ public class DataController {
 
     /**
      * Функция просмотра страницы редактирования категории
+     *
      * @param refererHeader адрес предыдущей страницы ()
-     * @param refererParam адрес предыдущей страницы
-     * @param id id записи (необязательно)
-     * @param model model?
+     * @param refererParam  адрес предыдущей страницы
+     * @param id            id записи (необязательно)
+     * @param model         model?
      * @return Наименование view("data")
      */
     @RequestMapping(value = "/category", method = RequestMethod.GET)
     public String getViewCategory(@RequestHeader(value = "Referer", required = false) String refererHeader,
                                   @RequestParam(value = "referer", required = false) String refererParam,
                                   @RequestParam(value = "id", required = false) Integer id,
-                                  Model model){
+                                  Model model) {
         logger.debug(LogUtil.getMethodName());
 
         Category category;
@@ -169,8 +173,7 @@ public class DataController {
         } else {
 
             category = new Category();
-            category.setType((byte)1);
-            model.addAttribute("name", "Новая запись");
+            category.setType((byte) 1);
             logger.debug(String.format("Категория с id = %d не найдена. Создаем новую.", id));
 
         }
@@ -186,16 +189,17 @@ public class DataController {
 
     /**
      * Функция просмотра страницы редактирования amount
+     *
      * @param refererHeader адрес предыдущей страницы
-     * @param id id записи (необяхательно)
-     * @param model текущеая модель
+     * @param id            id записи (необяхательно)
+     * @param model         текущеая модель
      * @return наименование view("data")
      */
     @RequestMapping(value = "/amount", method = RequestMethod.GET)
     public String getViewAmount(@RequestHeader(value = "Referer", required = false) String refererHeader,
                                 @RequestParam(value = "referer", required = false) String refererParam,
                                 @RequestParam(value = "id", required = false) Integer id,
-                                Model model){
+                                Model model) {
         logger.debug(LogUtil.getMethodName());
 
         Amount amount;
@@ -247,27 +251,34 @@ public class DataController {
                 referer = refererHeader;
             }
 
-            model.addAttribute("previousPage", referer);
-            model.addAttribute("previousUrl", refererHeader);
-        }
-        else {
+            model.addAttribute("previousPage", getRerefLink(referer));
+            model.addAttribute("previousUrl", getRerefLink(refererHeader));
+        } else {
             referer = refererParam;
             try {
                 referer = URLDecoder.decode(refererParam, "UTF-8");
             } catch (UnsupportedEncodingException e) {
                 logger.error(String.format("Ошибка URLDecoder.decode: %s", e.getMessage()));
             }
-            model.addAttribute("previousPage", refererParam);
-            model.addAttribute("previousUrl", referer);
+            model.addAttribute("previousPage", getRerefLink(refererParam));
+            model.addAttribute("previousUrl", getRerefLink(referer));
         }
+    }
+
+    private String getRerefLink(String referer){
+        String link = "/index";
+        if (referer == null) return link;
+
+        return referer.contains("save") ? link : referer;
     }
 
     /**
      * Функция сохранения сущности amount
-     * @param amountForm сама сущность
-     * @param productName наименование товарной группы
-     * @param categoryId id категории
-     * @param refererParam адрес предыдущей страницы
+     *
+     * @param amountForm    сама сущность
+     * @param productName   наименование товарной группы
+     * @param categoryId    id категории
+     * @param refererParam  адрес предыдущей страницы
      * @param bindingResult результат валидации
      * @return ModelAndView
      */
@@ -341,16 +352,17 @@ public class DataController {
 
     /**
      * Функция просмотра страницы редактирования товарной группы (product)
+     *
      * @param refererParam адрес предыдущей страницы
-     * @param id id сущности (необязательно)
-     * @param model model?
+     * @param id           id сущности (необязательно)
+     * @param model        model?
      * @return наименование view("data")
      */
     @RequestMapping(value = "/product", method = RequestMethod.GET)
     public String getViewProduct(@RequestHeader(value = "Referer", required = false) String refererHeader,
                                  @RequestParam(value = "referer", required = false) String refererParam,
                                  @RequestParam(value = "id", required = false) Integer id,
-                                 Model model){
+                                 Model model) {
         logger.debug(LogUtil.getMethodName());
 
         Product product;
@@ -378,9 +390,10 @@ public class DataController {
 
     /**
      * Функция сохранения товарной группы (product)
-     * @param productForm html форма с заполненными реквизитами
-     * @param mergeId id товарной группы, с которой будем объединять
-     * @param refererParam адрес предыдущей страницы
+     *
+     * @param productForm   html форма с заполненными реквизитами
+     * @param mergeId       id товарной группы, с которой будем объединять
+     * @param refererParam  адрес предыдущей страницы
      * @param bindingResult для отображения ошибок валидации
      * @return ModelAndView(data)
      */
@@ -401,33 +414,31 @@ public class DataController {
         String message = "";
         JsonResponse response = productService.getById(mergeId);
 
-        if (response.getEntity() != null) {
+        mergeProduct = (Product) response.getEntity();
+        if (mergeProduct != null && mergeProduct.getId() != productForm.getId()) {
 
-            mergeProduct = (Product) response.getEntity();
             modelAndView.addObject("mergeProduct", mergeProduct);
 
             //TODO: transaction
-            if (mergeProduct != null) {
-                logger.debug(String.format("Товарная группа для объединения: %s", mergeProduct));
+            logger.debug(String.format("Товарная группа для объединения: %s", mergeProduct));
 
-                for (Amount amount : amountService.getByProductAndDate(currentUser, mergeProduct, null, null)) {
-                    amount.setProductId(productForm);
-                    response = utilService.saveEntity(amount);
+            for (Amount amount : amountService.getByProductAndDate(currentUser, mergeProduct, null, null)) {
+                amount.setProductId(productForm);
+                response = utilService.saveEntity(amount);
 
-                    logger.debug(String.format("Редактирование записи amount (перевод в другую товарную группу):" +
-                            "результат %s (%s).", response.getType(), response.getMessage()));
-                }
+                logger.debug(String.format("Редактирование записи amount (перевод в другую товарную группу):" +
+                        "результат %s (%s).", response.getType(), response.getMessage()));
+            }
 
-                //удаляем объединяемую сущность
-                try {
-                    response = productService.delete(mergeProduct);
-                    logger.debug(String.format("Результат удаления объединяемой записи: %s (%s)",
-                            response.getType(), response.getMessage()));
-                    message = message + "(Редактирование объединяемой записи: " + response.getMessage() + ")";
-                } catch (CrudException e) {
-                    message = message + "(Ошибка удаления объединяемой записи: " + e.getMessage() + ")";
-                    logger.debug(message);
-                }
+            //удаляем объединяемую сущность
+            try {
+                response = productService.delete(mergeProduct);
+                logger.debug(String.format("Результат удаления объединяемой записи: %s (%s)",
+                        response.getType(), response.getMessage()));
+                message = message + "(Редактирование объединяемой записи: " + response.getMessage() + ")";
+            } catch (CrudException e) {
+                message = message + "(Ошибка удаления объединяемой записи: " + e.getMessage() + ")";
+                logger.debug(message);
             }
         }
 
@@ -438,7 +449,7 @@ public class DataController {
 
         checkErrorsAndSave(productForm, url, bindingResult, modelAndView);
 
-        String name = ((Product)utilService.getById(productForm.getClass(), productForm.getId()).getEntity()).getName();
+        String name = ((Product) utilService.getById(productForm.getClass(), productForm.getId()).getEntity()).getName();
 
         modelAndView.addObject("id", productForm.getId());
         modelAndView.addObject("name", name);

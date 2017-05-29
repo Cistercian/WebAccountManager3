@@ -30,6 +30,7 @@
 
         var table = $('#mail').DataTable({
             responsive: true,
+            "bLengthChange": false,
             language: {
                 "processing": "Подождите...",
                 "search": "Поиск:",
@@ -145,13 +146,13 @@
     <textarea id="response" name="response" style="display: none;">${response}</textarea>
     <div class='row'>
         <div class="container-fluid wam-not-padding-xs">
-            <div class="panel panel-default wam-margin-left-2 wam-margin-right-1 wam-margin-top-1 ">
+            <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1 ">
                 <div class="panel-heading ">
                     <h3 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.account.title"/></h3>
                 </div>
             </div>
 
-            <div class="panel panel-default wam-margin-left-2 wam-margin-right-1 wam-margin-top-1">
+            <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1">
                 <div class="panel-heading ">
                     <h4><strong><spring:message code="label.account.mail"/></strong></h4>
                 </div>
@@ -186,7 +187,7 @@
                     </table>
                 </div>
             </div>
-            <div class="panel panel-default wam-margin-left-2 wam-margin-right-2 wam-margin-top-1">
+            <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1">
                 <div class="panel-heading ">
                     <h4 class="panel-title"><strong><spring:message code="label.account.mail.feedback.title"/></strong></h4>
                 </div>
@@ -205,7 +206,7 @@
     <div class='row'>
         <div class="container-fluid wam-not-padding-xs">
             <form:form method="POST" modelAttribute="passwordForm" class="form-signin">
-                <div class="panel panel-default wam-margin-left-2 wam-margin-right-1">
+                <div class="panel panel-default wam-margin-left-1 wam-margin-right-1">
                     <div class="panel-heading">
                         <h4 class="panel-title"><strong><spring:message code="label.account.password.title"/></strong></h4>
                     </div>

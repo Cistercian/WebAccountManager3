@@ -14,7 +14,7 @@
 
 <div class="container-fluid wam-not-padding">
     <div class="row">
-        <div class="login-panel panel panel-default wam-not-padding wam-margin-left-2-1 wam-margin-right-2">
+        <div class="login-panel panel panel-default wam-not-padding wam-margin-left-2 wam-margin-right-2">
             <div class="panel-heading">
                 <h3 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.account.mail.feedback.title"/></h3>
             </div>

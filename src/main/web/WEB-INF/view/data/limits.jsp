@@ -33,6 +33,7 @@
 
         var table = $('#limits').DataTable({
             responsive: true,
+            "bLengthChange": false,
             language: {
                 "processing": "Подождите...",
                 "search": "Поиск:",
@@ -186,7 +187,7 @@
         <input id="_csrf_token" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         <textarea id="response" name="response" style="display: none;">${response}</textarea>
         <div class="container-fluid wam-not-padding-xs">
-            <div class="panel panel-default wam-margin-left-2 wam-margin-right-1 wam-margin-top-1">
+            <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1">
                 <div class="panel-heading ">
                     <h3 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.limits.title"/></h3>
                 </div>
