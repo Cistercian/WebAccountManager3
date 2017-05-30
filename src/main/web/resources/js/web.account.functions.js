@@ -429,7 +429,8 @@ function sendMail(){
 //formatting text for mobile
 function formatTooLongText(){
     $('.needToFormat').each(function () {
-        var parentWidth = $(this).offsetParent().width();
+        //var parentWidth = $(this).offsetParent().width();
+        var parentWidth = $(this).parent().width();
         var currentWidth = 0;
         var countChars = 0;
         $(this).children().each(function () {
