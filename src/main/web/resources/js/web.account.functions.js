@@ -321,6 +321,10 @@ function ClearModalPanel() {
     $('[id^="modalFooter"]').each(function () {
         $(this).empty();
     });
+    //гарантированно чистим остатки всплывающего окна
+    $('.modal-backdrop').each(function () {
+        $(this).remove();
+    });
 }
 /**
  *Функция удаления записи БД
@@ -328,6 +332,8 @@ function ClearModalPanel() {
  */
 function Delete(className, id) {
     ClearModalPanel();
+
+    $('#modal').modal('hide');
     $('#modalBody').append(
         "<div class='col-xs-12'>" +
         "<h4><strong>Вы действительно хотите удалить запись?</strong></h4>" +
@@ -335,17 +341,18 @@ function Delete(className, id) {
     );
     $('#modalFooter').append(
         "<div class='col-xs-12 col-md-4 col-md-offset-4 wam-not-padding'>" +
-        "<button type='button' class='btn btn-default btn-lg btn-block' data-dismiss='modal' " +
+        "<button type='button' class='btn btn-default btn-lg btn-block ' data-dismiss='modal' " +
         "onclick=\"SendDeleteQuery('" + className + "', '" + id + "');\">" +
         "Да" +
         "</button>" +
         "</div>" +
         "<div class='col-xs-12 col-md-4 wam-not-padding'>" +
-        "<button type='button' class='btn btn-primary btn-lg btn-block' data-dismiss='modal'>" +
+        "<button type='button' class='btn btn-primary btn-lg btn-block ' data-dismiss='modal'>" +
         "Нет" +
         "</button>" +
         "</div>"
     );
+
     $('#modal').modal('show');
 }
 ;
@@ -438,3 +445,11 @@ function formatTooLongText(){
         }
     });
 }
+//динамически меняем ширину модального окна
+$('#modal').on('shown.bs.modal', function () {
+    $(this).find('.modal-body').css({
+        width:'auto', //probably not needed
+        height:'auto', //probably not needed
+        'max-height':'100%'
+    });
+});

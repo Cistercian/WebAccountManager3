@@ -1,12 +1,60 @@
-<!DOCTYPE html>
-
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-gb" lang="en-gb" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>WebAccountManager</title>
 
-<jsp:include page="/WEB-INF/view/tags/header-template.jsp"></jsp:include>
+    <!-- css -->
+    <spring:url value="/resources/css/bootstrap.min.css" var="css"/>
+    <link rel="stylesheet" href="${css}">
+    <spring:url value="/resources/css/animate.css" var="css"/>
+    <link rel="stylesheet" href="${css}">
+    <spring:url value="/resources/css/fullcalendar/fullcalendar.css" var="css"/>
+    <link rel="stylesheet" href="${css}">
+    <spring:url value="/resources/css/style.css" var="css"/>
+    <link rel="stylesheet" href="${css}">
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet">
+
+    <!-- js -->
+    <spring:url value="/resources/js/jquery.js" var="js"/>
+    <script src="${js}"></script>
+    <spring:url value="/resources/js/bootstrap.min.js" var="js"/>
+    <script src="${js}"></script>
+    <spring:url value="/resources/js/wow.min.js" var="js"/>
+    <script src="${js}"></script>
+    <spring:url value="/resources/js/jquery.easing.min.js" var="js"/>
+    <script src="${js}"></script>
+    <spring:url value="/resources/js/jquery.isotope.min.js" var="js"/>
+    <script src="${js}"></script>
+    <spring:url value="/resources/js/functions.js" var="js"/>
+    <script src="${js}"></script>
+
+    <!--fullcalendar-->
+    <spring:url value="/resources/js/fullcalendar/moment.min.js" var="js"/>
+    <script src="${js}"></script>
+    <spring:url value="/resources/js/fullcalendar/fullcalendar.js" var="js"/>
+    <script src="${js}"></script>
+    <spring:url value="/resources/js/fullcalendar/locale-all.js" var="js"/>
+    <script src="${js}"></script>
+
+    <!--waitingDialog-->
+    <spring:url value="/resources/js/waitingDialog.js" var="js"/>
+    <script src="${js}"></script>
+
+    <!--custon functions-->
+    <spring:url value="/resources/js/web.account.functions.js" var="js"/>
+    <script src="${js}"></script>
+
+</head>
+<body>
+
+<!-- навигационная панель и модальное окно -->
+<jsp:include page="/WEB-INF/view/tags/nav-panel.jsp"></jsp:include>
 
 <script language="javascript" type="text/javascript">
     $(document).ready(function () {
@@ -112,8 +160,15 @@
                 </div>
             </div>
             <div class="col-sm-12 ">
-                <div id="calendar">
-                </div>
+                <c:choose>
+                    <c:when test="${not empty pageContext.request.userPrincipal}">
+                        <div id="calendar">
+                        </div>
+                    </c:when>
+                    <c:otherwise>
+                        <jsp:include page="/WEB-INF/view/tags/anon-tag.jsp"></jsp:include>
+                    </c:otherwise>
+                </c:choose>
             </div>
         </div>
     </div>

@@ -73,7 +73,7 @@ var waitingDialog = waitingDialog || (function ($) {
 				}
 
 				// Opening dialog
-				$dialog.modal();
+				$dialog.modal('show');
 			},
 			/**
 			 * Closes dialog

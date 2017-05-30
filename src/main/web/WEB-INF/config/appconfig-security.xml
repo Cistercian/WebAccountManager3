@@ -15,15 +15,9 @@
     <http auto-config="true">
         <!--<intercept-url pattern="/login" access="permitAll"/>-->
         <!--<intercept-url pattern="/resources/**" access="permitAll"/>-->
-        <intercept-url pattern="/" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')"/>
-        <intercept-url pattern="/index" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')"/>
+
+
         <intercept-url pattern="/account" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')"/>
-        <intercept-url pattern="/statistic" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')"/>
-        <intercept-url pattern="/amount" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')"/>
-        <intercept-url pattern="/category" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')"/>
-        <intercept-url pattern="/page-product" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')"/>
-        <intercept-url pattern="/statistic/**" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')"/>
-        <intercept-url pattern="/limits" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')"/>
         <intercept-url pattern="/admin-panel" access="hasRole('ROLE_ADMIN')"/>
         <form-login login-page="/login" default-target-url="/index" authentication-failure-url="/login?error" username-parameter="username" password-parameter="password"/>
         <logout logout-success-url="/login?logout" />

@@ -1,18 +1,66 @@
 <!DOCTYPE html>
-
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
-
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-gb" lang="en-gb" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>WebAccountManager</title>
 
-<jsp:include page="/WEB-INF/view/tags/header-template.jsp"></jsp:include>
+    <!-- css -->
+    <spring:url value="/resources/css/bootstrap.min.css" var="css"/>
+    <link rel="stylesheet" href="${css}">
+    <spring:url value="/resources/css/animate.css" var="css"/>
+    <link rel="stylesheet" href="${css}">
+    <spring:url value="/resources/css/fullcalendar/fullcalendar.css" var="css"/>
+    <link rel="stylesheet" href="${css}">
+    <spring:url value="/resources/css/datepicker/bootstrap-datetimepicker.min.css" var="css"/>
+    <link rel="stylesheet" href="${css}">
+    <spring:url value="/resources/css/style.css" var="css"/>
+    <link rel="stylesheet" href="${css}">
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet">
 
-<%--быстрый поиск--%>
-<spring:url value="/resources/js/bootstrap3-typeahead.js" var="typeahead"/>
-<script src="${typeahead}"></script>
+    <!-- js -->
+    <spring:url value="/resources/js/jquery.js" var="js"/>
+    <script src="${js}"></script>
+    <spring:url value="/resources/js/bootstrap.min.js" var="js"/>
+    <script src="${js}"></script>
+    <spring:url value="/resources/js/wow.min.js" var="js"/>
+    <script src="${js}"></script>
+    <spring:url value="/resources/js/jquery.easing.min.js" var="js"/>
+    <script src="${js}"></script>
+    <spring:url value="/resources/js/jquery.isotope.min.js" var="js"/>
+    <script src="${js}"></script>
+    <spring:url value="/resources/js/functions.js" var="js"/>
+    <script src="${js}"></script>
+
+    <!--Datepicker-->
+    <spring:url value="/resources/js/datepicker/bootstrap-datepicker.min.js" var="js"/>
+    <script src="${js}"></script>
+    <spring:url value="/resources/js/datepicker/bootstrap-datepicker.ru.min.js" var="js"/>
+    <script src="${js}"></script>
+
+    <!--waitingDialog-->
+    <spring:url value="/resources/js/waitingDialog.js" var="js"/>
+    <script src="${js}"></script>
+
+    <!--быстрый поиск-->
+    <spring:url value="/resources/js/bootstrap3-typeahead.js" var="js"/>
+    <script src="${js}"></script>
+
+    <!--custon functions-->
+    <spring:url value="/resources/js/web.account.functions.js" var="js"/>
+    <script src="${js}"></script>
+
+</head>
+<body>
+
+<!-- навигационная панель и модальное окно -->
+<jsp:include page="/WEB-INF/view/tags/nav-panel.jsp"></jsp:include>
 
 <spring:message code="label.page-amount.selectCategory" var="selectCategory"/>
 <spring:message code="label.page-category.selectCategory" var="selectParent"/>
@@ -23,6 +71,17 @@
         $.ajaxSetup({
             headers: {'X-CSRF-TOKEN': document.getElementById('_csrf_token').value}
         });
+
+        <c:if test='${empty pageContext.request.userPrincipal}'>
+        $('.btn-primary').each(function () {
+            $(this).addClass('disabled');
+            $(this).click('');
+        });
+        $('.btn-danger').each(function () {
+            $(this).addClass('disabled');
+            $(this).click('');
+        });
+        </c:if>
 
         getAlerts();
 
@@ -115,8 +174,8 @@
             onclick = "$(\"#responseMessage\").val(\"\"); return false;";
         }
         $('#modalFooter').append(
-                "<div class='col-xs-12 col-md-4 col-md-offset-8 wam-not-padding'>" +
-                "<button type='button' class='btn btn-primary btn-lg btn-block' data-dismiss='modal' onclick='" + onclick + "'>Закрыть</button>" +
+                "<div class='col-xs-12 col-md-6 col-md-offset-6'>" +
+                "<button type='button' class='btn btn-primary btn-lg btn-block wam-margin-top-2 ' data-dismiss='modal' onclick='" + onclick + "'>Закрыть</button>" +
                 "</div>"
         );
         $('#modal').modal('show');

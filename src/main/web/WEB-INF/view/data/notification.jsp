@@ -10,8 +10,8 @@
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<spring:message code="label.account.limit.selectName" var="label"/>
 
+<spring:message code="label.account.limit.selectName" var="label"/>
 <script language="javascript" type="text/javascript">
     function setDropdown(id, name, type){
         switch (type){
