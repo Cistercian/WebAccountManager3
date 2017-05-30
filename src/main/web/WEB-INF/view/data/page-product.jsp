@@ -101,7 +101,7 @@
 
 <div class="content container-fluid wam-radius wam-min-height-0 wow fadeInDown" data-wow-duration="1000ms"
      data-wow-delay="300ms">
-    <div class='row '>
+    <div class='row'>
         <input id="_csrf_token" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         <input id="id" type="hidden" name="id" value="${id}"/>
 
@@ -110,7 +110,6 @@
                 <div class="panel-heading ">
                     <div class='row '>
                         <div class='col-xs-12'>
-
                             <c:choose>
                             <c:when test="${not empty name}">
                             <h4 class="wam-margin-bottom-0 wam-margin-top-0">Просмотр товарной группы</h4>
@@ -134,36 +133,34 @@
                     </div>
                     </c:otherwise>
                     </c:choose>
-
-
                 </div>
             </div>
-        </div>
-        <div class="panel-body">
-            <table id="amounts" class="table table-striped table-bordered table-text  wam-font-size " cellspacing="0"
-                   width="100%">
-                <thead>
-                <tr>
-                    <th style="display : none;"><spring:message code="label.page-product.table.id"/></th>
-                    <th><spring:message code="label.page-product.table.date"/></th>
-                    <th><spring:message code="label.page-product.table.name"/></th>
-                    <th><spring:message code="label.page-product.table.price"/></th>
-                    <th><spring:message code="label.page-product.table.category"/></th>
-                </tr>
-                </thead>
-                <tbody>
-
-                <c:forEach items="${amounts}" var="amount">
-                    <tr onclick="location.href='/amount?id=${amount.getId()}';">
-                        <td style="display : none;">${amount.getId()}</td>
-                        <td class="wam-no-wrap">${amount.getDate()}</td>
-                        <td>${amount.getName()}</td>
-                        <td>${amount.getPrice()}</td>
-                        <td>${amount.getCategoryId().getName()}</td>
+            <div class="panel-body">
+                <table id="amounts" class="table table-striped table-bordered table-text  wam-font-size wam-margin-top-2" cellspacing="0"
+                       width="100%">
+                    <thead class="">
+                    <tr>
+                        <th style="display : none;"><spring:message code="label.page-product.table.id"/></th>
+                        <th><spring:message code="label.page-product.table.date"/></th>
+                        <th><spring:message code="label.page-product.table.name"/></th>
+                        <th><spring:message code="label.page-product.table.price"/></th>
+                        <th style="display : none;"><spring:message code="label.page-product.table.category"/></th>
                     </tr>
-                </c:forEach>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+
+                    <c:forEach items="${amounts}" var="amount">
+                        <tr onclick="location.href='/amount?id=${amount.getId()}';">
+                            <td style="display : none;">${amount.getId()}</td>
+                            <td class="wam-no-wrap">${amount.getDate()}</td>
+                            <td>${amount.getName()}</td>
+                            <td>${amount.getPrice()}</td>
+                            <td style="display : none;">${amount.getCategoryId().getName()}</td>
+                        </tr>
+                    </c:forEach>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

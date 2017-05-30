@@ -179,7 +179,7 @@
                     </c:if>
                 </div>
             </div>
-            <div class="panel panel-default wam-margin-left-2 wam-margin-right-1 ">
+            <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 ">
                 <div class="panel-heading ">
                     <h4 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.limit.weekly.title"/></h4>
                 </div>
@@ -253,7 +253,7 @@
                     </c:if>
                 </div>
             </div>
-            <div class="panel panel-default wam-margin-left-2 wam-margin-right-1 wam-margin-top-1">
+            <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1">
                 <div class="panel-heading ">
                     <h4 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.limit.monthly.title"/></h4>
                 </div>

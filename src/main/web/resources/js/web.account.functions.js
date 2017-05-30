@@ -314,6 +314,8 @@ function hideLoader() {
  * @constructor
  */
 function ClearModalPanel() {
+    //$('#modal').modal('hide');
+
     $('#modalTitle').text("");
     $('[id^="modalBody"]').each(function () {
         $(this).empty();
@@ -325,6 +327,9 @@ function ClearModalPanel() {
     $('.modal-backdrop').each(function () {
         $(this).remove();
     });
+    //гарантированно-гарантированно чистим остатки всплывающего окна
+    $('body').removeClass('modal-open');
+
 }
 /**
  *Функция удаления записи БД
@@ -341,7 +346,7 @@ function Delete(className, id) {
     );
     $('#modalFooter').append(
         "<div class='col-xs-12 col-md-4 col-md-offset-4 wam-not-padding'>" +
-        "<button type='button' class='btn btn-default btn-lg btn-block ' data-dismiss='modal' " +
+        "<button type='button' class='btn btn-default btn-lg btn-block ' " +
         "onclick=\"SendDeleteQuery('" + className + "', '" + id + "');\">" +
         "Да" +
         "</button>" +
@@ -357,6 +362,7 @@ function Delete(className, id) {
 }
 ;
 function SendDeleteQuery(className, id) {
+    ClearModalPanel();
     var data = {
         'className': className,
         'id': (id == '' ? $('#id').val() : id),
@@ -445,11 +451,3 @@ function formatTooLongText(){
         }
     });
 }
-//динамически меняем ширину модального окна
-$('#modal').on('shown.bs.modal', function () {
-    $(this).find('.modal-body').css({
-        width:'auto', //probably not needed
-        height:'auto', //probably not needed
-        'max-height':'100%'
-    });
-});

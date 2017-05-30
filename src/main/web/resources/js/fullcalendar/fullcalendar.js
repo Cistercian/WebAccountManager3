@@ -11087,7 +11087,7 @@
 						var button; // the element
 
 						if (buttonName == 'title') {
-							groupChildren = groupChildren.add($('<h2>&nbsp;</h2>')); // we always want it to take up height
+							groupChildren = groupChildren.add($('<h3 class="">&nbsp;</h3>')); // we always want it to take up height
 							isOnlyButtons = false;
 						}
 						else {
@@ -11228,7 +11228,7 @@
 
 		function updateTitle(text) {
 			if (el) {
-				el.find('h2').text(text);
+				el.find('h3').text(text);
 			}
 		}
 

@@ -132,7 +132,7 @@
             );
             $('#modalFooter').append(
                     "<div class='col-xs-12 col-md-4 col-md-offset-4 wam-not-padding'>" +
-                    "<button type='button' class='btn btn-primary btn-lg btn-block' data-dismiss='modal' onclick='sendMail();return false;'>" +
+                    "<button href='#' type='button' class='btn btn-primary btn-lg btn-block' data-dismiss='modal' onclick='sendMail();return false;'>" +
                     "${mailSubmit}" +
                     "</button>" +
                     "</div>" +
@@ -153,8 +153,6 @@
                     "<button type='button' class='btn btn-primary btn-lg btn-block' data-dismiss='modal'>Закрыть</button>" +
                     "</div>"
             );
-            //alert("должен быть показ");
-            $('#modal').modal('show'); //TODO: wtf?
         }
         $('#modal').modal('show');
     }
@@ -192,7 +190,7 @@
                 <div class="panel-heading ">
                     <h4><strong><spring:message code="label.account.mail"/></strong></h4>
                 </div>
-                <div class="panel-body wam-not-padding">
+                <div class="panel-body ">
                     <table id="mail" class="table table-striped table-bordered table-text  wam-font-size" cellspacing="0" width="100%">
                         <thead>
                         <tr>

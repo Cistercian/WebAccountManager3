@@ -58,7 +58,7 @@
 <!-- навигационная панель и модальное окно -->
 <jsp:include page="/WEB-INF/view/tags/nav-panel.jsp"></jsp:include>
 
-<!-- обращение к контроллеру -->
+<spring:message code="label.index.emptyData" var="emptyData"/>
 <script language="javascript" type="text/javascript">
     $(document).ready(function () {
         //formatting sums
@@ -200,13 +200,18 @@
                     );
                 });
                 if (totalIncomeSum == 0)
-                    $('#dropDownCategoryBarsIncome').hide();
-                else
-                    $('#dropDownCategoryBarsIncome').show();
+                    $('#dropDownCategoryBarsIncome').append(
+                            "<div class='col-xs-12 col-md-12'>" +
+                            "<h4><span class='text-muted'>${emptyData}</span></h4>" +
+                            "</div>"
+                    );
                 if (totalExpenseSum == 0)
-                    $('#dropDownCategoryBarsExpense').hide();
-                else
-                    $('#dropDownCategoryBarsExpense').show();
+                    $('#dropDownCategoryBarsExpense').append(
+                            "<div class='col-xs-12 col-md-12'>" +
+                            "<h4><span class='text-muted'>${emptyData}</span></h4>" +
+                            "</div>"
+                    );
+
 
                 $('#textTotalIncome').append("<span class='pull-right'><strong>" + numberToString(totalIncomeSum.toFixed(2)) + "</strong> руб.</span>");
                 $('#textTotalExpense').append("<span class='pull-right'><strong>" + numberToString(totalExpenseSum.toFixed(2)) + "</strong> руб.</span>");
@@ -226,9 +231,6 @@
 
         $('#dropDownCategoryBarsIncome').empty();
         $('#dropDownCategoryBarsExpense').empty();
-
-        $('#dropDownCategoryBarsIncome').append("<h3><spring:message code="label.index.categoryBars.income" /></h3>");
-        $('#dropDownCategoryBarsExpense').append("<h3><spring:message code="label.index.categoryBars.expense" /></h3>");
     }
 </script>
 
@@ -271,7 +273,7 @@
             <hr>
             <p class="lead text-justify"><spring:message code="label.index.details" /></p>
         </div>
-        <div class="col-xs-12 col-md-12 ">
+        <div class="col-xs-12 col-md-12">
             <div id="dataRow" class="login-panel panel panel-default wam-not-padding-xs ">
                 <div class="panel-heading">
                     <div class="row">
@@ -325,7 +327,9 @@
                             </div>
                         </c:when>
                         <c:otherwise>
-                            <jsp:include page="/WEB-INF/view/tags/anon-tag.jsp"></jsp:include>
+                            <div class="col-xs-12 wam-margin-top-2">
+                                <jsp:include page="/WEB-INF/view/tags/anon-tag.jsp"></jsp:include>
+                            </div>
                         </c:otherwise>
                     </c:choose>
                 </div>
@@ -341,7 +345,7 @@
                 </div>
                 <div class="col-xs-12 col-md-4 dropup ">
                     <spring:message code="label.index.categories.period.default" var="periodDefault" />
-                    <button id="btnPeriod" class="btn-default btn-lg btn-block dropdown-toggle"
+                    <button id="btnPeriod" class="btn-default btn-lg btn-block dropdown-toggle wam-btn-2"
                             data-toggle="dropdown" value="month">
                             ${periodDefault}
                     </button>
@@ -390,114 +394,135 @@
                         </div>
                     </div>
                     <div class="col-xs-12 col-xs-12 col-md-4 col-md-offset-8">
-                        <button id="btnRefresh" class="btn-default btn-lg btn-block"
+                        <button id="btnRefresh" class="btn-default btn-lg btn-block wam-btn-2"
                                 onclick="javascript:refreshCategories()">
                             <spring:message code="label.index.refresh" />
                         </button>
                     </div>
                 </div>
                 <div class="col-xs-12 col-md-12 " id="categoryBars">
-                    <div id="dropDownCategoryBarsIncome">
+                    <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 ">
+                        <div class="panel-heading ">
+                            <h3 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.index.categoryBars.income" /></h3>
+                        </div>
+                        <div class="wam-not-padding panel-body">
+                            <div id="dropDownCategoryBarsIncome">
 
-                        <c:set var="styles" value="${['success', 'info', 'warning', 'danger']}" scope="page" />
-                        <c:set var="step" value="-1" scope="page"/>
-                        <c:set var="hasCategories" value="false" scope="page"/>
+                                <c:set var="styles" value="${['success', 'info', 'warning', 'danger']}" scope="page" />
+                                <c:set var="step" value="-1" scope="page"/>
+                                <c:set var="incomeHasData" value="false" scope="page"/>
 
-                        <c:forEach items="${categories}" var="list">
-                            <c:if test="${list.getType() == 'CategoryIncome'}">
+                                <c:forEach items="${categories}" var="list">
+                                    <c:if test="${list.getType() == 'CategoryIncome'}">
 
-                                <c:if test="${hasCategories == 'false'}">
-                                    <c:set var="hasCategories" value="true" scope="page"/>
-                                    <h3><spring:message code="label.index.categoryBars.income" /></h3>
-                                </c:if>
+                                        <c:if test="${incomeHasData == 'false'}">
+                                            <c:set var="incomeHasData" value="true" scope="page"/>
+                                        </c:if>
 
-                                <c:set var="classId" value="${list.getId()}" />
-                                <c:set var="className" value="${list.getName()}" />
-                                <c:set var="classPrice" value="${list.getSum()}" />
-                                <c:set var="normalPrice" value="${classPrice * 100 / maxIncome}" />
+                                        <c:set var="classId" value="${list.getId()}" />
+                                        <c:set var="className" value="${list.getName()}" />
+                                        <c:set var="classPrice" value="${list.getSum()}" />
+                                        <c:set var="normalPrice" value="${classPrice * 100 / maxIncome}" />
 
-                                <c:choose>
-                                    <c:when test="${step == 3}">
-                                        <c:set var="step" value="0" scope="page"/>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <c:set var="step" value="${step + 1}" scope="page"/>
-                                    </c:otherwise>
-                                </c:choose>
+                                        <c:choose>
+                                            <c:when test="${step == 3}">
+                                                <c:set var="step" value="0" scope="page"/>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <c:set var="step" value="${step + 1}" scope="page"/>
+                                            </c:otherwise>
+                                        </c:choose>
 
-                                <li class="list-unstyled">
-                                    <a href="javascript:drawBarsByParentId(false, '${classId}', '${afterMonth}', '${curDate}')">
-                                        <div>
-                                            <h4 class="needToFormat"><strong id="categoryBarName${classId}" value="${className}">
-                                                    ${className}
-                                            </strong>
-												<span id="categoryBarSum${classId}" class="pull-right text-muted"
-                                                      value="${classPrice}">
-														${classPrice} руб.
-												</span></h4>
-                                            <div class="progress progress-striped active">
-                                                <div class="progress-bar progress-bar-${styles[0]}" role="progressbar"
-                                                     aria-valuenow="${classPrice}" aria-valuemin="0" aria-valuemax="100"
-                                                     style="width: ${normalPrice}%" value="${className}">
-                                                    <span class="sr-only">${classPrice}</span>
+                                        <li class="list-unstyled">
+                                            <a href="javascript:drawBarsByParentId(false, '${classId}', '${afterMonth}', '${curDate}')">
+                                                <div>
+                                                    <h4 class="needToFormat"><strong id="categoryBarName${classId}" value="${className}">
+                                                            ${className}
+                                                    </strong>
+														<span id="categoryBarSum${classId}" class="pull-right text-muted"
+                                                              value="${classPrice}">
+																${classPrice} руб.
+														</span></h4>
+                                                    <div class="progress progress-striped active">
+                                                        <div class="progress-bar progress-bar-${styles[0]}" role="progressbar"
+                                                             aria-valuenow="${classPrice}" aria-valuemin="0" aria-valuemax="100"
+                                                             style="width: ${normalPrice}%" value="${className}">
+                                                            <span class="sr-only">${classPrice}</span>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </li>
-                            </c:if>
-                        </c:forEach>
+                                            </a>
+                                        </li>
+                                    </c:if>
+                                </c:forEach>
+                                <c:if test="${incomeHasData == 'false'}">
+                                    <div class="col-xs-12 col-md-12">
+                                        <h4><span class="text-muted">${emptyData}<span></h5>
+                                    </div>
+                                </c:if>
+                            </div>
+                        </div>
                     </div>
-                    <div id="dropDownCategoryBarsExpense">
+                    <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 ">
+                        <div class="panel-heading ">
+                            <h3 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.index.categoryBars.expense" /></h3>
+                        </div>
+                        <div class="wam-not-padding panel-body">
+                            <div id="dropDownCategoryBarsExpense">
+                                <c:set var="expenseHasData" value="false" scope="page"/>
+                                <c:set var="styles" value="${['success', 'info', 'warning', 'danger']}" scope="page" />
+                                <c:set var="step" value="-1" scope="page"/>
 
-                        <c:set var="styles" value="${['success', 'info', 'warning', 'danger']}" scope="page" />
-                        <c:set var="step" value="-1" scope="page"/>
-                        <c:set var="hasCategories" value="false" scope="page"/>
+                                <c:forEach items="${categories}" var="list">
+                                    <c:if test="${list.getType() == 'CategoryExpense'}">
 
-                        <c:forEach items="${categories}" var="list">
-                            <c:if test="${list.getType() == 'CategoryExpense'}">
+                                        <c:if test="${expenseHasData == 'false'}">
+                                            <c:set var="expenseHasData" value="true" scope="page"/>
+                                        </c:if>
 
-                                <c:if test="${hasCategories == 'false'}">
-                                    <c:set var="hasCategories" value="true" scope="page"/>
-                                    <h3><spring:message code="label.index.categoryBars.expense" /></h3>
-                                </c:if>
+                                        <c:set var="classId" value="${list.getId()}" />
+                                        <c:set var="className" value="${list.getName()}" />
+                                        <c:set var="classPrice" value="${list.getSum()}" />
+                                        <c:set var="normalPrice" value="${classPrice * 100 / maxExpense}" />
 
-                                <c:set var="classId" value="${list.getId()}" />
-                                <c:set var="className" value="${list.getName()}" />
-                                <c:set var="classPrice" value="${list.getSum()}" />
-                                <c:set var="normalPrice" value="${classPrice * 100 / maxExpense}" />
-
-                                <c:choose>
-                                    <c:when test="${step == 3}">
-                                        <c:set var="step" value="0" scope="page"/>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <c:set var="step" value="${step + 1}" scope="page"/>
-                                    </c:otherwise>
-                                </c:choose>
-                                <li class="list-unstyled">
-                                    <a href="javascript:drawBarsByParentId(false, '${classId}', '${afterMonth}', '${curDate}')">
-                                        <div>
-                                            <h4 class="needToFormat"><strong id="categoryBarName${classId}" value="${className}">
-                                                    ${className}
-                                            </strong>
-												<span id="categoryBarSum${classId}" class="pull-right text-muted"
-                                                      value="${classPrice}">
-														${classPrice} руб.
-												</span>
-                                            </h4>
-                                            <div class="progress progress-striped active">
-                                                <div class="progress-bar progress-bar-${styles[2]}" role="progressbar"
-                                                     aria-valuenow="${classPrice}" aria-valuemin="0" aria-valuemax="100"
-                                                     style="width: ${normalPrice}%" value="${className}">
-                                                    <span class="sr-only">${classPrice}</span>
+                                        <c:choose>
+                                            <c:when test="${step == 3}">
+                                                <c:set var="step" value="0" scope="page"/>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <c:set var="step" value="${step + 1}" scope="page"/>
+                                            </c:otherwise>
+                                        </c:choose>
+                                        <li class="list-unstyled">
+                                            <a href="javascript:drawBarsByParentId(false, '${classId}', '${afterMonth}', '${curDate}')">
+                                                <div>
+                                                    <h4 class="needToFormat"><strong id="categoryBarName${classId}" value="${className}">
+                                                            ${className}
+                                                    </strong>
+														<span id="categoryBarSum${classId}" class="pull-right text-muted"
+                                                              value="${classPrice}">
+																${classPrice} руб.
+														</span>
+                                                    </h4>
+                                                    <div class="progress progress-striped active">
+                                                        <div class="progress-bar progress-bar-${styles[2]}" role="progressbar"
+                                                             aria-valuenow="${classPrice}" aria-valuemin="0" aria-valuemax="100"
+                                                             style="width: ${normalPrice}%" value="${className}">
+                                                            <span class="sr-only">${classPrice}</span>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </li>
-                            </c:if>
-                        </c:forEach>
+                                            </a>
+                                        </li>
+                                    </c:if>
+                                </c:forEach>
+                                <c:if test="${expenseHasData == 'false'}">
+                                    <div class="col-xs-12 col-md-12">
+                                        <h4><span class="text-muted">${emptyData}<span></h5>
+                                    </div>
+                                </c:if>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div><!--/.row-->

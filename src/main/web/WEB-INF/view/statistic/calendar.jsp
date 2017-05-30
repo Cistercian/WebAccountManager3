@@ -153,7 +153,7 @@
                 </div>
                 <div class="wam-not-padding panel-body">
                     <div class="col-xs-12 col-md-12">
-						<span class="wam-text">
+						<span class="wam-text text-justify">
 							<spring:message code="label.calendar.details" />
 						</span>
                     </div>

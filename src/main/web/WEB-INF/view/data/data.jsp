@@ -126,6 +126,21 @@
         $(".catcher-events").on("shown.bs.dropdown", function(e){
             formatTooLongText();
         });
+        //динамически меняем ширину модального окна
+        /*$('#modal').on('shown.bs.modal', function () {
+
+         $(this).find('.modal-body').css({
+         position: relative;
+         display: table;
+         overflow-y: auto;
+         overflow-x: auto;
+         width: auto;
+         min-width: 300px;
+         width:'auto', //probably not needed
+         height:'auto', //probably not needed
+         'max-height':'100%'
+         });
+         });*/
     });
 
     function setDropdownListId(categoryId, categoryName, type){
@@ -163,21 +178,23 @@
         );
         var onclick;
         if (type == 'SUCCESS') {
-            if (document.location.href.endsWith("save")) {
+            if (document.location.href.indexOf("save") !== -1) {
                 onclick = "clearForm(false);";
             } else {
-                onclick = "location.href=\"/index\"";
+                onclick = "location.href=\"\/index\"";
             }
         } else if (type == 'SUCCESS_CREATE_NEW_ENTITY') {
             onclick = "clearForm(true);";
         } else {
             onclick = "$(\"#responseMessage\").val(\"\"); return false;";
         }
+
         $('#modalFooter').append(
                 "<div class='col-xs-12 col-md-6 col-md-offset-6'>" +
                 "<button type='button' class='btn btn-primary btn-lg btn-block wam-margin-top-2 ' data-dismiss='modal' onclick='" + onclick + "'>Закрыть</button>" +
                 "</div>"
         );
+
         $('#modal').modal('show');
     }
     function clearForm(isCleaning){
@@ -189,6 +206,7 @@
                 if ($('*').is('#currentCategory')){
                     $('#currentCategory').val('${newCategory}');
                     $('#currentCategory').text('${newCategory}');
+                    $('#currentCategory').append("<span class='caret'></span>");
                 }
             });
         } else {
@@ -280,11 +298,11 @@
                                        value="<c:if test="${not empty category}">${category.getId()}</c:if>"></input>
 
 
-                                <div class="col-xs-12 col-md-10 wam-not-padding-xs catcher-events">
+                                <div class="col-xs-12 col-md-10  catcher-events">
                                     <h4 class="needToFormat">
                                         <strong>${selectCategory}</strong>
                                     </h4>
-                                    <div class="form-group ${status.error ? 'has-error' : ''}">
+                                    <div class="form-group wam-not-padding wam-not-padding-xs ${status.error ? 'has-error' : ''}">
                                         <button id="btnCategories" class="btn-default btn-lg btn-block dropdown-toggle"
                                                 data-toggle="dropdown" onclick="scrollPage($($(this)).offset().top);"
                                                 value="<c:if test="${not empty category}">${category.getId()}</c:if>">
@@ -301,10 +319,12 @@
                                         <ul id="dropdownCategories" class="dropdown-menu">
                                             <li class="wam-text-size-1">
                                                 <a onclick="setDropdownListId(-1, '${selectCategory}', 'categories');return false;" class="needToFormat">
-                                                    <span>${label}</span>
+                                                    <span>${selectCategory}</span>
                                                 </a>
                                             </li>
-                                            <li class="divider"></li>
+                                            <c:if test="${not empty categories}">
+                                                <li class="divider"></li>
+                                            </c:if>
                                             <c:forEach items="${categories}" var="list">
                                                 <li class="wam-text-size-1">
                                                     <a id='${list.getId()}' onclick="setDropdownListId('${list.getId()}','${list.getName()}',
@@ -407,7 +427,9 @@
                                                 <span>${newCategory}</span>
                                             </a>
                                         </li>
-                                        <li class="divider"></li>
+                                        <c:if test="${not empty parents}">
+                                            <li class="divider"></li>
+                                        </c:if>
                                         <c:forEach items="${parents}" var="list">
                                             <li class="wam-text-size-1">
                                                 <a onclick="displayLoader();location.href='/category?id=${list.getId()}&referer=${previousPage}';"
@@ -455,7 +477,9 @@
                                                 <span>${selectParent}</span>
                                             </a>
                                         </li>
-                                        <li class="divider"></li>
+                                        <c:if test="${not empty parents}">
+                                            <li class="divider"></li>
+                                        </c:if>
                                         <c:forEach items="${parents}" var="list">
                                             <li class="wam-text-size-1">
                                                 <a id='${list.getId()}' onclick="setDropdownListId('${list.getId()}',
@@ -635,7 +659,9 @@
                                                 <span>${label}</span>
                                             </a>
                                         </li>
-                                        <li class="divider"></li>
+                                        <c:if test="${not empty parents}">
+                                            <li class="products"></li>
+                                        </c:if>
                                         <c:forEach items="${products}" var="list">
                                             <li class="wam-text-size-1">
                                                 <a id='${list.getId()}' onclick="setDropdownListId('${list.getId()}','${list.getName()}',
