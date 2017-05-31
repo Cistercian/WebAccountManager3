@@ -438,8 +438,8 @@ function formatTooLongText(){
             countChars += $(this).text().trim().length;
         });
 
-        if (currentWidth > parentWidth) {
-            var size = countChars - parentWidth * countChars / currentWidth + 3;
+        if (currentWidth > (parentWidth * 0.9)) {
+            var size = countChars - parentWidth * countChars / currentWidth + 4;
             var childClass = '';
             if ($(this).children().is('strong')) {
                 childClass = 'strong';

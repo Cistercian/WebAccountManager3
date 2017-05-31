@@ -234,7 +234,8 @@
     }
 </script>
 
-<div class="content container-fluid wam-radius wam-min-height-0 wow fadeInDown wam-not-padding-xs" data-wow-duration="1000ms" data-wow-delay="300ms">
+<div class="content container-fluid wam-radius wam-min-height-0 wow fadeInDown wam-not-padding-xs"
+     data-wow-duration="1000ms" data-wow-delay="300ms">
     <div class="slider wam-top-radius">
         <div id="about-slider" >
             <div id="carousel-slider" class="carousel slide" data-ride="carousel">
@@ -267,71 +268,74 @@
             </div> <!--/#carousel-slider-->
         </div><!--/#about-slider-->
     </div>
-    <div class="container-fluid wam-not-padding-xs">
-        <div class="col-md-12 ">
-            <h2 class=""><spring:message code="label.index.title" /></h2>
-            <hr>
-            <p class="lead text-justify"><spring:message code="label.index.details" /></p>
-        </div>
-        <div class="col-xs-12 col-md-12">
-            <div id="dataRow" class="login-panel panel panel-default wam-not-padding-xs ">
-                <div class="panel-heading">
-                    <div class="row">
-                        <div class="col-xs-12 col-md-12 ">
-                            <h3 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.index.chartIncomeExpense.title" /></h3>
+
+    <div class="container-fluid ">
+        <div class="row">
+            <div class="col-md-12 ">
+                <h2 class=""><spring:message code="label.index.title" /></h2>
+                <hr>
+                <p class="lead text-justify"><spring:message code="label.index.details" /></p>
+            </div>
+            <div class="col-xs-12 col-md-12 wam-not-padding-xs">
+                <div id="dataRow" class="panel panel-default wam-margin-left-1 wam-margin-right-1">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-12 col-md-12 ">
+                                <h3 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.index.chartIncomeExpense.title" /></h3>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="panel-body wam-not-padding-xs">
-                    <c:choose>
-                        <c:when test="${not empty pageContext.request.userPrincipal}">
-                            <div class="col-xs-12 col-md-12 wam-not-padding wam-margin-left-1 wam-margin-right-1 wam-not-padding-xs">
-                                <div class="col-xs-12 col-md-6">
-                                    <canvas id="typeChart"></canvas>
+                    <div class="panel-body ">
+                        <c:choose>
+                            <c:when test="${not empty pageContext.request.userPrincipal}">
+                                <div class="col-xs-12 col-md-12 wam-not-padding wam-margin-left-1 wam-margin-right-1 ">
+                                    <div class="col-xs-12 col-md-6 ">
+                                        <canvas id="typeChart"></canvas>
+                                    </div>
+                                    <div class="col-xs-12 col-md-6 wam-not-padding-xs">
+                                        <div class="row">
+                                            <div class="col-xs-6 col-md-6 ">
+                                                <h3><span class="glyphicon glyphicon-stop wam-color-income"></span><spring:message code="label.index.total.income" /></h3>
+                                            </div>
+                                            <div class="col-xs-6 col-md-6 ">
+                                                <h3 id="textTotalIncome">
+                                                    <c:if test="${not empty sumIncome}">
+                                                        <span id="sumIncome" class="pull-right "></span>
+                                                    </c:if>
+                                                </h3>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-xs-6 col-md-6 ">
+                                                <h3><span class="glyphicon glyphicon-stop wam-color-expense"></span><spring:message code="label.index.total.expense" /></h3>
+                                            </div>
+                                            <div class="col-xs-6 col-md-6 ">
+                                                <h3 id="textTotalExpense">
+                                                    <c:if test="${not empty sumExpense}">
+                                                        <span id="sumExpense" class="pull-right "></span>
+                                                    </c:if>
+                                                </h3>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-xs-12 col-md-12 ">
+                                                <h3><spring:message code="label.index.total.date" />
+                                                    <c:if test="${not empty curDate}">
+                                                        <span class="wam-margin-left-3">${curDate}</span>
+                                                    </c:if>
+                                                </h3>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-xs-12 col-md-6 ">
-                                    <div class="row">
-                                        <div class="col-xs-6 col-md-6 ">
-                                            <h3><span class="glyphicon glyphicon-stop wam-color-income"></span><spring:message code="label.index.total.income" /></h3>
-                                        </div>
-                                        <div class="col-xs-6 col-md-6 ">
-                                            <h3 id="textTotalIncome">
-                                                <c:if test="${not empty sumIncome}">
-                                                    <span id="sumIncome" class="pull-right "></span>
-                                                </c:if>
-                                            </h3>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-xs-6 col-md-6 ">
-                                            <h3><span class="glyphicon glyphicon-stop wam-color-expense"></span><spring:message code="label.index.total.expense" /></h3>
-                                        </div>
-                                        <div class="col-xs-6 col-md-6 ">
-                                            <h3 id="textTotalExpense">
-                                                <c:if test="${not empty sumExpense}">
-                                                    <span id="sumExpense" class="pull-right "></span>
-                                                </c:if>
-                                            </h3>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-xs-12 col-md-12 ">
-                                            <h3><spring:message code="label.index.total.date" />
-                                                <c:if test="${not empty curDate}">
-                                                    <span class="wam-margin-left-3">${curDate}</span>
-                                                </c:if>
-                                            </h3>
-                                        </div>
-                                    </div>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="col-xs-12 wam-margin-top-2">
+                                    <jsp:include page="/WEB-INF/view/tags/anon-tag.jsp"></jsp:include>
                                 </div>
-                            </div>
-                        </c:when>
-                        <c:otherwise>
-                            <div class="col-xs-12 wam-margin-top-2">
-                                <jsp:include page="/WEB-INF/view/tags/anon-tag.jsp"></jsp:include>
-                            </div>
-                        </c:otherwise>
-                    </c:choose>
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
                 </div>
             </div>
         </div>
@@ -400,7 +404,7 @@
                         </button>
                     </div>
                 </div>
-                <div class="col-xs-12 col-md-12 " id="categoryBars">
+                <div class="col-xs-12 col-md-12 wam-not-padding-xs" id="categoryBars">
                     <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 ">
                         <div class="panel-heading ">
                             <h3 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.index.categoryBars.income" /></h3>
@@ -467,8 +471,8 @@
                         <div class="panel-heading ">
                             <h3 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.index.categoryBars.expense" /></h3>
                         </div>
-                        <div class="wam-not-padding panel-body">
-                            <div id="dropDownCategoryBarsExpense">
+                        <div class="wam-not-padding panel-body ">
+                            <div id="dropDownCategoryBarsExpense ">
                                 <c:set var="expenseHasData" value="false" scope="page"/>
                                 <c:set var="styles" value="${['success', 'info', 'warning', 'danger']}" scope="page" />
                                 <c:set var="step" value="-1" scope="page"/>

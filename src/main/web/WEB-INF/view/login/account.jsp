@@ -113,9 +113,9 @@
      * Функция прорисовки модального окна bootstrap
      * @param type
      * @param message
-     * @param Url
+     * @param param
      */
-    function displayMessage(type, message, Url) {
+    function displayMessage(type, message, param) {
         ClearModalPanel();
         if (type == 'MAIL') {
             $('#modalBody').append(
@@ -139,6 +139,32 @@
                     "<div class='col-xs-12 col-md-4 wam-not-padding'>" +
                     "<button type='button' class='btn btn-default btn-lg btn-block' data-dismiss='modal'>" +
                     "${mailCancel}" +
+                    "</button>" +
+                    "</div>"
+            );
+        } else if (type == 'MANUAL') {
+            $('#modalBody').append(
+                    message
+            );
+            $('#modalFooter').append(
+                    "<div class='col-xs-12 col-md-4 wam-not-padding'>" +
+                    "<button href='#' type='button' class='btn btn-default btn-lg btn-block' " +
+                    "onclick='getManualForm(" + (param - 1) + ");return false;'>" +
+                    "Назад" +
+                    "</button>" +
+                    "</div>" +
+
+                    "<div class='col-xs-12 col-md-4 wam-not-padding'>" +
+                    "<button href='#' type='button' class='btn btn-default btn-lg btn-block' data-dismiss='modal' " +
+                    ">" +
+                    "Закрыть" +
+                    "</button>" +
+                    "</div>" +
+
+                    "<div class='col-xs-12 col-md-4 wam-not-padding'>" +
+                    "<button type='button' class='btn btn-primary btn-lg btn-block' " +
+                    "onclick='getManualForm(" + (param + 1) + ");return false;'>" +
+                    "Вперед" +
                     "</button>" +
                     "</div>"
             );
@@ -170,6 +196,24 @@
                 var type = 'NEWMAIL';
 
                 displayMessage(type, message, "");
+            }
+        });
+    }
+    function getManualForm(page) {
+        ClearModalPanel();
+        $.ajax({
+            type: "GET",
+            url: '/account/getManualForm',
+            data: {'page' : page},
+            beforeSend: function () {
+                displayLoader();
+            },
+            success: function (data) {
+                hideLoader();
+                var message = data;
+                var type = 'MANUAL';
+
+                displayMessage(type, message, page);
             }
         });
     }
@@ -231,6 +275,13 @@
                         <button class="btn btn-lg btn-primary btn-block wam-btn-2" type="submit"
                                 onclick="getMailForm();return false;">
                             <span class='wam-font-size-2'><spring:message code="label.account.feedback"/></span>
+                        </button>
+                    </div>
+                    <div class="col-xs-12 col-md-6">
+                        <p class='text-justify'><spring:message code="label.account.manual.details"/></p>
+                        <button class="btn btn-lg btn-primary btn-block wam-btn-2" type="submit"
+                                onclick="getManualForm(1);return false;">
+                            <span class='wam-font-size-2'><spring:message code="label.account.manual"/></span>
                         </button>
                     </div>
                 </div>

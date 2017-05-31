@@ -110,6 +110,7 @@
                 }
             }
         });
+
     })
     function getDialog(id){
         var modalBody = "<div class='row'><div class=\"col-xs-12 col-md-12\">" +
@@ -180,7 +181,7 @@
         } else {
             $('#modalBody').append(message);
             $('#modalFooter').append(
-                    "<div class='col-xs-12 col-md-4 col-md-offset-4 wam-not-padding'>" +
+                    "<div class='col-xs-12 col-md-4 col-md-offset-4 wam-not-padding '>" +
                     "<button type='button' class='btn btn-primary btn-lg btn-block' onclick='sendLimitSubmit();return false;'>" +
                     "${btnlimitLabelOk}" +
                     "</button>" +

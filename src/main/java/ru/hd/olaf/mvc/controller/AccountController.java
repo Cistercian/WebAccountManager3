@@ -170,4 +170,23 @@ public class AccountController {
 
         return modelAndView;
     }
+
+    @RequestMapping(value = "/account/getManualForm", method = RequestMethod.GET)
+    public ModelAndView viewMailForm(@RequestParam(value = "page") Integer pageNum){
+        logger.debug(LogUtil.getMethodName());
+
+        if (pageNum == null) pageNum = 1;
+
+        ModelAndView modelAndView = null;
+        switch (pageNum){
+            case 1:
+                modelAndView = new ModelAndView("/help/manual/page1");
+                break;
+            case 2:
+                modelAndView = new ModelAndView("/help/manual/page2");
+                break;
+        }
+
+        return modelAndView;
+    }
 }
