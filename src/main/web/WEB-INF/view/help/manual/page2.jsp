@@ -40,7 +40,7 @@
                     <p class="wam-margin-top-2 text-justify">Взаимосвязь типов:</p>
                 </div>
                 <div class="col-xs-12 col-md-12 wam-not-padding">
-                    <p><img src="/resources/img/manual_algorytm.png" class="img-responsive wam-top-radius center-block wam-img-xs-1" alt=""></p>
+                    <p><img src="/resources/img/manual_algorytm.png" class="img-responsive wam-top-radius center-block wam-img-xs-2" alt=""></p>
                 </div>
             </div>
         </div>

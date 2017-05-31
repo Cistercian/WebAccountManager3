@@ -169,6 +169,9 @@
 	.wam-img-xs-1 {
 		width: 50%;
 	}
+	.wam-img-xs-2 {
+		width: 100%;
+	}
 }
 /*Принудительно скрываем скролбар*/
 .fc-scroller {
