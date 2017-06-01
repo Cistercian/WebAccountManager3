@@ -26,7 +26,7 @@ public interface LimitRepository extends JpaRepository<Limit, Integer> {
             "LEFT JOIN p.amounts a ON a.date BETWEEN ?3 AND ?4 " +
             "WHERE l.type = 'product' AND " +
             "l.userId = ?1 AND l.period = ?2 " +
-            "GROUP BY l.categoryId ")
+            "GROUP BY l.productId ")
     List<BarEntity> findLimitAndSumAmountsGroupByProduct(User user, Byte period, Date after, Date before);
 
     @Query("SELECT new ru.hd.olaf.util.json.BarEntity(l.type, c.id, SUM(a.price), l.entityName, l.sum) " +

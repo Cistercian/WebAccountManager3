@@ -177,15 +177,11 @@ public class AccountController {
 
         if (pageNum == null) pageNum = 1;
 
-        ModelAndView modelAndView = null;
-        switch (pageNum){
-            case 1:
-                modelAndView = new ModelAndView("/help/manual/page1");
-                break;
-            case 2:
-                modelAndView = new ModelAndView("/help/manual/page2");
-                break;
-        }
+        ModelAndView modelAndView;
+        if (pageNum > 0 && pageNum < 6)
+            modelAndView = new ModelAndView("/help/manual/page" + pageNum);
+        else
+            modelAndView = new ModelAndView("/help/manual/page1");
 
         return modelAndView;
     }

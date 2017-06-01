@@ -151,7 +151,7 @@
                 $('#modalFooter').append(
                         "<div class='col-xs-12 col-md-4 wam-not-padding'>" +
                         "<button href='#' type='button' class='btn btn-default btn-lg btn-block' data-dismiss='modal' " +
-                        "onclick='getManualForm(" + prevNum + ");return false;'>" +
+                        "onclick='$(\"#modal\").modal(\"hide\");getManualForm(" + prevNum + ");return false;'>" +
                         "Назад" +
                         "</button>" +
                         "</div>"
@@ -174,11 +174,11 @@
                     "</div>"
             );
             var nextNum = param + 1;
-            if (nextNum < 3)
+            if (nextNum < 6)
                 $('#modalFooter').append(
                         "<div class='col-xs-12 col-md-4 wam-not-padding'>" +
-                        "<button type='button' class='btn btn-primary btn-lg btn-block'  " +
-                        "onclick='getManualForm(" + (param + 1) + ");return false;'>" +
+                        "<button type='button' class='btn btn-primary btn-lg btn-block' data-dismiss='modal' " +
+                        "onclick='$(\"#modal\").modal(\"hide\");getManualForm(" + (param + 1) + ");return false;'>" +
                         "Вперед" +
                         "</button>" +
                         "</div>"
@@ -223,7 +223,7 @@
         });
     }
     function getManualForm(page) {
-        $('#modal').modal('hide');
+        //$('#modal').modal('hide');
         ClearModalPanel();
         $.ajax({
             type: "GET",
