@@ -24,14 +24,6 @@
     <script src="${js}"></script>
     <spring:url value="/resources/js/bootstrap.min.js" var="js"/>
     <script src="${js}"></script>
-    <spring:url value="/resources/js/wow.min.js" var="js"/>
-    <script src="${js}"></script>
-    <spring:url value="/resources/js/jquery.easing.min.js" var="js"/>
-    <script src="${js}"></script>
-    <spring:url value="/resources/js/jquery.isotope.min.js" var="js"/>
-    <script src="${js}"></script>
-    <spring:url value="/resources/js/functions.js" var="js"/>
-    <script src="${js}"></script>
 
     <!--waitingDialog-->
     <spring:url value="/resources/js/waitingDialog.js" var="js"/>
@@ -44,7 +36,6 @@
     <!--custon functions-->
     <spring:url value="/resources/js/web.account.functions.js" var="js"/>
     <script src="${js}"></script>
-
 </head>
 <body>
 
@@ -58,6 +49,17 @@
         $.ajaxSetup({
             headers: {'X-CSRF-TOKEN': document.getElementById('_csrf_token').value}
         });
+
+        $('.modal')
+                .on('show.bs.modal', function (){
+                    $('body').css('overflow', 'hidden');
+                })
+                .on('hide.bs.modal', function (){
+                    // Also if you are using multiple modals (cascade) - additional check
+                    if ($('.modal.in').length == 1) {
+                        $('body').css('overflow', 'auto');
+                    }
+                });
 
         //показываем модальное окно при получении ошибки в момент загрузки страницы
         if ($('#response').val() != '') {
@@ -150,8 +152,8 @@
             if (prevNum > 0)
                 $('#modalFooter').append(
                         "<div class='col-xs-12 col-md-4 wam-not-padding'>" +
-                        "<button href='#' type='button' class='btn btn-default btn-lg btn-block' data-dismiss='modal' " +
-                        "onclick='$(\"#modal\").modal(\"hide\");getManualForm(" + prevNum + ");return false;'>" +
+                        "<buttontype='button' class='btn btn-default btn-lg btn-block' data-dismiss='modal'  " +
+                        "onclick='getManualForm(" + prevNum + ");return false;'>" +
                         "Назад" +
                         "</button>" +
                         "</div>"
@@ -177,8 +179,8 @@
             if (nextNum < 6)
                 $('#modalFooter').append(
                         "<div class='col-xs-12 col-md-4 wam-not-padding'>" +
-                        "<button type='button' class='btn btn-primary btn-lg btn-block' data-dismiss='modal' " +
-                        "onclick='$(\"#modal\").modal(\"hide\");getManualForm(" + (param + 1) + ");return false;'>" +
+                        "<button class='btn btn-primary btn-lg btn-block'  " +
+                        "onclick='getManualForm(" + (param + 1) + ");return false;'>" +
                         "Вперед" +
                         "</button>" +
                         "</div>"
@@ -203,7 +205,9 @@
                     "</div>"
             );
         }
+
         $('#modal').modal('show');
+
     }
     function getMailForm(id) {
         $.ajax({
@@ -223,8 +227,8 @@
         });
     }
     function getManualForm(page) {
-        //$('#modal').modal('hide');
-        ClearModalPanel();
+        $('#modal').modal('hide');
+        //ClearModalPanel();
         $.ajax({
             type: "GET",
             url: '/account/getManualForm',

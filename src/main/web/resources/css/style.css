@@ -187,6 +187,10 @@
 .modal-open {
 	padding-right: 0px !important;
 }
+.modal-backdrop {
+	position: fixed;
+	bottom: 0;
+}
 
 .form-inline .form-control {
 	display : block;

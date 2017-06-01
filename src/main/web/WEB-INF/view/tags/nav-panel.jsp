@@ -78,7 +78,7 @@
 </c:if>
 
 <!-- Modal Panel -->
-<div id="modal" class="modal fade " tabindex="-1" role="dialog" aria-labelledby="modallabel"
+<div id="modal" class="modal  " tabindex="-1" role="dialog" aria-labelledby="modalHeader"
      aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content wam-radius">

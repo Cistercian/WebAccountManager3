@@ -465,6 +465,9 @@ public class DataController {
         JsonResponse response;
         if (bindingResult.hasErrors()) {
             logger.info("Ошибка валидиации!");
+
+            modelAndView.addObject("responseMessage", "Обнаружены ошибки!");
+            modelAndView.addObject("responseType", ResponseType.ERROR);
         } else {
             response = utilService.saveEntity(entity);
 
