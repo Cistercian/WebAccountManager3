@@ -22,19 +22,19 @@
                     <li class="list-unstyled">
                         <img src="/resources/img/money_mini.png" alt="">
                         <span class="text-justify">
-							обороты - конкретные траты или поступления (отдельно взятая покупка или получение денежных средств)
+							обороты - конкретные траты или поступления (отдельно взятая покупка или получение денежных средств).
 						</span>
                     </li>
                     <li class="list-unstyled">
                         <img src="/resources/img/group_mini.png" alt="">
 						<span class="text-justify">
-							товарные группы - группы оборотов, объединяемые по какому-либо признаку
+							товарные группы - группы оборотов, объединяемые по какому-либо признаку.
 						</span>
                     </li>
                     <li class="list-unstyled">
                         <img src="/resources/img/category_mini.png" alt="">
 						<span class="text-justify">
-							категории - наиболее общные сущности. Включают в себя группы товаров
+							категории - наиболее общные сущности. Включают в себя группы товаров и другие категории (подкатегории).
 						</span>
                     </li>
                     <p class="wam-margin-top-2 text-justify">Взаимосвязь типов:</p>
