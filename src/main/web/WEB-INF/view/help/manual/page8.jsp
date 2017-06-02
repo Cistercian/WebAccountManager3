@@ -18,7 +18,7 @@
             </div>
             <div class="panel-body wam-not-padding ">
                 <div class="col-xs-12 col-md-12 wam-not-padding">
-                    <p class="wam-margin-top-2 text-justify">Страница профиля пользователя доступна в пунтке меню</p>
+                    <p class="wam-margin-top-2 text-justify">Страница профиля пользователя доступна в пункте меню</p>
                 </div>
                 <div class="col-xs-12 col-md-12 wam-not-padding">
                     <img src="/resources/img/help/menu_account.png" class="img-responsive wam-top-radius center-block wam-img-xs-2" alt="">
@@ -26,7 +26,7 @@
                 <div class="col-xs-12 col-md-12 wam-not-padding">
                     <p class="wam-margin-top-2 text-justify">Здесь Вы можете ознакомиться с полученными сообщениями о превышении лимитов или
                         с произвольными письмами от администратора системы. Жирным шрифтом отмечены непрочтенные письма, уведомления по которым
-                        будет появляться на других страницах до тех пор, пока они не будут прочтены.</p>
+                        будут появляться на других страницах. Учтите, что уведомления будут показываться до тех пор, пока Вы с ними не ознакомитесь.</p>
                     <p>Для открытия письма достаточно кликнуть по нему.</p>
                 </div>
                 <div class="col-xs-12 col-md-12 wam-not-padding">

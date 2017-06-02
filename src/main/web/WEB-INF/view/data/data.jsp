@@ -451,8 +451,10 @@
                         <div class="wam-not-padding panel-body">
                             <!-- Родительская категория -->
                             <spring:bind path="parentId">
-                                <input id="parentId" type="hidden" name="parent" class="form-control erasable" value="
-									<c:if test="${not empty parent}">${parent.getId()}></c:if>"</input>
+                                <c:if test="${not empty parent}">
+                                    <c:set var="parentId" value="${parent.getId()}" scope="page"/>
+                                </c:if>
+                                <input id="parentId" type="hidden" name="parent" class="form-control erasable" value="${parentId}"/>
 
                                 <div class="col-md-12 wam-not-padding-xs">
                                     <h4><strong><spring:message code="label.page-category.parentName"/></strong></h4>

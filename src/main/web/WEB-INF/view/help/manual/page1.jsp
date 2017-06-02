@@ -14,11 +14,16 @@
     <div class="row">
         <div class="login-panel panel panel-default wam-not-padding wam-margin-left-2 wam-margin-right-2">
             <div class="panel-heading">
-                <h3 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.manual.page1.title"/></h3>
+                <h3 class="wam-margin-bottom-0 wam-margin-top-0">Описание</h3>
             </div>
             <div class="panel-body wam-not-padding ">
                 <div class="col-xs-12 col-md-12 wam-not-padding">
-                    <spring:message code="label.manual.page1.details"/>
+                    <p class="wam-margin-top-2 text-justify">Несмотря на множество приложений для
+                        телефона, сайтов с подобной направленностью, захотелось создать еще один.
+                        Искренне надеемся, что он будет полезен не только нам, но и хотя бы каждому 3 в пятой семье четвертого колена по бабушке
+                        аристократического происхождения!</p>
+                    <p class="wam-margin-top-2 text-justify">Конечная цель сайта - структурирование и визуализация трат, которая бы помогла избежать необдуманных
+                        покупок, которые совершаем все мы, помощь в поиске разумной экономии и контроле за своими финансами.</p>
                 </div>
             </div>
         </div>

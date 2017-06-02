@@ -461,7 +461,7 @@
                                 </c:forEach>
                                 <c:if test="${incomeHasData == 'false'}">
                                     <div class="col-xs-12 col-md-12">
-                                        <h4><span class="text-muted">${emptyData}<span></h5>
+                                        <h4><span class="text-muted">${emptyData}</span></h4>
                                     </div>
                                 </c:if>
                             </div>
@@ -472,7 +472,7 @@
                             <h3 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.index.categoryBars.expense" /></h3>
                         </div>
                         <div class="wam-not-padding panel-body ">
-                            <div id="dropDownCategoryBarsExpense ">
+                            <div id="dropDownCategoryBarsExpense">
                                 <c:set var="expenseHasData" value="false" scope="page"/>
                                 <c:set var="styles" value="${['success', 'info', 'warning', 'danger']}" scope="page" />
                                 <c:set var="step" value="-1" scope="page"/>
@@ -522,7 +522,7 @@
                                 </c:forEach>
                                 <c:if test="${expenseHasData == 'false'}">
                                     <div class="col-xs-12 col-md-12">
-                                        <h4><span class="text-muted">${emptyData}<span></h5>
+                                        <h4><span class="text-muted">${emptyData}</span></h4>
                                     </div>
                                 </c:if>
                             </div>

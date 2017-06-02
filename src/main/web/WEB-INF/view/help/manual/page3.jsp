@@ -25,7 +25,7 @@
                     <img src="/resources/img/help/menu_category.png" class="img-responsive wam-top-radius center-block wam-img-xs-2" alt="">
                 </div>
                 <div class="col-xs-12 col-md-12 wam-not-padding">
-                    <p class="wam-margin-top-2 text-justify">При заведении категории следует учесть обязательно заполнения поля "Наименование" и выбора
+                    <p class="wam-margin-top-2 text-justify">При заведении категории следует учесть обязательное заполнение поля "Наименование" и выбора
                         типа категории (доходная или расходная)</p>
                 </div>
                 <div class="col-xs-12 col-md-12 wam-not-padding">
@@ -35,7 +35,9 @@
                     <p class="wam-margin-top-2 text-justify">Для гибкости ведения статистических данных реализована возможность создания подкатегории (категория,
                         у которой есть родительская). Это удобно, когда при масштабировании данных невозможно отнести несколько связанных одним свойством
                         товарных групп к одной категории. Например, может быть создана товарная группа "Молоко", которая будет относиться к
-                        категории "Молочная продукция", которая будет подкатегорией для категории "Продукты".</p>
+                        категории "Молочная продукция", а та будет подкатегорией для категории "Продукты" и тут же будет товарная группа "Крупы",
+                        которая будет принадлежать сразу родительской категории "Продукты". Немного запутано, но далее станет понятно как это позволяет
+                        более детально выводить статистику.</p>
                 </div>
                 <div class="col-xs-12 col-md-12 wam-not-padding">
                     <p class="wam-margin-top-2 text-justify">Здесь же вместо создания новой категории можно перейти в режим редактирования уже
@@ -45,8 +47,8 @@
                     <img src="/resources/img/help/category_edit.png" class="img-responsive wam-top-radius center-block wam-img-xs-2" alt="">
                 </div>
                 <div class="col-xs-12 col-md-12 wam-not-padding">
-                    <p class="wam-margin-top-2 text-justify">При попытке сохранить данные, содержащие логические ошибки, будет выведено соответсвующее
-                        заведение и отмечены проблемные поля:</p>
+                    <p class="wam-margin-top-2 text-justify">При попытке сохранения данных, содержащих логические ошибки, будет выведено соответствующее
+                        сообщение и отмечены проблемные поля:</p>
                 </div>
                 <div class="col-xs-12 col-md-12 wam-not-padding">
                     <img src="/resources/img/help/category_error.png" class="img-responsive wam-top-radius center-block wam-img-xs-2" alt="">
