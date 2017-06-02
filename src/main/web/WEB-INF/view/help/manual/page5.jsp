@@ -14,32 +14,37 @@
     <div class="row">
         <div class="login-panel panel panel-default wam-not-padding wam-margin-left-2 wam-margin-right-2">
             <div class="panel-heading">
-                <h3 class="wam-margin-bottom-0 wam-margin-top-0">Лимиты и их контроль</h3>
+                <h3 class="wam-margin-bottom-0 wam-margin-top-0">Общая статистика</h3>
             </div>
             <div class="panel-body wam-not-padding ">
                 <div class="col-xs-12 col-md-12 wam-not-padding">
-                    <p class="wam-margin-top-2 text-justify">Для гибкого контроля своих расходов и доходов существует возможность задания лимитов
-                        по категориям и товарным группам. Лимиты можно задать дневные (тогда сумма контроля будет обнуляться каждый день), недельные
-                        (сумма контролируется в пределах одной недели) и месячные (соответсвенно, учитываются суммы с начала текущего месяца). Причем,
-                        Вы можете задать все 3 лимита по одной и той же группе или категории.
-                    </p>
-                    <p class="wam-margin-top-2 text-justify">Управление лимитами осуществляется в меню: </p>
+                    <p class="wam-margin-top-2 text-justify">Данные на сайте представляются в виде наглядных диаграмм, которые легко разворачиваются
+                        для более детального представления.</p>
+                    <p class="wam-margin-top-2 text-justify">На главной странице приводится суммарная информация за заданный период
+                        (по-умолчанию равный текущему месяцу):</p>
                 </div>
                 <div class="col-xs-12 col-md-12 wam-not-padding">
-                    <p><img src="/resources/img/help/menu_limit.png" class="img-responsive wam-top-radius center-block wam-img-xs-2" alt=""></p>
+                    <img src="/resources/img/help/chart_index.png" class="img-responsive wam-top-radius center-block wam-img-xs-2" alt="">
                 </div>
                 <div class="col-xs-12 col-md-12 wam-not-padding">
-                    <p class="wam-margin-top-2 text-justify">Для редактирования или удаления существующего лимита достаточно кликнуть
-                        на соответсвующую строчку таблицы:</p>
+                    <p class="wam-margin-top-2 text-justify">И показаны родительские категории (корневые), которые можно расмотреть
+                        подробнее, кликнув на их название:</p>
                 </div>
                 <div class="col-xs-12 col-md-12 wam-not-padding">
-                    <p><img src="/resources/img/help/limit_edit.png" class="img-responsive wam-top-radius center-block wam-img-xs-2" alt=""></p>
+                    <img src="/resources/img/help/categories.png" class="img-responsive wam-top-radius center-block wam-img-xs-2" alt="">
                 </div>
                 <div class="col-xs-12 col-md-12 wam-not-padding">
-                    <p class="wam-margin-top-2 text-justify">Просмотр текущего заполнения лимитов доступен в меню</p>
+                    <p class="wam-margin-top-2 text-justify">Категория может включать в себя как товарные группы, так и подкатегории.
+                        Для просмотра и закрытия состава подкатегорий следует нажимать пункты "развернуть" и "свернуть", соответствуенно:</p>
                 </div>
                 <div class="col-xs-12 col-md-12 wam-not-padding">
-                    <p><img src="/resources/img/help/menu_limit_control.png" class="img-responsive wam-top-radius center-block wam-img-xs-2" alt=""></p>
+                    <img src="/resources/img/help/category_content.png" class="img-responsive wam-top-radius center-block wam-img-xs-2" alt="">
+                </div>
+                <div class="col-xs-12 col-md-12 wam-not-padding">
+                    <p class="wam-margin-top-2 text-justify">Обороты можно просмотреть в составе отдельных товарных групп, кликнув по пункту "Просмотреть":</p>
+                </div>
+                <div class="col-xs-12 col-md-12 wam-not-padding">
+                    <img src="/resources/img/help/product.png" class="img-responsive wam-top-radius center-block wam-img-xs-2" alt="">
                 </div>
             </div>
         </div>

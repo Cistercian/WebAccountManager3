@@ -14,29 +14,31 @@
     <div class="row">
         <div class="login-panel panel panel-default wam-not-padding wam-margin-left-2 wam-margin-right-2">
             <div class="panel-heading">
-                <h3 class="wam-margin-bottom-0 wam-margin-top-0">Статистика по датам</h3>
+                <h3 class="wam-margin-bottom-0 wam-margin-top-0">Заведение данных</h3>
             </div>
             <div class="panel-body wam-not-padding ">
                 <div class="col-xs-12 col-md-12 wam-not-padding">
-                    <p class="wam-margin-top-2 text-justify">При желании Вы можете просмотреть детализацию по датам. Для этого необходимо зайти
-                        в пункт меню "Отчеты - Календарь"</p>
+                    <p class="wam-margin-top-2 text-justify">После создания требуемой категории можно переходить к заведению оборотов:</p>
                 </div>
                 <div class="col-xs-12 col-md-12 wam-not-padding">
-                    <p><img src="/resources/img/help/menu_calendar.png" class="img-responsive wam-top-radius center-block wam-img-xs-2" alt=""></p>
+                    <img src="/resources/img/help/menu_amount.png" class="img-responsive wam-top-radius center-block wam-img-xs-2" alt="">
                 </div>
                 <div class="col-xs-12 col-md-12 wam-not-padding">
-                    <p class="wam-margin-top-2 text-justify">Форма позволяет ознакомиться с результирующей суммой операцией в разбивке по дням.
-                        При просмотре страницы на мониторе период календаря устанавливается равным месяц, при просмотре на экране телефона - неделя.</p>
+                    <p class="wam-margin-top-2 text-justify">В открывшемся окне необходимо заполнить все поля за исключением поля "Описание".
+                        Для выбора категории, к которой будет отнесен оборот, следует воспользоваться выпадающим списков. Задание товарной группы
+                        происходит автоматически при ее ручном вводе - в том случае, если подходящая группа уже существует, то она будет выведена в
+                        виде всплывающей подсказки.
+                        Пример заполнения:</p>
                 </div>
                 <div class="col-xs-12 col-md-12 wam-not-padding">
-                    <p><img src="/resources/img/help/calendar.png" class="img-responsive wam-top-radius center-block wam-img-xs-2" alt=""></p>
+                    <img src="/resources/img/help/amount_form.png" class="img-responsive wam-top-radius center-block wam-img-xs-2" alt="">
                 </div>
                 <div class="col-xs-12 col-md-12 wam-not-padding">
-                    <p class="wam-margin-top-2 text-justify">Деталиация за день позволяет просмотреть как состав категорий, по которым было движение, так
-                        и весь набор оборотов за день при нажатии на соответсвуюущю ссылку:</p>
+                    <p class="wam-margin-top-2 text-justify">При ошибке заполнения будет выведено соответствующее окно и проблемное поле будет
+                        отмечено описанием ошибки:</p>
                 </div>
                 <div class="col-xs-12 col-md-12 wam-not-padding">
-                    <p><img src="/resources/img/help/calendar_content.png" class="img-responsive wam-top-radius center-block wam-img-xs-2" alt=""></p>
+                    <img src="/resources/img/help/amount_error.png" class="img-responsive wam-top-radius center-block wam-img-xs-2" alt="">
                 </div>
             </div>
         </div>

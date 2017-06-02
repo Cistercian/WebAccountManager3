@@ -14,37 +14,42 @@
     <div class="row">
         <div class="login-panel panel panel-default wam-not-padding wam-margin-left-2 wam-margin-right-2">
             <div class="panel-heading">
-                <h3 class="wam-margin-bottom-0 wam-margin-top-0">Общая статистика</h3>
+                <h3 class="wam-margin-bottom-0 wam-margin-top-0">Заведение данных</h3>
             </div>
             <div class="panel-body wam-not-padding ">
                 <div class="col-xs-12 col-md-12 wam-not-padding">
-                    <p class="wam-margin-top-2 text-justify">Данные на сайте представляются в виде наглядных диаграмм, которые легко разворачиваются
-                        для более детального представления.</p>
-                    <p class="wam-margin-top-2 text-justify">На главной странице приводится суммарная информация за заданный период
-                        (по-умолчанию равный текущему месяцу):</p>
+                    <p class="wam-margin-top-2 text-justify">Для заведения оборотов необходимо убедиться в существовании нужной категории. В ином случае
+                        необходимо ее создать в меню</p>
                 </div>
                 <div class="col-xs-12 col-md-12 wam-not-padding">
-                    <img src="/resources/img/help/chart_index.png" class="img-responsive wam-top-radius center-block wam-img-xs-2" alt="">
+                    <img src="/resources/img/help/menu_category.png" class="img-responsive wam-top-radius center-block wam-img-xs-2" alt="">
                 </div>
                 <div class="col-xs-12 col-md-12 wam-not-padding">
-                    <p class="wam-margin-top-2 text-justify">И показаны родительские категории (корневые), которые можно расмотреть
-                        подробнее, кликнув на их название:</p>
+                    <p class="wam-margin-top-2 text-justify">При заведении категории следует учесть обязательно заполнения поля "Наименование" и выбора
+                        типа категории (доходная или расходная)</p>
                 </div>
                 <div class="col-xs-12 col-md-12 wam-not-padding">
-                    <img src="/resources/img/help/categories.png" class="img-responsive wam-top-radius center-block wam-img-xs-2" alt="">
+                    <img src="/resources/img/help/category_form.png" class="img-responsive wam-top-radius center-block wam-img-xs-2" alt="">
                 </div>
                 <div class="col-xs-12 col-md-12 wam-not-padding">
-                    <p class="wam-margin-top-2 text-justify">Категория может включать в себя как товарные группы, так и подкатегории.
-                        Для просмотра и закрытия состава подкатегорий следует нажимать пункты "развернуть" и "свернуть", соответствуенно:</p>
+                    <p class="wam-margin-top-2 text-justify">Для гибкости ведения статистических данных реализована возможность создания подкатегории (категория,
+                        у которой есть родительская). Это удобно, когда при масштабировании данных невозможно отнести несколько связанных одним свойством
+                        товарных групп к одной категории. Например, может быть создана товарная группа "Молоко", которая будет относиться к
+                        категории "Молочная продукция", которая будет подкатегорией для категории "Продукты".</p>
                 </div>
                 <div class="col-xs-12 col-md-12 wam-not-padding">
-                    <img src="/resources/img/help/category_content.png" class="img-responsive wam-top-radius center-block wam-img-xs-2" alt="">
+                    <p class="wam-margin-top-2 text-justify">Здесь же вместо создания новой категории можно перейти в режим редактирования уже
+                        существующей. Для этого достаточно выбрать ее наименование в выпадающем списке:</p>
                 </div>
                 <div class="col-xs-12 col-md-12 wam-not-padding">
-                    <p class="wam-margin-top-2 text-justify">Обороты можно просмотреть в составе отдельных товарных групп, кликнув по пункту "Просмотреть":</p>
+                    <img src="/resources/img/help/category_edit.png" class="img-responsive wam-top-radius center-block wam-img-xs-2" alt="">
                 </div>
                 <div class="col-xs-12 col-md-12 wam-not-padding">
-                    <img src="/resources/img/help/product.png" class="img-responsive wam-top-radius center-block wam-img-xs-2" alt="">
+                    <p class="wam-margin-top-2 text-justify">При попытке сохранить данные, содержащие логические ошибки, будет выведено соответсвующее
+                        заведение и отмечены проблемные поля:</p>
+                </div>
+                <div class="col-xs-12 col-md-12 wam-not-padding">
+                    <img src="/resources/img/help/category_error.png" class="img-responsive wam-top-radius center-block wam-img-xs-2" alt="">
                 </div>
             </div>
         </div>

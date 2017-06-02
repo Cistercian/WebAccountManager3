@@ -144,55 +144,6 @@
                     "</button>" +
                     "</div>"
             );
-        } else if (type == 'MANUAL') {
-            $('#modalBody').append(
-                    message
-            );
-            var prevNum = param - 1;
-            if (prevNum > 0)
-                $('#modalFooter').append(
-                        "<div class='col-xs-12 col-md-4 wam-not-padding'>" +
-                        "<buttontype='button' class='btn btn-default btn-lg btn-block' data-dismiss='modal'  " +
-                        "onclick='getManualForm(" + prevNum + ");return false;'>" +
-                        "Назад" +
-                        "</button>" +
-                        "</div>"
-                );
-            else
-                $('#modalFooter').append(
-                        "<div class='col-xs-12 col-md-4 wam-not-padding'>" +
-                        "<button href='#' type='button' class='btn btn-default btn-lg btn-block disabled' >" +
-                        "Назад" +
-                        "</button>" +
-                        "</div>"
-                );
-
-            $('#modalFooter').append(
-                    "<div class='col-xs-12 col-md-4 wam-not-padding'>" +
-                    "<button href='#' type='button' class='btn btn-default btn-lg btn-block' data-dismiss='modal' " +
-                    ">" +
-                    "Закрыть" +
-                    "</button>" +
-                    "</div>"
-            );
-            var nextNum = param + 1;
-            if (nextNum < 6)
-                $('#modalFooter').append(
-                        "<div class='col-xs-12 col-md-4 wam-not-padding'>" +
-                        "<button class='btn btn-primary btn-lg btn-block'  " +
-                        "onclick='getManualForm(" + (param + 1) + ");return false;'>" +
-                        "Вперед" +
-                        "</button>" +
-                        "</div>"
-                );
-            else
-                $('#modalFooter').append(
-                        "<div class='col-xs-12 col-md-4 wam-not-padding'>" +
-                        "<button type='button' class='btn btn-primary btn-lg btn-block disabled' >" +
-                        "Вперед" +
-                        "</button>" +
-                        "</div>"
-                );
         } else {
             $('#modalBody').append(
                     "<div class='col-xs-12'>" +
@@ -223,25 +174,6 @@
                 var type = 'NEWMAIL';
 
                 displayMessage(type, message, "");
-            }
-        });
-    }
-    function getManualForm(page) {
-        $('#modal').modal('hide');
-        //ClearModalPanel();
-        $.ajax({
-            type: "GET",
-            url: '/account/getManualForm',
-            data: {'page' : page},
-            beforeSend: function () {
-                displayLoader();
-            },
-            success: function (data) {
-                hideLoader();
-                var message = data;
-                var type = 'MANUAL';
-
-                displayMessage(type, message, page);
             }
         });
     }

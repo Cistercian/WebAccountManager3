@@ -452,3 +452,73 @@ function formatTooLongText(){
         }
     });
 }
+function getManualForm(page) {
+    $('#modal').modal('hide');
+    $.ajax({
+        type: "GET",
+        url: '/account/getManualForm',
+        data: {'page' : page},
+        beforeSend: function () {
+            displayLoader();
+        },
+        success: function (data) {
+            hideLoader();
+            var message = data;
+
+            displayManual(message, page);
+
+        }
+    });
+}
+function displayManual(message, pageNum) {
+    ClearModalPanel();
+    $('#modalBody').append(
+        message
+    );
+    var prevNum = pageNum - 1;
+    if (prevNum > 0)
+        $('#modalFooter').append(
+            "<div class='col-xs-12 col-md-4 wam-not-padding'>" +
+            "<buttontype='button' class='btn btn-default btn-lg btn-block' data-dismiss='modal'  " +
+            "onclick='getManualForm(" + prevNum + ");return false;'>" +
+            "Назад" +
+            "</button>" +
+            "</div>"
+        );
+    else
+        $('#modalFooter').append(
+            "<div class='col-xs-12 col-md-4 wam-not-padding'>" +
+            "<button href='#' type='button' class='btn btn-default btn-lg btn-block disabled' >" +
+            "Назад" +
+            "</button>" +
+            "</div>"
+        );
+
+    $('#modalFooter').append(
+        "<div class='col-xs-12 col-md-4 wam-not-padding'>" +
+        "<button href='#' type='button' class='btn btn-default btn-lg btn-block' data-dismiss='modal' " +
+        ">" +
+        "Закрыть" +
+        "</button>" +
+        "</div>"
+    );
+    var nextNum = pageNum + 1;
+    if (nextNum < 9)
+        $('#modalFooter').append(
+            "<div class='col-xs-12 col-md-4 wam-not-padding'>" +
+            "<button class='btn btn-primary btn-lg btn-block'  " +
+            "onclick='getManualForm(" + nextNum + ");return false;'>" +
+            "Вперед" +
+            "</button>" +
+            "</div>"
+        );
+    else
+        $('#modalFooter').append(
+            "<div class='col-xs-12 col-md-4 wam-not-padding'>" +
+            "<button type='button' class='btn btn-primary btn-lg btn-block disabled' >" +
+            "Вперед" +
+            "</button>" +
+            "</div>"
+        );
+    $('#modal').modal('show');
+}
