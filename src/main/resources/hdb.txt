@@ -73,6 +73,15 @@ ALTER TABLE amounts ADD product_id INT;
 ALTER TABLE limits ADD product_id INT;
 ALTER TABLE limits ADD category_id INT;
 
+DROP TABLE IF EXISTS persistent_logins;
+CREATE TABLE persistent_logins (
+    username VARCHAR(64) NOT NULL,
+    series VARCHAR(64) NOT NULL,
+    token VARCHAR(64) NOT NULL,
+    last_used TIMESTAMP NOT NULL,
+    PRIMARY KEY (series)
+);
+
 INSERT INTO categories (parent_id, user_id, name, details, type) VALUES (0, 1, 'Категория 1', 'Описание 1', 0);
 INSERT INTO categories (parent_id, user_id, name, details, type) VALUES (1, 1, 'Категория 2', 'Описание 2', 1);
 

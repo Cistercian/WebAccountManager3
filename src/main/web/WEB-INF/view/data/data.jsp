@@ -691,7 +691,7 @@
                                 <spring:message code="label.page-amount.btnCancel"/>
                             </button>
                         </div>
-                        <div class="col-xs-12 col-md-6 col-md-offset-6 wam-not-padding-xs">
+                        <div class="col-xs-12 col-md-6 wam-not-padding-xs">
                             <button type="submit" class="btn btn-danger btn-lg btn-block wam-btn-2"
                                     onclick="Delete('product', ${id});return false;">
                                 <spring:message code="label.page-amount.btnDelete"/>

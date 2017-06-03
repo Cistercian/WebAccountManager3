@@ -14,7 +14,7 @@
     <div class="row">
         <div class="login-panel panel panel-default wam-not-padding wam-margin-left-2 wam-margin-right-2">
             <div class="panel-heading">
-                <h3 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.manual.page2.title"/></h3>
+                <h3 class="wam-margin-bottom-0 wam-margin-top-0">Хранимые данные</h3>
             </div>
             <div class="panel-body wam-not-padding ">
                 <div class="col-xs-12 col-md-12 wam-not-padding">
