@@ -157,8 +157,8 @@ public class ProductServiceImpl implements ProductService {
         try {
             User currentUser = securityService.findLoggedUser();
             if (amountService.getByProductAndDate(currentUser, product, null, null).size() > 0)
-                return new JsonResponse(ResponseType.ERROR, "Откат удаления: обнаружены существующие записи amount " +
-                        "с данной товарной группой");
+                return new JsonResponse(ResponseType.ERROR, "Откат удаления: обнаружены существующие обороты " +
+                        "с данной группой товаров");
 
             productRepository.delete(product.getId());
             return new JsonResponse(ResponseType.SUCCESS, "Удаление успешно завершено.");

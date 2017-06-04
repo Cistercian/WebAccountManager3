@@ -228,7 +228,7 @@ public class CategoryServiceImpl implements CategoryService {
         //Проверка существуют ли записи amount с данной категорией
         if (category.getAmounts().size() > 0) {
             String message = String.format("Удаление невозможно: к данной категории привязаны " +
-                    "один или несколько записей таблицы amounts ");
+                    "один или несколько оборотов ");
             logger.debug(message);
 
             throw new CrudException(message);

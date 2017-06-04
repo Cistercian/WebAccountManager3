@@ -126,9 +126,9 @@ function drawBarsByParentId(isChildren, categoryId, after, before) {
 
                     var elemLink;
                     if (classType == 'Product') {
-                        classTitle = "Товарная группа";
+                        classTitle = "Группа товаров";
                         //elemLink = 	"<a href='javascript:getViewProduct(" + classId + ");'>" +
-                        elemLink = "<a href='/page-product/" + classId + "?after=" + after + "&before=" + before + "'>" +
+                        elemLink = "<a href='/page-product/" + classId + "?categoryId=" + categoryId + "&after=" + after + "&before=" + before + "'>" +
                             "<span> (Просмотреть</span>" +
                             "</a>" + ", " +
                             "<a href='/product?id=" + classId + "'>" +
@@ -503,7 +503,7 @@ function displayManual(message, pageNum) {
         "</div>"
     );
     var nextNum = pageNum + 1;
-    if (nextNum < 9)
+    if (nextNum < 10)
         $('#modalFooter').append(
             "<div class='col-xs-12 col-md-4 wam-not-padding'>" +
             "<button class='btn btn-primary btn-lg btn-block'  " +
@@ -521,4 +521,14 @@ function displayManual(message, pageNum) {
             "</div>"
         );
     $('#modal').modal('show');
+}
+function setModalSize(type){
+    if (type.indexOf("auto") !== -1) {
+        //форматируем модальное окно под авторазмер
+        $('.modal-lg').addClass('wam-modal-dialog');
+        $('.modal-lg').removeClass('modal-dialog');
+    } else {
+        $('.modal-lg').addClass('modal-dialog');
+        $('.modal-lg').removeClass('wam-modal-dialog');
+    }
 }

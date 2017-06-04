@@ -65,7 +65,7 @@ public class LimitsController {
 
         Map<String, String> types = new HashMap<String, String>();
         types.put("category", "Категория");
-        types.put("product", "Товарная группа");
+        types.put("product", "Группа товаров");
         model.addAttribute("types", types);
 
         List<Limit> limits = limitService.getAll();
@@ -137,7 +137,7 @@ public class LimitsController {
 
             if (response.getEntity() != null) {
                 Product product = (Product) response.getEntity();
-                logger.debug(String.format("Родительская товарная группа: %s", product.toString()));
+                logger.debug(String.format("Родительская группа товаров: %s", product.toString()));
 
                 limitForm.setProductId(product);
             } else {
@@ -154,7 +154,7 @@ public class LimitsController {
             for (Object error : bindingResult.getAllErrors()){
 
                 if(error instanceof FieldError) {
-                    message = message + "\n" + messageSource.getMessage((FieldError)error, null);
+                    message = message + "<p>" + messageSource.getMessage((FieldError)error, null) + "</p>";
                 }
             }
 
@@ -178,7 +178,7 @@ public class LimitsController {
 
         Map<String, String> types = new HashMap<String, String>();
         types.put("category", "Категория");
-        types.put("product", "Товарная группа");
+        types.put("product", "Группа товаров");
         modelAndView.addObject("types", types);
 
         List<Category> categories = categoryService.getAll();

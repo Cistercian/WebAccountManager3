@@ -375,7 +375,7 @@ public class DataController {
             logger.debug(String.format("Обрабатывается запись: %s", product.toString()));
         } else {
             model.addAttribute("name", "Новая запись");
-            logger.debug(String.format("Товарная группа с id = %d не найдена. ", id));
+            logger.debug(String.format("Группа товаров с id = %d не найдена. ", id));
             return "index";
         }
 
@@ -420,13 +420,13 @@ public class DataController {
             modelAndView.addObject("mergeProduct", mergeProduct);
 
             //TODO: transaction
-            logger.debug(String.format("Товарная группа для объединения: %s", mergeProduct));
+            logger.debug(String.format("Группа товаров для объединения: %s", mergeProduct));
 
             for (Amount amount : amountService.getByProductAndDate(currentUser, mergeProduct, null, null)) {
                 amount.setProductId(productForm);
                 response = utilService.saveEntity(amount);
 
-                logger.debug(String.format("Редактирование записи amount (перевод в другую товарную группу):" +
+                logger.debug(String.format("Редактирование записи amount (перевод в другую группу):" +
                         "результат %s (%s).", response.getType(), response.getMessage()));
             }
 

@@ -102,6 +102,28 @@ public class AmountServiceImpl implements AmountService {
         return amounts;
     }
 
+    public List<Amount> getByProductAndCategoryAndDate(User user, Product product, Category category, LocalDate after, LocalDate before) {
+        logger.debug(LogUtil.getMethodName());
+
+        after = after == null ? LocalDate.of(1900, 1, 1) : after;
+        before = before == null ? LocalDate.now() : before;
+
+        logger.debug(String.format("Dates interval: %s - %s", after.toString(), before.toString()));
+
+        Date begin = DateUtil.getDate(after);
+        Date end = DateUtil.getDate(before);
+
+        List<Amount> amounts = Lists.newArrayList(amountRepository.findByProductIdAndCategoryIdAndUserIdAndDateBetween(
+                product,
+                category,
+                user,
+                begin,
+                end
+        ));
+
+        return amounts;
+    }
+
     public List<Amount> getByDate(User user, LocalDate after, LocalDate before) {
         logger.debug(LogUtil.getMethodName() + String.format(". Интервал: %s - %s", after, before));
 

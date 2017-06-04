@@ -79,6 +79,8 @@
 
         getAlerts();
 
+        setModalSize('auto');
+
         //показываем модальное окно при получении ошибки в момент загрузки страницы
         if ($('#response').val() != '') {
             displayMessage('info', $('#response').val());
@@ -110,25 +112,36 @@
                 }
             }
         });
+        $('#limits_filter').empty();
+        $('#limits_filter').append(
+                "<div class='col-xs-2 col-md-4 wam-padding-left-0 wam-padding-right-0'>" +
+                "<h5>Поиск: </h5>" +
+                "</div>" +
+                "<div class='col-xs-10 col-md-8 wam-padding-left-0 wam-padding-right-0'>" +
+                "<input id='searchDataTable' type='text' class='form-control form' placeholder='' aria-controls='amounts'>" +
+                "</div>"
+        );
+        $('#searchDataTable').on( 'keyup', function () {
+            table.search( this.value ).draw();
+        } );
 
     })
     function getDialog(id){
-        var modalBody = "<div class='row'><div class=\"col-xs-12 col-md-12\">" +
-                "<div class=\"col-xs-12 col-md-6 col-md-offset-3\">" +
+        setModalSize('auto');
+        var modalBody = "<div class='row'>" +
+                "<div class=\"col-xs-12 col-md-12\">" +
                 "<button type='button' class='btn btn-primary btn-lg btn-block wam-btn-1' " +
                 "onclick = \"javascript:getLimitWindow(" + id + ");\">" +
                 "${btnlimitLabelEdit}" +
                 "</button>" +
                 "</div>" +
-                "</div>" +
                 "<div class=\"col-xs-12 col-md-12\">" +
-                "<div class=\"col-xs-12 col-md-6 col-md-offset-3\">" +
                 "<button type='button' class='btn btn-danger btn-lg btn-block wam-btn-2' " +
                 "onclick = \"javascript:Delete('Limit', " + id + ");\">" +
                 "${btnlimitLabelDelete}" +
                 "</button>" +
                 "</div>" +
-                "</div></div>";
+                "</div>";
         displayMessage("DIALOG", modalBody, "");
     }
     /**
@@ -169,21 +182,21 @@
                     message
             );
             $('#modalFooter').append(
-                    "<div class=\"row\"><div class=\"col-xs-12 col-md-12\">" +
-                    "<div class=\"col-xs-12 col-md-6 col-md-offset-3\">" +
+                    "<div class=\"row\">" +
+                    "<div class=\"col-xs-12 col-md-12\">" +
                     "<button type='button' class='btn btn-default btn-lg btn-block wam-btn-2' " +
                     "data-dismiss='modal'>" +
                     "${btnlimitLabelCancel}" +
                     "</button>" +
                     "</div>" +
-                    "</div></div>"
+                    "</div>"
             );
         } else {
             $('#modalBody').append(message);
             $('#modalFooter').append(
                     "<div class='col-xs-12 col-md-4 col-md-offset-4 wam-not-padding '>" +
                     "<button type='button' class='btn btn-primary btn-lg btn-block' onclick='sendLimitSubmit();return false;'>" +
-                    "${btnlimitLabelOk}" +
+                    "Сохранить" +
                     "</button>" +
                     "</div>" +
                     "<div class='col-xs-12 col-md-4 wam-not-padding'>" +
@@ -208,6 +221,7 @@
                 var message = data;
                 var type = '';
 
+                setModalSize('fixed');
                 displayMessage(type, message, "/index");
             }
         });

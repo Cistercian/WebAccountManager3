@@ -30,6 +30,8 @@ public interface AmountRepository extends CrudRepository<Amount, Integer> {
     @Query("Select a from Amount a where a.productId = ?1 and a.userId = ?2 and a.date between ?3 and ?4")
     List<Amount> findByProductIdAndUserIdAndDateBetween(Product product, User user, Date after, Date before);
 
+    @Query("Select a from Amount a where a.productId = ?1 and a.categoryId = ?2 and a.userId = ?3 and a.date between ?4 and ?5")
+    List<Amount> findByProductIdAndCategoryIdAndUserIdAndDateBetween(Product product, Category category, User user, Date after, Date before);
 
     @Query("SELECT new ru.hd.olaf.util.json.BarEntity(" +
                 "'Product', " +

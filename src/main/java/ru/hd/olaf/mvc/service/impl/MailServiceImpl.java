@@ -142,7 +142,7 @@ public class MailServiceImpl implements MailService {
 
         if (entity instanceof Product) {
             Product product = (Product) entity;
-            logger.debug("Проверяем превышение лимита по товарной группе " + product);
+            logger.debug("Проверяем превышение лимита по группе товаров " + product);
 
             list.addAll(limitService.getLimitsByProduct(user, product));
         } else if (entity instanceof Category) {
@@ -167,7 +167,7 @@ public class MailServiceImpl implements MailService {
             if (entity.getSum().compareTo(entity.getLimit()) >= 0) {
                 String title = "Уведомление о достижении лимита.";
                 String text = "<p class=\"lead text-justify\">Зафиксирован перерасход лимита по " +
-                        (entity.getType().equalsIgnoreCase("product") ? "товарной группе " : "категории ") +
+                        (entity.getType().equalsIgnoreCase("product") ? "группе товаров " : "категории ") +
                         " <strong>" + entity.getName() + "</strong>. </p> " +
                         "<div class=\"wam-margin-top-2\">" +
                         "<p class=\"lead wam-margin-bottom-0\">Установленный лимит: " + entity.getLimit() + " руб.</p>" +

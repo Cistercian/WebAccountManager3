@@ -94,6 +94,18 @@
             "sort": true,
             "order": [[ 0, "DESC" ]],
         });
+        $('#mail_filter').empty();
+        $('#mail_filter').append(
+                "<div class='col-xs-2 col-md-4 wam-padding-left-0 wam-padding-right-0'>" +
+                "<h5>Поиск: </h5>" +
+                "</div>" +
+                "<div class='col-xs-10 col-md-8 wam-padding-left-0 wam-padding-right-0'>" +
+                "<input id='searchDataTable' type='text' class='form-control form' placeholder='' aria-controls='amounts'>" +
+                "</div>"
+        );
+        $('#searchDataTable').on( 'keyup', function () {
+            table.search( this.value ).draw();
+        } );
     })
     function getMail(id){
         $.ajax({

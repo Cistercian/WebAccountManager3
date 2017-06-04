@@ -178,7 +178,7 @@ public class AccountController {
         if (pageNum == null) pageNum = 1;
 
         ModelAndView modelAndView;
-        if (pageNum > 0 && pageNum < 9)
+        if (pageNum > 0 && pageNum < 10)
             modelAndView = new ModelAndView("/help/manual/page" + pageNum);
         else
             modelAndView = new ModelAndView("/help/manual/page1");

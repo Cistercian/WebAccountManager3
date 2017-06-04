@@ -47,7 +47,9 @@ var waitingDialog = waitingDialog || (function ($) {
 				if (settings.progressType) {
 					$dialog.find('.progress-bar').addClass('progress-bar-' + settings.progressType);
 				}
-				$dialog.find('h3').text(message);
+				$dialog.find('h3').empty();
+				$dialog.find('h3').text('');
+				$dialog.find('h3').append(message);
 				// Adding callbacks
 				if (typeof settings.onHide === 'function') {
 					$dialog.off('hidden.bs.modal').on('hidden.bs.modal', function (e) {

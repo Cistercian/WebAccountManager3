@@ -85,6 +85,8 @@
 
         getAlerts();
 
+        setModalSize('auto');
+
         //показываем модальное окно при получении ошибки в момент загрузки страницы
         if ($(responseMessage).val() != '') {
             displayMessage($('#responseType').val(), $('#responseMessage').val(), $('#responseUrl').val());
@@ -173,7 +175,7 @@
         ClearModalPanel();
         $('#modalBody').append(
                 "<div class='col-xs-12'>" +
-                "<h4><strong>" + message + "</strong></h4>" +
+                "<h4 class='text-center'><strong>" + message + "</strong></h4>" +
                 "</div>"
         );
         var onclick;
@@ -234,7 +236,7 @@
                     <input type="hidden" name="referer" class="form-control" value="${previousPage}"/>
                     <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1">
                         <div class="panel-heading ">
-                            <h3 class="wam-margin-bottom-1 wam-margin-top-0"><spring:message code="label.page-amount.title"/></strong></h3>
+                            <h3 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.page-amount.title"/></strong></h3>
                         </div>
                     </div>
                     <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1">

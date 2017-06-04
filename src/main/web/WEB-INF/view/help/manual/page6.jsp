@@ -34,14 +34,14 @@
                     <img src="/resources/img/help/categories.png" class="img-responsive wam-top-radius center-block wam-img-xs-2" alt="">
                 </div>
                 <div class="col-xs-12 col-md-12 wam-not-padding">
-                    <p class="wam-margin-top-2 text-justify">Категория может включать в себя как товарные группы, так и подкатегории.
+                    <p class="wam-margin-top-2 text-justify">Категория может включать в себя как группы товаров, так и подкатегории.
                         Для просмотра и закрытия состава подкатегорий следует нажимать пункты "развернуть" и "свернуть", соответствуенно:</p>
                 </div>
                 <div class="col-xs-12 col-md-12 wam-not-padding">
                     <img src="/resources/img/help/category_content.png" class="img-responsive wam-top-radius center-block wam-img-xs-2" alt="">
                 </div>
                 <div class="col-xs-12 col-md-12 wam-not-padding">
-                    <p class="wam-margin-top-2 text-justify">Обороты можно просмотреть в составе отдельных товарных групп, кликнув по пункту "Просмотреть":</p>
+                    <p class="wam-margin-top-2 text-justify">Обороты можно просмотреть в составе отдельных групп товаров, кликнув по пункту "Просмотреть":</p>
                 </div>
                 <div class="col-xs-12 col-md-12 wam-not-padding">
                     <img src="/resources/img/help/product.png" class="img-responsive wam-top-radius center-block wam-img-xs-2" alt="">

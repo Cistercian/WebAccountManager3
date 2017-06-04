@@ -86,16 +86,19 @@
             "sort": true,
             "order": [[1, "DESC"]],
         });
-        $('#amounts_filter').empty();
 
+        $('#amounts_filter').empty();
         $('#amounts_filter').append(
                 "<div class='col-xs-2 col-md-4 wam-padding-left-0 wam-padding-right-0'>" +
                 "<h5>Поиск: </h5>" +
                 "</div>" +
                 "<div class='col-xs-10 col-md-8 wam-padding-left-0 wam-padding-right-0'>" +
-                "<input id='searchDataTable' type='search' class='form-control' placeholder='' aria-controls='amounts'>" +
+                "<input id='searchDataTable' type='text' class='form-control form' placeholder='' aria-controls='amounts'>" +
                 "</div>"
         );
+        $('#searchDataTable').on( 'keyup', function () {
+            table.search( this.value ).draw();
+        } );
     });
 </script>
 
@@ -112,7 +115,7 @@
                         <div class='col-xs-12'>
                             <c:choose>
                             <c:when test="${not empty name}">
-                            <h4 class="wam-margin-bottom-0 wam-margin-top-0">Просмотр товарной группы</h4>
+                            <h4 class="wam-margin-bottom-0 wam-margin-top-0">Просмотр группы товаров</h4>
                         </div>
                         <div class='col-xs-12'>
                             <p class='lead'>

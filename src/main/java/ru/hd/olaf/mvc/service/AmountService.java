@@ -28,6 +28,8 @@ public interface AmountService {
 
     List<Amount> getByProductAndDate(User user, Product product, LocalDate after, LocalDate before);
 
+    List<Amount> getByProductAndCategoryAndDate(User user, Product product, Category category, LocalDate after, LocalDate before);
+
     List<Amount> getByCategoryAndProduct(Category category, Product product);
 
     List<Amount> getByCategory(Category category);

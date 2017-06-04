@@ -33,7 +33,7 @@
                 </div>
                 <div class="col-xs-12 col-md-12 wam-not-padding">
                     <p class="wam-margin-top-2 text-justify">Детализация за день позволяет просмотреть как состав категорий, по которым было движение, так
-                        и все обороты за день при нажатии на соответсвуюущю ссылку:</p>
+                        и все обороты за день при нажатии на соответсвующую ссылку:</p>
                 </div>
                 <div class="col-xs-12 col-md-12 wam-not-padding">
                     <p><img src="/resources/img/help/calendar_content.png" class="img-responsive wam-top-radius center-block wam-img-xs-2" alt=""></p>
