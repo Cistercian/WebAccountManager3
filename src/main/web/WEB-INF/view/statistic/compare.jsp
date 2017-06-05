@@ -14,6 +14,8 @@
     <link rel="stylesheet" href="${css}">
     <spring:url value="/resources/css/animate.css" var="css"/>
     <link rel="stylesheet" href="${css}">
+    <spring:url value="/resources/css/dataTables.bootstrap.css" var="css"/>
+    <link rel="stylesheet" href="${css}">
     <spring:url value="/resources/css/style.css" var="css"/>
     <link rel="stylesheet" href="${css}">
     <link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet">
@@ -68,6 +70,7 @@
 
                 $('#formGroup').removeClass('has-error');
                 $('#formGroupError').text('');
+                //$('#amounts').DataTable().fnDestroy();
             },
             success: function (data) {
                 hideLoader();
@@ -77,6 +80,19 @@
                 $('#maxSum').text(data.maxSum);
                 $('#maxDate').text(data.maxDate);
                 $('#avgSum').text(data.avgSum);
+
+                var amounts = data.amounts;
+                var tableData = new Array();
+                amounts.forEach(function (amount, index, amounts) {
+                    var entity = new Array();
+
+                    entity[0] = amount.id;
+                    entity[1] = amount.name;
+                    entity[2] = amount.price;
+                    entity[3] = amount.date;
+
+                    tableData.push(entity);
+                });
 
                 var table = $('#amounts').DataTable({
                     responsive: true,
@@ -103,6 +119,13 @@
                             "sortDescending": ": активировать для сортировки столбца по убыванию"
                         }
                     },
+                    data: tableData,
+                    columns: [
+                        { title: "id" },
+                        { title: "Наименование" },
+                        { title: "Цена" },
+                        { title: "Дата" }
+                    ],
                     "sort": true,
                     "order": [[1, "DESC"]],
                 });
@@ -221,27 +244,6 @@
                 <div class="panel-body">
                     <table id="amounts" class="table table-striped table-bordered table-text  wam-font-size wam-margin-top-2" cellspacing="0"
                            width="100%">
-                        <thead class="">
-                        <tr>
-                            <th style="display : none;"><spring:message code="label.page-product.table.id"/></th>
-                            <th><spring:message code="label.page-product.table.date"/></th>
-                            <th><spring:message code="label.page-product.table.name"/></th>
-                            <th><spring:message code="label.page-product.table.price"/></th>
-                            <th style="display : none;"><spring:message code="label.page-product.table.category"/></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-
-                        <c:forEach items="${amounts}" var="amount">
-                            <tr onclick="location.href='/amount?id=${amount.getId()}';">
-                                <td style="display : none;">${amount.getId()}</td>
-                                <td class="wam-no-wrap">${amount.getDate()}</td>
-                                <td>${amount.getName()}</td>
-                                <td>${amount.getPrice()}</td>
-                                <td style="display : none;">${amount.getCategoryId().getName()}</td>
-                            </tr>
-                        </c:forEach>
-                        </tbody>
                     </table>
                 </div>
             </div>
