@@ -52,7 +52,7 @@ public class AccountController {
 
         JsonResponse response = new JsonResponse();
         User currentUser = securityService.findLoggedUser();
-        if ("ROLE_ADMIN".equalsIgnoreCase(currentUser.getRole())) {
+        if (currentUser != null && "ROLE_ADMIN".equalsIgnoreCase(currentUser.getRole())) {
             if (username.equalsIgnoreCase("ALL")) {
                 for (User user : userService.getAll()) {
                     Mail mail = new Mail("Admin", title, text, user);
@@ -70,8 +70,10 @@ public class AccountController {
                     response.setMessage("Пользователь не найден");
             }
         } else {
+            String userName = currentUser != null ? currentUser.getUsername() : "anonymous";
+
             for (User admin : userService.getAdmins()) {
-                Mail mail = new Mail(currentUser.getUsername(), title, text, admin);
+                Mail mail = new Mail(userName, title, text, admin);
                 JsonResponse response1 = utilService.saveEntity(mail);
             }
             response.setMessage("Сообщение отправлено");
@@ -119,6 +121,9 @@ public class AccountController {
 
         userValidator.validate(userForm, bindingResult);
 
+        List<Mail> list = mailService.getAll();
+        model.addAttribute("mail", list);
+
         if (bindingResult.hasErrors()){
             logger.debug("Валидация не пройдена");
             return "login/account";
@@ -133,9 +138,6 @@ public class AccountController {
         userForm.setPasswordOld("");
 
         model.addAttribute("response", "Пароль успешно изменен");
-
-        List<Mail> list = mailService.getAll();
-        model.addAttribute("mail", list);
 
         return "login/account";
     }

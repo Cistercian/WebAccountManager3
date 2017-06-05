@@ -83,6 +83,17 @@
         });
         </c:if>
 
+        //закрываем модальное окно при нажатии ентера, esc, пробела
+        $('#modal').on('show.bs.modal', function() {
+            $(document).unbind("keyup").keyup(function(e){
+                var code = e.which;
+                if(code == 13 || code == 27 || code == 32)
+                {
+                    $("#modalSubmit").click();
+                }
+            });
+        });
+
         getAlerts();
 
         setModalSize('auto');
@@ -128,21 +139,6 @@
         $(".catcher-events").on("shown.bs.dropdown", function(e){
             formatTooLongText();
         });
-        //динамически меняем ширину модального окна
-        /*$('#modal').on('shown.bs.modal', function () {
-
-         $(this).find('.modal-body').css({
-         position: relative;
-         display: table;
-         overflow-y: auto;
-         overflow-x: auto;
-         width: auto;
-         min-width: 300px;
-         width:'auto', //probably not needed
-         height:'auto', //probably not needed
-         'max-height':'100%'
-         });
-         });*/
     });
 
     function setDropdownListId(categoryId, categoryName, type){
@@ -181,19 +177,20 @@
         var onclick;
         if (type == 'SUCCESS') {
             if (document.location.href.indexOf("save") !== -1) {
-                onclick = "clearForm(false);";
+                onclick = "clearForm(false);history.pushState({}, null, document.referrer);";
             } else {
                 onclick = "location.href=\"\/index\"";
             }
         } else if (type == 'SUCCESS_CREATE_NEW_ENTITY') {
-            onclick = "clearForm(true);";
+            onclick = "clearForm(true);history.pushState({}, null, document.referrer);";
         } else {
-            onclick = "$(\"#responseMessage\").val(\"\"); return false;";
+            onclick = "$(\"#responseMessage\").val(\"\"); history.pushState({}, null, document.referrer);";
         }
 
         $('#modalFooter').append(
                 "<div class='col-xs-12 col-md-6 col-md-offset-6'>" +
-                "<button type='button' class='btn btn-primary btn-lg btn-block wam-margin-top-2 ' data-dismiss='modal' onclick='" + onclick + "'>Закрыть</button>" +
+                "<button id='modalSubmit' type='button' class='btn btn-primary btn-lg btn-block wam-margin-top-2 ' data-dismiss='modal' " +
+                "onclick='" + onclick + "'>Закрыть</button>" +
                 "</div>"
         );
 

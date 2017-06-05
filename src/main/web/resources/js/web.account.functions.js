@@ -532,3 +532,12 @@ function setModalSize(type){
         $('.modal-lg').removeClass('wam-modal-dialog');
     }
 }
+function freezeBody(){
+    $('#modal')
+        .on('show.bs.modal', function (){
+            $('body').addClass('wam-body-freeze');
+        })
+        .on('hide.bs.modal', function (){
+            $('body').removeClass('wam-body-freeze');
+        });
+}

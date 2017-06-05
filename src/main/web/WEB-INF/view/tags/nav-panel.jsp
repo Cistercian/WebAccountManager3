@@ -47,6 +47,7 @@
                         <li><a href="/limits"><spring:message code="menu.nav.limits" /></a></li>
                     </ul>
                 </li>
+                <li><a href="/about"><spring:message code="menu.nav.help" /></a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><spring:message code="menu.nav.login.account" /> <b class="caret"></b></a>
                     <ul class="dropdown-menu">

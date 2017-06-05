@@ -86,6 +86,7 @@
         });
 
         formatTooLongText();
+        freezeBody();
     });
 
     function selectPeriod(hasDates, after, before, idElem){

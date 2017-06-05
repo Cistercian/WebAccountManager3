@@ -67,6 +67,18 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     /**
+     * Функция возвращает список категорий, у которых установлена переданная родительская
+     * @param parent Родительская категория
+     * @param currentUser рассматриваемый пользователь
+     * @return List
+     */
+    public List<Category> getByParent(Category parent, User currentUser) {
+        logger.debug(LogUtil.getMethodName());
+
+        return categoryRepository.findByParentIdAndUserId(parent, currentUser);
+    }
+
+    /**
      * Функция возвращает коллекцию служебного класса BarEntity, элемент которой - дочерняя категория, указанной родительской
      * с итоговой по ней суммой за заданный период с исключением нулевых сумм.
      *

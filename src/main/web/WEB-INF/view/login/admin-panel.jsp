@@ -17,6 +17,8 @@
     <link rel="stylesheet" href="${css}">
     <spring:url value="/resources/css/style.css" var="css"/>
     <link rel="stylesheet" href="${css}">
+    <spring:url value="/resources/css/dataTables.bootstrap.css" var="css"/>
+    <link rel="stylesheet" href="${css}">
     <link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet">
 
     <!-- js -->
@@ -86,7 +88,9 @@
                     "sortAscending": ": активировать для сортировки столбца по возрастанию",
                     "sortDescending": ": активировать для сортировки столбца по убыванию"
                 }
-            }
+            },
+            "sort": true,
+            "order": [[ 0, "DESC" ]],
         });
         $('#mail_filter').empty();
         $('#mail_filter').append(

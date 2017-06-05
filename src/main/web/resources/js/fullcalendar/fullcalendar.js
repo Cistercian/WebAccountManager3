@@ -7516,7 +7516,7 @@
 						emptyCellsUntil(seg.leftCol);
 
 						// create a container that occupies or more columns. append the event element.
-						td = $('<td class="fc-event-container"/>').append(seg.el);
+						td = $('<td class="fc-event-container wam-cursor"/>').append(seg.el);
 						if (seg.leftCol != seg.rightCol) {
 							td.attr('colspan', seg.rightCol - seg.leftCol + 1);
 						}
@@ -7927,7 +7927,7 @@
 				'<div class="fc-clear"/>' +
 				'</div>' +
 				'<div class="fc-body ' + view.widgetContentClass + '">' +
-				'<div class="fc-event-container"></div>' +
+				'<div class="fc-event-container wam-cursor"></div>' +
 				'</div>'
 			);
 			var segContainer = content.find('.fc-event-container');
@@ -8571,7 +8571,7 @@
 					'<td>' +
 					'<div class="fc-content-col">' +
 					'<div class="fc-event-container fc-helper-container"></div>' +
-					'<div class="fc-event-container"></div>' +
+					'<div class="fc-event-container wam-cursor"></div>' +
 					'<div class="fc-highlight-container"></div>' +
 					'<div class="fc-bgevent-container"></div>' +
 					'<div class="fc-business-container"></div>' +

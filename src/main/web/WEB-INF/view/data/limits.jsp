@@ -290,12 +290,12 @@
                             </thead>
                             <tbody>
                             <c:forEach items="${limits}" var="limits">
-                                <tr onclick="getDialog(${limits.getId()});return false;">
+                                <tr onclick="getDialog(${limits.getId()});return false;" class="wam-cursor">
                                     <td style="display : none;">${limits.getId()}</td>
-                                    <td class="hidden-xs">${types.get(limits.getType())}</td>
-                                    <td>${limits.getEntityName()}</td>
-                                    <td class="wam-no-wrap">${limits.getSum()}</td>
-                                    <td>${periods.get(limits.getPeriod())}</td>
+                                    <td class="hidden-xs"><a href="#">${types.get(limits.getType())}</a></td>
+                                    <td><a href="#">${limits.getEntityName()}</a></td>
+                                    <td class="wam-no-wrap"><a href="#">${limits.getSum()}</a></td>
+                                    <td><a href="#">${periods.get(limits.getPeriod())}</a></td>
 
                                     <td class="hidden-xs"  style="display : none;">
                                         <p data-placement="top" data-toggle="tooltip" title="Edit">

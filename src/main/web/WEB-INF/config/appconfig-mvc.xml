@@ -46,7 +46,7 @@
 
 
     <mvc:view-controller path="/index.html" view-name="/index"/>
-    <mvc:view-controller path="/about.html" view-name="/about/about"/>
+    <mvc:view-controller path="/about.html" view-name="/help/about"/>
     <mvc:view-controller path="/jdbc.html" view-name="/jdbc/jdbc"/>
     <mvc:view-controller path="/page-product.html" view-name="/data/page-product"/>
     <mvc:view-controller path="/page-data.html" view-name="/data/page-data"/>

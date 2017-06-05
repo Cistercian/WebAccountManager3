@@ -18,14 +18,20 @@ import java.util.Map;
 public interface CategoryService {
 
     Category getOne(Integer id) throws AuthException, IllegalArgumentException;
+
     JsonResponse getById(Integer id);
 
     List<Category> getAll();
+
     List<Category> getAllByCurrentUser();
+
+    List<Category> getByParent(Category parent, User currentUser);
+
     List<BarEntity> getBarEntityOfSubCategories(User user, Category parent, LocalDate after, LocalDate before);
 
 
     Category save(Category category) throws CrudException;
+
     JsonResponse delete(Category category) throws CrudException;
 
 }

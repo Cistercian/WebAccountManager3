@@ -34,7 +34,9 @@
 .wam-margin-top-3 {
 	margin-top: 30px;
 }
-
+.wam-margin-top-4 {
+	margin-top: 40px;
+}
 .wam-margin-bottom-0 {
 	margin-bottom: 0px;
 }
@@ -118,6 +120,9 @@
 	.wam-font-size-2 {
 		font-size: 20px;
 	}
+	.wam-margin-top-5 {
+		margin-top: 20%;
+	}
 }
 @media (max-width: 992px) {
 	.fc th, .fc td {
@@ -176,20 +181,6 @@
 /*Принудительно скрываем скролбар*/
 .fc-scroller {
 	overflow-y: hidden !important;
-}
-/*Возврат фокуса на модальное окно после закрытия второго, убирание сдвигания страницы при открытии модального окна
-*/
-.modal {
-	overflow: auto !important;
-	font-family: 'Roboto Slab', serif;
-}
-.modal-open{overflow-y: visible;}
-.modal-open {
-	padding-right: 0px !important;
-}
-.modal-backdrop {
-	position: fixed;
-	bottom: 0;
 }
 
 .form-inline .form-control {
@@ -376,4 +367,21 @@ div.dataTables_filter {
 }
 #searchDataTable{
 	padding: 7px;
+}
+.wam-cursor {
+	cursor: pointer;
+}
+.wam-body-freeze {
+	overflow: hidden;
+	padding-right: 17px !important;
+}
+/*Возврат фокуса на модальное окно после закрытия второго, убирание сдвигания страницы при открытии модального окна
+*/
+.modal {
+	overflow: auto !important;
+	font-family: 'Roboto Slab', serif;
+}
+.modal-backdrop {
+	position: fixed;
+	bottom: 0;
 }

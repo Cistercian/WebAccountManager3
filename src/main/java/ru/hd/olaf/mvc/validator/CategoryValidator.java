@@ -49,6 +49,17 @@ public class CategoryValidator implements Validator {
             errors.rejectValue("type", "Validation.category.type");
         }
 
+        if (category.getId() != null) {
+            for (Category children : categoryService.getByParent(category, category.getUserId())) {
+                if (category.getType() != children.getType()) {
+                    logger.debug("Validation.category.type");
+                    errors.rejectValue("type", "Validation.subcategory.type");
+
+                    break;
+                }
+            }
+        }
+
         if (category.getParentId() != null && category.getParentId().getId() == category.getId()) {
             logger.debug("Validation.category.type");
             errors.rejectValue("name", "Validation.category.parent");

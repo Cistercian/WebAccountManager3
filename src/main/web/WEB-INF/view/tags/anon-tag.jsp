@@ -7,5 +7,5 @@
     <p><img src="/resources/img/user-nan.png" class="img-responsive wam-top-radius center-block wam-img-xs-1" alt=""></p>
     <p class="lead text-center"><a href="/login"><spring:message code="label.login" /></a></p>
     <p class="lead text-center"><a href="/registration"><spring:message code="label.login.registration" /></a></p>
-    <p class="lead text-center"><a href="javascript:getManualForm(1);"><spring:message code="label.account.manual"/></a></p>
+    <p class="lead text-center"><a href="javascript:getManualForm(1);"><spring:message code="label.about.manual"/></a></p>
 </div>

@@ -17,6 +17,8 @@
     <link rel="stylesheet" href="${css}">
     <spring:url value="/resources/css/style.css" var="css"/>
     <link rel="stylesheet" href="${css}">
+    <spring:url value="/resources/css/dataTables.bootstrap.css" var="css"/>
+    <link rel="stylesheet" href="${css}">
     <link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet">
 
     <!-- js -->
@@ -50,16 +52,7 @@
             headers: {'X-CSRF-TOKEN': document.getElementById('_csrf_token').value}
         });
 
-        $('.modal')
-                .on('show.bs.modal', function (){
-                    $('body').css('overflow', 'hidden');
-                })
-                .on('hide.bs.modal', function (){
-                    // Also if you are using multiple modals (cascade) - additional check
-                    if ($('.modal.in').length == 1) {
-                        $('body').css('overflow', 'auto');
-                    }
-                });
+        freezeBody();
 
         //показываем модальное окно при получении ошибки в момент загрузки страницы
         if ($('#response').val() != '') {
@@ -118,7 +111,8 @@
             success: function (data) {
                 hideLoader();
 
-                displayMessage('MAIL', data, "");
+                displayMessage('MAIL', data, '');
+                $('#mail_' + id).removeClass('wam-bold');
             }
         });
     }
@@ -226,11 +220,11 @@
                                     <c:set var="style" value=""/>
                                 </c:otherwise>
                             </c:choose>
-                            <tr class="${style} ">
+                            <tr id="mail_${mail.getId()}" class="${style} wam-cursor" onclick="getMail(${mail.getId()})">
                                 <td style="display : none;">${mail.getId()}</td>
-                                <td class="wam-no-wrap"><a href="javascript:getMail(${mail.getId()})">${mail.getDate()}</a></td>
-                                <td class="hidden-xs"><a href="javascript:getMail(${mail.getId()})">${mail.getSender()}</a></td>
-                                <td><a href="javascript:getMail(${mail.getId()})">${mail.getTitle()}</a></td>
+                                <td class="wam-no-wrap"><a href="#">${mail.getDate()}</a></td>
+                                <td class="hidden-xs"><a href="#">${mail.getSender()}</a></td>
+                                <td><a href="#">${mail.getTitle()}</a></td>
                             </tr>
                         </c:forEach>
                         </tbody>
@@ -242,19 +236,16 @@
                     <h4 class="panel-title"><strong><spring:message code="label.account.mail.feedback.title"/></strong></h4>
                 </div>
                 <div class="panel-body">
-                    <div class="col-xs-12 col-md-6">
-                        <p class='text-justify'><spring:message code="label.account.feedback.details"/></p>
-                        <button class="btn btn-lg btn-primary btn-block wam-btn-2" type="submit"
-                                onclick="getMailForm();return false;">
-                            <span class='wam-font-size-2'><spring:message code="label.account.feedback"/></span>
-                        </button>
-                    </div>
-                    <div class="col-xs-12 col-md-6">
-                        <p class='text-justify'><spring:message code="label.account.manual.details"/></p>
-                        <button class="btn btn-lg btn-primary btn-block wam-btn-2" type="submit"
-                                onclick="getManualForm(1);return false;">
-                            <span class='wam-font-size-2'><spring:message code="label.account.manual"/></span>
-                        </button>
+                    <div class="row">
+                        <div class="col-xs-12 col-md-12">
+                            <p class='text-justify'><spring:message code="label.account.feedback.details"/></p>
+                        </div>
+                        <div class="col-xs-12 col-md-6 col-md-offset-6">
+                            <button class="btn btn-lg btn-primary btn-block wam-btn-2" type="submit"
+                                    onclick="getMailForm();return false;">
+                                <span class='wam-font-size-2'><spring:message code="label.account.feedback"/></span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -267,47 +258,49 @@
                     <div class="panel-heading">
                         <h4 class="panel-title"><strong><spring:message code="label.account.password.title"/></strong></h4>
                     </div>
-                    <div class="panel-body ">
-                        <spring:bind path="passwordOld">
-                            <div class="col-xs-12 col-md-12">
-                                <div class="col-xs-12 col-md-6">
-                                    <div class="form-group ${status.error ? 'has-error' : ''}">
-                                        <spring:message code="label.login.passwordOld" var="passwordOld"/>
-                                        <form:input type="password" path="passwordOld" class="form-control"
-                                                    placeholder="${passwordOld}"></form:input>
-                                        <form:errors path="passwordOld"></form:errors>
+                    <div class="panel-body">
+                        <div class="row">
+                            <spring:bind path="passwordOld">
+                                <div class="col-xs-12 col-md-12">
+                                    <div class="col-xs-12 col-md-6">
+                                        <div class="form-group ${status.error ? 'has-error' : ''}">
+                                            <spring:message code="label.login.passwordOld" var="passwordOld"/>
+                                            <form:input type="password" path="passwordOld" class="form-control"
+                                                        placeholder="${passwordOld}"></form:input>
+                                            <form:errors path="passwordOld"></form:errors>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </spring:bind>
-                        <spring:bind path="password">
-                            <div class="col-xs-12 col-md-12">
-                                <div class="col-xs-12 col-md-6">
-                                    <div class="form-group ${status.error ? 'has-error' : ''}">
-                                        <spring:message code="label.login.password" var="password"/>
-                                        <form:input type="password" path="password" class="form-control"
-                                                    placeholder="${password}"></form:input>
-                                        <form:errors path="password"></form:errors>
+                            </spring:bind>
+                            <spring:bind path="password">
+                                <div class="col-xs-12 col-md-12">
+                                    <div class="col-xs-12 col-md-6">
+                                        <div class="form-group ${status.error ? 'has-error' : ''}">
+                                            <spring:message code="label.login.password" var="password"/>
+                                            <form:input type="password" path="password" class="form-control"
+                                                        placeholder="${password}"></form:input>
+                                            <form:errors path="password"></form:errors>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </spring:bind>
-                        <spring:bind path="passwordConfirm">
-                            <div class="col-xs-12 col-md-12">
-                                <div class="col-xs-12 col-md-6">
-                                    <div class="form-group ${status.error ? 'has-error' : ''}">
-                                        <spring:message code="label.registration.passwordConfirm" var="passwordConfirm"/>
-                                        <form:input type="password" path="passwordConfirm" class="form-control"
-                                                    placeholder="${passwordConfirm}"></form:input>
-                                        <form:errors path="passwordConfirm"></form:errors>
+                            </spring:bind>
+                            <spring:bind path="passwordConfirm">
+                                <div class="col-xs-12 col-md-12">
+                                    <div class="col-xs-12 col-md-6">
+                                        <div class="form-group ${status.error ? 'has-error' : ''}">
+                                            <spring:message code="label.registration.passwordConfirm" var="passwordConfirm"/>
+                                            <form:input type="password" path="passwordConfirm" class="form-control"
+                                                        placeholder="${passwordConfirm}"></form:input>
+                                            <form:errors path="passwordConfirm"></form:errors>
+                                        </div>
                                     </div>
                                 </div>
+                            </spring:bind>
+                            <div class="col-xs-12 col-md-6 col-md-offset-0">
+                                <button class="btn btn-lg btn-primary btn-block wam-btn-2" type="submit">
+                                    <spring:message code="label.account.password.submit"/>
+                                </button>
                             </div>
-                        </spring:bind>
-                        <div class="col-xs-12 col-md-6 col-md-offset-0">
-                            <button class="btn btn-lg btn-primary btn-block wam-btn-2" type="submit">
-                                <spring:message code="label.account.password.submit"/>
-                            </button>
                         </div>
                     </div>
                 </div>
