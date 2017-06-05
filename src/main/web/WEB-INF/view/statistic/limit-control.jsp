@@ -174,7 +174,7 @@
                     </c:forEach>
                     <c:if test="${hasData == 'false'}">
                         <div class="col-xs-12 col-md-12">
-                            <h5><span class="text-muted"><spring:message code="label.limit.emptyData"/><span></h5>
+                            <h5><span class="text-muted"><spring:message code="label.limit.emptyData"/></span></h5>
                         </div>
                     </c:if>
                 </div>
@@ -248,7 +248,7 @@
                     </c:forEach>
                     <c:if test="${hasData == 'false'}">
                         <div class="col-xs-12 col-md-12">
-                            <h5><span class="text-muted"><spring:message code="label.limit.emptyData"/><span></h5>
+                            <h5><span class="text-muted"><spring:message code="label.limit.emptyData"/></span></h5>
                         </div>
                     </c:if>
                 </div>
@@ -321,7 +321,7 @@
                     </c:forEach>
                     <c:if test="${hasData == 'false'}">
                         <div class="col-xs-12 col-md-12">
-                            <h5><span class="text-muted"><spring:message code="label.limit.emptyData"/><span></h5>
+                            <h5><span class="text-muted"><spring:message code="label.limit.emptyData"/></span></h5>
                         </div>
                     </c:if>
                 </div>
