@@ -36,6 +36,8 @@ public interface AmountService {
 
     List<Amount> getByDate(User user, LocalDate after, LocalDate before);
 
+    List<Amount> getByMatchingName(User user, String query, LocalDate after, LocalDate before);
+
     List<BarEntity> getBarEntitiesByCategory(User user,
                                              Category category,
                                              LocalDate after,

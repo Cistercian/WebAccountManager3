@@ -115,8 +115,8 @@ public class LimitServiceImpl implements LimitService {
     public List<BarEntity> getLimits(User user, Byte period, LocalDate after, LocalDate before) {
         logger.debug(LogUtil.getMethodName());
 
-        Date begin = Date.from(after.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        Date end = Date.from(before.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date begin = DateUtil.getDate(after);
+        Date end = DateUtil.getDate(before);
 
         logger.debug(String.format("Интервал: %s - %s", after, before));
 

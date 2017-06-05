@@ -52,8 +52,6 @@
             headers: {'X-CSRF-TOKEN': document.getElementById('_csrf_token').value}
         });
 
-        freezeBody();
-
         //показываем модальное окно при получении ошибки в момент загрузки страницы
         if ($('#response').val() != '') {
             displayMessage('info', $('#response').val());

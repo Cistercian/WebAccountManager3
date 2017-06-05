@@ -9,6 +9,7 @@ import ru.hd.olaf.entities.Product;
 import ru.hd.olaf.entities.User;
 import ru.hd.olaf.util.json.BarEntity;
 import ru.hd.olaf.util.json.CalendarEntity;
+import ru.hd.olaf.util.json.CompareEntity;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -55,4 +56,12 @@ public interface AmountRepository extends CrudRepository<Amount, Integer> {
             "a.date BETWEEN ?3 AND ?4")
     BigDecimal getSumByTypeAndUserIdAndDate(Byte type, User userId, Date after, Date before);
 
+    @Query("Select a from Amount a " +
+            "LEFT JOIN a.productId p " +
+            "LEFT JOIN a.categoryId c " +
+            "WHERE a.userId = ?1 and a.date between ?3 and ?4 and " +
+            "(UPPER(a.name) LIKE ?2 OR " +
+            "UPPER(p.name) LIKE ?2 OR " +
+            "UPPER(c.name) LIKE ?2) ")
+    List<Amount> getByUserIdAndMatchingNameAndDateBetween(User userId, String query, Date after, Date before);
 }

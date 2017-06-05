@@ -65,4 +65,8 @@ public class DateUtil {
     public static LocalDate getStartOfMonth(){
         return LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
     }
+
+    public static LocalDate getStartOfEra(){
+        return LocalDate.of(1900, 1, 1);
+    }
 }

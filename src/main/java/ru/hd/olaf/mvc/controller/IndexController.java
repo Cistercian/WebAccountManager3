@@ -69,7 +69,7 @@ public class IndexController {
         //дата начала текущего месяца
         LocalDate monthDate = DateUtil.getStartOfMonth();
         //дата начала периода "за все время"
-        LocalDate allTimeDate = LocalDate.of(1900, 1, 1);
+        LocalDate allTimeDate = DateUtil.getStartOfEra();
 
         modelAndView.addObject("curDate", DateUtil.getFormattedDate(curDate));
         modelAndView.addObject("afterWeek", DateUtil.getFormattedDate(weekDate));

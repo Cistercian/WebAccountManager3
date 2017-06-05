@@ -35,6 +35,8 @@
                         <li><a href="/statistic/calendar"><spring:message code="menu.nav.calendar" /></a></li>
                         <li class="divider"></li>
                         <li><a href="/statistic/limit-control"><spring:message code="menu.nav.limit-control" /></a></li>
+                        <li class="divider"></li>
+                        <li><a href="/statistic/compare"><spring:message code="menu.nav.compare" /></a></li>
                     </ul>
                 </li>
                 <li class="dropdown">

@@ -205,9 +205,6 @@ div.dataTables_filter {
 .content {
 	font-family: 'Roboto Slab', serif;
 }
-.modal-body{
-	font-family: 'Roboto Slab', serif;
-}
 /*настройки для широкого экрана*/
 @media (min-width: 992px) {
 	body {
@@ -380,6 +377,10 @@ div.dataTables_filter {
 .modal {
 	overflow: auto !important;
 	font-family: 'Roboto Slab', serif;
+}
+.modal-open{overflow-y: visible;}
+.modal-open {
+	padding-right: 0px !important;
 }
 .modal-backdrop {
 	position: fixed;

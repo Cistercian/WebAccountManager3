@@ -127,12 +127,21 @@ public class AmountServiceImpl implements AmountService {
     public List<Amount> getByDate(User user, LocalDate after, LocalDate before) {
         logger.debug(LogUtil.getMethodName() + String.format(". Интервал: %s - %s", after, before));
 
-        Date begin = Date.from(after.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        Date end = Date.from(before.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date begin = DateUtil.getDate(after);
+        Date end = DateUtil.getDate(before);
 
         return Lists.newArrayList(amountRepository.findByUserIdAndDateBetween(user,
                 begin,
                 end));
+    }
+
+    public List<Amount> getByMatchingName(User user, String query, LocalDate after, LocalDate before) {
+        logger.debug(LogUtil.getMethodName() + String.format(". Интервал: %s - %s", after, before));
+
+        Date begin = DateUtil.getDate(after);
+        Date end = DateUtil.getDate(before);
+
+        return amountRepository.getByUserIdAndMatchingNameAndDateBetween(user, "%" + query.toUpperCase() + "%", begin, end);
     }
 
     /**
