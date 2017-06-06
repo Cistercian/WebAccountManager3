@@ -17,6 +17,8 @@ public class CompareEntity {
     private BigDecimal maxSum;
     private Date maxDate;
     private BigDecimal avgSum;
+    private Date lastDate;
+    private BigDecimal lastSum;
     private List<Amount> amounts;
 
     public CompareEntity(BigDecimal minSum, Date minDate, BigDecimal maxSum, Date maxDate, BigDecimal avgSum, List<Amount> amounts) {
@@ -74,5 +76,21 @@ public class CompareEntity {
 
     public void setAvgSum(BigDecimal avgSum) {
         this.avgSum = avgSum;
+    }
+
+    public Date getLastDate() {
+        return lastDate;
+    }
+
+    public void setLastDate(Date lastDate) {
+        this.lastDate = lastDate;
+    }
+
+    public BigDecimal getLastSum() {
+        return lastSum;
+    }
+
+    public void setLastSum(BigDecimal lastSum) {
+        this.lastSum = lastSum;
     }
 }

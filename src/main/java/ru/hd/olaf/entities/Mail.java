@@ -145,7 +145,7 @@ public class Mail {
                 ", title='" + title + '\'' +
                 ", text='" + text + '\'' +
                 ", isRead=" + isRead +
-                ", userId=" + (userId != null ? userId : "null") +
+                ", userId=" + (userId != null ? userId.getUsername() : "null") +
                 '}';
     }
 }
