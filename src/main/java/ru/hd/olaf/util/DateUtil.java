@@ -6,10 +6,8 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Date;
-import java.util.Locale;
 
 /**
  * Created by Olaf on 30.04.2017.
