@@ -151,7 +151,7 @@ public class AmountServiceImpl implements AmountService {
         Date end = DateUtil.getDate(before);
 
         BigDecimal result = amountRepository.getAvgPriceByUserIdAndMatchingNameAndDateBetween(user, "%" + query.toUpperCase() + "%", begin, end);
-        result = result.setScale(2, BigDecimal.ROUND_HALF_UP);
+        result = result != null ? result.setScale(2, BigDecimal.ROUND_HALF_UP) : new BigDecimal("0");
 
         return result;
     }
@@ -165,8 +165,14 @@ public class AmountServiceImpl implements AmountService {
      * @param before
      * @return
      */
-    public List<BarEntity> getBarEntitiesByCategory(User user, Category category, LocalDate after, LocalDate before) {
+    public List<BarEntity> getBarEntitiesByCategory(User user,
+                                                    Category category,
+                                                    LocalDate after,
+                                                    LocalDate before,
+                                                    boolean isGetAnalyticData) {
         logger.debug(LogUtil.getMethodName());
+        logger.debug(String.format("Выводятся ли среднемесячные данные: %s", isGetAnalyticData));
+
         List<BarEntity> barEntities;
 
         barEntities = amountRepository.getBarEntityByUserIdAndCategoryIdAndDateGroupByProductId(user,

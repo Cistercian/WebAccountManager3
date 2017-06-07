@@ -142,7 +142,8 @@ public class IndexController {
         List<BarEntity> parentsCategories = categoryService.getBarEntityOfSubCategories(currentUser,
                 null,
                 after,
-                before);
+                before,
+                false);
 
         //сортировка по типу категории (доход/расход) и по сумме
         Collections.sort(parentsCategories, new Comparator<BarEntity>() {
@@ -167,8 +168,10 @@ public class IndexController {
     @ResponseBody
     List<BarEntity> getCategoryContentByCategoryId(@RequestParam(value = "categoryId") Integer categoryId,
                                                    @RequestParam(value = "after") String beginDate,
-                                                   @RequestParam(value = "before") String endDate) {
+                                                   @RequestParam(value = "before") String endDate,
+                                                   @RequestParam(value = "isGetAnalyticData") boolean isGetAnalyticData) {
         logger.debug(LogUtil.getMethodName());
+        logger.debug(String.format("Выводятся ли среднемесячные данные: %s", isGetAnalyticData));
 
         List<BarEntity> categoryContent = new ArrayList<BarEntity>();
 
@@ -185,17 +188,27 @@ public class IndexController {
         LocalDate before = DateUtil.getParsedDate(endDate);
         User currentUser = securityService.findLoggedUser();
 
-        //данные по дочерним категориям
-        categoryContent.addAll(categoryService.getBarEntityOfSubCategories(currentUser,
-                category,
-                after,
-                before));
-        //данные по товарным группам(amounts с группировкой по product)
-        categoryContent.addAll(amountService.getBarEntitiesByCategory(currentUser,
-                category,
-                after,
-                before));
-
+        if (!isGetAnalyticData) {
+            //данные по дочерним категориям
+            categoryContent.addAll(categoryService.getBarEntityOfSubCategories(currentUser,
+                    category,
+                    after,
+                    before,
+                    isGetAnalyticData));
+            //данные по товарным группам(amounts с группировкой по product)
+            categoryContent.addAll(amountService.getBarEntitiesByCategory(currentUser,
+                    category,
+                    after,
+                    before,
+                    isGetAnalyticData));
+        } else {
+            categoryContent.addAll(categoryService.getAnalyticData(
+                    currentUser,
+                    category,
+                    after,
+                    before
+            ));
+        }
         //сортировка
         Collections.sort(categoryContent, new Comparator<BarEntity>() {
             public int compare(BarEntity o1, BarEntity o2) {

@@ -178,7 +178,7 @@
 
                     $('#' + idBarsElem).append(
                             "<li class='list-unstyled'>" +
-                            "<a href='javascript:drawBarsByParentId(false, \"" + id + "\",\"" + after + "\",\"" + before + "\");'>" +
+                            "<a href='javascript:drawBarsByParentId(false, \"" + id + "\",\"" + after + "\",\"" + before + "\", false);'>" +
                             "<div>" +
                             "<h4 class='needToFormat'><strong id='categoryBarName" + id + "' value='" + name + "'>" +
                             name +
@@ -438,7 +438,7 @@
                                         </c:choose>
 
                                         <li class="list-unstyled">
-                                            <a href="javascript:drawBarsByParentId(false, '${classId}', '${afterMonth}', '${curDate}')">
+                                            <a href="javascript:drawBarsByParentId(false, '${classId}', '${afterMonth}', '${curDate}', false)">
                                                 <div>
                                                     <h4 class="needToFormat"><strong id="categoryBarName${classId}" value="${className}">
                                                             ${className}
@@ -498,7 +498,7 @@
                                             </c:otherwise>
                                         </c:choose>
                                         <li class="list-unstyled">
-                                            <a href="javascript:drawBarsByParentId(false, '${classId}', '${afterMonth}', '${curDate}')">
+                                            <a href="javascript:drawBarsByParentId(false, '${classId}', '${afterMonth}', '${curDate}', false)">
                                                 <div>
                                                     <h4 class="needToFormat"><strong id="categoryBarName${classId}" value="${className}">
                                                             ${className}

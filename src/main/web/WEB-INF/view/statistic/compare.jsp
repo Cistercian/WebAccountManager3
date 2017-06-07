@@ -64,6 +64,13 @@
 
         getAlerts();
 
+        <c:if test='${empty pageContext.request.userPrincipal}'>
+        $('.btn-primary').each(function () {
+            $(this).addClass('disabled');
+            $(this).click('');
+        });
+        </c:if>
+
         $('#name').keypress(function(event){
             var keycode = (event.keyCode ? event.keyCode : event.which);
             if(keycode == '13'){
@@ -183,7 +190,7 @@
                 hideLoader();
 
                 $('#formGroup').addClass('has-error');
-                $('#formGroupError').text('Нет данных. Попробуйте изменить строку для поиска.');
+                $('#formGroupError').text('Что-то пошло не так. Попробуйте изменить строку для поиска.');
 
                 $('#minSum').text('0');
                 $('#minDate').text('');
@@ -230,7 +237,7 @@
                             </div>
                         </div>
                         <div class="col-xs-12 col-md-6 col-md-offset-6">
-                            <button class="btn-primary btn-lg btn-block wam-btn-2"
+                            <button class="btn btn-primary btn-lg btn-block wam-btn-2"
                                     onclick="getAmounts()">
                                 <spring:message code="label.index.refresh" />
                             </button>

@@ -8,7 +8,7 @@
  * @param after начальная дата отсечки
  * @param before конечная дата отсечки
  */
-function drawBarsByParentId(isChildren, categoryId, after, before) {
+function drawBarsByParentId(isChildren, categoryId, after, before, isGetAnalyticData) {
     //свитчер - либо показываем, либо стираем детализацию по дочерней категории
     if (($('*').is('#childrenCategory' + categoryId)) && isChildren) {
         $('#childrenCategory' + categoryId).remove();
@@ -24,7 +24,8 @@ function drawBarsByParentId(isChildren, categoryId, after, before) {
             data: {
                 'categoryId': categoryId,
                 'after': after,
-                'before': before
+                'before': before,
+                'isGetAnalyticData' : isGetAnalyticData
             },
             dataType: 'json',
             beforeSend: function () {
@@ -140,7 +141,8 @@ function drawBarsByParentId(isChildren, categoryId, after, before) {
                         classType = 'Category';
                         elemLink = "<a href='javascript:drawBarsByParentId(true, " + classId + "," +
                             "\"" + after + "\"," +
-                            "\"" + before + "\")';\">" +
+                            "\"" + before + "\"," +
+                            isGetAnalyticData + ")';\">" +
                             "<span id='strong" + classType + classId + "'> (Развернуть)</span>" +
                             "</a>";
                     }

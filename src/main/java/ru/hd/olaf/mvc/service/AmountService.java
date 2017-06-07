@@ -41,7 +41,8 @@ public interface AmountService {
     List<BarEntity> getBarEntitiesByCategory(User user,
                                              Category category,
                                              LocalDate after,
-                                             LocalDate before);
+                                             LocalDate before,
+                                             boolean isGetAnalyticData);
 
     Amount save(Amount amount) throws CrudException;
 

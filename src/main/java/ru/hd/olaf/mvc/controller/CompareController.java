@@ -37,7 +37,7 @@ public class CompareController {
     private static final Logger logger = LoggerFactory.getLogger(CompareController.class);
 
     @RequestMapping(value = "/statistic/compare", method = RequestMethod.GET)
-    public ModelAndView getViewCompare(){
+    public ModelAndView getViewCompare() {
         logger.debug(LogUtil.getMethodName());
         ModelAndView modelAndView = new ModelAndView("/statistic/compare");
 
@@ -45,8 +45,9 @@ public class CompareController {
     }
 
     @RequestMapping(value = "/statistic/compare/getCompareData", method = RequestMethod.GET)
-    public @ResponseBody
-    CompareEntity getCompareData(@RequestParam(value = "query") String query){
+    public
+    @ResponseBody
+    CompareEntity getCompareData(@RequestParam(value = "query") String query) {
         logger.debug(LogUtil.getMethodName());
         logger.debug(String.format("query for matching: %s", query));
 
@@ -63,7 +64,11 @@ public class CompareController {
 
         Collections.sort(amounts, new Comparator<Amount>() {
             public int compare(Amount o1, Amount o2) {
-                return o1.getPrice().compareTo(o2.getPrice());
+                int i = o1.getPrice().compareTo(o2.getPrice());
+                if (i == 0)
+                    return o2.getDate().compareTo(o1.getDate());
+
+                return i;
             }
         });
 
@@ -97,6 +102,7 @@ public class CompareController {
                     new BigDecimal("0"),
                     null
             );
+            entity.setLastSum(new BigDecimal("0"));
         }
 
         return entity;

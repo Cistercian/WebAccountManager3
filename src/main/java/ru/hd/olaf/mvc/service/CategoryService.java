@@ -27,8 +27,9 @@ public interface CategoryService {
 
     List<Category> getByParent(Category parent, User currentUser);
 
-    List<BarEntity> getBarEntityOfSubCategories(User user, Category parent, LocalDate after, LocalDate before);
+    List<BarEntity> getBarEntityOfSubCategories(User user, Category parent, LocalDate after, LocalDate before, boolean isGetAnalyticData);
 
+    List<BarEntity> getAnalyticData(User user, Category parent, LocalDate after, LocalDate before);
 
     Category save(Category category) throws CrudException;
 

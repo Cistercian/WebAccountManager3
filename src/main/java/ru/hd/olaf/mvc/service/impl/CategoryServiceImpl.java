@@ -5,27 +5,26 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.stereotype.Service;
-import ru.hd.olaf.entities.Amount;
 import ru.hd.olaf.entities.Category;
 import ru.hd.olaf.entities.User;
 import ru.hd.olaf.exception.AuthException;
 import ru.hd.olaf.exception.CrudException;
 import ru.hd.olaf.mvc.repository.CategoryRepository;
-import ru.hd.olaf.mvc.service.AmountService;
 import ru.hd.olaf.mvc.service.CategoryService;
 import ru.hd.olaf.mvc.service.SecurityService;
 import ru.hd.olaf.mvc.service.UtilService;
 import ru.hd.olaf.util.DateUtil;
 import ru.hd.olaf.util.LogUtil;
-import ru.hd.olaf.util.json.ResponseType;
 import ru.hd.olaf.util.json.BarEntity;
 import ru.hd.olaf.util.json.JsonResponse;
+import ru.hd.olaf.util.json.ResponseType;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Olaf on 13.04.2017.
@@ -37,8 +36,6 @@ public class CategoryServiceImpl implements CategoryService {
     private CategoryRepository categoryRepository;
     @Autowired
     private SecurityService securityService;
-    @Autowired
-    private AmountService amountService;
     @Autowired
     private UtilService utilService;
 
@@ -68,7 +65,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     /**
      * Функция возвращает список категорий, у которых установлена переданная родительская
-     * @param parent Родительская категория
+     *
+     * @param parent      Родительская категория
      * @param currentUser рассматриваемый пользователь
      * @return List
      */
@@ -87,23 +85,32 @@ public class CategoryServiceImpl implements CategoryService {
      * @param before
      * @return
      */
-    public List<BarEntity> getBarEntityOfSubCategories(User user, Category parent, LocalDate after, LocalDate before) {
+    //TODO: рекурсия точно ли верно работает?
+    public List<BarEntity> getBarEntityOfSubCategories(User user,
+                                                       Category parent,
+                                                       LocalDate after,
+                                                       LocalDate before,
+                                                       boolean isGetAnalyticData) {
         logger.debug(LogUtil.getMethodName());
         logger.debug(String.format("Dates: after: %s, before %s", after, before));
 
         List<BarEntity> bars = new ArrayList<BarEntity>();
 
-        if (parent != null)
-            bars = categoryRepository.getBarEntityByUserIdAndSubCategory(user,
+        if (parent != null) {
+            bars = categoryRepository.getBarEntityByUserIdAndSubCategory(
+                    user,
                     parent,
                     DateUtil.getDate(after),
                     DateUtil.getDate(before));
-        else {
+        } else {
             Map<Integer, BarEntity> map = new HashMap<Integer, BarEntity>();
 
-            List<BarEntity> child = categoryRepository.getBarEntityOfParentsByUserId(user,
+            List<BarEntity> child;
+
+            child = categoryRepository.getBarEntityOfParentsByUserId(user,
                     DateUtil.getDate(after),
                     DateUtil.getDate(before));
+
 
             logger.debug("Промежуточный список категорий:");
             LogUtil.logList(logger, child);
@@ -130,7 +137,7 @@ public class CategoryServiceImpl implements CategoryService {
     private BarEntity getParentBar(BarEntity entity) {
         logger.debug(LogUtil.getMethodName());
 
-        if ("child".equals(entity.getType())){
+        if ("child".equals(entity.getType())) {
             //TODO: refactoring!
             try {
                 Category parent = getOne(entity.getId()).getParentId();
@@ -261,5 +268,85 @@ public class CategoryServiceImpl implements CategoryService {
         }
     }
 
+    public List<BarEntity> getAnalyticData(User user, Category parent, LocalDate after, LocalDate before) {
+        logger.debug(LogUtil.getMethodName());
 
+        List<BarEntity> barEntities = getAnalyticEntities(
+                user,
+                parent,
+                after,
+                before,
+                false
+        );
+
+        Map<String, BarEntity> map = new HashMap<String, BarEntity>();
+
+        for (BarEntity entity : barEntities){
+            String id = entity.getType() + entity.getId();
+            if (map.containsKey(id)){
+                BarEntity buffer = map.get(id);
+                buffer.setSum(buffer.getSum().add(entity.getSum()));
+
+                map.put(id, buffer);
+            } else {
+                map.put(id, entity);
+            }
+        }
+
+        return Lists.newArrayList(map.values());
+    }
+
+    private List<BarEntity> getAnalyticEntities(User user,
+                                                Category category,
+                                                LocalDate after,
+                                                LocalDate before,
+                                                boolean isChildren){
+        logger.debug(LogUtil.getMethodName());
+        if (category != null)
+            logger.debug(String.format("Обрабатываем категорию %s", category.getName()));
+        else
+            logger.debug("Обрабатываем родительские категории");
+
+        List<BarEntity> barEntities = new ArrayList<BarEntity>();
+
+        if (category == null)
+            barEntities.addAll(categoryRepository.getCategoriesForAnalytic(
+                    user,
+                    category,
+                    DateUtil.getDate(after),
+                    DateUtil.getDate(before)
+            ));
+        else
+            barEntities.addAll(categoryRepository.getCategoriesForAnalytic(
+                    user,
+                    category,
+                    DateUtil.getDate(after),
+                    DateUtil.getDate(before)
+            ));
+
+        if (!isChildren)
+            barEntities.addAll(categoryRepository.getProductsForAnalytic(
+                    user,
+                    category,
+                    DateUtil.getDate(after),
+                    DateUtil.getDate(before)
+            ));
+
+        logger.debug("Список BarEntity:");
+        LogUtil.logList(logger, barEntities);
+
+        for (Category child : categoryRepository.findByParentIdAndUserId(category, user)) {
+            logger.debug(String.format("Обрабатываем дочернюю категорию %s", child.getName()));
+
+            barEntities.addAll(getAnalyticEntities(
+                    user,
+                    child,
+                    after,
+                    before,
+                    true
+            ));
+        }
+
+        return barEntities;
+    }
 }

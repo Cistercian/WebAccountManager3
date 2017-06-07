@@ -1,6 +1,5 @@
 package ru.hd.olaf.mvc.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import ru.hd.olaf.entities.Amount;
@@ -8,8 +7,6 @@ import ru.hd.olaf.entities.Category;
 import ru.hd.olaf.entities.Product;
 import ru.hd.olaf.entities.User;
 import ru.hd.olaf.util.json.BarEntity;
-import ru.hd.olaf.util.json.CalendarEntity;
-import ru.hd.olaf.util.json.CompareEntity;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -73,4 +70,5 @@ public interface AmountRepository extends CrudRepository<Amount, Integer> {
             "UPPER(p.name) LIKE ?2 OR " +
             "UPPER(c.name) LIKE ?2) ")
     BigDecimal getAvgPriceByUserIdAndMatchingNameAndDateBetween(User userId, String query, Date after, Date before);
+
 }
