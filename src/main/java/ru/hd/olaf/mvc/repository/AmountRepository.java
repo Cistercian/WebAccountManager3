@@ -64,4 +64,13 @@ public interface AmountRepository extends CrudRepository<Amount, Integer> {
             "UPPER(p.name) LIKE ?2 OR " +
             "UPPER(c.name) LIKE ?2) ")
     List<Amount> getByUserIdAndMatchingNameAndDateBetween(User userId, String query, Date after, Date before);
+
+    @Query("Select AVG(a.price) from Amount a " +
+            "LEFT JOIN a.productId p " +
+            "LEFT JOIN a.categoryId c " +
+            "WHERE a.userId = ?1 and a.date between ?3 and ?4 and " +
+            "(UPPER(a.name) LIKE ?2 OR " +
+            "UPPER(p.name) LIKE ?2 OR " +
+            "UPPER(c.name) LIKE ?2) ")
+    BigDecimal getAvgPriceByUserIdAndMatchingNameAndDateBetween(User userId, String query, Date after, Date before);
 }

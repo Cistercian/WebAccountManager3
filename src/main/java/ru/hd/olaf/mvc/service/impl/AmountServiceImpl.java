@@ -144,6 +144,18 @@ public class AmountServiceImpl implements AmountService {
         return amountRepository.getByUserIdAndMatchingNameAndDateBetween(user, "%" + query.toUpperCase() + "%", begin, end);
     }
 
+    public BigDecimal getCompareAvgPrice(User user, String query, LocalDate after, LocalDate before) {
+        logger.debug(LogUtil.getMethodName() + String.format(". Интервал: %s - %s", after, before));
+
+        Date begin = DateUtil.getDate(after);
+        Date end = DateUtil.getDate(before);
+
+        BigDecimal result = amountRepository.getAvgPriceByUserIdAndMatchingNameAndDateBetween(user, "%" + query.toUpperCase() + "%", begin, end);
+        result = result.setScale(2, BigDecimal.ROUND_HALF_UP);
+
+        return result;
+    }
+
     /**
      * Функция возвращает список BarEntity, соответствующий набору amount по заданной категории при совпадении amounts.date
      * в заданный период с группировкой по amounts.product

@@ -93,6 +93,10 @@
                 }
             });
         });
+        $('#modal').on('hide.bs.modal', function() {
+            $(document).unbind("keyup").keyup(function(e){
+            });
+        });
 
         getAlerts();
 

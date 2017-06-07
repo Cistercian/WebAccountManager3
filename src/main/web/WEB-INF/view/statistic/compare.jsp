@@ -42,6 +42,14 @@
     <spring:url value="/resources/js/web.account.functions.js" var="js"/>
     <script src="${js}"></script>
 
+    <!--moment functions-->
+    <spring:url value="/resources/js/fullcalendar/moment.min.js" var="js"/>
+    <script src="${js}"></script>
+    <spring:url value="/resources/js/fullcalendar/fullcalendar.js" var="js"/>
+    <script src="${js}"></script>
+    <spring:url value="/resources/js/fullcalendar/locale-all.js" var="js"/>
+    <script src="${js}"></script>
+
 </head>
 <body>
 
@@ -56,6 +64,12 @@
 
         getAlerts();
 
+        $('#name').keypress(function(event){
+            var keycode = (event.keyCode ? event.keyCode : event.which);
+            if(keycode == '13'){
+                getAmounts();
+            }
+        });
     });
     function getAmounts(){
         $.ajax({
@@ -70,16 +84,24 @@
 
                 $('#formGroup').removeClass('has-error');
                 $('#formGroupError').text('');
-                //$('#amounts').DataTable().fnDestroy();
+                $('#bodyTable').empty();
             },
             success: function (data) {
                 hideLoader();
 
-                $('#minSum').text(data.minSum);
-                $('#minDate').text(data.minDate);
-                $('#maxSum').text(data.maxSum);
-                $('#maxDate').text(data.maxDate);
-                $('#avgSum').text(data.avgSum);
+                $('#minSum').text(numberToString(data.minSum));
+                if (data.minDate != null)
+                    $('#minDate').text(moment(data.minDate).locale('ru').format('DD MMMM YYYY'));
+
+                $('#maxSum').text(numberToString(data.maxSum));
+                if (data.maxDate != null)
+                    $('#maxDate').text(moment(data.maxDate).locale('ru').format('DD MMMM YYYY'));
+
+                $('#lastSum').text(numberToString(data.lastSum));
+                if (data.lastDate != null)
+                    $('#lastDate').text(moment(data.lastDate).locale('ru').format('DD MMMM YYYY'));
+
+                $('#avgSum').text(numberToString(data.avgSum));
 
                 var amounts = data.amounts;
                 var tableData = new Array();
@@ -87,12 +109,19 @@
                     var entity = new Array();
 
                     entity[0] = amount.id;
-                    entity[1] = amount.name;
-                    entity[2] = amount.price;
-                    entity[3] = amount.date;
+                    entity[1] = amount.date;
+                    entity[2] = amount.name;
+                    entity[3] = numberToString(amount.price);
+
 
                     tableData.push(entity);
                 });
+
+                $('#bodyTable').append(
+                        "<table id='amounts' class='table table-striped table-bordered table-text wam-margin-top-2' cellspacing='0' " +
+                        "width='100%'>" +
+                        "</table>"
+                );
 
                 var table = $('#amounts').DataTable({
                     responsive: true,
@@ -121,14 +150,21 @@
                     },
                     data: tableData,
                     columns: [
-                        { title: "id" },
+                        { title: "id",  "bVisible": false },
+                        { title: "Дата" },
                         { title: "Наименование" },
-                        { title: "Цена" },
-                        { title: "Дата" }
+                        { title: "Цена" }
                     ],
                     "sort": true,
                     "order": [[1, "DESC"]],
                 });
+
+                $('#amounts tbody').on('click', 'tr', function () {
+                    location.href='/amount?id=' + table.row(this).data()[0];
+                });
+                $('#amounts tbody tr').addClass('wam-cursor');
+                $('#amounts tbody tr').addClass('wam-font-size');
+
 
                 $('#amounts_filter').empty();
                 $('#amounts_filter').append(
@@ -147,13 +183,15 @@
                 hideLoader();
 
                 $('#formGroup').addClass('has-error');
-                $('#formGroupError').text('Возникла ошибка. Попробуйте повторить поиск позднее.');
+                $('#formGroupError').text('Нет данных. Попробуйте изменить строку для поиска.');
 
                 $('#minSum').text('0');
                 $('#minDate').text('');
                 $('#maxSum').text('0');
                 $('#maxDate').text('');
                 $('#avgSum').text('0');
+                $('#lastDate').text('');
+                $('#lastSum').text('0');
             }
         });
     }
@@ -172,10 +210,10 @@
                 </div>
                 <div class="wam-not-padding panel-body">
                     <div class="col-xs-12 col-md-12">
-						<span class="wam-text text-justify">
-							Здесь Вы можете получить статистику по ранее заведенным оборотам. Это удобно использовать при необходимости поиска оптимальной цены, например, стоя в магазине или выбирая заведение для посещения -
-								задайте примерное наименование искомого оборота и Вы увидете статистику по ранее заведенным с подобным наименованием.
-						</span>
+                        <p class="text-justify">
+                            Здесь Вы можете получить статистику по ранее заведенным оборотам. Это удобно использовать при необходимости поиска оптимальной цены, например, стоя в магазине или выбирая заведение для посещения -
+                            задайте примерное наименование искомого оборота и Вы увидете статистику по ранее заведенным с подобным наименованием.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -183,12 +221,12 @@
                 <div class="wam-not-padding panel-body">
                     <div class="row">
                         <div class="col-xs-12 col-md-12">
-                            <h4 class=''><strong>Укажите искомую строку</strong></h4>
+                            <h3 class=''>Укажите искомую строку</h3>
                         </div>
                         <div class="col-xs-12 col-md-12">
                             <div id="formGroup" class="form-group ">
-                                <input type="text" id="name" class="form-control input-lg wam-font-size" placeholder="Строка для поиска"/>
-                                <span id="formGroupError" class="wam-text text-justify"></span>
+                                <input type="text" id="name" class="form-control input-lg wam-font-size-2" placeholder="Строка для поиска"/>
+                                <span id="formGroupError" class="wam-font-size-2 text-justify"></span>
                             </div>
                         </div>
                         <div class="col-xs-12 col-md-6 col-md-offset-6">
@@ -198,40 +236,50 @@
                             </button>
                         </div>
                         <div class="col-xs-12 col-md-12">
-                            <h4 class='wam-margin-top-2'><strong>Статистика:</strong></h4>
+                            <h3 class='wam-margin-top-2'>Статистика:</h3>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-xs-12 col-md-3">
-                            <span class="wam-text text-justify">Средняя цена</span>
+                            <h4 class="wam-font-size-2 text-justify ">Средняя цена</h4>
+                        </div>
+                        <div class="col-xs-12 col-md-3">
+                            <h4 class="wam-font-size-2 text-justify wam-not-padding-xs"><strong id="avgSum">0</strong><span class="wam-font-size-2"> руб.</span></h4>
                         </div>
                         <div class="col-xs-12 col-md-2">
-                            <span id="avgSum" class="wam-text text-justify"></span><span class="wam-text"> руб.</span>
-                        </div>
-                        <div class="col-xs-12 col-md-2">
-
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-xs-12 col-md-3">
-                            <span class="wam-text text-justify">Минимальная цена</span>
+                            <h4 class="wam-font-size-2 text-justify ">Минимальная цена</h4>
                         </div>
-                        <div class="col-xs-12 col-md-2">
-                            <span id="minSum" class="wam-text text-justify"></span><span class="wam-text"> руб.</span>
+                        <div class="col-xs-6 col-md-3">
+                            <h4 class="wam-font-size-2 text-justify wam-not-padding-xs"><strong id="minSum" >0</strong><span class="wam-font-size-2"> руб.</span></h4>
                         </div>
-                        <div class="col-xs-12 col-md-2">
-                            <span id="minDate" class="wam-text text-justify"></span>
+                        <div class="col-xs-6 col-md-3">
+                            <h4 id="minDate" class="wam-font-size-2 text-justify wam-not-padding-xs"></h4>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-xs-12 col-md-3">
-                            <span class="wam-text text-justify">Максимальная цена</span>
+                            <h4 class="wam-font-size-2 text-justify">Максимальная цена</h4>
                         </div>
-                        <div class="col-xs-12 col-md-2">
-                            <span id="maxSum" class="wam-text text-justify"></span><span class="wam-text"> руб.</span>
+                        <div class="col-xs-6 col-md-3">
+                            <h4 class="wam-font-size-2 text-justify wam-not-padding-xs"><strong id="maxSum" >0</strong><span class="wam-font-size-2"> руб.</span></h4>
                         </div>
-                        <div class="col-xs-12 col-md-2">
-                            <span id="maxDate" class="wam-text text-justify"></span>
+                        <div class="col-xs-6 col-md-3">
+                            <h4 id="maxDate" class="wam-font-size-2 text-justify wam-not-padding-xs"></h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-md-3">
+                            <h4 class="wam-font-size-2 text-justify">Последняя цена</h4>
+                        </div>
+                        <div class="col-xs-6 col-md-3">
+                            <h4 class="wam-font-size-2 text-justify wam-not-padding-xs"><strong id="lastSum" >0</strong><span class="wam-font-size-2"> руб.</span></h4>
+                        </div>
+                        <div class="col-xs-6 col-md-3">
+                            <h4 id="lastDate" class="wam-font-size-2 text-justify wam-not-padding-xs"></h4>
                         </div>
                     </div>
                 </div>
@@ -241,10 +289,7 @@
                 <div class="panel-heading ">
                     <h4 class="wam-margin-bottom-0 wam-margin-top-0">Найденные обороты</h4>
                 </div>
-                <div class="panel-body">
-                    <table id="amounts" class="table table-striped table-bordered table-text  wam-font-size wam-margin-top-2" cellspacing="0"
-                           width="100%">
-                    </table>
+                <div id="bodyTable" class="panel-body">
                 </div>
             </div>
         </div>

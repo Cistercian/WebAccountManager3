@@ -1,6 +1,5 @@
 package ru.hd.olaf.mvc.controller;
 
-import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,6 @@ import ru.hd.olaf.util.json.CompareEntity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -57,9 +55,11 @@ public class CompareController {
         LocalDate before = LocalDate.now();
 
         List<Amount> amounts = amountService.getByMatchingName(currentUser, query, after, before);
+        BigDecimal avgPrice = amountService.getCompareAvgPrice(currentUser, query, after, before);
 
         logger.debug("Список по совпадению в наименованиях:");
         LogUtil.logList(logger, amounts);
+        logger.debug(String.format("Средняя цена: %s", avgPrice.toString()));
 
         Collections.sort(amounts, new Comparator<Amount>() {
             public int compare(Amount o1, Amount o2) {
@@ -74,9 +74,20 @@ public class CompareController {
                     amounts.get(0).getDate(),
                     amounts.get(amounts.size() - 1).getPrice(),
                     amounts.get(amounts.size() - 1).getDate(),
-                    new BigDecimal("0"),
+                    avgPrice,
                     amounts
             );
+
+            //узнаем последюю цену
+            Collections.sort(amounts, new Comparator<Amount>() {
+                public int compare(Amount o1, Amount o2) {
+                    return o2.getDate().compareTo(o1.getDate());
+                }
+            });
+
+            entity.setLastSum(amounts.get(0).getPrice());
+            entity.setLastDate(amounts.get(0).getDate());
+
         } else {
             entity = new CompareEntity(
                     new BigDecimal("0"),
