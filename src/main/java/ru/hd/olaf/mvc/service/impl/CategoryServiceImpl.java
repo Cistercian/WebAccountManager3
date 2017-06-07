@@ -335,16 +335,34 @@ public class CategoryServiceImpl implements CategoryService {
         logger.debug("Список BarEntity:");
         LogUtil.logList(logger, barEntities);
 
-        for (Category child : categoryRepository.findByParentIdAndUserId(category, user)) {
-            logger.debug(String.format("Обрабатываем дочернюю категорию %s", child.getName()));
+        if (category != null) {
+            for (Category child : categoryRepository.findByParentIdAndUserId(category, user)) {
+                logger.debug(String.format("Обрабатываем дочернюю категорию %s", child.getName()));
 
-            barEntities.addAll(getAnalyticEntities(
-                    user,
-                    child,
-                    after,
-                    before,
-                    true
-            ));
+                barEntities.addAll(getAnalyticEntities(
+                        user,
+                        child,
+                        after,
+                        before,
+                        true
+                ));
+            }
+        } else {
+            for (BarEntity entity : barEntities) {
+                if (entity.getType().startsWith("Category")) {
+                    for (Category child : categoryRepository.findByParentIdAndUserId(categoryRepository.findOne(entity.getId()), user)) {
+                        logger.debug(String.format("Обрабатываем дочернии категорию %s", child.getName()));
+
+                        barEntities.addAll(getAnalyticEntities(
+                                user,
+                                child,
+                                after,
+                                before,
+                                true
+                        ));
+                    }
+                }
+            }
         }
 
         return barEntities;

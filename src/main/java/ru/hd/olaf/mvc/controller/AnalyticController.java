@@ -16,6 +16,7 @@ import ru.hd.olaf.util.LogUtil;
 import ru.hd.olaf.util.json.BarEntity;
 
 import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
 /**
@@ -40,7 +41,7 @@ public class AnalyticController {
         //дата начала текущего месяца
         LocalDate before = DateUtil.getStartOfMonth().minusDays(1);
         //дата начала периода "за все время"
-        LocalDate after = DateUtil.getStartOfEra();
+        LocalDate after = LocalDate.now().minusMonths(1).with(TemporalAdjusters.firstDayOfMonth());
 
         List<BarEntity> analyticData = categoryService.getAnalyticData(
                 currentUser,
