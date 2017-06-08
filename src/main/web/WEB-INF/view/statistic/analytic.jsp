@@ -14,6 +14,8 @@
     <link rel="stylesheet" href="${css}">
     <spring:url value="/resources/css/animate.css" var="css"/>
     <link rel="stylesheet" href="${css}">
+    <spring:url value="/resources/css/datepicker/bootstrap-datetimepicker.min.css" var="css"/>
+    <link rel="stylesheet" href="${css}">
     <spring:url value="/resources/css/style.css" var="css"/>
     <link rel="stylesheet" href="${css}">
     <link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet">
@@ -36,10 +38,23 @@
     <spring:url value="/resources/js/waitingDialog.js" var="js"/>
     <script src="${js}"></script>
 
+    <!--Datepicker-->
+    <spring:url value="/resources/js/datepicker/bootstrap-datepicker.min.js" var="js"/>
+    <script src="${js}"></script>
+    <spring:url value="/resources/js/datepicker/bootstrap-datepicker.ru.min.js" var="js"/>
+    <script src="${js}"></script>
+
+    <!--moment functions-->
+    <spring:url value="/resources/js/fullcalendar/moment.min.js" var="js"/>
+    <script src="${js}"></script>
+    <spring:url value="/resources/js/fullcalendar/fullcalendar.js" var="js"/>
+    <script src="${js}"></script>
+    <spring:url value="/resources/js/fullcalendar/locale-all.js" var="js"/>
+    <script src="${js}"></script>
+
     <!--custon functions-->
     <spring:url value="/resources/js/web.account.functions.js" var="js"/>
     <script src="${js}"></script>
-
 </head>
 <body>
 
@@ -60,6 +75,12 @@
         formatTooLongText();
 
         getAlerts();
+
+        $('#date').datepicker({
+            language: 'ru',
+            autoclose: true,
+            todayHighlight: true
+        });
     });
 
     function displayMessage(type, message, Url) {
@@ -83,6 +104,35 @@
         );
         $('#modal').modal('show');
     }
+
+    function refreshData(){
+        var after = $('#date').val();
+        after = after.replace(/\./g, '-');
+
+        var before = $('#periodWeek').prop('checked') ?
+                moment(getMonday(new Date())).format('YYYY-MM-DD') :
+                moment(new Date().setDate(1)).format('YYYY-MM-DD');
+
+        $.ajax({
+            url: '/statistic/analytic/getData',
+            type: "GET",
+            data: {
+                'after' : after,
+                'before' : before,
+                'averagingPeriod' : $('#periodWeek').prop('checked') ? 0 : 1
+            },
+            dataType: 'json',
+            beforeSend: function(){
+                displayLoader();
+            },
+            success: function (data) {
+                hideLoader();
+
+                refreshBars(data, after, before);
+            }
+        });
+    }
+
 </script>
 
 <div class="content container-fluid wam-radius wam-min-height-0 wow fadeInDown " data-wow-duration="1000ms" data-wow-delay="300ms">
@@ -98,12 +148,54 @@
                 </div>
                 <div class="wam-not-padding panel-body">
                     <div class="col-xs-12 col-md-12">
-							<span class="wam-text text-justify">
-								Здесь Вы можете ознакомиться со статистическими данными, основанными на среднемесячных оборотах по данным предыдущих
-									месяцев с отображением сумм оборотов за этот месяц. Предполагается, что эти данные можно будет использовать при
-									планировании результата экономии - "если обычно я трачу на кафе 10 000 в месяц за 4 посещения, то, снизив
-									затраты на одно посещение до 1 500, в месяц с смогу сэкономить 4 000."
-							</span>
+						<span class="wam-text text-justify">
+							Здесь Вы можете ознакомиться со статистическими данными, основанными на среднемесячных оборотах по данным предыдущих
+								месяцев с отображением сумм оборотов за этот месяц. Предполагается, что эти данные можно будет использовать при
+								планировании результата экономии - "если обычно я трачу на кафе 10 000 в месяц за 4 посещения, то, снизив
+								затраты на одно посещение до 1 500, в месяц я смогу сэкономить 4 000."
+						</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1">
+                <div class="panel-heading ">
+                    <h4 class="wam-margin-bottom-0 wam-margin-top-0">Настройка рассчета данных</h4>
+                </div>
+                <div class="wam-not-padding panel-body">
+                    <div class="row">
+                        <div class="col-xs-12 col-md-12">
+                            <div class="col-xs-12 col-md-6">
+                                <span class="text-justify">Дата начала периода</span>
+                            </div>
+                            <div class="col-xs-12 col-md-6">
+                                <input id="date" type="text" path="date" class="form-control wam-text-size-1"
+                                       readonly="true" style="cursor: pointer;"/>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-12">
+                            <div class="col-xs-12 col-md-6">
+                                <span class="text-justify">Способ расчета</span>
+                            </div>
+                            <div class="col-xs-12 col-md-6">
+                                <div class="radio">
+                                    <label>
+                                        <input id="periodWeek" type="radio" name="averagingPeriod">Недельный
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="averagingPeriod" checked>Месячный
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6 col-md-offset-6">
+                            <button type="submit" class="btn btn-primary btn-lg btn-block wam-btn-1"
+                                    onclick="refreshData();">
+                                Обновить
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

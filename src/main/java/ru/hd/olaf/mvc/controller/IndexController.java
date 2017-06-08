@@ -9,10 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import ru.hd.olaf.entities.Category;
 import ru.hd.olaf.entities.User;
-import ru.hd.olaf.mvc.service.AmountService;
-import ru.hd.olaf.mvc.service.CategoryService;
-import ru.hd.olaf.mvc.service.MailService;
-import ru.hd.olaf.mvc.service.SecurityService;
+import ru.hd.olaf.mvc.service.*;
 import ru.hd.olaf.util.DateUtil;
 import ru.hd.olaf.util.LogUtil;
 import ru.hd.olaf.util.json.BarEntity;
@@ -38,6 +35,8 @@ public class IndexController {
     private SecurityService securityService;
     @Autowired
     private MailService mailService;
+    @Autowired
+    private UtilService utilService;
 
     private static final Logger logger = LoggerFactory.getLogger(IndexController.class);
 
@@ -146,15 +145,7 @@ public class IndexController {
                 false);
 
         //сортировка по типу категории (доход/расход) и по сумме
-        Collections.sort(parentsCategories, new Comparator<BarEntity>() {
-            public int compare(BarEntity o1, BarEntity o2) {
-                int result = o1.getType().compareTo(o2.getType());
-                if (result == 0)
-                    result = o2.getSum().abs().compareTo(o1.getSum().abs());
-
-                return result;
-            }
-        });
+        parentsCategories = utilService.sortListByTypeAndSum(parentsCategories);
 
         logger.debug("Список категорий:");
         LogUtil.logList(logger, parentsCategories);
@@ -169,7 +160,8 @@ public class IndexController {
     List<BarEntity> getCategoryContentByCategoryId(@RequestParam(value = "categoryId") Integer categoryId,
                                                    @RequestParam(value = "after") String beginDate,
                                                    @RequestParam(value = "before") String endDate,
-                                                   @RequestParam(value = "isGetAnalyticData") boolean isGetAnalyticData) {
+                                                   @RequestParam(value = "isGetAnalyticData") boolean isGetAnalyticData,
+                                                   @RequestParam(value = "averagingPeriod", required = false) Byte averagingPeriod) {
         logger.debug(LogUtil.getMethodName());
         logger.debug(String.format("Выводятся ли среднемесячные данные: %s", isGetAnalyticData));
 
@@ -188,27 +180,23 @@ public class IndexController {
         LocalDate before = DateUtil.getParsedDate(endDate);
         User currentUser = securityService.findLoggedUser();
 
-        if (!isGetAnalyticData) {
-            //данные по дочерним категориям
-            categoryContent.addAll(categoryService.getBarEntityOfSubCategories(currentUser,
-                    category,
-                    after,
-                    before,
-                    isGetAnalyticData));
-            //данные по товарным группам(amounts с группировкой по product)
-            categoryContent.addAll(amountService.getBarEntitiesByCategory(currentUser,
-                    category,
-                    after,
-                    before,
-                    isGetAnalyticData));
-        } else {
-            categoryContent.addAll(categoryService.getAnalyticData(
-                    currentUser,
-                    category,
-                    after,
-                    before
-            ));
+        //данные по дочерним категориям
+        categoryContent.addAll(categoryService.getBarEntityOfSubCategories(currentUser,
+                category,
+                after,
+                before,
+                isGetAnalyticData));
+        //данные по товарным группам(amounts с группировкой по product)
+        categoryContent.addAll(amountService.getBarEntitiesByCategory(currentUser,
+                category,
+                after,
+                before,
+                isGetAnalyticData));
+
+        if (isGetAnalyticData) {
+            categoryContent = utilService.calcAvgSum(categoryContent, after, before, averagingPeriod);
         }
+
         //сортировка
         Collections.sort(categoryContent, new Comparator<BarEntity>() {
             public int compare(BarEntity o1, BarEntity o2) {

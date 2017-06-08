@@ -9,8 +9,16 @@ import ru.hd.olaf.exception.AuthException;
 import ru.hd.olaf.exception.CrudException;
 import ru.hd.olaf.mvc.service.*;
 import ru.hd.olaf.util.LogUtil;
+import ru.hd.olaf.util.json.BarEntity;
 import ru.hd.olaf.util.json.JsonResponse;
 import ru.hd.olaf.util.json.ResponseType;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * Created by Olaf on 08.05.2017.
@@ -207,5 +215,57 @@ public class UtilServiceImpl implements UtilService{
         logger.debug(response.getMessage());
 
         return response;
+    }
+
+    /**
+     * Функция возвращает переданный список с расчитанными средними значения суммы.
+     * @param barEntities список BarEntity
+     * @param after Дата начала периода
+     * @param before Дата конца периода
+     * @return Список
+     */
+    public List<BarEntity> calcAvgSum(List<BarEntity> barEntities, LocalDate after, LocalDate before, byte averagingPeriod) {
+        logger.debug(LogUtil.getMethodName());
+
+        ChronoUnit chronoUnit;
+        switch (averagingPeriod){
+            case 0:
+                chronoUnit = ChronoUnit.WEEKS;
+                break;
+            case 1:
+            default:
+                chronoUnit = ChronoUnit.MONTHS;
+                break;
+        }
+
+        long distance = after.until(before, chronoUnit);
+        distance = distance == 0 ? 1 : distance;
+        logger.debug(String.format("Период усреднения: %s, кол-во периодов: %s", chronoUnit.toString(), distance));
+
+        for (BarEntity entity : barEntities){
+            entity.setSum(entity.getSum().abs().divide(new BigDecimal(distance), 2, BigDecimal.ROUND_HALF_UP));
+        }
+
+        return barEntities;
+    }
+
+    /**
+     * Функция сортирует список по полю type и дале по полю Sum
+     * @param barEntities Список
+     * @return Список
+     */
+    public List<BarEntity> sortListByTypeAndSum(List<BarEntity> barEntities) {
+        logger.debug(LogUtil.getMethodName());
+        Collections.sort(barEntities, new Comparator<BarEntity>() {
+            public int compare(BarEntity o1, BarEntity o2) {
+                int result = o1.getType().compareTo(o2.getType());
+                if (result == 0)
+                    result = o2.getSum().abs().compareTo(o1.getSum().abs());
+
+                return result;
+            }
+        });
+
+        return barEntities;
     }
 }

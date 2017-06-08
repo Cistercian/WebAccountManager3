@@ -21,10 +21,7 @@ import ru.hd.olaf.util.json.JsonResponse;
 import ru.hd.olaf.util.json.ResponseType;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Olaf on 13.04.2017.
@@ -85,7 +82,6 @@ public class CategoryServiceImpl implements CategoryService {
      * @param before
      * @return
      */
-    //TODO: рекурсия точно ли верно работает?
     public List<BarEntity> getBarEntityOfSubCategories(User user,
                                                        Category parent,
                                                        LocalDate after,
@@ -268,103 +264,36 @@ public class CategoryServiceImpl implements CategoryService {
         }
     }
 
-    public List<BarEntity> getAnalyticData(User user, Category parent, LocalDate after, LocalDate before) {
+    /**
+     * Функция получения аналитических данных (средние расходы и доходы)
+     * @param user Текущий пользователь
+     * @param category Текущая рассматриваемая категория
+     * @param after Дата начала периода
+     * @param before Дата окночания периода
+     * @return Список баров
+     */
+    public List<BarEntity> getAnalyticData(User user,
+                                           Category category,
+                                           LocalDate after,
+                                           LocalDate before,
+                                           byte averagingPeriod) {
         logger.debug(LogUtil.getMethodName());
 
-        List<BarEntity> barEntities = getAnalyticEntities(
-                user,
-                parent,
+        List<BarEntity> parentsCategories = getBarEntityOfSubCategories(user,
+                category,
                 after,
                 before,
-                false
-        );
+                false);
 
-        Map<String, BarEntity> map = new HashMap<String, BarEntity>();
 
-        for (BarEntity entity : barEntities){
-            String id = entity.getType() + entity.getId();
-            if (map.containsKey(id)){
-                BarEntity buffer = map.get(id);
-                buffer.setSum(buffer.getSum().add(entity.getSum()));
+        logger.debug("Список категорий:");
+        LogUtil.logList(logger, parentsCategories);
 
-                map.put(id, buffer);
-            } else {
-                map.put(id, entity);
-            }
-        }
+        parentsCategories = utilService.calcAvgSum(parentsCategories, after, before, averagingPeriod);
 
-        return Lists.newArrayList(map.values());
-    }
+        //сортировка по типу категории (доход/расход) и по сумме
+        parentsCategories = utilService.sortListByTypeAndSum(parentsCategories);
 
-    private List<BarEntity> getAnalyticEntities(User user,
-                                                Category category,
-                                                LocalDate after,
-                                                LocalDate before,
-                                                boolean isChildren){
-        logger.debug(LogUtil.getMethodName());
-        if (category != null)
-            logger.debug(String.format("Обрабатываем категорию %s", category.getName()));
-        else
-            logger.debug("Обрабатываем родительские категории");
-
-        List<BarEntity> barEntities = new ArrayList<BarEntity>();
-
-        if (category == null)
-            barEntities.addAll(categoryRepository.getCategoriesForAnalytic(
-                    user,
-                    category,
-                    DateUtil.getDate(after),
-                    DateUtil.getDate(before)
-            ));
-        else
-            barEntities.addAll(categoryRepository.getCategoriesForAnalytic(
-                    user,
-                    category,
-                    DateUtil.getDate(after),
-                    DateUtil.getDate(before)
-            ));
-
-        if (!isChildren)
-            barEntities.addAll(categoryRepository.getProductsForAnalytic(
-                    user,
-                    category,
-                    DateUtil.getDate(after),
-                    DateUtil.getDate(before)
-            ));
-
-        logger.debug("Список BarEntity:");
-        LogUtil.logList(logger, barEntities);
-
-        if (category != null) {
-            for (Category child : categoryRepository.findByParentIdAndUserId(category, user)) {
-                logger.debug(String.format("Обрабатываем дочернюю категорию %s", child.getName()));
-
-                barEntities.addAll(getAnalyticEntities(
-                        user,
-                        child,
-                        after,
-                        before,
-                        true
-                ));
-            }
-        } else {
-            for (BarEntity entity : barEntities) {
-                if (entity.getType().startsWith("Category")) {
-                    for (Category child : categoryRepository.findByParentIdAndUserId(categoryRepository.findOne(entity.getId()), user)) {
-                        logger.debug(String.format("Обрабатываем дочернии категорию %s", child.getName()));
-
-                        barEntities.addAll(getAnalyticEntities(
-                                user,
-                                child,
-                                after,
-                                before,
-                                true
-                        ));
-                    }
-                }
-            }
-        }
-
-        return barEntities;
+        return parentsCategories;
     }
 }

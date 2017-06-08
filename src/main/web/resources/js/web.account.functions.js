@@ -8,7 +8,7 @@
  * @param after начальная дата отсечки
  * @param before конечная дата отсечки
  */
-function drawBarsByParentId(isChildren, categoryId, after, before, isGetAnalyticData) {
+function drawBarsByParentId(isChildren, categoryId, after, before, isGetAnalyticData, averagingPeriod) {
     //свитчер - либо показываем, либо стираем детализацию по дочерней категории
     if (($('*').is('#childrenCategory' + categoryId)) && isChildren) {
         $('#childrenCategory' + categoryId).remove();
@@ -25,7 +25,8 @@ function drawBarsByParentId(isChildren, categoryId, after, before, isGetAnalytic
                 'categoryId': categoryId,
                 'after': after,
                 'before': before,
-                'isGetAnalyticData' : isGetAnalyticData
+                'isGetAnalyticData' : isGetAnalyticData,
+                'averagingPeriod' : averagingPeriod
             },
             dataType: 'json',
             beforeSend: function () {
@@ -542,4 +543,89 @@ function freezeBody(){
         .on('hide.bs.modal', function (){
             $('body').removeClass('wam-body-freeze');
         });
+}
+/**Функция очищает данные по категориям
+ */
+function removeStatistics(){
+    $('#textTotalIncome').empty();
+    $('#textTotalExpense').empty();
+
+    $('#dropDownCategoryBarsIncome').empty();
+    $('#dropDownCategoryBarsExpense').empty();
+}
+function refreshBars(data, after, before){
+    //удаляем текущие данные
+    removeStatistics();
+
+    var maxIncomeSum = 0;
+    var maxExpenseSum = 0;
+    var totalIncomeSum = 0;
+    var totalExpenseSum = 0;
+    var idBarsElem;
+
+    //данные для стилей прогресс баров
+    var styles = ['success', 'info', 'warning', 'danger'];
+    var curNumStyle = -1;
+
+    $.each(data, function(index, barData) {
+        var type = barData.type;
+        var name = barData.name;
+        var id = barData.id;
+        var sum = Math.abs(barData.sum);
+
+        if (type == 'CategoryIncome') {
+            idBarsElem = 'dropDownCategoryBarsIncome';
+            maxIncomeSum = maxIncomeSum == 0 ? sum : maxIncomeSum;
+            normalSum = sum * 100 / maxIncomeSum;
+            totalIncomeSum += sum;
+            curNumStyle = 0;
+        } else {
+            idBarsElem = 'dropDownCategoryBarsExpense';
+            maxExpenseSum = maxExpenseSum == 0 ? sum : maxExpenseSum;
+            normalSum = sum * 100 / maxExpenseSum;
+            totalExpenseSum += sum;
+            curNumStyle = 2;
+        }
+
+        $('#' + idBarsElem).append(
+            "<li class='list-unstyled'>" +
+            "<a href='javascript:drawBarsByParentId(false, \"" + id + "\",\"" + after + "\",\"" + before + "\", false);'>" +
+            "<div>" +
+            "<h4 class='needToFormat'><strong id='categoryBarName" + id + "' value='" + name + "'>" +
+            name +
+            "</strong>" +
+            "<span id='categoryBarSum" + id + "' class='pull-right text-muted' " +
+            "value='" + sum + "'>" +
+            numberToString(sum) + " руб." +
+            "</span></h4>" +
+            "<div class='progress progress-striped active'> " +
+            "<div class='progress-bar progress-bar-" + styles[curNumStyle] + "' role='progressbar' " +
+            "aria-valuenow='" + sum + "' aria-valuemin='0' aria-valuemax='100' " +
+            "style='width: " + normalSum + "%' value='" + name + "'>" +
+            "<span class='sr-only'>" + sum + "</span>" +
+            "</div>" +
+            "</div>" +
+            "</div>" +
+            "</a>" +
+            "</li>"
+        );
+    });
+    if (totalIncomeSum == 0)
+        $('#dropDownCategoryBarsIncome').append(
+            "<div class='col-xs-12 col-md-12'>" +
+            "<h4><span class='text-muted'>${emptyData}</span></h4>" +
+            "</div>"
+        );
+    if (totalExpenseSum == 0)
+        $('#dropDownCategoryBarsExpense').append(
+            "<div class='col-xs-12 col-md-12'>" +
+            "<h4><span class='text-muted'>${emptyData}</span></h4>" +
+            "</div>"
+        );
+}
+function getMonday(date) {
+    var day = date.getDay() || 7;
+    if( day !== 1 )
+        date.setHours(-24 * (day - 1));
+    return date;
 }
