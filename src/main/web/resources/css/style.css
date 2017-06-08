@@ -386,3 +386,6 @@ div.dataTables_filter {
 	position: fixed;
 	bottom: 0;
 }
+.wam-dropdown-menu {
+	min-width: 190px;
+}

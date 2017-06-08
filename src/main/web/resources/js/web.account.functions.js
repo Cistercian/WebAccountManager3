@@ -109,6 +109,7 @@ function drawBarsByParentId(isChildren, categoryId, after, before, isGetAnalytic
                 //данные для стилей прогресс баров
                 var styles = ['success', 'info', 'warning', 'danger'];
                 var curNumStyle = -1;
+                var totalSum, totalLimit = 0;
 
                 data.forEach(function (barData, index, data) {
                     var classId = barData.id;
@@ -119,28 +120,46 @@ function drawBarsByParentId(isChildren, categoryId, after, before, isGetAnalytic
                     var classLimit = barData.limit;
 
                     totalSum += classSum;
+                    totalLimit += classLimit;
 
                     // нормализуем суммы
                     if (!isGetAnalyticData) {
                         if (maxSum == 0) maxSum = classSum;
                         normalSum = classSum * 100 / maxSum;
+                        // меняем цвет баров
+                        curNumStyle = curNumStyle < 4 ? curNumStyle + 1 : 0;
                     } else {
                         if (maxSum == 0) maxSum = classSum;
-                        normalSum = classSum * 100 / classLimit;
+                        normalSum = classLimit != 0 ? classSum * 100 / classLimit : 101;
+                        // меняем цвет баров
+                        if (normalSum > 100)
+                            curNumStyle = 3;
+                        else
+                            curNumStyle = 0;
                     }
-                    // меняем цвет баров
-                    curNumStyle = curNumStyle < 4 ? curNumStyle + 1 : 0;
+
 
                     var elemLink;
                     if (classType == 'Product') {
                         classTitle = "Группа товаров";
-                        //elemLink = 	"<a href='javascript:getViewProduct(" + classId + ");'>" +
-                        elemLink = "<a href='/page-product/" + classId + "?categoryId=" + categoryId + "&after=" + after + "&before=" + before + "'>" +
-                            "<span> (Просмотреть</span>" +
-                            "</a>" + ", " +
-                            "<a href='/product?id=" + classId + "'>" +
-                            "<span>редактировать)</span>" +
-                            "</a>";
+                        if (!isGetAnalyticData) {
+                            elemLink = "<a href='/page-product/" + classId + "?categoryId=" + categoryId + "&after=" + after + "&before=" + before + "'>" +
+                                "<span> (Просмотреть</span>" +
+                                "</a>" + ", " +
+                                "<a href='/product?id=" + classId + "'>" +
+                                "<span>редактировать)</span>" +
+                                "</a>";
+                        } else {
+                            elemLink = "<span>(Просмотреть </span><a href='/page-product/" + classId + "?categoryId=" + categoryId + "&after=" + after + "&before=" + before + "'>" +
+                                "<span>средние обороты</span>" +
+                                "</a>" + ", " +
+                                "<a href='/page-product/" + classId + "?categoryId=" + categoryId + "&after=" + moment(new Date().setDate(1)).format('YYYY-MM-DD') + "&before=" + moment(new Date()).format('YYYY-MM-DD') + "'>" +
+                                "<span> текущие обороты</span>" +
+                                "</a>" + " или " +
+                                "<a href='/product?id=" + classId + "'>" +
+                                "<span>редактировать)</span>" +
+                                "</a>";
+                        }
                     }
                     if (classType.indexOf('Category') + 1) {
                         classTitle = "Категория";
@@ -163,7 +182,7 @@ function drawBarsByParentId(isChildren, categoryId, after, before, isGetAnalytic
                         "<div class='row'><div class='col-xs-12'>" + elemLink + "" +
                         "<strong id='barSum" + classType + classId + "' class='pull-right text-muted' " +
                         "value='" + classSum + "'>" +
-                        (!isGetAnalyticData ? numberToString(classSum) : classSum + " из " + classLimit) + " руб." +
+                        numberToString(classSum) + (isGetAnalyticData ? " (в среднем " + numberToString(classLimit) + ") " : "") + " руб." +
                         "</strong>" +
                         "</h4></div></div>" +
                         "<div class='progress " + tagClassProgress + " progress-striped active wam-margin-bottom-1' >" +
@@ -180,10 +199,11 @@ function drawBarsByParentId(isChildren, categoryId, after, before, isGetAnalytic
                         "");
                 });
                 totalSum = totalSum.toFixed(2);
+                totalLimit = totalLimit.toFixed(2);
                 $('#' + idBarElem).append(
                     "<div class='row'>" +
                     (isChildren ? "<div class='col-md-12 wam-margin-bottom-2'><h5><span>" : "<div class='col-md-12'><h4><strong class='pull-right text-muted'>") +
-                    "ИТОГО " + numberToString(totalSum) + " руб." +
+                    "ИТОГО " + numberToString(totalSum) + (isGetAnalyticData ? "( в среднем " + numberToString(totalLimit) + ") " : "") + " руб." +
                     "</strong>" + (isChildren ? "</h5>" : "</h4>") +
                     "</div><p><p>" +
                     "</div>"
@@ -618,15 +638,25 @@ function refreshBars(data, after, before){
     if (totalIncomeSum == 0)
         $('#dropDownCategoryBarsIncome').append(
             "<div class='col-xs-12 col-md-12'>" +
-            "<h4><span class='text-muted'>${emptyData}</span></h4>" +
+            "<h4><span class='text-muted'>Данные отсутствуют</span></h4>" +
             "</div>"
         );
     if (totalExpenseSum == 0)
         $('#dropDownCategoryBarsExpense').append(
             "<div class='col-xs-12 col-md-12'>" +
-            "<h4><span class='text-muted'>${emptyData}</span></h4>" +
+            "<h4><span class='text-muted'>Данные отсутствуют</span></h4>" +
             "</div>"
         );
+
+    if ($('*').is('#textTotalIncome')) {
+        $('#textTotalIncome').append("<span class='pull-right'><strong>" + numberToString(totalIncomeSum.toFixed(2)) + "</strong> руб.</span>");
+        $('#textTotalExpense').append("<span class='pull-right'><strong>" + numberToString(totalExpenseSum.toFixed(2)) + "</strong> руб.</span>");
+
+        //рисуем диаграмму
+        drawChartOfTypes("Доход=" + totalIncomeSum + "," +
+            "Расход=" + totalExpenseSum + "",
+            "typeChart");
+    }
 }
 function getMonday(date) {
     var day = date.getDay() || 7;

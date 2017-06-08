@@ -153,7 +153,7 @@
                     <tbody>
 
                     <c:forEach items="${amounts}" var="amount">
-                        <tr onclick="location.href='/amount?id=${amount.getId()}';">
+                        <tr class="wam-cursor" onclick="location.href='/amount?id=${amount.getId()}';">
                             <td style="display : none;">${amount.getId()}</td>
                             <td class="wam-no-wrap">${amount.getDate()}</td>
                             <td>${amount.getName()}</td>

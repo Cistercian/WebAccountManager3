@@ -247,7 +247,7 @@
 														${sum} (в среднем ${limit}) руб.
 													</span></h4>
                                                 <div class="progress progress-striped active">
-                                                    <div class="progress-bar progress-bar-${styles[0]}" role="progressbar"
+                                                    <div class="progress-bar progress-bar-${styles[step]}" role="progressbar"
                                                          aria-valuenow="${sum}" aria-valuemin="0" aria-valuemax="100"
                                                          style="width: ${normalSum}%" value="${name}">
                                                         <span class="sr-only">${sum}</span>
@@ -309,7 +309,7 @@
 														${sum} (в среднем ${limit}) руб.
 													</span></h4>
                                                 <div class="progress progress-striped active">
-                                                    <div class="progress-bar progress-bar-${styles[0]}" role="progressbar"
+                                                    <div class="progress-bar progress-bar-${styles[step]}" role="progressbar"
                                                          aria-valuenow="${sum}" aria-valuemin="0" aria-valuemax="100"
                                                          style="width: ${normalSum}%" value="${name}">
                                                         <span class="sr-only">${sum}</span>

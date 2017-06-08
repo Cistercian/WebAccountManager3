@@ -16,8 +16,11 @@ import ru.hd.olaf.util.DateUtil;
 import ru.hd.olaf.util.LogUtil;
 import ru.hd.olaf.util.json.BarEntity;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -59,7 +62,6 @@ public class AnalyticController {
 
         LocalDate after = getAfter(beginDate);
         LocalDate before = getBefore(endDate);
-        if (averagingPeriod == null) averagingPeriod = 1; //defaults = month
 
         User currentUser = securityService.findLoggedUser();
 
@@ -70,6 +72,23 @@ public class AnalyticController {
                 after,
                 before);
 
+        //сортируем по соотношению текущих трат к усредненным
+        Collections.sort(analyticData, new Comparator<BarEntity>() {
+            public int compare(BarEntity o1, BarEntity o2) {
+
+                if (o2.getLimit().compareTo(new BigDecimal("0")) > 0 || o1.getLimit().compareTo(new BigDecimal("0")) > 0) {
+                    BigDecimal o2Size = o2.getLimit().compareTo(new BigDecimal("0")) != 0 ?
+                            o2.getSum().divide(o2.getLimit(), 2, BigDecimal.ROUND_HALF_UP) :
+                            new BigDecimal("99999");
+                    BigDecimal o1Size = o1.getLimit().compareTo(new BigDecimal("0")) != 0 ?
+                            o1.getSum().divide(o1.getLimit(), 2, BigDecimal.ROUND_HALF_UP) :
+                            new BigDecimal("99999");
+                    return o2Size.compareTo(o1Size);
+                } else
+                    return o2.getSum().compareTo(o1.getSum());
+            }
+        });
+
         return analyticData;
     }
 
@@ -77,7 +96,7 @@ public class AnalyticController {
         if (date != null && !"".equals(date))
             return DateUtil.getParsedDate(date);
         else
-            return LocalDate.now().minusMonths(2).with(TemporalAdjusters.firstDayOfMonth());
+            return DateUtil.getStartOfEra();
     }
 
     private LocalDate getBefore(String date){

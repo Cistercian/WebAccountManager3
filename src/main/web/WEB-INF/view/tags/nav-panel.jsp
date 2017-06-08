@@ -31,7 +31,7 @@
                 <li><a href="/index"><spring:message code="menu.nav.home" /></a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><spring:message code="menu.nav.statistic" /> <b class="caret"></b></a>
-                    <ul class="dropdown-menu">
+                    <ul class="dropdown-menu wam-dropdown-menu">
                         <li><a href="/statistic/calendar"><spring:message code="menu.nav.calendar" /></a></li>
                         <li class="divider"></li>
                         <li><a href="/statistic/limit-control"><spring:message code="menu.nav.limit-control" /></a></li>

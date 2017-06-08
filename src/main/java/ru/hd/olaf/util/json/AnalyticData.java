@@ -83,6 +83,25 @@ public class AnalyticData implements DbData{
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AnalyticData that = (AnalyticData) o;
+
+        if (id != that.id) return false;
+        return type != null ? type.equals(that.type) : that.type == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = type != null ? type.hashCode() : 0;
+        result = 31 * result + id;
+        return result;
+    }
+
+    @Override
     public String toString() {
         return "AnalyticData{" +
                 "type='" + type + '\'' +

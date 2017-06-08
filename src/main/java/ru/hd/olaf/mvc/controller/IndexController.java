@@ -159,7 +159,7 @@ public class IndexController {
     List<BarEntity> getCategoryContentByCategoryId(@RequestParam(value = "categoryId") Integer categoryId,
                                                    @RequestParam(value = "after") String beginDate,
                                                    @RequestParam(value = "before") String endDate,
-                                                   @RequestParam(value = "isGetAnalyticData", required = false) boolean isGetAnalyticData){
+                                                   @RequestParam(value = "isGetAnalyticData", required = false) boolean isGetAnalyticData) {
         logger.debug(LogUtil.getMethodName());
         logger.debug(String.format("Выводятся ли среднемесячные данные: %s", isGetAnalyticData));
 
@@ -202,7 +202,17 @@ public class IndexController {
         //сортировка
         Collections.sort(categoryContent, new Comparator<BarEntity>() {
             public int compare(BarEntity o1, BarEntity o2) {
-                return o2.getSum().compareTo(o1.getSum());
+
+                if (o2.getLimit().compareTo(new BigDecimal("0")) > 0 || o1.getLimit().compareTo(new BigDecimal("0")) > 0) {
+                    BigDecimal o2Size = o2.getLimit().compareTo(new BigDecimal("0")) != 0 ?
+                            o2.getSum().divide(o2.getLimit(), 2, BigDecimal.ROUND_HALF_UP) :
+                            new BigDecimal("99999");
+                    BigDecimal o1Size = o1.getLimit().compareTo(new BigDecimal("0")) != 0 ?
+                            o1.getSum().divide(o1.getLimit(), 2, BigDecimal.ROUND_HALF_UP) :
+                            new BigDecimal("99999");
+                    return o2Size.compareTo(o1Size);
+                } else
+                    return o2.getSum().compareTo(o1.getSum());
             }
         });
 
@@ -213,7 +223,9 @@ public class IndexController {
     }
 
     @RequestMapping(value = "/index/getAlerts", method = RequestMethod.GET)
-    public @ResponseBody List<String> getAlerts(){
+    public
+    @ResponseBody
+    List<String> getAlerts() {
         logger.debug(LogUtil.getMethodName());
 
         User currentUser = securityService.findLoggedUser();

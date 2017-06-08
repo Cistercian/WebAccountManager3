@@ -305,33 +305,41 @@ public class CategoryServiceImpl implements CategoryService {
         LogUtil.logList(logger, list);
 
         logger.debug("Сбор данных по оборотам в текущем месяце.");
-        //TODO: возможна ситуация, когда оборота в средних данных нет, а в текущем месяце информация есть.
-        for (AnalyticData entity : list) {
-            if (entity.getType().startsWith("Category")) {
-                JsonResponse response = utilService.getById(Category.class, entity.getId());
-                if (response.getType() == ResponseType.SUCCESS) {
-                    Category category1 = (Category) response.getEntity();
-                    entity.setCurrentSum(categoryRepository.getCategorySum(
-                            user,
-                            category1,
-                            DateUtil.getDate(DateUtil.getStartOfMonth()),
-                            DateUtil.getDate(LocalDate.now())
-                    ));
-                }
+        //TODO: возможна ситуация, когда оборота в усредненных данных нет, а в текущем месяце информация есть.
+        Date beginOfMonth = DateUtil.getDate(DateUtil.getStartOfMonth());
+        Date today = DateUtil.getDate(LocalDate.now());
+        List<AnalyticData> listThisMonth = categoryRepository.getAnalyticDataByCategory(
+                user,
+                category,
+                beginOfMonth,
+                today
+        );
+        if (category != null)
+            listThisMonth.addAll(categoryRepository.getAnalyticDataByProduct(
+                    user,
+                    category,
+                    beginOfMonth,
+                    today
+            ));
+
+        for (AnalyticData entity : listThisMonth){
+            if (list.contains(entity)){
+                int index = list.indexOf(entity);
+                AnalyticData data = list.get(index);
+
+                data.setCurrentSum(entity.getAvgSum());
+                list.set(index, data);
             } else {
-                JsonResponse response = utilService.getById(Product.class, entity.getId());
-                if (response.getType() == ResponseType.SUCCESS) {
-                    Product product = (Product) response.getEntity();
-                    entity.setCurrentSum(categoryRepository.getProductSum(
-                            user,
-                            category,
-                            product,
-                            DateUtil.getDate(DateUtil.getStartOfMonth()),
-                            DateUtil.getDate(LocalDate.now())
-                    ));
-                }
+                logger.debug(String.format("Найдены обороты, отсутствующие в статистике за прошлые месяцы: %s", entity.toString()));
+
+                entity.setCurrentSum(entity.getAvgSum());
+                entity.setAvgSum(new BigDecimal("0"));
+
+                list.add(entity);
             }
         }
+        listThisMonth = null;
+
         logger.debug("Список данных с суммами за текущий месяц:");
         LogUtil.logList(logger, list);
 
@@ -366,12 +374,15 @@ public class CategoryServiceImpl implements CategoryService {
         for (AnalyticData data : map.values()){
             long distance = DateUtil.getParsedDate(data.getMinDate().toString()).until(
                     DateUtil.getParsedDate(data.getMaxDate().toString()), ChronoUnit.MONTHS
-            );
-            distance = distance == 0 ? 1 : distance;
+            ) + 1;
 
             BigDecimal avgSum = data.getAvgSum().divide(new BigDecimal(distance), 2, BigDecimal.ROUND_HALF_UP);
 
             bars.add(new BarEntity(data.getType(), data.getId(), data.getCurrentSum(), data.getName(), avgSum));
+
+            logger.debug(String.format("Расчет среднего значения для %s: Общая сумма %s, кол-во месяцев, на которое делим: %s," +
+                    " ИТОГО: %s", (data.getType().startsWith("Category") ? "категории " : "группы ") + data.getName(),
+                    data.getAvgSum(), distance, avgSum));
         }
 
         bars = utilService.sortListByTypeAndSum(bars);
