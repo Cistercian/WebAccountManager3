@@ -7,7 +7,7 @@ import java.math.BigDecimal;
  *
  * Created by d.v.hozyashev on 20.04.2017.
  */
-public class BarEntity {
+public class BarEntity implements DbData{
     private String type;
     private int id;
     private BigDecimal sum;

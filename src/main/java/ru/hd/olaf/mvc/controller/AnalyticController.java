@@ -68,8 +68,7 @@ public class AnalyticController {
                 currentUser,
                 null,
                 after,
-                before,
-                averagingPeriod);
+                before);
 
         return analyticData;
     }

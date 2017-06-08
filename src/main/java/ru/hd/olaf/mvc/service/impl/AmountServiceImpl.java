@@ -168,10 +168,8 @@ public class AmountServiceImpl implements AmountService {
     public List<BarEntity> getBarEntitiesByCategory(User user,
                                                     Category category,
                                                     LocalDate after,
-                                                    LocalDate before,
-                                                    boolean isGetAnalyticData) {
+                                                    LocalDate before) {
         logger.debug(LogUtil.getMethodName());
-        logger.debug(String.format("Выводятся ли среднемесячные данные: %s", isGetAnalyticData));
 
         List<BarEntity> barEntities;
 

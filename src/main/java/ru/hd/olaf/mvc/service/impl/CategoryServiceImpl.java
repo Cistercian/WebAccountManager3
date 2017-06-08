@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.hd.olaf.entities.Category;
+import ru.hd.olaf.entities.Product;
 import ru.hd.olaf.entities.User;
 import ru.hd.olaf.exception.AuthException;
 import ru.hd.olaf.exception.CrudException;
@@ -16,11 +17,11 @@ import ru.hd.olaf.mvc.service.SecurityService;
 import ru.hd.olaf.mvc.service.UtilService;
 import ru.hd.olaf.util.DateUtil;
 import ru.hd.olaf.util.LogUtil;
-import ru.hd.olaf.util.json.BarEntity;
-import ru.hd.olaf.util.json.JsonResponse;
-import ru.hd.olaf.util.json.ResponseType;
+import ru.hd.olaf.util.json.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 /**
@@ -85,12 +86,11 @@ public class CategoryServiceImpl implements CategoryService {
     public List<BarEntity> getBarEntityOfSubCategories(User user,
                                                        Category parent,
                                                        LocalDate after,
-                                                       LocalDate before,
-                                                       boolean isGetAnalyticData) {
+                                                       LocalDate before) {
         logger.debug(LogUtil.getMethodName());
         logger.debug(String.format("Dates: after: %s, before %s", after, before));
 
-        List<BarEntity> bars = new ArrayList<BarEntity>();
+        List<BarEntity> bars;
 
         if (parent != null) {
             bars = categoryRepository.getBarEntityByUserIdAndSubCategory(
@@ -103,7 +103,8 @@ public class CategoryServiceImpl implements CategoryService {
 
             List<BarEntity> child;
 
-            child = categoryRepository.getBarEntityOfParentsByUserId(user,
+            child = categoryRepository.getBarEntityOfParentsByUserId(
+                    user,
                     DateUtil.getDate(after),
                     DateUtil.getDate(before));
 
@@ -112,7 +113,7 @@ public class CategoryServiceImpl implements CategoryService {
             LogUtil.logList(logger, child);
 
             for (BarEntity entity : child) {
-                BarEntity bar = getParentBar(entity);
+                BarEntity bar = (BarEntity) getParentBar(entity, null);
 
                 if (map.containsKey(bar.getId())) {
 
@@ -130,24 +131,28 @@ public class CategoryServiceImpl implements CategoryService {
         return bars;
     }
 
-    private BarEntity getParentBar(BarEntity entity) {
+    private DbData getParentBar(DbData entity, Category rootCategory) {
         logger.debug(LogUtil.getMethodName());
 
-        if ("child".equals(entity.getType())) {
+        if (entity.getType().endsWith("Child")) {
             //TODO: refactoring!
             try {
                 Category parent = getOne(entity.getId()).getParentId();
 
-                entity.setId(parent.getId());
-                entity.setName(parent.getName());
                 String type = parent.getParentId() == null ?
                         parent.getType() == 0 ? "CategoryIncome" : "CategoryExpense" :
-                        "child";
+                        "CategoryChild";
 
                 entity.setType(type);
 
-                if ("child".equals(entity.getType()))
-                    entity = getParentBar(entity);
+                if (rootCategory != null && parent.getId() == rootCategory.getId())
+                    return entity;
+
+                entity.setId(parent.getId());
+                entity.setName(parent.getName());
+
+                if ("CategoryChild".equals(entity.getType()))
+                    entity = getParentBar(entity, rootCategory);
 
             } catch (AuthException e) {
                 logger.debug(String.format("Логическая ошибка БД - не найдена родительская категория дочерней с id = %d",
@@ -275,25 +280,105 @@ public class CategoryServiceImpl implements CategoryService {
     public List<BarEntity> getAnalyticData(User user,
                                            Category category,
                                            LocalDate after,
-                                           LocalDate before,
-                                           byte averagingPeriod) {
+                                           LocalDate before) {
         logger.debug(LogUtil.getMethodName());
 
-        List<BarEntity> parentsCategories = getBarEntityOfSubCategories(user,
+        after = DateUtil.getStartOfEra();
+        before = DateUtil.getStartOfMonth().minusDays(1);
+
+        List<AnalyticData> list = categoryRepository.getAnalyticDataByCategory(
+                user,
                 category,
-                after,
-                before,
-                false);
+                DateUtil.getDate(after),
+                DateUtil.getDate(before)
+        );
+        //если запрос по определенной категории, то необходимо отдельно собрать данные по группам
+        if (category != null)
+            list.addAll(categoryRepository.getAnalyticDataByProduct(
+                    user,
+                    category,
+                    DateUtil.getDate(after),
+                    DateUtil.getDate(before)
+            ));
 
+        logger.debug("Список анализируемых данных:");
+        LogUtil.logList(logger, list);
 
-        logger.debug("Список категорий:");
-        LogUtil.logList(logger, parentsCategories);
+        logger.debug("Сбор данных по оборотам в текущем месяце.");
+        //TODO: возможна ситуация, когда оборота в средних данных нет, а в текущем месяце информация есть.
+        for (AnalyticData entity : list) {
+            if (entity.getType().startsWith("Category")) {
+                JsonResponse response = utilService.getById(Category.class, entity.getId());
+                if (response.getType() == ResponseType.SUCCESS) {
+                    Category category1 = (Category) response.getEntity();
+                    entity.setCurrentSum(categoryRepository.getCategorySum(
+                            user,
+                            category1,
+                            DateUtil.getDate(DateUtil.getStartOfMonth()),
+                            DateUtil.getDate(LocalDate.now())
+                    ));
+                }
+            } else {
+                JsonResponse response = utilService.getById(Product.class, entity.getId());
+                if (response.getType() == ResponseType.SUCCESS) {
+                    Product product = (Product) response.getEntity();
+                    entity.setCurrentSum(categoryRepository.getProductSum(
+                            user,
+                            category,
+                            product,
+                            DateUtil.getDate(DateUtil.getStartOfMonth()),
+                            DateUtil.getDate(LocalDate.now())
+                    ));
+                }
+            }
+        }
+        logger.debug("Список данных с суммами за текущий месяц:");
+        LogUtil.logList(logger, list);
 
-        parentsCategories = utilService.calcAvgSum(parentsCategories, after, before, averagingPeriod);
+        Map<String, AnalyticData> map = new HashMap<String, AnalyticData>();
 
-        //сортировка по типу категории (доход/расход) и по сумме
-        parentsCategories = utilService.sortListByTypeAndSum(parentsCategories);
+        logger.debug("Агрегируем дочерние категории.");
+        for (AnalyticData entity : list) {
+            entity = (AnalyticData) getParentBar(entity, category);
+            String id = (entity.getType().startsWith("Category") ? "Category" : "Product") + entity.getId();
 
-        return parentsCategories;
+            if (map.containsKey(id)) {
+
+                AnalyticData dataMap = map.get(id);
+
+                if (entity.getMaxDate().compareTo(dataMap.getMaxDate()) > 0)
+                    dataMap.setMaxDate(entity.getMaxDate());
+
+                if (entity.getMinDate().compareTo(dataMap.getMinDate()) > 0)
+                    dataMap.setMinDate(entity.getMinDate());
+
+                dataMap.setAvgSum(dataMap.getAvgSum().add(entity.getAvgSum()));
+                dataMap.setCurrentSum(dataMap.getCurrentSum().add(entity.getCurrentSum()));
+
+                map.put(id, dataMap);
+            } else {
+                map.put(id, entity);
+            }
+        }
+
+        List<BarEntity> bars = new ArrayList<BarEntity>();
+        logger.debug("Формируем данные для отправки на страницу.");
+        for (AnalyticData data : map.values()){
+            long distance = DateUtil.getParsedDate(data.getMinDate().toString()).until(
+                    DateUtil.getParsedDate(data.getMaxDate().toString()), ChronoUnit.MONTHS
+            );
+            distance = distance == 0 ? 1 : distance;
+
+            BigDecimal avgSum = data.getAvgSum().divide(new BigDecimal(distance), 2, BigDecimal.ROUND_HALF_UP);
+
+            bars.add(new BarEntity(data.getType(), data.getId(), data.getCurrentSum(), data.getName(), avgSum));
+        }
+
+        bars = utilService.sortListByTypeAndSum(bars);
+
+        logger.debug("Конечный список:");
+        LogUtil.logList(logger, bars);
+
+        return bars;
     }
 }

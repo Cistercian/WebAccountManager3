@@ -158,7 +158,7 @@
                 </div>
             </div>
 
-            <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1">
+            <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1" style="display : none;">
                 <div class="panel-heading ">
                     <h4 class="wam-margin-bottom-0 wam-margin-top-0">Настройка рассчета данных</h4>
                 </div>
@@ -213,42 +213,44 @@
                             <c:set var="step" value="-1" scope="page"/>
                             <c:set var="incomeHasData" value="false" scope="page"/>
 
-                            <c:forEach items="${analyticData}" var="analyticData">
-                                <c:if test="${analyticData.getType() == 'CategoryIncome'}">
+                            <c:forEach items="${analyticData}" var="list">
+                                <c:if test="${list.getType() == 'CategoryIncome'}">
 
                                     <c:if test="${incomeHasData == 'false'}">
                                         <c:set var="incomeHasData" value="true" scope="page"/>
                                     </c:if>
 
-                                    <c:set var="classId" value="${analyticData.getId()}" />
-                                    <c:set var="className" value="${analyticData.getName()}" />
-                                    <c:set var="classPrice" value="${analyticData.getSum()}" />
-                                    <c:set var="normalPrice" value="${classPrice}" />
-
+                                    <c:set var="id" value="${list.getId()}"/>
+                                    <c:set var="name" value="${list.getName()}"/>
+                                    <c:set var="type" value="${list.getType()}"/>
+                                    <c:set var="sum" value="${list.getSum()}"/>
+                                    <c:set var="limit" value="${list.getLimit()}"/>
                                     <c:choose>
-                                        <c:when test="${step == 3}">
-                                            <c:set var="step" value="0" scope="page"/>
+                                        <c:when test="${sum >= limit}">
+                                            <c:set var="normalSum" value="100"/>
+                                            <c:set var="step" value="3" scope="page"/>
                                         </c:when>
                                         <c:otherwise>
-                                            <c:set var="step" value="${step + 1}" scope="page"/>
+                                            <c:set var="normalSum" value="${sum * 100 / limit}"/>
+                                            <c:set var="step" value="0" scope="page"/>
                                         </c:otherwise>
                                     </c:choose>
 
                                     <li class="list-unstyled">
-                                        <a href="javascript:drawBarsByParentId(false, '${classId}', '${after}', '${before}', true)">
+                                        <a href="javascript:drawBarsByParentId(false, '${id}', '${after}', '${before}', true)">
                                             <div>
-                                                <h4 class="needToFormat"><strong id="categoryBarName${classId}" value="${className}">
-                                                        ${className}
+                                                <h4 class="needToFormat"><strong id="categoryBarName${id}" value="${name}">
+                                                        ${name}
                                                 </strong>
-													<span id="categoryBarSum${classId}" class="pull-right text-muted"
-                                                          value="${classPrice}">
-															${classPrice} руб.
+													<span id="categoryBarSum${id}" class="pull-right text-muted"
+                                                          value="${sum}">
+														${sum} (в среднем ${limit}) руб.
 													</span></h4>
                                                 <div class="progress progress-striped active">
                                                     <div class="progress-bar progress-bar-${styles[0]}" role="progressbar"
-                                                         aria-valuenow="${classPrice}" aria-valuemin="0" aria-valuemax="100"
-                                                         style="width: ${normalPrice}%" value="${className}">
-                                                        <span class="sr-only">${classPrice}</span>
+                                                         aria-valuenow="${sum}" aria-valuemin="0" aria-valuemax="100"
+                                                         style="width: ${normalSum}%" value="${name}">
+                                                        <span class="sr-only">${sum}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -274,42 +276,43 @@
                             <c:set var="styles" value="${['success', 'info', 'warning', 'danger']}" scope="page" />
                             <c:set var="step" value="-1" scope="page"/>
 
-                            <c:forEach items="${analyticData}" var="analyticData">
-                                <c:if test="${analyticData.getType() == 'CategoryExpense'}">
+                            <c:forEach items="${analyticData}" var="list">
+                                <c:if test="${list.getType() == 'CategoryExpense'}">
 
                                     <c:if test="${expenseHasData == 'false'}">
                                         <c:set var="expenseHasData" value="true" scope="page"/>
                                     </c:if>
 
-                                    <c:set var="classId" value="${analyticData.getId()}" />
-                                    <c:set var="className" value="${analyticData.getName()}" />
-                                    <c:set var="classPrice" value="${analyticData.getSum()}" />
-                                    <c:set var="normalPrice" value="${classPrice}" />
-
+                                    <c:set var="id" value="${list.getId()}"/>
+                                    <c:set var="name" value="${list.getName()}"/>
+                                    <c:set var="type" value="${list.getType()}"/>
+                                    <c:set var="sum" value="${list.getSum()}"/>
+                                    <c:set var="limit" value="${list.getLimit()}"/>
                                     <c:choose>
-                                        <c:when test="${step == 3}">
-                                            <c:set var="step" value="0" scope="page"/>
+                                        <c:when test="${sum >= limit}">
+                                            <c:set var="normalSum" value="100"/>
+                                            <c:set var="step" value="3" scope="page"/>
                                         </c:when>
                                         <c:otherwise>
-                                            <c:set var="step" value="${step + 1}" scope="page"/>
+                                            <c:set var="normalSum" value="${sum * 100 / limit}"/>
+                                            <c:set var="step" value="0" scope="page"/>
                                         </c:otherwise>
                                     </c:choose>
                                     <li class="list-unstyled">
-                                        <a href="javascript:drawBarsByParentId(false, '${classId}', '${after}', '${before}', true)">
+                                        <a href="javascript:drawBarsByParentId(false, '${id}', '${after}', '${before}', true)">
                                             <div>
-                                                <h4 class="needToFormat"><strong id="categoryBarName${classId}" value="${className}">
-                                                        ${className}
+                                                <h4 class="needToFormat"><strong id="categoryBarName${id}" value="${name}">
+                                                        ${name}
                                                 </strong>
-													<span id="categoryBarSum${classId}" class="pull-right text-muted"
-                                                          value="${classPrice}">
-															${classPrice} руб.
-													</span>
-                                                </h4>
+													<span id="categoryBarSum${id}" class="pull-right text-muted"
+                                                          value="${sum}">
+														${sum} (в среднем ${limit}) руб.
+													</span></h4>
                                                 <div class="progress progress-striped active">
-                                                    <div class="progress-bar progress-bar-${styles[2]}" role="progressbar"
-                                                         aria-valuenow="${classPrice}" aria-valuemin="0" aria-valuemax="100"
-                                                         style="width: ${normalPrice}%" value="${className}">
-                                                        <span class="sr-only">${classPrice}</span>
+                                                    <div class="progress-bar progress-bar-${styles[0]}" role="progressbar"
+                                                         aria-valuenow="${sum}" aria-valuemin="0" aria-valuemax="100"
+                                                         style="width: ${normalSum}%" value="${name}">
+                                                        <span class="sr-only">${sum}</span>
                                                     </div>
                                                 </div>
                                             </div>
