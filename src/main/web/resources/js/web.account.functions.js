@@ -8,7 +8,7 @@
  * @param after начальная дата отсечки
  * @param before конечная дата отсечки
  */
-function drawBarsByParentId(isChildren, categoryId, after, before, isGetAnalyticData, averagingPeriod) {
+function drawBarsByParentId(isChildren, categoryId, after, before, isGetAnalyticData) {
     //свитчер - либо показываем, либо стираем детализацию по дочерней категории
     if (($('*').is('#childrenCategory' + categoryId)) && isChildren) {
         $('#childrenCategory' + categoryId).remove();
@@ -26,7 +26,6 @@ function drawBarsByParentId(isChildren, categoryId, after, before, isGetAnalytic
                 'after': after,
                 'before': before,
                 'isGetAnalyticData' : isGetAnalyticData,
-                'averagingPeriod' : averagingPeriod
             },
             dataType: 'json',
             beforeSend: function () {
@@ -117,12 +116,18 @@ function drawBarsByParentId(isChildren, categoryId, after, before, isGetAnalytic
                     var classTitle = "";
                     var className = barData.name;
                     var classSum = barData.sum;
+                    var classLimit = barData.limit;
 
                     totalSum += classSum;
 
                     // нормализуем суммы
-                    if (maxSum == 0) maxSum = classSum;
-                    normalSum = classSum * 100 / maxSum;
+                    if (!isGetAnalyticData) {
+                        if (maxSum == 0) maxSum = classSum;
+                        normalSum = classSum * 100 / maxSum;
+                    } else {
+                        if (maxSum == 0) maxSum = classSum;
+                        normalSum = classSum * 100 / classLimit;
+                    }
                     // меняем цвет баров
                     curNumStyle = curNumStyle < 4 ? curNumStyle + 1 : 0;
 
@@ -147,7 +152,7 @@ function drawBarsByParentId(isChildren, categoryId, after, before, isGetAnalytic
                             "<span id='strong" + classType + classId + "'> (Развернуть)</span>" +
                             "</a>";
                     }
-                    <!-- добавляем прогресс бар -->
+                    //добавляем прогресс бар
                     $('#' + idBarElem).append(
                         "<li id='progressBar" + classType + classId + "' class='list-unstyled'>" +
                         "<div class='row'><div class='col-xs-12'><h4 class='wam-margin-top-1 wam-margin-bottom-0 needToFormat'>" +
@@ -158,7 +163,7 @@ function drawBarsByParentId(isChildren, categoryId, after, before, isGetAnalytic
                         "<div class='row'><div class='col-xs-12'>" + elemLink + "" +
                         "<strong id='barSum" + classType + classId + "' class='pull-right text-muted' " +
                         "value='" + classSum + "'>" +
-                        numberToString(classSum) + " руб." +
+                        (!isGetAnalyticData ? numberToString(classSum) : classSum + " из " + classLimit) + " руб." +
                         "</strong>" +
                         "</h4></div></div>" +
                         "<div class='progress " + tagClassProgress + " progress-striped active wam-margin-bottom-1' >" +
