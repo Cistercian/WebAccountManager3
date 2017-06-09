@@ -7,7 +7,9 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 /**
  * Created by Olaf on 30.04.2017.
@@ -66,5 +68,14 @@ public class DateUtil {
 
     public static LocalDate getStartOfEra(){
         return LocalDate.of(1900, 1, 1);
+    }
+
+    public static int getCountDaysInMonth(LocalDate date){
+        Calendar calendar = GregorianCalendar.getInstance();
+        calendar.clear();
+        calendar.set(Calendar.YEAR, date.getYear());
+        calendar.set(Calendar.MONTH, date.getMonthValue());
+
+        return calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
     }
 }

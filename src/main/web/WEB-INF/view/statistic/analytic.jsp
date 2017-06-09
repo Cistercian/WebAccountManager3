@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@page import="ru.hd.olaf.util.FormatUtil"%>
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-gb" lang="en-gb" dir="ltr">
 <head>
@@ -158,174 +159,201 @@
                 </div>
             </div>
 
-            <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1" style="display : none;">
+            <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1">
                 <div class="panel-heading ">
-                    <h4 class="wam-margin-bottom-0 wam-margin-top-0">Настройка рассчета данных</h4>
+                    <h3 class="wam-margin-bottom-0 wam-margin-top-0">Суммарная информация</h3>
                 </div>
                 <div class="wam-not-padding panel-body">
-                    <div class="row">
-                        <div class="col-xs-12 col-md-12">
-                            <div class="col-xs-12 col-md-6">
-                                <span class="text-justify">Дата начала периода</span>
-                            </div>
-                            <div class="col-xs-12 col-md-6">
-                                <input id="date" type="text" path="date" class="form-control wam-text-size-1"
-                                       readonly="true" style="cursor: pointer;"/>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-md-12">
-                            <div class="col-xs-12 col-md-6">
-                                <span class="text-justify">Способ расчета</span>
-                            </div>
-                            <div class="col-xs-12 col-md-6">
-                                <div class="radio">
-                                    <label>
-                                        <input id="periodWeek" type="radio" name="averagingPeriod">Недельный
-                                    </label>
+                    <div class="col-xs-12 col-md-6">
+                        <h4 class="text-justify">Ожидаемый доход:</h4>
+                    </div>
+                    <div class="col-xs-12 col-md-6">
+                        <h4 class="text-justify"><strong>${incomeSum}</strong> (в среднем ${incomeLimit}) руб</h4>
+                    </div>
+                    <div class="col-xs-12 col-md-12 wam-padding-right-0">
+                        <c:forEach items="${analyticData}" var="list">
+                            <c:if test="${list.getType() == 'CategoryIncome'}">
+                                <div class="col-xs-12 col-md-6 wam-padding-right-0">
+                                    <h4>${list.getName()}</h4>
                                 </div>
-                                <div class="radio">
-                                    <label>
-                                        <input type="radio" name="averagingPeriod" checked>Месячный
-                                    </label>
+                                <div class="col-xs-12 col-md-5 wam-padding-right-0 wam-padding-left-0">
+                                    <h4><strong>${FormatUtil.formatToString(list.getSum() * rate)}</strong>
+                                        (в среднем ${list.getFormattedLimit()}) руб</h4>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-md-6 col-md-offset-6">
-                            <button type="submit" class="btn btn-primary btn-lg btn-block wam-btn-1"
-                                    onclick="refreshData();">
-                                Обновить
-                            </button>
-                        </div>
+                                <div class="col-xs-12 col-md-1 wam-padding-right-0 wam-padding-left-0">
+                                    <h4>
+                                        <c:choose>
+                                        <c:when test="${(list.getSum() * rate) * 100 / list.getLimit() > 100}">
+                                        <strong class="text-danger">
+                                            </c:when>
+                                            <c:otherwise>
+                                            <strong>
+                                                </c:otherwise>
+                                                </c:choose>
+                                                    ${FormatUtil.formatToString((list.getSum() * rate) * 100 / list.getLimit())}</strong> %</h4>
+                                </div>
+                            </c:if>
+                        </c:forEach>
+                    </div>
+
+                    <div class="col-xs-12 col-md-6">
+                        <h4 class="text-justify">Ожидаемый расход:</h4>
+                    </div>
+                    <div class="col-xs-12 col-md-6">
+                        <h4 class="text-justify"><strong>${expenseSum}</strong> (в среднем ${expenseLimit}) руб</h4>
+                    </div>
+                    <div class="col-xs-12 col-md-12 wam-padding-right-0">
+                        <c:forEach items="${analyticData}" var="list">
+                            <c:if test="${list.getType() == 'CategoryExpense'}">
+                                <div class="col-xs-12 col-md-6 wam-padding-right-0">
+                                    <h4>${list.getName()}</h4>
+                                </div>
+                                <div class="col-xs-12 col-md-5 wam-padding-right-0 wam-padding-left-0">
+                                    <h4><strong>${FormatUtil.formatToString(list.getSum() * rate)}</strong>
+                                        (в среднем ${list.getFormattedLimit()}) руб</h4>
+                                </div>
+                                <div class="col-xs-12 col-md-1 wam-padding-right-0 wam-padding-left-0">
+                                    <h4>
+                                        <c:choose>
+                                        <c:when test="${(list.getSum() * rate) * 100 / list.getLimit() > 100}">
+                                        <strong class="text-danger">
+                                            </c:when>
+                                            <c:otherwise>
+                                            <strong>
+                                                </c:otherwise>
+                                                </c:choose>
+                                                    ${FormatUtil.formatToString((list.getSum() * rate) * 100 / list.getLimit())}</strong> %</h4>
+                                </div>
+                            </c:if>
+                        </c:forEach>
                     </div>
                 </div>
             </div>
 
             <c:set var="styles" value="${['success', 'info', 'warning', 'danger']}" scope="page" />
-            <div class="col-xs-12 col-md-12 wam-not-padding-xs" id="categoryBars">
-                <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 ">
-                    <div class="panel-heading ">
-                        <h3 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.index.categoryBars.income" /></h3>
-                    </div>
-                    <div class="wam-not-padding panel-body">
-                        <div id="dropDownCategoryBarsIncome">
+            <div id="categoryBars" class="panel panel-default wam-margin-left-1 wam-margin-right-1 ">
+                <div class="panel-heading ">
+                    <h3 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.index.categoryBars.income" /></h3>
+                </div>
+                <div class="wam-not-padding panel-body">
+                    <div id="dropDownCategoryBarsIncome">
 
-                            <c:set var="styles" value="${['success', 'info', 'warning', 'danger']}" scope="page" />
-                            <c:set var="step" value="-1" scope="page"/>
-                            <c:set var="incomeHasData" value="false" scope="page"/>
+                        <c:set var="styles" value="${['success', 'info', 'warning', 'danger']}" scope="page" />
+                        <c:set var="step" value="-1" scope="page"/>
+                        <c:set var="incomeHasData" value="false" scope="page"/>
 
-                            <c:forEach items="${analyticData}" var="list">
-                                <c:if test="${list.getType() == 'CategoryIncome'}">
+                        <c:forEach items="${analyticData}" var="list">
+                            <c:if test="${list.getType() == 'CategoryIncome'}">
 
-                                    <c:if test="${incomeHasData == 'false'}">
-                                        <c:set var="incomeHasData" value="true" scope="page"/>
-                                    </c:if>
+                                <c:if test="${incomeHasData == 'false'}">
+                                    <c:set var="incomeHasData" value="true" scope="page"/>
+                                </c:if>
 
-                                    <c:set var="id" value="${list.getId()}"/>
-                                    <c:set var="name" value="${list.getName()}"/>
-                                    <c:set var="type" value="${list.getType()}"/>
-                                    <c:set var="sum" value="${list.getSum()}"/>
-                                    <c:set var="limit" value="${list.getLimit()}"/>
-                                    <c:choose>
-                                        <c:when test="${sum >= limit}">
-                                            <c:set var="normalSum" value="100"/>
-                                            <c:set var="step" value="3" scope="page"/>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <c:set var="normalSum" value="${sum * 100 / limit}"/>
-                                            <c:set var="step" value="0" scope="page"/>
-                                        </c:otherwise>
-                                    </c:choose>
+                                <c:set var="id" value="${list.getId()}"/>
+                                <c:set var="name" value="${list.getName()}"/>
+                                <c:set var="type" value="${list.getType()}"/>
+                                <c:set var="sum" value="${list.getSum()}"/>
+                                <c:set var="limit" value="${list.getLimit()}"/>
+                                <c:choose>
+                                    <c:when test="${sum >= limit}">
+                                        <c:set var="normalSum" value="100"/>
+                                        <c:set var="step" value="3" scope="page"/>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:set var="normalSum" value="${sum * 100 / limit}"/>
+                                        <c:set var="step" value="0" scope="page"/>
+                                    </c:otherwise>
+                                </c:choose>
 
-                                    <li class="list-unstyled">
-                                        <a href="javascript:drawBarsByParentId(false, '${id}', '${after}', '${before}', true)">
-                                            <div>
-                                                <h4 class="needToFormat"><strong id="categoryBarName${id}" value="${name}">
-                                                        ${name}
-                                                </strong>
-													<span id="categoryBarSum${id}" class="pull-right text-muted"
-                                                          value="${sum}">
-														${sum} (в среднем ${limit}) руб.
-													</span></h4>
-                                                <div class="progress progress-striped active">
-                                                    <div class="progress-bar progress-bar-${styles[step]}" role="progressbar"
-                                                         aria-valuenow="${sum}" aria-valuemin="0" aria-valuemax="100"
-                                                         style="width: ${normalSum}%" value="${name}">
-                                                        <span class="sr-only">${sum}</span>
-                                                    </div>
+                                <li class="list-unstyled">
+                                    <a href="javascript:drawBarsByParentId(false, '${id}', '${after}', '${before}', true)">
+                                        <div>
+                                            <h4 class="needToFormat"><strong id="categoryBarName${id}" value="${name}">
+                                                    ${name}
+                                            </strong>
+												<span id="categoryBarSum${id}" class="pull-right text-muted"
+                                                      value="${sum}">
+													${sum} (в среднем ${limit}) руб.
+												</span></h4>
+                                            <div class="progress progress-striped active">
+                                                <div class="progress-bar progress-bar-${styles[step]}" role="progressbar"
+                                                     aria-valuenow="${sum}" aria-valuemin="0" aria-valuemax="100"
+                                                     style="width: ${normalSum}%" value="${name}">
+                                                    <span class="sr-only">${sum}</span>
                                                 </div>
                                             </div>
-                                        </a>
-                                    </li>
-                                </c:if>
-                            </c:forEach>
-                            <c:if test="${incomeHasData == 'false'}">
-                                <div class="col-xs-12 col-md-12">
-                                    <h4><span class="text-muted">${emptyData}</span></h4>
-                                </div>
+                                        </div>
+                                    </a>
+                                </li>
                             </c:if>
-                        </div>
+                        </c:forEach>
+                        <c:if test="${incomeHasData == 'false'}">
+                            <div class="col-xs-12 col-md-12">
+                                <h4><span class="text-muted">${emptyData}</span></h4>
+                            </div>
+                        </c:if>
                     </div>
                 </div>
-                <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 ">
-                    <div class="panel-heading ">
-                        <h3 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.index.categoryBars.expense" /></h3>
-                    </div>
-                    <div class="wam-not-padding panel-body ">
-                        <div id="dropDownCategoryBarsExpense">
-                            <c:set var="expenseHasData" value="false" scope="page"/>
-                            <c:set var="styles" value="${['success', 'info', 'warning', 'danger']}" scope="page" />
-                            <c:set var="step" value="-1" scope="page"/>
+            </div>
+            <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 ">
+                <div class="panel-heading ">
+                    <h3 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.index.categoryBars.expense" /></h3>
+                </div>
+                <div class="wam-not-padding panel-body ">
+                    <div id="dropDownCategoryBarsExpense">
+                        <c:set var="expenseHasData" value="false" scope="page"/>
+                        <c:set var="styles" value="${['success', 'info', 'warning', 'danger']}" scope="page" />
+                        <c:set var="step" value="-1" scope="page"/>
 
-                            <c:forEach items="${analyticData}" var="list">
-                                <c:if test="${list.getType() == 'CategoryExpense'}">
+                        <c:forEach items="${analyticData}" var="list">
+                            <c:if test="${list.getType() == 'CategoryExpense'}">
 
-                                    <c:if test="${expenseHasData == 'false'}">
-                                        <c:set var="expenseHasData" value="true" scope="page"/>
-                                    </c:if>
+                                <c:if test="${expenseHasData == 'false'}">
+                                    <c:set var="expenseHasData" value="true" scope="page"/>
+                                </c:if>
 
-                                    <c:set var="id" value="${list.getId()}"/>
-                                    <c:set var="name" value="${list.getName()}"/>
-                                    <c:set var="type" value="${list.getType()}"/>
-                                    <c:set var="sum" value="${list.getSum()}"/>
-                                    <c:set var="limit" value="${list.getLimit()}"/>
-                                    <c:choose>
-                                        <c:when test="${sum >= limit}">
-                                            <c:set var="normalSum" value="100"/>
-                                            <c:set var="step" value="3" scope="page"/>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <c:set var="normalSum" value="${sum * 100 / limit}"/>
-                                            <c:set var="step" value="0" scope="page"/>
-                                        </c:otherwise>
-                                    </c:choose>
-                                    <li class="list-unstyled">
-                                        <a href="javascript:drawBarsByParentId(false, '${id}', '${after}', '${before}', true)">
-                                            <div>
-                                                <h4 class="needToFormat"><strong id="categoryBarName${id}" value="${name}">
-                                                        ${name}
-                                                </strong>
-													<span id="categoryBarSum${id}" class="pull-right text-muted"
-                                                          value="${sum}">
-														${sum} (в среднем ${limit}) руб.
-													</span></h4>
-                                                <div class="progress progress-striped active">
-                                                    <div class="progress-bar progress-bar-${styles[step]}" role="progressbar"
-                                                         aria-valuenow="${sum}" aria-valuemin="0" aria-valuemax="100"
-                                                         style="width: ${normalSum}%" value="${name}">
-                                                        <span class="sr-only">${sum}</span>
-                                                    </div>
+                                <c:set var="id" value="${list.getId()}"/>
+                                <c:set var="name" value="${list.getName()}"/>
+                                <c:set var="type" value="${list.getType()}"/>
+                                <c:set var="sum" value="${list.getSum()}"/>
+                                <c:set var="limit" value="${list.getLimit()}"/>
+                                <c:choose>
+                                    <c:when test="${sum >= limit}">
+                                        <c:set var="normalSum" value="100"/>
+                                        <c:set var="step" value="3" scope="page"/>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:set var="normalSum" value="${sum * 100 / limit}"/>
+                                        <c:set var="step" value="0" scope="page"/>
+                                    </c:otherwise>
+                                </c:choose>
+                                <li class="list-unstyled">
+                                    <a href="javascript:drawBarsByParentId(false, '${id}', '${after}', '${before}', true)">
+                                        <div>
+                                            <h4 class="needToFormat"><strong id="categoryBarName${id}" value="${name}">
+                                                    ${name}
+                                            </strong>
+												<span id="categoryBarSum${id}" class="pull-right text-muted"
+                                                      value="${sum}">
+													${sum} (в среднем ${limit}) руб.
+												</span></h4>
+                                            <div class="progress progress-striped active">
+                                                <div class="progress-bar progress-bar-${styles[step]}" role="progressbar"
+                                                     aria-valuenow="${sum}" aria-valuemin="0" aria-valuemax="100"
+                                                     style="width: ${normalSum}%" value="${name}">
+                                                    <span class="sr-only">${sum}</span>
                                                 </div>
                                             </div>
-                                        </a>
-                                    </li>
-                                </c:if>
-                            </c:forEach>
-                            <c:if test="${expenseHasData == 'false'}">
-                                <div class="col-xs-12 col-md-12">
-                                    <h4><span class="text-muted">${emptyData}</span></h4>
-                                </div>
+                                        </div>
+                                    </a>
+                                </li>
                             </c:if>
-                        </div>
+                        </c:forEach>
+                        <c:if test="${expenseHasData == 'false'}">
+                            <div class="col-xs-12 col-md-12">
+                                <h4><span class="text-muted">${emptyData}</span></h4>
+                            </div>
+                        </c:if>
                     </div>
                 </div>
             </div>

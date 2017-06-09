@@ -1,5 +1,7 @@
 package ru.hd.olaf.util.json;
 
+import ru.hd.olaf.util.FormatUtil;
+
 import java.math.BigDecimal;
 
 /**
@@ -76,6 +78,14 @@ public class BarEntity implements DbData{
 
     public void setLimit(BigDecimal limit) {
         this.limit = limit;
+    }
+
+    public String getFormattedSum(){
+        return FormatUtil.formatToString(limit);
+    }
+
+    public String getFormattedLimit(){
+        return FormatUtil.formatToString(limit);
     }
 
     @Override
