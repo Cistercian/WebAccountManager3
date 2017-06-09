@@ -1,6 +1,7 @@
 package ru.hd.olaf.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import ru.hd.olaf.util.DateUtil;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -23,8 +24,8 @@ public class Amount {
     private String details;
     private User userId;
     private Product productId;
-
     private Limit limit;
+    private Byte type;
 
     @Id
     @Column(name = "ID", nullable = false)
@@ -111,6 +112,16 @@ public class Amount {
         this.details = details;
     }
 
+    @Basic
+    @Column(name = "type", nullable = false)
+    public Byte getType() {
+        return type;
+    }
+
+    public void setType(Byte type) {
+        this.type = type;
+    }
+
     @Transient
     public LocalDate getLocalDate(){
         //convert amounts.date to LocalDate
@@ -127,6 +138,21 @@ public class Amount {
 
     public void setLimit(Limit limit) {
         this.limit = limit;
+    }
+
+    public Amount cloneToRegular(){
+        Amount regular = new Amount();
+
+        regular.setType((byte) 2);
+        regular.setName(name);
+        regular.setProductId(productId);
+        regular.setCategoryId(categoryId);
+        regular.setPrice(price);
+        regular.setDetails("Обязательный платеж для анализа прогнозируемого результата. " + details);
+        regular.setUserId(userId);
+        regular.setDate(DateUtil.getDateOfStartOfEra());
+
+        return regular;
     }
 
     @Override

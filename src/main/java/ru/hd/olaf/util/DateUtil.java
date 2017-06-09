@@ -78,4 +78,8 @@ public class DateUtil {
 
         return calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
     }
+
+    public static Date getDateOfStartOfEra(){
+        return getDate(getStartOfEra());
+    }
 }

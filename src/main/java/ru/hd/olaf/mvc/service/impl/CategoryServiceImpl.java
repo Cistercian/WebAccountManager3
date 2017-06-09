@@ -290,7 +290,8 @@ public class CategoryServiceImpl implements CategoryService {
                 user,
                 category,
                 DateUtil.getDate(after),
-                DateUtil.getDate(before)
+                DateUtil.getDate(before),
+                true
         );
         //если запрос по определенной категории, то необходимо отдельно собрать данные по группам
         if (category != null)
@@ -298,28 +299,30 @@ public class CategoryServiceImpl implements CategoryService {
                     user,
                     category,
                     DateUtil.getDate(after),
-                    DateUtil.getDate(before)
+                    DateUtil.getDate(before),
+                    true
             ));
 
         logger.debug("Список анализируемых данных:");
         LogUtil.logList(logger, list);
 
         logger.debug("Сбор данных по оборотам в текущем месяце.");
-        //TODO: возможна ситуация, когда оборота в усредненных данных нет, а в текущем месяце информация есть.
         Date beginOfMonth = DateUtil.getDate(DateUtil.getStartOfMonth());
         Date today = DateUtil.getDate(LocalDate.now());
         List<AnalyticData> listThisMonth = categoryRepository.getAnalyticDataByCategory(
                 user,
                 category,
                 beginOfMonth,
-                today
+                today,
+                false
         );
         if (category != null)
             listThisMonth.addAll(categoryRepository.getAnalyticDataByProduct(
                     user,
                     category,
                     beginOfMonth,
-                    today
+                    today,
+                    false
             ));
 
         for (AnalyticData entity : listThisMonth){
@@ -338,10 +341,18 @@ public class CategoryServiceImpl implements CategoryService {
                 list.add(entity);
             }
         }
-        listThisMonth = null;
 
         logger.debug("Список данных с суммами за текущий месяц:");
         LogUtil.logList(logger, list);
+
+        //агрегация данных по суммам, которые следует исключить из расчета среднестатистических (разовые обороты)
+        //и учет обязательных (периодических, но не еще исполненных в текущем месяцев)
+        listThisMonth = categoryRepository.getOneTimeAnalyticDataByCategory(
+                user,
+                category,
+                DateUtil.getDate(after),
+                DateUtil.getDate(before)
+        );
 
         Map<String, AnalyticData> map = new HashMap<String, AnalyticData>();
 

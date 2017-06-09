@@ -367,4 +367,13 @@ public class AmountServiceImpl implements AmountService {
 
         return calendarEntities;
     }
+
+    /**
+     * Функция возвращает список постоянных оборотов (с типом 2)
+     * @param user рассматриваемый пользователь
+     * @return список
+     */
+    public List<Amount> getAllRegular(User user) {
+        return amountRepository.getAllRegular(user);
+    }
 }

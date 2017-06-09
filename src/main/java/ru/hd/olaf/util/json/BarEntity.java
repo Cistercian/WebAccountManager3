@@ -16,12 +16,19 @@ public class BarEntity implements DbData{
     private String name;
     private BigDecimal limit;
 
+    //added 06/06/17
+    //поля для аналитики прогнозирования
+    private BigDecimal oneTimeSum;
+    private BigDecimal regularSum;
+
     public BarEntity(String type, int id, BigDecimal sum, String name) {
         this.type = type;
         this.id = id;
         this.sum = sum.setScale(2, BigDecimal.ROUND_HALF_UP);
         this.name = name;
         this.limit = new BigDecimal("0");
+        this.oneTimeSum = new BigDecimal("0");
+        this.regularSum = new BigDecimal("0");
     }
 
     public BarEntity(String type, int id, Double sum, String name) {
@@ -30,6 +37,8 @@ public class BarEntity implements DbData{
         this.sum = new BigDecimal(sum).setScale(2, BigDecimal.ROUND_HALF_UP);
         this.name = name;
         this.limit = new BigDecimal("0");
+        this.oneTimeSum = new BigDecimal("0");
+        this.regularSum = new BigDecimal("0");
     }
 
     public BarEntity(String type, int id, BigDecimal sum, String name, BigDecimal limit) {
@@ -86,6 +95,22 @@ public class BarEntity implements DbData{
 
     public String getFormattedLimit(){
         return FormatUtil.formatToString(limit);
+    }
+
+    public BigDecimal getOneTimeSum() {
+        return oneTimeSum;
+    }
+
+    public void setOneTimeSum(BigDecimal oneTimeSum) {
+        this.oneTimeSum = oneTimeSum;
+    }
+
+    public BigDecimal getRegularSum() {
+        return regularSum;
+    }
+
+    public void setRegularSum(BigDecimal regularSum) {
+        this.regularSum = regularSum;
     }
 
     @Override

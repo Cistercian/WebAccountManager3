@@ -64,7 +64,7 @@
 
 <spring:message code="label.page-amount.selectCategory" var="selectCategory"/>
 <spring:message code="label.page-category.selectCategory" var="selectParent"/>
-<spring:message code="label.page-category.new" var="newCategory"/>
+<spring:message code="label.page-category.new" var="newEntity"/>
 
 <script language="javascript" type="text/javascript">
     $(document).ready(function () {
@@ -207,8 +207,8 @@
                 setDropdownListId(-1, '${selectCategory}', 'categories');
                 setDropdownListId(-1, '${selectParent}','parentCategories');
                 if ($('*').is('#currentCategory')){
-                    $('#currentCategory').val('${newCategory}');
-                    $('#currentCategory').text('${newCategory}');
+                    $('#currentCategory').val('${newEntity}');
+                    $('#currentCategory').text('${newEntity}');
                     $('#currentCategory').append("<span class='caret'></span>");
                 }
             });
@@ -220,6 +220,9 @@
                 $('responseUrl').val('');
             });
         }
+    }
+    function createRegular(){
+        location.href='/amounts/regular?amountId=${id}';
     }
 </script>
 
@@ -237,7 +240,16 @@
                     <input type="hidden" name="referer" class="form-control" value="${previousPage}"/>
                     <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1">
                         <div class="panel-heading ">
-                            <h3 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.page-amount.title"/></strong></h3>
+                            <div class="row ">
+                                <div class='col-xs-12 col-md-6 wam-margin-bottom-2'>
+                                    <h3 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.page-amount.title"/></h3>
+                                </div>
+                                <div class='col-xs-12 col-md-6 wam-margin-top-1'>
+                                    <button class="btn-default btn-lg btn-block" onclick="createRegular();return false;">
+                                        <spring:message code="label.page-amount.regular.create"/>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1">
@@ -260,6 +272,18 @@
                                 </div>
                             </spring:bind>
                                 <%--Конец блока даты--%>
+                            <spring:bind path="type">
+                                <div class="col-xs-10 col-md-5 wam-margin-top-1 wam-not-padding-xs">
+                                    <h4 class="wam-font-size"><strong>Игнорировать оборот при прогнозе</strong></h4>
+                                </div>
+                                <div class="col-xs-2 col-md-1 col-sm-12 wam-margin-top-1 wam-not-padding-xs">
+                                    <div class="checkbox">
+                                        <label>
+                                            <form:checkbox path="type" value="1"/>
+                                        </label>
+                                    </div>
+                                </div>
+                            </spring:bind>
                                 <%--Имя сущности--%>
                             <spring:bind path="name">
                                 <spring:message code="label.page-amount.name" var="label"/>
@@ -414,7 +438,7 @@
                                     <h3 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.page-category.title"/></h3>
                                 </div>
                                 <c:if test="${empty name}">
-                                    <c:set var="name" value="${newCategory}" scope="page"/>
+                                    <c:set var="name" value="${newEntity}" scope="page"/>
                                 </c:if>
 
                                 <div class='col-xs-12 col-md-6 wam-margin-top-1 catcher-events'>
@@ -427,7 +451,7 @@
                                         <li class="wam-text-size-1">
                                             <a onclick="displayLoader();location.href='/category?referer=${previousPage}';"
                                                class="needToFormat">
-                                                <span>${newCategory}</span>
+                                                <span>${newEntity}</span>
                                             </a>
                                         </li>
                                         <c:if test="${not empty parents}">
@@ -697,6 +721,206 @@
                         <div class="col-xs-12 col-md-6 wam-not-padding-xs">
                             <button type="submit" class="btn btn-danger btn-lg btn-block wam-btn-2"
                                     onclick="Delete('product', ${id});return false;">
+                                <spring:message code="label.page-amount.btnDelete"/>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </c:if>
+        <c:if test="${className=='regular'}">
+            <div class="container-fluid wam-not-padding-xs">
+                <form:form id="regularForm" method="POST" modelAttribute="regularForm" action="/amount/save">
+                    <input type="hidden" name="referer" class="form-control" value="${previousPage}"/>
+                    <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1">
+                        <div class="panel-heading ">
+                            <div class="row ">
+                                <div class='col-xs-12 col-md-6 wam-margin-bottom-2'>
+                                    <h3 class="wam-margin-bottom-0 wam-margin-top-0">Редактирование записи ежемесячного оборота</h3>
+                                </div>
+                                <c:if test="${empty name}">
+                                    <c:set var="name" value="${newEntity}" scope="page"/>
+                                </c:if>
+
+                                <div class='col-xs-12 col-md-6 wam-margin-top-1 catcher-events'>
+                                    <button id="currentCategory" class="btn-default btn-lg btn-block dropdown-toggle "
+                                            data-toggle="dropdown" value="${name}">
+                                            ${name}
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu ">
+                                        <li class="wam-text-size-1">
+                                            <a onclick="displayLoader();location.href='/amounts/regular?referer=${previousPage}';"
+                                               class="needToFormat">
+                                                <span>${newEntity}</span>
+                                            </a>
+                                        </li>
+                                        <c:if test="${not empty regulars}">
+                                            <li class="divider"></li>
+                                        </c:if>
+                                        <c:forEach items="${regulars}" var="list">
+                                            <li class="wam-text-size-1">
+                                                <a onclick="displayLoader();location.href='/amounts/regular?id=${list.getId()}&referer=${previousPage}';"
+                                                   class="needToFormat">
+                                                    <span>${list.getName()}</span>
+                                                </a>
+                                            </li>
+                                        </c:forEach>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1">
+                        <div class="wam-not-padding panel-body ">
+                            <!-- Скрытые поля -->
+                            <spring:bind path="id">
+                                <form:input type="hidden" path="id" class="form-control erasable" placeholder="${id}" ></form:input>
+                            </spring:bind>
+                                <%--Дата--%>
+                            <spring:bind path="date">
+                                <form:input type="hidden" path="date" class="form-control erasable" ></form:input>
+                            </spring:bind>
+                                <%--Конец блока даты--%>
+                            <spring:bind path="type">
+                                <form:input type="hidden" path="type" class="form-control erasable" ></form:input>
+                            </spring:bind>
+                                <%--Имя сущности--%>
+                            <spring:bind path="name">
+                                <spring:message code="label.page-amount.name" var="label"/>
+                                <div class="col-xs-12 col-md-12 wam-not-padding-xs">
+                                    <h4><strong>${label}</strong></h4>
+                                </div>
+                                <div class="col-xs-12 col-md-12 wam-not-padding-xs">
+                                    <div class="form-group ${status.error ? 'has-error' : ''} ">
+                                        <form:input type="text" path="name" class="form-control form input-lg erasable"
+                                                    placeholder="${label}" onclick="scrollPage($($(this)).offset().top);"></form:input>
+                                        <form:errors path="name"></form:errors>
+                                    </div>
+                                </div>
+                            </spring:bind>
+                                <%--Конец имени сущности--%>
+                                <%--Товарная группа--%>
+                            <spring:bind path="productId">
+                                <spring:message code="label.page-amount.product" var="label"/>
+                                <div class="col-xs-12 col-md-12 wam-not-padding-xs">
+                                    <h4><strong>${label}</strong></h4>
+                                </div>
+                                <div class="col-xs-12 col-md-12 wam-not-padding-xs">
+                                    <div class="form-group ${status.error ? 'has-error' : ''}">
+                                        <input id="productId" type="hidden" class="erasable"
+                                               value=<c:if test="${not empty product}">${product.getId()}"></c:if></input>
+										<input id="productName" type="text" name="productName" class="form-control form input-lg erasable"
+                                        placeholder="${label}" onclick="scrollPage($($(this)).offset().top);"
+                                        value=<c:if test="${not empty product}">
+                                        "${product.getName()}"</c:if>>
+                                        </input>
+                                        <form:errors path="productId"></form:errors>
+                                    </div>
+                                </div>
+                            </spring:bind>
+                                <%--Конец товарной группы--%>
+                                <%--Категория--%>
+                            <spring:bind path="categoryId">
+                                <input id="categoryId" type="hidden" name="category" class="form-control erasable"
+                                       value="<c:if test="${not empty category}">${category.getId()}</c:if>"></input>
+
+
+                                <div class="col-xs-12 col-md-10  catcher-events">
+                                    <h4 class="needToFormat">
+                                        <strong>${selectCategory}</strong>
+                                    </h4>
+                                    <div class="form-group wam-not-padding wam-not-padding-xs ${status.error ? 'has-error' : ''}">
+                                        <button id="btnCategories" class="btn-default btn-lg btn-block dropdown-toggle"
+                                                data-toggle="dropdown" onclick="scrollPage($($(this)).offset().top);"
+                                                value="<c:if test="${not empty category}">${category.getId()}</c:if>">
+                                            <c:choose>
+                                                <c:when test="${not empty category}">
+                                                    ${category.getName()}
+                                                </c:when>
+                                                <c:otherwise>
+                                                    ${selectCategory}
+                                                </c:otherwise>
+                                            </c:choose>
+                                            <span class="caret"></span>
+                                        </button>
+                                        <ul id="dropdownCategories" class="dropdown-menu">
+                                            <li class="wam-text-size-1">
+                                                <a onclick="setDropdownListId(-1, '${selectCategory}', 'categories');return false;" class="needToFormat">
+                                                    <span>${selectCategory}</span>
+                                                </a>
+                                            </li>
+                                            <c:if test="${not empty categories}">
+                                                <li class="divider"></li>
+                                            </c:if>
+                                            <c:forEach items="${categories}" var="list">
+                                                <li class="wam-text-size-1">
+                                                    <a id='${list.getId()}' onclick="setDropdownListId('${list.getId()}','${list.getName()}',
+                                                            'categories');return false;" class="needToFormat">
+                                                        <span>${list.getName()}</span>
+                                                    </a>
+                                                </li>
+                                            </c:forEach>
+                                        </ul>
+                                        <form:errors path="categoryId"></form:errors>
+                                    </div>
+                                </div>
+                            </spring:bind>
+                                <%--Конец категории--%>
+                                <%--Цена--%>
+                            <spring:bind path="price">
+                                <spring:message code="label.page-amount.price" var="label"/>
+                                <div class="col-xs-12 col-md-2 wam-not-padding-xs">
+                                    <h4><strong>
+                                            ${label}
+                                    </strong></h4>
+                                    <div class="form-group ${status.error ? 'has-error' : ''}">
+                                        <form:input type="number" path="price" class="form-control input-lg erasable"
+                                                    placeholder="${label}" onclick="scrollPage($($(this)).offset().top);"/>
+                                        <form:errors path="price"></form:errors>
+                                    </div>
+                                </div>
+                            </spring:bind>
+                                <%--Конец цены--%>
+                                <%--Описание--%>
+                            <spring:bind path="details">
+                                <spring:message code="label.page-amount.details" var="label"/>
+                                <div class="col-xs-12 col-md-12 wam-not-padding-xs">
+                                    <h4><strong>${label}</strong></h4>
+                                </div>
+                                <div class="col-xs-12 col-md-12 wam-not-padding-xs">
+                                    <div class="form-group ${status.error ? 'has-error' : ''}">
+                                        <form:textarea type="text" path="details" class="form-control input-lg erasable" rows="5"
+                                                       placeholder='${label}'></form:textarea>
+                                        <form:errors path="details"></form:errors>
+                                    </div>
+                                </div>
+                            </spring:bind>
+                                <%--Конец описания--%>
+                        </div>
+                    </div>
+                </form:form>
+                <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-0">
+                    <div class="wam-not-padding panel-body">
+                        <div class="col-xs-12 col-md-6 wam-not-padding-xs">
+                            <button type="submit" class="btn btn-primary btn-lg btn-block wam-btn-1" onclick="regularForm.submit();">
+                                <spring:message code="label.page-amount.btnOk"/>
+                            </button>
+                        </div>
+                        <div class="col-xs-12 col-md-6 wam-not-padding-xs">
+                            <button type="submit" class="btn-default btn-lg btn-block wam-btn-1 return" onclick="location.href='${previousUrl}'">
+                                <spring:message code="label.page-amount.btnCancel"/>
+                            </button>
+                        </div>
+                        <div class="col-xs-12 col-md-6 col-md-push-6 wam-not-padding-xs ">
+                            <button type="submit" class="btn-default btn-lg btn-block wam-btn-1"
+                                    onclick="location.href='/amounts/regular?referer=${previousPage}'">
+                                <spring:message code="label.page-amount.btnNew"/>
+                            </button>
+                        </div>
+                        <div class="col-xs-12 col-md-6 col-md-pull-6 wam-not-padding-xs">
+                            <button type="submit"class="btn btn-danger btn-lg btn-block wam-btn-2"
+                                    onclick="Delete('amount', '${id}');return false;">
                                 <spring:message code="label.page-amount.btnDelete"/>
                             </button>
                         </div>

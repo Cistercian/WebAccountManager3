@@ -33,6 +33,7 @@ public interface CategoryRepository extends CrudRepository<Category, Integer> {
             "FROM Amount a LEFT JOIN a.categoryId c " +
             "WHERE c.userId = ?1 AND c.parentId = ?2 AND " +
             "a.date BETWEEN ?3 AND ?4 " +
+            "AND a.type != 2" +
             "GROUP BY c.id HAVING COUNT(c.id) > 0")
     List<BarEntity> getBarEntityByUserIdAndSubCategory(User user, Category category, Date after, Date before);
 
@@ -53,6 +54,7 @@ public interface CategoryRepository extends CrudRepository<Category, Integer> {
             "FROM Amount a LEFT JOIN a.categoryId c LEFT JOIN c.parentId p " +
             "WHERE c.userId = ?1  AND " +
             "a.date BETWEEN ?2 AND ?3 " +
+            "AND a.type != 2" +
             "GROUP BY c.id " +
             " HAVING COUNT(c.id) > 0")
     List<BarEntity> getBarEntityOfParentsByUserId(User user, Date after, Date before);
@@ -72,15 +74,17 @@ public interface CategoryRepository extends CrudRepository<Category, Integer> {
             "FROM Amount a LEFT JOIN a.categoryId c LEFT JOIN c.parentId p " +
             "WHERE c.userId = ?1  AND " +
             "(?2 = null OR c.parentId = ?2) AND " +
-            "a.date BETWEEN ?3 AND ?4 " +
+            "a.date BETWEEN ?3 AND ?4 AND " +
+            "((?5 = true AND a.type = 0) OR (?5 = false AND a.type != 2)) " +
             "GROUP BY c.id " +
             " HAVING COUNT(c.id) > 0")
-    List<AnalyticData> getAnalyticDataByCategory(User user, Category category, Date after, Date before);
+    List<AnalyticData> getAnalyticDataByCategory(User user, Category category, Date after, Date before, boolean isGetAvgData);
 
     @Query("SELECT SUM(a.price) FROM Amount a " +
             "WHERE a.userId = ?1 AND " +
             "a.categoryId = ?2 AND " +
-            "a.date BETWEEN ?3 AND ?4")
+            "a.date BETWEEN ?3 AND ?4 " +
+            "AND a.type != 2")
     BigDecimal getCategorySum(User user, Category category, Date after, Date before);
 
     @Query("SELECT new ru.hd.olaf.util.json.AnalyticData(" +
@@ -94,14 +98,54 @@ public interface CategoryRepository extends CrudRepository<Category, Integer> {
             "WHERE a.userId = ?1  AND " +
             "a.categoryId = ?2 AND " +
             "a.date BETWEEN ?3 AND ?4 " +
+            "AND a.type =0 AND " +
+            "((?5 = true AND a.type = 0) OR (?5 = false AND a.type != 2)) " +
             "GROUP BY p.id " +
             " HAVING COUNT(p.id) > 0")
-    List<AnalyticData> getAnalyticDataByProduct(User user, Category category, Date after, Date before);
+    List<AnalyticData> getAnalyticDataByProduct(User user, Category category, Date after, Date before, boolean isGetAvgData);
 
     @Query("SELECT SUM(a.price) FROM Amount a " +
             "WHERE a.userId = ?1 AND " +
             "a.categoryId = ?2 AND " +
             "a.productId = ?3 AND " +
-            "a.date BETWEEN ?4 AND ?5")
+            "a.date BETWEEN ?4 AND ?5 " +
+            "AND a.type != 2")
     BigDecimal getProductSum(User user, Category category, Product product, Date after, Date before);
+
+    @Query("SELECT new ru.hd.olaf.util.json.AnalyticData(" +
+            "CASE " +
+            "WHEN p IS NOT NULL THEN 'CategoryChild' " +
+            "WHEN (c.type = 0) THEN 'CategoryIncome' " +
+            "WHEN c.type = 1 THEN 'CategoryExpense' " +
+            "" +
+            "END " +
+            ", c.id, " +
+            "SUM(a.price), " +
+            "c.name," +
+            "MAX(a.date)," +
+            "MIN(a.date)) " +
+            "FROM Amount a LEFT JOIN a.categoryId c LEFT JOIN c.parentId p " +
+            "WHERE c.userId = ?1  AND " +
+            "(?2 = null OR c.parentId = ?2) AND " +
+            "a.date BETWEEN ?3 AND ?4 " +
+            "AND a.type = 1" +
+            "GROUP BY c.id " +
+            " HAVING COUNT(c.id) > 0")
+    List<AnalyticData> getOneTimeAnalyticDataByCategory(User user, Category category, Date after, Date before);
+
+    @Query("SELECT new ru.hd.olaf.util.json.AnalyticData(" +
+            "'Product' " +
+            ", p.id, " +
+            "SUM(a.price), " +
+            "p.name," +
+            "MAX(a.date)," +
+            "MIN(a.date)) " +
+            "FROM Amount a LEFT JOIN a.productId p " +
+            "WHERE a.userId = ?1  AND " +
+            "a.categoryId = ?2 AND " +
+            "a.date BETWEEN ?3 AND ?4 " +
+            "AND a.type = 1" +
+            "GROUP BY p.id " +
+            " HAVING COUNT(p.id) > 0")
+    List<AnalyticData> getOneTimeAnalyticDataByProduct(User user, Category category, Date after, Date before);
 }

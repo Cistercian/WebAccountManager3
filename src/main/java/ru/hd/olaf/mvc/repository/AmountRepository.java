@@ -22,13 +22,16 @@ public interface AmountRepository extends CrudRepository<Amount, Integer> {
 
     List<Amount> findByUserId(User user);
 
-    @Query("Select a from Amount a where a.userId = ?1 and a.date between ?2 and ?3")
+    @Query("Select a from Amount a where a.userId = ?1 and a.date between ?2 and ?3 and a.type != 2")
     List<Amount> findByUserIdAndDateBetween(User userId, Date after, Date before);
 
-    @Query("Select a from Amount a where a.productId = ?1 and a.userId = ?2 and a.date between ?3 and ?4")
+    @Query("Select a from Amount a where a.userId = ?1 and a.type = 2")
+    List<Amount> getAllRegular(User userId);
+
+    @Query("Select a from Amount a where a.productId = ?1 and a.userId = ?2 and a.date between ?3 and ?4 and a.type != 2")
     List<Amount> findByProductIdAndUserIdAndDateBetween(Product product, User user, Date after, Date before);
 
-    @Query("Select a from Amount a where a.productId = ?1 and a.categoryId = ?2 and a.userId = ?3 and a.date between ?4 and ?5")
+    @Query("Select a from Amount a where a.productId = ?1 and a.categoryId = ?2 and a.userId = ?3 and a.date between ?4 and ?5 and a.type != 2")
     List<Amount> findByProductIdAndCategoryIdAndUserIdAndDateBetween(Product product, Category category, User user, Date after, Date before);
 
     @Query("SELECT new ru.hd.olaf.util.json.BarEntity(" +
@@ -39,6 +42,7 @@ public interface AmountRepository extends CrudRepository<Amount, Integer> {
             "FROM Amount a LEFT JOIN a.productId p WHERE " +
             "a.userId = ?1 AND a.categoryId = ?2 AND " +
             "a.date BETWEEN ?3 AND ?4 " +
+            "AND a.type != 2" +
             "GROUP BY p.id HAVING COUNT(p.id) > 0")
     List<BarEntity> getBarEntityByUserIdAndCategoryIdAndDateGroupByProductId(User user,
                                                                              Category category,
@@ -50,7 +54,8 @@ public interface AmountRepository extends CrudRepository<Amount, Integer> {
             "WHERE a.categoryId = c AND " +
             "c.type = ?1 AND " +
             "a.userId = ?2 AND " +
-            "a.date BETWEEN ?3 AND ?4")
+            "a.date BETWEEN ?3 AND ?4 " +
+            "AND a.type != 2")
     BigDecimal getSumByTypeAndUserIdAndDate(Byte type, User userId, Date after, Date before);
 
     @Query("Select a from Amount a " +
@@ -59,7 +64,8 @@ public interface AmountRepository extends CrudRepository<Amount, Integer> {
             "WHERE a.userId = ?1 and a.date between ?3 and ?4 and " +
             "(UPPER(a.name) LIKE ?2 OR " +
             "UPPER(p.name) LIKE ?2 OR " +
-            "UPPER(c.name) LIKE ?2) ")
+            "UPPER(c.name) LIKE ?2) " +
+            "AND a.type != 2")
     List<Amount> getByUserIdAndMatchingNameAndDateBetween(User userId, String query, Date after, Date before);
 
     @Query("Select AVG(a.price) from Amount a " +
@@ -68,7 +74,8 @@ public interface AmountRepository extends CrudRepository<Amount, Integer> {
             "WHERE a.userId = ?1 and a.date between ?3 and ?4 and " +
             "(UPPER(a.name) LIKE ?2 OR " +
             "UPPER(p.name) LIKE ?2 OR " +
-            "UPPER(c.name) LIKE ?2) ")
+            "UPPER(c.name) LIKE ?2) " +
+            "AND a.type != 2")
     BigDecimal getAvgPriceByUserIdAndMatchingNameAndDateBetween(User userId, String query, Date after, Date before);
 
 }

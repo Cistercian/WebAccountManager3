@@ -19,6 +19,7 @@ import ru.hd.olaf.mvc.service.*;
 import ru.hd.olaf.mvc.validator.AmountValidator;
 import ru.hd.olaf.mvc.validator.CategoryValidator;
 import ru.hd.olaf.mvc.validator.ProductValidator;
+import ru.hd.olaf.util.DateUtil;
 import ru.hd.olaf.util.LogUtil;
 import ru.hd.olaf.util.json.JsonResponse;
 import ru.hd.olaf.util.json.ResponseType;
@@ -209,6 +210,7 @@ public class DataController {
 
             amount = (Amount) response.getEntity();
             model.addAttribute("id", id);
+            model.addAttribute("type", amount.getType());
             model.addAttribute("product", amount.getProductId());
             model.addAttribute("category", amount.getCategoryId());
 
@@ -308,7 +310,10 @@ public class DataController {
             amountForm.setProductId(product);
         }
         //указываем владельца
-        amountForm.setUserId(securityService.findLoggedUser());
+        User currentUser = securityService.findLoggedUser();
+        amountForm.setUserId(currentUser);
+        //указываем тип (0 - обычный оборот, 1 - непереодический (следует игнорировать при прогнозе))
+        if (amountForm.getType() == null) amountForm.setType((byte)0);
 
         logger.debug(String.format("Обрабатываемая сущность: %s, category: %s, product: %s",
                 amountForm.toString(),
@@ -316,7 +321,6 @@ public class DataController {
                 amountForm.getProductId() != null ? amountForm.getProductId() : ""));
 
         ModelAndView modelAndView = new ModelAndView("/data/data");
-        modelAndView.addObject("className", "amount");
 
         amountValidator.validate(amountForm, bindingResult);
 
@@ -330,9 +334,19 @@ public class DataController {
 
         modelAndView.addObject("product", amountForm.getProductId());
         modelAndView.addObject("category", amountForm.getCategoryId());
-        modelAndView.addObject("amountForm", amountForm);
-
+        modelAndView.addObject("type", amountForm.getType());
         modelAndView.addObject("categories", categoryService.getAll());
+
+
+        if (amountForm.getType() != 2) {
+            modelAndView.addObject("className", "amount");
+            modelAndView.addObject("amountForm", amountForm);
+        } else {
+            modelAndView.addObject("className", "regular");
+            modelAndView.addObject("regularForm", amountForm);
+            modelAndView.addObject("regulars", amountService.getAllRegular(currentUser));
+            modelAndView.addObject("name", amountForm.getName());
+        }
 
         addRefAfterSave(refererParam, modelAndView);
 
@@ -475,6 +489,59 @@ public class DataController {
             modelAndView.addObject("responseType", response.getType());
             modelAndView.addObject("responseUrl", url);
         }
+    }
+
+    @RequestMapping(value = "/amounts/regular", method = RequestMethod.GET)
+    public ModelAndView getViewRegularAmount(@RequestParam(value = "amountId", required = false) Integer amountId,
+                                             @RequestParam(value = "id", required = false) Integer id) {
+        logger.debug(LogUtil.getMethodName());
+
+        ModelAndView modelAndView = new ModelAndView("/data/data");
+
+        modelAndView.addObject("className", "regular");
+        User currentUser = securityService.findLoggedUser();
+
+        Amount regular = new Amount();
+        regular.setUserId(currentUser);
+        regular.setType((byte)2);
+        regular.setDate(DateUtil.getDateOfStartOfEra());
+
+        if (amountId != null) {
+            logger.debug("Формируем запись об обязательном обороте на основании существующего");
+
+            JsonResponse response = utilService.getById(Amount.class, amountId);
+
+            if (response.getType() == ResponseType.SUCCESS) {
+                Amount amount = (Amount) response.getEntity();
+                logger.debug(String.format("Обрабатываем оборот %s", amount));
+
+                regular = amount.cloneToRegular();
+
+                modelAndView.addObject("product", regular.getProductId());
+                modelAndView.addObject("category", regular.getCategoryId());
+            } else {
+                logger.debug("Ошибка - не найден переданный оборот. Формируем пустую форму");
+            }
+        } else if (id != null) {
+            JsonResponse response = utilService.getById(Amount.class, id);
+            if (response.getType() == ResponseType.SUCCESS) {
+                regular = (Amount) response.getEntity();
+
+                modelAndView.addObject("name", regular.getName());
+                modelAndView.addObject("id", id);
+                modelAndView.addObject("product", regular.getProductId());
+                modelAndView.addObject("category", regular.getCategoryId());
+            } else {
+                logger.debug("Ошибка - не найден запрашиваемый объект. Формируем пустую форму");
+            }
+        }
+
+        modelAndView.addObject("categories", categoryService.getAll());
+        modelAndView.addObject("regulars", amountService.getAllRegular(currentUser));
+
+        modelAndView.addObject("regularForm", regular);
+
+        return modelAndView;
     }
 
     @InitBinder
