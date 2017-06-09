@@ -15,6 +15,10 @@ public class AnalyticData implements DbData{
     private Date minDate;
     private BigDecimal currentSum;
 
+    //added 06/06/17
+    //поля для аналитики прогнозирования
+    private BigDecimal oneTimeSum;
+    private BigDecimal regularSum;
 
     public AnalyticData(String type, int id, BigDecimal avgSum, String name, Date maxDate, Date minDate) {
         this.type = type;
@@ -24,6 +28,8 @@ public class AnalyticData implements DbData{
         this.maxDate = maxDate;
         this.minDate = minDate;
         currentSum = new BigDecimal("0");
+        this.oneTimeSum = new BigDecimal("0");
+        this.regularSum = new BigDecimal("0");
     }
 
     public BigDecimal getCurrentSum() {
@@ -80,6 +86,22 @@ public class AnalyticData implements DbData{
 
     public void setMinDate(Date minDate) {
         this.minDate = minDate;
+    }
+
+    public BigDecimal getOneTimeSum() {
+        return oneTimeSum;
+    }
+
+    public void setOneTimeSum(BigDecimal oneTimeSum) {
+        this.oneTimeSum = oneTimeSum;
+    }
+
+    public BigDecimal getRegularSum() {
+        return regularSum;
+    }
+
+    public void setRegularSum(BigDecimal regularSum) {
+        this.regularSum = regularSum;
     }
 
     @Override

@@ -173,24 +173,32 @@
                     <div class="col-xs-12 col-md-12 wam-padding-right-0">
                         <c:forEach items="${analyticData}" var="list">
                             <c:if test="${list.getType() == 'CategoryIncome'}">
+                                <c:set var="sum" value="${(list.getSum() - list.getOneTimeSum()) * rate + list.getOneTimeSum() + list.getRegularSum()}" scope="page"/>
                                 <div class="col-xs-12 col-md-6 wam-padding-right-0">
                                     <h4>${list.getName()}</h4>
                                 </div>
                                 <div class="col-xs-12 col-md-5 wam-padding-right-0 wam-padding-left-0">
-                                    <h4><strong>${FormatUtil.formatToString(list.getSum() * rate)}</strong>
+                                    <h4><strong>${FormatUtil.formatToString(sum)}</strong>
                                         (в среднем ${list.getFormattedLimit()}) руб</h4>
                                 </div>
                                 <div class="col-xs-12 col-md-1 wam-padding-right-0 wam-padding-left-0">
                                     <h4>
                                         <c:choose>
-                                        <c:when test="${(list.getSum() * rate) * 100 / list.getLimit() > 100}">
+                                        <c:when test="${list.getLimit() > 0}">
+                                        <c:choose>
+                                        <c:when test="${sum * 100 / list.getLimit() > 100}">
                                         <strong class="text-danger">
                                             </c:when>
                                             <c:otherwise>
                                             <strong>
                                                 </c:otherwise>
                                                 </c:choose>
-                                                    ${FormatUtil.formatToString((list.getSum() * rate) * 100 / list.getLimit())}</strong> %</h4>
+                                                    ${FormatUtil.formatToString(sum * 100 / list.getLimit())}</strong> %</h4>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <strong class="text-danger">100</strong> %</h4>
+                                    </c:otherwise>
+                                    </c:choose>
                                 </div>
                             </c:if>
                         </c:forEach>
@@ -205,24 +213,32 @@
                     <div class="col-xs-12 col-md-12 wam-padding-right-0">
                         <c:forEach items="${analyticData}" var="list">
                             <c:if test="${list.getType() == 'CategoryExpense'}">
+                                <c:set var="sum" value="${(list.getSum() - list.getOneTimeSum()) * rate + list.getOneTimeSum() + list.getRegularSum()}" scope="page"/>
                                 <div class="col-xs-12 col-md-6 wam-padding-right-0">
                                     <h4>${list.getName()}</h4>
                                 </div>
                                 <div class="col-xs-12 col-md-5 wam-padding-right-0 wam-padding-left-0">
-                                    <h4><strong>${FormatUtil.formatToString(list.getSum() * rate)}</strong>
+                                    <h4><strong>${FormatUtil.formatToString(sum)}</strong>
                                         (в среднем ${list.getFormattedLimit()}) руб</h4>
                                 </div>
                                 <div class="col-xs-12 col-md-1 wam-padding-right-0 wam-padding-left-0">
                                     <h4>
                                         <c:choose>
-                                        <c:when test="${(list.getSum() * rate) * 100 / list.getLimit() > 100}">
+                                        <c:when test="${list.getLimit() > 0}">
+                                        <c:choose>
+                                        <c:when test="${sum * 100 / list.getLimit() > 100}">
                                         <strong class="text-danger">
                                             </c:when>
                                             <c:otherwise>
                                             <strong>
                                                 </c:otherwise>
                                                 </c:choose>
-                                                    ${FormatUtil.formatToString((list.getSum() * rate) * 100 / list.getLimit())}</strong> %</h4>
+                                                    ${FormatUtil.formatToString(sum * 100 / list.getLimit())}</strong> %</h4>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <strong class="text-danger">100</strong> %</h4>
+                                    </c:otherwise>
+                                    </c:choose>
                                 </div>
                             </c:if>
                         </c:forEach>

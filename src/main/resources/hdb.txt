@@ -82,7 +82,7 @@ CREATE TABLE persistent_logins (
     PRIMARY KEY (series)
 );
 
-ALTER TABLE amounts CHANGE good_id type TINYINT(1) DEFAULT 0;
+ALTER TABLE amounts ADD type TINYINT(1) DEFAULT 0;
 UPDATE amounts SET type = 0;
 
 INSERT INTO categories (parent_id, user_id, name, details, type) VALUES (0, 1, 'Категория 1', 'Описание 1', 0);

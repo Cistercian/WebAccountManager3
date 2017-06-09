@@ -283,24 +283,30 @@ public class CategoryServiceImpl implements CategoryService {
                                            LocalDate before) {
         logger.debug(LogUtil.getMethodName());
 
-        after = DateUtil.getStartOfEra();
+        Date beginOfEra = DateUtil.getDateOfStartOfEra();
         before = DateUtil.getStartOfMonth().minusDays(1);
 
         List<AnalyticData> list = categoryRepository.getAnalyticDataByCategory(
                 user,
                 category,
-                DateUtil.getDate(after),
+                beginOfEra,
                 DateUtil.getDate(before),
-                true
+                true,   //isNeedAvgSum
+                false,  //isNeedRealSum
+                false,  //isNeedOneTimeSum
+                false   //isNeedRegularSum
         );
         //если запрос по определенной категории, то необходимо отдельно собрать данные по группам
         if (category != null)
             list.addAll(categoryRepository.getAnalyticDataByProduct(
                     user,
                     category,
-                    DateUtil.getDate(after),
+                    beginOfEra,
                     DateUtil.getDate(before),
-                    true
+                    true,
+                    false,
+                    false,
+                    false
             ));
 
         logger.debug("Список анализируемых данных:");
@@ -314,7 +320,10 @@ public class CategoryServiceImpl implements CategoryService {
                 category,
                 beginOfMonth,
                 today,
-                false
+                false,  //isNeedAvgSum
+                true,   //isNeedRealSum
+                false,  //isNeedOneTimeSum
+                false   //isNeedRegularSum
         );
         if (category != null)
             listThisMonth.addAll(categoryRepository.getAnalyticDataByProduct(
@@ -322,6 +331,9 @@ public class CategoryServiceImpl implements CategoryService {
                     category,
                     beginOfMonth,
                     today,
+                    false,
+                    true,
+                    false,
                     false
             ));
 
@@ -346,13 +358,78 @@ public class CategoryServiceImpl implements CategoryService {
         LogUtil.logList(logger, list);
 
         //агрегация данных по суммам, которые следует исключить из расчета среднестатистических (разовые обороты)
-        //и учет обязательных (периодических, но не еще исполненных в текущем месяцев)
-        listThisMonth = categoryRepository.getOneTimeAnalyticDataByCategory(
+        listThisMonth = categoryRepository.getAnalyticDataByCategory(
                 user,
                 category,
-                DateUtil.getDate(after),
-                DateUtil.getDate(before)
+                beginOfMonth,
+                today,
+                false,  //isNeedAvgSum
+                false,   //isNeedRealSum
+                true,  //isNeedOneTimeSum
+                false   //isNeedRegularSum
         );
+        if (category != null)
+            listThisMonth.addAll(categoryRepository.getAnalyticDataByProduct(
+                    user,
+                    category,
+                    beginOfMonth,
+                    today,
+                    false,
+                    false,
+                    true,
+                    false
+            ));
+        for (AnalyticData entity : listThisMonth){
+            if (list.contains(entity)){
+                int index = list.indexOf(entity);
+                AnalyticData data = list.get(index);
+
+                data.setOneTimeSum(entity.getAvgSum());
+                list.set(index, data);
+            } else {
+                logger.debug(String.format("Логичекая ошибка - найдены найдены единоразовые суммы, которые следует исключить из средних оборотов, но их там уже нет: %s",
+                        entity.toString()));
+            }
+        }
+        //учет обязательных (периодических) оборотов
+        listThisMonth = categoryRepository.getAnalyticDataByCategory(
+                user,
+                category,
+                beginOfEra,
+                beginOfEra,
+                false,  //isNeedAvgSum
+                false,   //isNeedRealSum
+                false,  //isNeedOneTimeSum
+                true   //isNeedRegularSum
+        );
+        if (category != null)
+            listThisMonth.addAll(categoryRepository.getAnalyticDataByProduct(
+                    user,
+                    category,
+                    beginOfEra,
+                    beginOfEra,
+                    false,
+                    false,
+                    false,
+                    true
+            ));
+        for (AnalyticData entity : listThisMonth){
+            if (list.contains(entity)){
+                int index = list.indexOf(entity);
+                AnalyticData data = list.get(index);
+
+                data.setRegularSum(entity.getAvgSum());
+                list.set(index, data);
+            } else {
+                logger.debug(String.format("Найдены обязательные неисполненные обороты: %s",
+                        entity.toString()));
+
+                entity.setRegularSum(entity.getAvgSum());
+                entity.setAvgSum(new BigDecimal("0"));
+
+                list.add(entity);
+            }
+        }
 
         Map<String, AnalyticData> map = new HashMap<String, AnalyticData>();
 
@@ -373,6 +450,8 @@ public class CategoryServiceImpl implements CategoryService {
 
                 dataMap.setAvgSum(dataMap.getAvgSum().add(entity.getAvgSum()));
                 dataMap.setCurrentSum(dataMap.getCurrentSum().add(entity.getCurrentSum()));
+                dataMap.setOneTimeSum(dataMap.getOneTimeSum().add(entity.getOneTimeSum()));
+                dataMap.setRegularSum(dataMap.getRegularSum().add(entity.getRegularSum()));
 
                 map.put(id, dataMap);
             } else {
@@ -387,13 +466,21 @@ public class CategoryServiceImpl implements CategoryService {
                     DateUtil.getParsedDate(data.getMaxDate().toString()), ChronoUnit.MONTHS
             ) + 1;
 
-            BigDecimal avgSum = data.getAvgSum().divide(new BigDecimal(distance), 2, BigDecimal.ROUND_HALF_UP);
+            BigDecimal avgSum = data.getAvgSum()
+                    .divide(new BigDecimal(distance), 2, BigDecimal.ROUND_HALF_UP);
 
-            bars.add(new BarEntity(data.getType(), data.getId(), data.getCurrentSum(), data.getName(), avgSum));
+            bars.add(new BarEntity(
+                    data.getType(),
+                    data.getId(),
+                    data.getCurrentSum(),
+                    data.getName(),
+                    avgSum,
+                    data.getOneTimeSum(),
+                    data.getRegularSum()));
 
-            logger.debug(String.format("Расчет среднего значения для %s: Общая сумма %s, кол-во месяцев, на которое делим: %s," +
-                    " ИТОГО: %s", (data.getType().startsWith("Category") ? "категории " : "группы ") + data.getName(),
-                    data.getAvgSum(), distance, avgSum));
+            logger.debug(String.format("Расчет среднего значения для %s: Общая сумма %s, кол-во месяцев, на которое делим: %s, " +
+                    "сумма единоразовых оборотов: %s, ИТОГО: %s", (data.getType().startsWith("Category") ? "категории " : "группы ") + data.getName(),
+                    data.getAvgSum(), distance, data.getOneTimeSum(), avgSum));
         }
 
         bars = utilService.sortListByTypeAndSum(bars);

@@ -53,16 +53,25 @@ public class AnalyticController {
         modelAndView.addObject("before", getBefore(null));
 
         //данные для Суммарной информации
+        int currentDay = LocalDate.now().getDayOfMonth();
+        int countDays = DateUtil.getCountDaysInMonth(LocalDate.now());
+
+        BigDecimal rate = new BigDecimal(countDays).divide(new BigDecimal(currentDay), 2, BigDecimal.ROUND_HALF_UP);
+        modelAndView.addObject("rate", rate);
+
         BigDecimal incomeSum = new BigDecimal("0");
         BigDecimal incomeLimit = new BigDecimal("0");
         BigDecimal expenseSum = new BigDecimal("0");
         BigDecimal expenseLimit = new BigDecimal("0");
+
         for (BarEntity entity : analyticData) {
             if (entity.getType().endsWith("Income")) {
-                incomeSum = incomeSum.add(entity.getSum());
+                incomeSum = incomeSum.add(entity.getSum().subtract(entity.getOneTimeSum()).multiply(rate)
+                    .add(entity.getOneTimeSum()).add(entity.getRegularSum()));
                 incomeLimit = incomeLimit.add(entity.getLimit());
             } else {
-                expenseSum = expenseSum.add(entity.getSum());
+                expenseSum = expenseSum.add(entity.getSum().subtract(entity.getOneTimeSum()).multiply(rate)
+                        .add(entity.getOneTimeSum()).add(entity.getRegularSum()));
                 expenseLimit = expenseLimit.add(entity.getLimit());
             }
         }
@@ -70,17 +79,9 @@ public class AnalyticController {
         logger.debug(String.format("Итоговые суммы: средний доход: %s, средний расход: %s, текущая сумма доходов: %s, " +
                 "текущая сумма расходов: %s", incomeLimit, expenseLimit, incomeSum, expenseSum));
 
-        int currentDay = LocalDate.now().getDayOfMonth();
-        int countDays = DateUtil.getCountDaysInMonth(LocalDate.now());
-
         modelAndView.addObject("incomeLimit", FormatUtil.formatToString(incomeLimit));
         modelAndView.addObject("expenseLimit", FormatUtil.formatToString(expenseLimit));
 
-        BigDecimal rate = new BigDecimal(countDays).divide(new BigDecimal(currentDay), 2, BigDecimal.ROUND_HALF_UP);
-        modelAndView.addObject("rate", rate);
-
-        incomeSum = incomeSum.multiply(rate);
-        expenseSum = expenseSum.multiply(rate);
         modelAndView.addObject("incomeSum", FormatUtil.formatToString(incomeSum));
         modelAndView.addObject("expenseSum", FormatUtil.formatToString(expenseSum));
 

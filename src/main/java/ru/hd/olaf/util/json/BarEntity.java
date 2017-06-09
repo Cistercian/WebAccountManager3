@@ -46,7 +46,19 @@ public class BarEntity implements DbData{
         this.id = id;
         this.sum = sum == null ? new BigDecimal("0") : sum;
         this.name = name;
-        this.limit = limit;
+        this.limit = limit == null ? new BigDecimal("0") : limit;;
+        this.oneTimeSum = new BigDecimal("0");
+        this.regularSum = new BigDecimal("0");
+    }
+
+    public BarEntity(String type, int id, BigDecimal sum, String name, BigDecimal limit, BigDecimal oneTimeSum, BigDecimal regularSum) {
+        this.type = type;
+        this.id = id;
+        this.sum = sum == null ? new BigDecimal("0") : sum;
+        this.name = name;
+        this.limit = limit == null ? new BigDecimal("0") : limit;;
+        this.oneTimeSum = oneTimeSum == null ? new BigDecimal("0") : oneTimeSum;
+        this.regularSum = regularSum == null ? new BigDecimal("0") : regularSum;
     }
 
     public String getType() {
@@ -142,6 +154,8 @@ public class BarEntity implements DbData{
                 ", sum=" + sum +
                 ", name='" + name + '\'' +
                 ", limit='" + limit + '\'' +
+                ", oneTimeSum='" + (oneTimeSum == null ? "0" : oneTimeSum) + '\'' +
+                ", regularSum='" + (regularSum == null ? "0" : regularSum) + '\'' +
                 '}';
     }
 
