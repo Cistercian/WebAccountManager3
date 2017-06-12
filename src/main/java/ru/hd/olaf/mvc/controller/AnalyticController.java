@@ -15,11 +15,12 @@ import ru.hd.olaf.mvc.service.SecurityService;
 import ru.hd.olaf.util.DateUtil;
 import ru.hd.olaf.util.FormatUtil;
 import ru.hd.olaf.util.LogUtil;
+import ru.hd.olaf.util.json.AnalyticEntity;
 import ru.hd.olaf.util.json.BarEntity;
+import ru.hd.olaf.util.json.DBData;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.temporal.TemporalAdjusters;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -38,12 +39,11 @@ public class AnalyticController {
     private static final Logger logger = LoggerFactory.getLogger(AnalyticController.class);
 
     @RequestMapping(value = "/statistic/analytic", method = RequestMethod.GET)
-    public ModelAndView getViewCompare(@RequestParam(value = "after", required = false) String beginDate,
-                                       @RequestParam(value = "averagingPeriod", required = false) Byte averagingPeriod){
+    public ModelAndView getViewCompare(@RequestParam(value = "after", required = false) String beginDate){
         logger.debug(LogUtil.getMethodName());
         ModelAndView modelAndView = new ModelAndView("/statistic/analytic");
 
-        List<BarEntity> analyticData = getData(beginDate, null, averagingPeriod);
+        List<AnalyticEntity> analyticData = getData(beginDate, null);
 
         logger.debug("Список категорий для передачи на страницу Прогнозирования");
         LogUtil.logList(logger, analyticData);
@@ -64,15 +64,15 @@ public class AnalyticController {
         BigDecimal expenseSum = new BigDecimal("0");
         BigDecimal expenseLimit = new BigDecimal("0");
 
-        for (BarEntity entity : analyticData) {
+        for (AnalyticEntity entity : analyticData) {
             if (entity.getType().endsWith("Income")) {
                 incomeSum = incomeSum.add(entity.getSum().subtract(entity.getOneTimeSum()).multiply(rate)
                     .add(entity.getOneTimeSum()).add(entity.getRegularSum()));
-                incomeLimit = incomeLimit.add(entity.getLimit());
+                incomeLimit = incomeLimit.add(entity.getAvgSum());
             } else {
                 expenseSum = expenseSum.add(entity.getSum().subtract(entity.getOneTimeSum()).multiply(rate)
                         .add(entity.getOneTimeSum()).add(entity.getRegularSum()));
-                expenseLimit = expenseLimit.add(entity.getLimit());
+                expenseLimit = expenseLimit.add(entity.getAvgSum());
             }
         }
 
@@ -93,9 +93,8 @@ public class AnalyticController {
     }
 
     @RequestMapping(value = "/statistic/analytic/getData", method = RequestMethod.GET)
-    public @ResponseBody List<BarEntity> getData(@RequestParam(value = "after", required = false) String beginDate,
-                                                 @RequestParam(value = "before", required = false) String endDate,
-                                                 @RequestParam(value = "averagingPeriod", required = false) Byte averagingPeriod) {
+    public @ResponseBody List<AnalyticEntity> getData(@RequestParam(value = "after", required = false) String beginDate,
+                                              @RequestParam(value = "before", required = false) String endDate) {
         logger.debug(LogUtil.getMethodName());
 
         LocalDate after = getAfter(beginDate);
@@ -104,22 +103,22 @@ public class AnalyticController {
         User currentUser = securityService.findLoggedUser();
 
 
-        List<BarEntity> analyticData = categoryService.getAnalyticData(
+        List<AnalyticEntity> analyticData = categoryService.getAnalyticData(
                 currentUser,
                 null,
                 after,
                 before);
 
         //сортируем по соотношению текущих трат к усредненным
-        Collections.sort(analyticData, new Comparator<BarEntity>() {
-            public int compare(BarEntity o1, BarEntity o2) {
+        Collections.sort(analyticData, new Comparator<AnalyticEntity>() {
+            public int compare(AnalyticEntity o1, AnalyticEntity o2) {
 
-                if (o2.getLimit().compareTo(new BigDecimal("0")) > 0 || o1.getLimit().compareTo(new BigDecimal("0")) > 0) {
-                    BigDecimal o2Size = o2.getLimit().compareTo(new BigDecimal("0")) != 0 ?
-                            o2.getSum().divide(o2.getLimit(), 2, BigDecimal.ROUND_HALF_UP) :
+                if (o2.getCurrentSum().compareTo(new BigDecimal("0")) > 0 || o1.getCurrentSum().compareTo(new BigDecimal("0")) > 0) {
+                    BigDecimal o2Size = o2.getAvgSum().compareTo(new BigDecimal("0")) != 0 ?
+                            o2.getSum().divide(o2.getAvgSum(), 2, BigDecimal.ROUND_HALF_UP) :
                             new BigDecimal("99999");
-                    BigDecimal o1Size = o1.getLimit().compareTo(new BigDecimal("0")) != 0 ?
-                            o1.getSum().divide(o1.getLimit(), 2, BigDecimal.ROUND_HALF_UP) :
+                    BigDecimal o1Size = o1.getAvgSum().compareTo(new BigDecimal("0")) != 0 ?
+                            o1.getSum().divide(o1.getAvgSum(), 2, BigDecimal.ROUND_HALF_UP) :
                             new BigDecimal("99999");
                     return o2Size.compareTo(o1Size);
                 } else

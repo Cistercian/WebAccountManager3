@@ -10,6 +10,7 @@ import ru.hd.olaf.exception.CrudException;
 import ru.hd.olaf.mvc.service.*;
 import ru.hd.olaf.util.LogUtil;
 import ru.hd.olaf.util.json.BarEntity;
+import ru.hd.olaf.util.json.DBData;
 import ru.hd.olaf.util.json.JsonResponse;
 import ru.hd.olaf.util.json.ResponseType;
 
@@ -251,21 +252,45 @@ public class UtilServiceImpl implements UtilService{
 
     /**
      * Функция сортирует список по полю type и дале по полю Sum
-     * @param barEntities Список
+     * @param entities Список
      * @return Список
      */
-    public List<BarEntity> sortListByTypeAndSum(List<BarEntity> barEntities) {
+    public <T extends DBData> List<T> sortListByTypeAndSum(List<T> entities) {
         logger.debug(LogUtil.getMethodName());
-        Collections.sort(barEntities, new Comparator<BarEntity>() {
-            public int compare(BarEntity o1, BarEntity o2) {
-                int result = o1.getType().compareTo(o2.getType());
+
+        Collections.sort(entities, new Comparator<T>() {
+            public int compare(T o1, T o2) {
+                DBData entity1 = (DBData) o1;
+                DBData entity2 = (DBData) o2;
+                int result = entity1.getType().compareTo(entity2.getType());
                 if (result == 0)
-                    result = o2.getSum().abs().compareTo(o1.getSum().abs());
+                    result = entity2.getSum().abs().compareTo(entity1.getSum().abs());
 
                 return result;
             }
         });
 
-        return barEntities;
+        return entities;
+    }
+
+    public <T extends DBData> List<T> sortByLimit(List<T> entities) {
+        Collections.sort(entities, new Comparator<T>() {
+            public int compare(T o1, T o2) {
+                DBData entity1 = (DBData) o1;
+                DBData entity2 = (DBData) o2;
+                if (entity2.getLimit().compareTo(new BigDecimal("0")) > 0 || entity1.getLimit().compareTo(new BigDecimal("0")) > 0) {
+                    BigDecimal o2Size = entity2.getLimit().compareTo(new BigDecimal("0")) != 0 ?
+                            o2.getSum().divide(entity2.getLimit(), 2, BigDecimal.ROUND_HALF_UP) :
+                            new BigDecimal("99999");
+                    BigDecimal o1Size = entity1.getLimit().compareTo(new BigDecimal("0")) != 0 ?
+                            o1.getSum().divide(entity1.getLimit(), 2, BigDecimal.ROUND_HALF_UP) :
+                            new BigDecimal("99999");
+                    return o2Size.compareTo(o1Size);
+                } else
+                    return entity2.getSum().compareTo(entity1.getSum());
+            }
+        });
+
+        return entities;
     }
 }

@@ -13,6 +13,7 @@ import ru.hd.olaf.mvc.service.*;
 import ru.hd.olaf.util.DateUtil;
 import ru.hd.olaf.util.LogUtil;
 import ru.hd.olaf.util.json.BarEntity;
+import ru.hd.olaf.util.json.DBData;
 import ru.hd.olaf.util.json.JsonResponse;
 import ru.hd.olaf.util.json.ResponseType;
 
@@ -156,14 +157,14 @@ public class IndexController {
     @RequestMapping(value = "/getContentByCategoryId", method = RequestMethod.GET)
     public
     @ResponseBody
-    List<BarEntity> getCategoryContentByCategoryId(@RequestParam(value = "categoryId") Integer categoryId,
+    List<DBData> getCategoryContentByCategoryId(@RequestParam(value = "categoryId") Integer categoryId,
                                                    @RequestParam(value = "after") String beginDate,
                                                    @RequestParam(value = "before") String endDate,
                                                    @RequestParam(value = "isGetAnalyticData", required = false) boolean isGetAnalyticData) {
         logger.debug(LogUtil.getMethodName());
         logger.debug(String.format("Выводятся ли среднемесячные данные: %s", isGetAnalyticData));
 
-        List<BarEntity> categoryContent = new ArrayList<BarEntity>();
+        List<DBData> categoryContent = new ArrayList<DBData>();
 
         Category category;
         JsonResponse response = categoryService.getById(categoryId);
@@ -200,21 +201,7 @@ public class IndexController {
             ));
         }
         //сортировка
-        Collections.sort(categoryContent, new Comparator<BarEntity>() {
-            public int compare(BarEntity o1, BarEntity o2) {
-
-                if (o2.getLimit().compareTo(new BigDecimal("0")) > 0 || o1.getLimit().compareTo(new BigDecimal("0")) > 0) {
-                    BigDecimal o2Size = o2.getLimit().compareTo(new BigDecimal("0")) != 0 ?
-                            o2.getSum().divide(o2.getLimit(), 2, BigDecimal.ROUND_HALF_UP) :
-                            new BigDecimal("99999");
-                    BigDecimal o1Size = o1.getLimit().compareTo(new BigDecimal("0")) != 0 ?
-                            o1.getSum().divide(o1.getLimit(), 2, BigDecimal.ROUND_HALF_UP) :
-                            new BigDecimal("99999");
-                    return o2Size.compareTo(o1Size);
-                } else
-                    return o2.getSum().compareTo(o1.getSum());
-            }
-        });
+        categoryContent = utilService.sortByLimit(categoryContent);
 
         logger.debug("Список категорий:");
         LogUtil.logList(logger, categoryContent);

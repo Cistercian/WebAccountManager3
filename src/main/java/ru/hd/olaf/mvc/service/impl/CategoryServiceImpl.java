@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.hd.olaf.entities.Category;
-import ru.hd.olaf.entities.Product;
 import ru.hd.olaf.entities.User;
 import ru.hd.olaf.exception.AuthException;
 import ru.hd.olaf.exception.CrudException;
@@ -131,7 +130,7 @@ public class CategoryServiceImpl implements CategoryService {
         return bars;
     }
 
-    private DbData getParentBar(DbData entity, Category rootCategory) {
+    private DBData getParentBar(DBData entity, Category rootCategory) {
         logger.debug(LogUtil.getMethodName());
 
         if (entity.getType().endsWith("Child")) {
@@ -277,16 +276,16 @@ public class CategoryServiceImpl implements CategoryService {
      * @param before Дата окночания периода
      * @return Список баров
      */
-    public List<BarEntity> getAnalyticData(User user,
-                                           Category category,
-                                           LocalDate after,
-                                           LocalDate before) {
+    public List<AnalyticEntity> getAnalyticData(User user,
+                                        Category category,
+                                        LocalDate after,
+                                        LocalDate before) {
         logger.debug(LogUtil.getMethodName());
 
         Date beginOfEra = DateUtil.getDateOfStartOfEra();
         before = DateUtil.getStartOfMonth().minusDays(1);
 
-        List<AnalyticData> list = categoryRepository.getAnalyticDataByCategory(
+        List<AnalyticEntity> list = categoryRepository.getAnalyticDataByCategory(
                 user,
                 category,
                 beginOfEra,
@@ -315,7 +314,7 @@ public class CategoryServiceImpl implements CategoryService {
         logger.debug("Сбор данных по оборотам в текущем месяце.");
         Date beginOfMonth = DateUtil.getDate(DateUtil.getStartOfMonth());
         Date today = DateUtil.getDate(LocalDate.now());
-        List<AnalyticData> listThisMonth = categoryRepository.getAnalyticDataByCategory(
+        List<AnalyticEntity> listThisMonth = categoryRepository.getAnalyticDataByCategory(
                 user,
                 category,
                 beginOfMonth,
@@ -337,10 +336,10 @@ public class CategoryServiceImpl implements CategoryService {
                     false
             ));
 
-        for (AnalyticData entity : listThisMonth){
+        for (AnalyticEntity entity : listThisMonth){
             if (list.contains(entity)){
                 int index = list.indexOf(entity);
-                AnalyticData data = list.get(index);
+                AnalyticEntity data = list.get(index);
 
                 data.setCurrentSum(entity.getAvgSum());
                 list.set(index, data);
@@ -379,10 +378,10 @@ public class CategoryServiceImpl implements CategoryService {
                     true,
                     false
             ));
-        for (AnalyticData entity : listThisMonth){
+        for (AnalyticEntity entity : listThisMonth){
             if (list.contains(entity)){
                 int index = list.indexOf(entity);
-                AnalyticData data = list.get(index);
+                AnalyticEntity data = list.get(index);
 
                 data.setOneTimeSum(entity.getAvgSum());
                 list.set(index, data);
@@ -413,10 +412,10 @@ public class CategoryServiceImpl implements CategoryService {
                     false,
                     true
             ));
-        for (AnalyticData entity : listThisMonth){
+        for (AnalyticEntity entity : listThisMonth){
             if (list.contains(entity)){
                 int index = list.indexOf(entity);
-                AnalyticData data = list.get(index);
+                AnalyticEntity data = list.get(index);
 
                 data.setRegularSum(entity.getAvgSum());
                 list.set(index, data);
@@ -431,16 +430,16 @@ public class CategoryServiceImpl implements CategoryService {
             }
         }
 
-        Map<String, AnalyticData> map = new HashMap<String, AnalyticData>();
+        Map<String, AnalyticEntity> map = new HashMap<String, AnalyticEntity>();
 
         logger.debug("Агрегируем дочерние категории.");
-        for (AnalyticData entity : list) {
-            entity = (AnalyticData) getParentBar(entity, category);
+        for (AnalyticEntity entity : list) {
+            entity = (AnalyticEntity) getParentBar(entity, category);
             String id = (entity.getType().startsWith("Category") ? "Category" : "Product") + entity.getId();
 
             if (map.containsKey(id)) {
 
-                AnalyticData dataMap = map.get(id);
+                AnalyticEntity dataMap = map.get(id);
 
                 if (entity.getMaxDate().compareTo(dataMap.getMaxDate()) > 0)
                     dataMap.setMaxDate(entity.getMaxDate());
@@ -459,9 +458,9 @@ public class CategoryServiceImpl implements CategoryService {
             }
         }
 
-        List<BarEntity> bars = new ArrayList<BarEntity>();
         logger.debug("Формируем данные для отправки на страницу.");
-        for (AnalyticData data : map.values()){
+        list = new ArrayList<AnalyticEntity>();
+        for (AnalyticEntity data : map.values()){
             long distance = DateUtil.getParsedDate(data.getMinDate().toString()).until(
                     DateUtil.getParsedDate(data.getMaxDate().toString()), ChronoUnit.MONTHS
             ) + 1;
@@ -469,25 +468,19 @@ public class CategoryServiceImpl implements CategoryService {
             BigDecimal avgSum = data.getAvgSum()
                     .divide(new BigDecimal(distance), 2, BigDecimal.ROUND_HALF_UP);
 
-            bars.add(new BarEntity(
-                    data.getType(),
-                    data.getId(),
-                    data.getCurrentSum(),
-                    data.getName(),
-                    avgSum,
-                    data.getOneTimeSum(),
-                    data.getRegularSum()));
+            data.setAvgSum(avgSum);
+            list.add(data);
 
             logger.debug(String.format("Расчет среднего значения для %s: Общая сумма %s, кол-во месяцев, на которое делим: %s, " +
                     "сумма единоразовых оборотов: %s, ИТОГО: %s", (data.getType().startsWith("Category") ? "категории " : "группы ") + data.getName(),
                     data.getAvgSum(), distance, data.getOneTimeSum(), avgSum));
         }
 
-        bars = utilService.sortListByTypeAndSum(bars);
+        list = utilService.sortListByTypeAndSum(list);
 
         logger.debug("Конечный список:");
-        LogUtil.logList(logger, bars);
+        LogUtil.logList(logger, list);
 
-        return bars;
+        return list;
     }
 }

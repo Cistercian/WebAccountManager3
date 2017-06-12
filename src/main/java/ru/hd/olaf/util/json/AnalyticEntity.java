@@ -1,12 +1,14 @@
 package ru.hd.olaf.util.json;
 
+import ru.hd.olaf.util.FormatUtil;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
 /**
  * Created by d.v.hozyashev on 08.06.2017.
  */
-public class AnalyticData implements DbData{
+public class AnalyticEntity implements DBData {
     private String type;
     private int id;
     private BigDecimal avgSum;
@@ -20,7 +22,7 @@ public class AnalyticData implements DbData{
     private BigDecimal oneTimeSum;
     private BigDecimal regularSum;
 
-    public AnalyticData(String type, int id, BigDecimal avgSum, String name, Date maxDate, Date minDate) {
+    public AnalyticEntity(String type, int id, BigDecimal avgSum, String name, Date maxDate, Date minDate) {
         this.type = type;
         this.id = id;
         this.avgSum = avgSum;
@@ -104,12 +106,28 @@ public class AnalyticData implements DbData{
         this.regularSum = regularSum;
     }
 
+    public BigDecimal getSum() {
+        return getCurrentSum();
+    }
+
+    public BigDecimal getLimit() {
+        return getAvgSum();
+    }
+
+    public String getFormattedSum() {
+        return FormatUtil.formatToString(getCurrentSum());
+    }
+
+    public String getFormattedLimit() {
+        return FormatUtil.formatToString(getAvgSum());
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        AnalyticData that = (AnalyticData) o;
+        AnalyticEntity that = (AnalyticEntity) o;
 
         if (id != that.id) return false;
         return type != null ? type.equals(that.type) : that.type == null;
@@ -125,7 +143,7 @@ public class AnalyticData implements DbData{
 
     @Override
     public String toString() {
-        return "AnalyticData{" +
+        return "AnalyticEntity{" +
                 "type='" + type + '\'' +
                 ", id=" + id +
                 ", avgSum=" + avgSum +

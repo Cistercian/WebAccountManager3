@@ -164,81 +164,85 @@
                     <h3 class="wam-margin-bottom-0 wam-margin-top-0">Суммарная информация</h3>
                 </div>
                 <div class="wam-not-padding panel-body">
-                    <div class="col-xs-12 col-md-6">
+                    <div class="col-xs-12 col-md-6 wam-not-padding-xs bg-success">
                         <h4 class="text-justify">Ожидаемый доход:</h4>
                     </div>
-                    <div class="col-xs-12 col-md-6">
+                    <div class="col-xs-12 col-md-6 wam-not-padding-xs bg-success">
                         <h4 class="text-justify"><strong>${incomeSum}</strong> (в среднем ${incomeLimit}) руб</h4>
                     </div>
-                    <div class="col-xs-12 col-md-12 wam-padding-right-0">
+                    <div class="col-xs-12 col-md-12 bg-info">
                         <c:forEach items="${analyticData}" var="list">
                             <c:if test="${list.getType() == 'CategoryIncome'}">
                                 <c:set var="sum" value="${(list.getSum() - list.getOneTimeSum()) * rate + list.getOneTimeSum() + list.getRegularSum()}" scope="page"/>
-                                <div class="col-xs-12 col-md-6 wam-padding-right-0">
-                                    <h4>${list.getName()}</h4>
-                                </div>
-                                <div class="col-xs-12 col-md-5 wam-padding-right-0 wam-padding-left-0">
-                                    <h4><strong>${FormatUtil.formatToString(sum)}</strong>
-                                        (в среднем ${list.getFormattedLimit()}) руб</h4>
-                                </div>
-                                <div class="col-xs-12 col-md-1 wam-padding-right-0 wam-padding-left-0">
-                                    <h4>
-                                        <c:choose>
-                                        <c:when test="${list.getLimit() > 0}">
-                                        <c:choose>
-                                        <c:when test="${sum * 100 / list.getLimit() > 100}">
-                                        <strong class="text-danger">
-                                            </c:when>
-                                            <c:otherwise>
-                                            <strong>
-                                                </c:otherwise>
-                                                </c:choose>
-                                                    ${FormatUtil.formatToString(sum * 100 / list.getLimit())}</strong> %</h4>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <strong class="text-danger">100</strong> %</h4>
-                                    </c:otherwise>
-                                    </c:choose>
+                                <div class="row">
+                                    <div class="col-xs-9 col-md-6 wam-padding-right-0">
+                                        <h4>${list.getName()}</h4>
+                                    </div>
+                                    <div class="col-xs-3 col-md-1 col-md-push-5 wam-padding-right-0 wam-padding-left-0">
+                                        <h4>
+                                            <c:choose>
+                                            <c:when test="${list.getLimit() > 0}">
+                                            <c:choose>
+                                            <c:when test="${sum * 100 / list.getLimit() > 100}">
+                                            <strong class="text-danger">
+                                                </c:when>
+                                                <c:otherwise>
+                                                <strong class="text-right">
+                                                    </c:otherwise>
+                                                    </c:choose>
+                                                        ${FormatUtil.formatToString(sum * 100 / list.getLimit())}</strong> %</h4>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <strong class="text-danger">>100</strong> %</h4>
+                                        </c:otherwise>
+                                        </c:choose>
+                                    </div>
+                                    <div class="col-xs-12 col-md-5 col-md-pull-1 wam-padding-right-0 wam-padding-left-0 wam-margin-left-xs-2">
+                                        <h4><strong>${FormatUtil.formatToString(sum)}</strong>
+                                            (в среднем ${list.getFormattedLimit()}) руб</h4>
+                                    </div>
                                 </div>
                             </c:if>
                         </c:forEach>
                     </div>
 
-                    <div class="col-xs-12 col-md-6">
+                    <div class="col-xs-12 col-md-6 wam-not-padding-xs bg-danger">
                         <h4 class="text-justify">Ожидаемый расход:</h4>
                     </div>
-                    <div class="col-xs-12 col-md-6">
+                    <div class="col-xs-12 col-md-6 wam-not-padding-xs bg-danger">
                         <h4 class="text-justify"><strong>${expenseSum}</strong> (в среднем ${expenseLimit}) руб</h4>
                     </div>
-                    <div class="col-xs-12 col-md-12 wam-padding-right-0">
+                    <div class="col-xs-12 col-md-12 bg-info">
                         <c:forEach items="${analyticData}" var="list">
                             <c:if test="${list.getType() == 'CategoryExpense'}">
                                 <c:set var="sum" value="${(list.getSum() - list.getOneTimeSum()) * rate + list.getOneTimeSum() + list.getRegularSum()}" scope="page"/>
-                                <div class="col-xs-12 col-md-6 wam-padding-right-0">
-                                    <h4>${list.getName()}</h4>
-                                </div>
-                                <div class="col-xs-12 col-md-5 wam-padding-right-0 wam-padding-left-0">
-                                    <h4><strong>${FormatUtil.formatToString(sum)}</strong>
-                                        (в среднем ${list.getFormattedLimit()}) руб</h4>
-                                </div>
-                                <div class="col-xs-12 col-md-1 wam-padding-right-0 wam-padding-left-0">
-                                    <h4>
-                                        <c:choose>
-                                        <c:when test="${list.getLimit() > 0}">
-                                        <c:choose>
-                                        <c:when test="${sum * 100 / list.getLimit() > 100}">
-                                        <strong class="text-danger">
-                                            </c:when>
-                                            <c:otherwise>
-                                            <strong>
-                                                </c:otherwise>
-                                                </c:choose>
-                                                    ${FormatUtil.formatToString(sum * 100 / list.getLimit())}</strong> %</h4>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <strong class="text-danger">100</strong> %</h4>
-                                    </c:otherwise>
-                                    </c:choose>
+                                <div class="row">
+                                    <div class="col-xs-9 col-md-6 wam-padding-right-0">
+                                        <h4>${list.getName()}</h4>
+                                    </div>
+                                    <div class="col-xs-3 col-md-1 col-md-push-5 wam-padding-right-0 wam-padding-left-0">
+                                        <h4>
+                                            <c:choose>
+                                            <c:when test="${list.getLimit() > 0}">
+                                            <c:choose>
+                                            <c:when test="${sum * 100 / list.getLimit() > 100}">
+                                            <strong class="text-danger">
+                                                </c:when>
+                                                <c:otherwise>
+                                                <strong class="text-right">
+                                                    </c:otherwise>
+                                                    </c:choose>
+                                                        ${FormatUtil.formatToString(sum * 100 / list.getLimit())}</strong> %</h4>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <strong class="text-danger">>100</strong> %</h4>
+                                        </c:otherwise>
+                                        </c:choose>
+                                    </div>
+                                    <div class="col-xs-12 col-md-5 col-md-pull-1 wam-padding-right-0 wam-padding-left-0 wam-margin-left-xs-2">
+                                        <h4><strong>${FormatUtil.formatToString(sum)}</strong>
+                                            (в среднем ${list.getFormattedLimit()}) руб</h4>
+                                    </div>
                                 </div>
                             </c:if>
                         </c:forEach>
@@ -283,19 +287,29 @@
 
                                 <li class="list-unstyled">
                                     <a href="javascript:drawBarsByParentId(false, '${id}', '${after}', '${before}', true)">
-                                        <div>
-                                            <h4 class="needToFormat"><strong id="categoryBarName${id}" value="${name}">
-                                                    ${name}
-                                            </strong>
-												<span id="categoryBarSum${id}" class="pull-right text-muted"
-                                                      value="${sum}">
-													${sum} (в среднем ${limit}) руб.
-												</span></h4>
-                                            <div class="progress progress-striped active">
-                                                <div class="progress-bar progress-bar-${styles[step]}" role="progressbar"
-                                                     aria-valuenow="${sum}" aria-valuemin="0" aria-valuemax="100"
-                                                     style="width: ${normalSum}%" value="${name}">
-                                                    <span class="sr-only">${sum}</span>
+                                        <div class="row">
+                                            <div class="col-xs-12 col-md-8">
+                                                <h4 class="needToFormat wam-not-padding-xs">
+                                                    <strong id="categoryBarName${id}" value="${name}">
+                                                            ${name}
+                                                    </strong>
+                                                </h4>
+                                            </div>
+                                            <div class="col-xs-12 col-md-4 wam-margin-top-xs-0">
+                                                <h4 class="needToFormat">
+													<span id="categoryBarSum${id}" class="pull-right text-muted"
+                                                          value="${sum}">
+														${sum} (в среднем ${limit}) руб.
+													</span>
+                                                </h4>
+                                            </div>
+                                            <div class="col-xs-12 col-md-12">
+                                                <div class="progress progress-striped active">
+                                                    <div class="progress-bar progress-bar-${styles[step]}" role="progressbar"
+                                                         aria-valuenow="${sum}" aria-valuemin="0" aria-valuemax="100"
+                                                         style="width: ${normalSum}%" value="${name}">
+                                                        <span class="sr-only">${sum}</span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -345,19 +359,29 @@
                                 </c:choose>
                                 <li class="list-unstyled">
                                     <a href="javascript:drawBarsByParentId(false, '${id}', '${after}', '${before}', true)">
-                                        <div>
-                                            <h4 class="needToFormat"><strong id="categoryBarName${id}" value="${name}">
-                                                    ${name}
-                                            </strong>
-												<span id="categoryBarSum${id}" class="pull-right text-muted"
-                                                      value="${sum}">
-													${sum} (в среднем ${limit}) руб.
-												</span></h4>
-                                            <div class="progress progress-striped active">
-                                                <div class="progress-bar progress-bar-${styles[step]}" role="progressbar"
-                                                     aria-valuenow="${sum}" aria-valuemin="0" aria-valuemax="100"
-                                                     style="width: ${normalSum}%" value="${name}">
-                                                    <span class="sr-only">${sum}</span>
+                                        <div class="row">
+                                            <div class="col-xs-12 col-md-8">
+                                                <h4 class="needToFormat wam-not-padding-xs">
+                                                    <strong id="categoryBarName${id}" value="${name}">
+                                                            ${name}
+                                                    </strong>
+                                                </h4>
+                                            </div>
+                                            <div class="col-xs-12 col-md-4 wam-margin-top-xs-0">
+                                                <h4 class="needToFormat">
+													<span id="categoryBarSum${id}" class="pull-right text-muted"
+                                                          value="${sum}">
+														${sum} (в среднем ${limit}) руб.
+													</span>
+                                                </h4>
+                                            </div>
+                                            <div class="col-xs-12 col-md-12">
+                                                <div class="progress progress-striped active">
+                                                    <div class="progress-bar progress-bar-${styles[step]}" role="progressbar"
+                                                         aria-valuenow="${sum}" aria-valuemin="0" aria-valuemax="100"
+                                                         style="width: ${normalSum}%" value="${name}">
+                                                        <span class="sr-only">${sum}</span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>

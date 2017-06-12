@@ -3,12 +3,10 @@ package ru.hd.olaf.mvc.repository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import ru.hd.olaf.entities.Category;
-import ru.hd.olaf.entities.Product;
 import ru.hd.olaf.entities.User;
-import ru.hd.olaf.util.json.AnalyticData;
+import ru.hd.olaf.util.json.AnalyticEntity;
 import ru.hd.olaf.util.json.BarEntity;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -59,7 +57,7 @@ public interface CategoryRepository extends CrudRepository<Category, Integer> {
             " HAVING COUNT(c.id) > 0")
     List<BarEntity> getBarEntityOfParentsByUserId(User user, Date after, Date before);
 
-    @Query("SELECT new ru.hd.olaf.util.json.AnalyticData(" +
+    @Query("SELECT new ru.hd.olaf.util.json.AnalyticEntity(" +
             "CASE " +
             "WHEN p IS NOT NULL THEN 'CategoryChild' " +
             "WHEN (c.type = 0) THEN 'CategoryIncome' " +
@@ -78,16 +76,16 @@ public interface CategoryRepository extends CrudRepository<Category, Integer> {
             "((?5 = true AND a.type = 0) OR (?6 = true AND a.type != 2) OR (?7 = true AND a.type = 1) OR (?8 = true AND a.type = 2)) " +
             "GROUP BY c.id " +
             " HAVING COUNT(c.id) > 0")
-    List<AnalyticData> getAnalyticDataByCategory(User user,
-                                                 Category category,
-                                                 Date after,
-                                                 Date before,
-                                                 boolean isNeedAvgSum,
-                                                 boolean isNeedRealSum,
-                                                 boolean isNeedOneTimeSum,
-                                                 boolean isNeedRegularSum);
+    List<AnalyticEntity> getAnalyticDataByCategory(User user,
+                                                   Category category,
+                                                   Date after,
+                                                   Date before,
+                                                   boolean isNeedAvgSum,
+                                                   boolean isNeedRealSum,
+                                                   boolean isNeedOneTimeSum,
+                                                   boolean isNeedRegularSum);
 
-    @Query("SELECT new ru.hd.olaf.util.json.AnalyticData(" +
+    @Query("SELECT new ru.hd.olaf.util.json.AnalyticEntity(" +
             "'Product' " +
             ", p.id, " +
             "SUM(a.price), " +
@@ -102,12 +100,12 @@ public interface CategoryRepository extends CrudRepository<Category, Integer> {
             "((?5 = true AND a.type = 0) OR (?6 = true AND a.type != 2) OR (?7 = true AND a.type = 1) OR (?8 = true AND a.type = 2)) " +
             "GROUP BY p.id " +
             " HAVING COUNT(p.id) > 0")
-    List<AnalyticData> getAnalyticDataByProduct(User user,
-                                                Category category,
-                                                Date after,
-                                                Date before,
-                                                boolean isNeedAvgSum,
-                                                boolean isNeedRealSum,
-                                                boolean isNeedOneTimeSum,
-                                                boolean isNeedRegularSum);
+    List<AnalyticEntity> getAnalyticDataByProduct(User user,
+                                                  Category category,
+                                                  Date after,
+                                                  Date before,
+                                                  boolean isNeedAvgSum,
+                                                  boolean isNeedRealSum,
+                                                  boolean isNeedOneTimeSum,
+                                                  boolean isNeedRegularSum);
 }
