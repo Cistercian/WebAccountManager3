@@ -143,6 +143,13 @@
         $(".catcher-events").on("shown.bs.dropdown", function(e){
             formatTooLongText();
         });
+
+        $(".wam-collapse").click(function() {
+            if ($(this).children('img').attr('src').indexOf('expand') !== -1)
+                $(this).children('img').attr('src', '/resources/img/collapse.png');
+            else
+                $(this).children('img').attr('src', '/resources/img/expand.png');
+        });
     });
 
     function setDropdownListId(categoryId, categoryName, type){
@@ -369,15 +376,14 @@
                             <spring:bind path="details">
                                 <spring:message code="label.page-amount.details" var="label"/>
 
-                                <div class="col-xs-6 col-md-2 wam-not-padding-xs">
+                                <div class="col-xs-6 col-md-4 wam-not-padding-xs">
                                     <h4><strong>${label}</strong></h4>
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-6 col-md-4 wam-margin-bottom-0-1">
-                                        <button type="button" class="btn btn-default btn-lg btn-block" data-toggle="collapse"
+                                        <button type="button" class="btn btn-default btn-lg btn-block wam-collapse" data-toggle="collapse"
                                                 data-target="#details">
-											<span class="glyphicon glyphicon-align-left" aria-hidden="true">
-											</span>
+                                            <img src="/resources/img/expand.png" class="img-responsive wam-top-radius center-block" alt="">
                                         </button>
                                     </div>
                                 </div>
@@ -390,15 +396,14 @@
                                 </div>
                             </spring:bind>
                                 <%--Конец описания--%>
-                            <div class="col-xs-6 col-md-2 wam-not-padding-xs">
+                            <div class="col-xs-6 col-md-4 wam-not-padding-xs">
                                 <h4><strong>Настройки статистики</strong></h4>
                             </div>
                             <div class="row">
                                 <div class="col-xs-6 col-md-4 wam-margin-bottom-0-1">
-                                    <button type="button" class="btn btn-default btn-lg btn-block" data-toggle="collapse"
+                                    <button type="button" class="btn btn-default btn-lg btn-block wam-collapse" data-toggle="collapse"
                                             data-target="#analytics">
-										<span class="glyphicon glyphicon-align-left" aria-hidden="true">
-										</span>
+                                        <img src="/resources/img/expand.png" class="img-responsive wam-top-radius center-block" alt="">
                                     </button>
                                 </div>
                             </div>

@@ -100,6 +100,7 @@ public class ProductController {
         if (periodicalId != null)
             modelAndView.addObject("periodicalId", periodicalId);
 
+        if (id == null) id = 0;
         modelAndView.addObject("id", id);
 
         User currentUser = securityService.findLoggedUser();
