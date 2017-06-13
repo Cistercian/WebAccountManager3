@@ -241,153 +241,147 @@
                     <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1">
                         <div class="panel-heading ">
                             <div class="row ">
-                                <div class='col-xs-12 col-md-6 wam-margin-bottom-2'>
+                                <div class='col-xs-12 col-md-6'>
                                     <h3 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.page-amount.title"/></h3>
-                                </div>
-                                <div class='col-xs-12 col-md-6 wam-margin-top-1'>
-                                    <button class="btn-default btn-lg btn-block" onclick="createRegular();return false;">
-                                        <spring:message code="label.page-amount.regular.create"/>
-                                    </button>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1">
                         <div class="wam-not-padding panel-body ">
-                            <!-- Скрытые поля -->
-                            <spring:bind path="id">
-                                <form:input type="hidden" path="id" class="form-control erasable" placeholder="${id}" ></form:input>
-                            </spring:bind>
-                                <%--Дата--%>
-                            <spring:bind path="date">
-                                <div class="col-xs-12 col-md-3 wam-margin-top-1 wam-not-padding-xs">
-                                    <h4><strong><spring:message code="label.page-amount.date"/></strong></h4>
-                                </div>
-                                <div class="col-xs-12 col-md-3 col-sm-12 wam-margin-top-1 wam-not-padding-xs">
-                                    <div class="form-group ${status.error ? 'has-error' : ''}">
-                                        <form:input id="date" type="text" path="date" class="form-control wam-text-size-1"
-                                                    readonly="true" style="cursor: pointer;"></form:input>
-                                        <form:errors path="date"></form:errors>
+                            <div class="row1">
+                                <!-- Скрытые поля -->
+                                <spring:bind path="id">
+                                    <form:input type="hidden" path="id" class="form-control erasable" placeholder="${id}" ></form:input>
+                                </spring:bind>
+                                    <%--Дата--%>
+                                <spring:bind path="date">
+                                    <div class="col-xs-12 col-md-3 wam-margin-top-1 wam-not-padding-xs">
+                                        <h4><strong><spring:message code="label.page-amount.date"/></strong></h4>
                                     </div>
-                                </div>
-                            </spring:bind>
-                                <%--Конец блока даты--%>
-                            <spring:bind path="type">
-                                <div class="col-xs-10 col-md-5 wam-margin-top-1 wam-not-padding-xs">
-                                    <h4 class="wam-font-size"><strong>Игнорировать оборот при прогнозе</strong></h4>
-                                </div>
-                                <div class="col-xs-2 col-md-1 col-sm-12 wam-margin-top-1 wam-not-padding-xs">
-                                    <div class="checkbox">
-                                        <label>
-                                            <form:checkbox path="type" value="1"/>
-                                        </label>
+                                    <div class="col-xs-12 col-md-3 col-sm-12 wam-margin-top-1 wam-not-padding-xs">
+                                        <div class="form-group ${status.error ? 'has-error' : ''}">
+                                            <form:input id="date" type="text" path="date" class="form-control wam-text-size-1"
+                                                        readonly="true" style="cursor: pointer;"></form:input>
+                                            <form:errors path="date"></form:errors>
+                                        </div>
                                     </div>
-                                </div>
-                            </spring:bind>
-                                <%--Имя сущности--%>
-                            <spring:bind path="name">
-                                <spring:message code="label.page-amount.name" var="label"/>
-                                <div class="col-xs-12 col-md-12 wam-not-padding-xs">
-                                    <h4><strong>${label}</strong></h4>
-                                </div>
-                                <div class="col-xs-12 col-md-12 wam-not-padding-xs">
-                                    <div class="form-group ${status.error ? 'has-error' : ''} ">
-                                        <form:input type="text" path="name" class="form-control form input-lg erasable"
-                                                    placeholder="${label}" onclick="scrollPage($($(this)).offset().top);"></form:input>
-                                        <form:errors path="name"></form:errors>
+                                </spring:bind>
+                                    <%--Конец блока даты--%>
+                                    <%--Имя сущности--%>
+                                <spring:bind path="name">
+                                    <spring:message code="label.page-amount.name" var="label"/>
+                                    <div class="col-xs-12 col-md-12 wam-not-padding-xs">
+                                        <h4><strong>${label}</strong></h4>
                                     </div>
-                                </div>
-                            </spring:bind>
-                                <%--Конец имени сущности--%>
-                                <%--Товарная группа--%>
-                            <spring:bind path="productId">
-                                <spring:message code="label.page-amount.product" var="label"/>
-                                <div class="col-xs-12 col-md-12 wam-not-padding-xs">
-                                    <h4><strong>${label}</strong></h4>
-                                </div>
-                                <div class="col-xs-12 col-md-12 wam-not-padding-xs">
-                                    <div class="form-group ${status.error ? 'has-error' : ''}">
-                                        <input id="productId" type="hidden" class="erasable"
-                                               value=<c:if test="${not empty product}">${product.getId()}"></c:if></input>
-										<input id="productName" type="text" name="productName" class="form-control form input-lg erasable"
-                                        placeholder="${label}" onclick="scrollPage($($(this)).offset().top);"
-                                        value=<c:if test="${not empty product}">
-                                        "${product.getName()}"</c:if>>
-                                        </input>
-                                        <form:errors path="productId"></form:errors>
+                                    <div class="col-xs-12 col-md-12 wam-not-padding-xs">
+                                        <div class="form-group ${status.error ? 'has-error' : ''} ">
+                                            <form:input type="text" path="name" class="form-control form input-lg erasable"
+                                                        placeholder="${label}" onclick="scrollPage($($(this)).offset().top);"></form:input>
+                                            <form:errors path="name"></form:errors>
+                                        </div>
                                     </div>
-                                </div>
-                            </spring:bind>
-                                <%--Конец товарной группы--%>
-                                <%--Категория--%>
-                            <spring:bind path="categoryId">
-                                <input id="categoryId" type="hidden" name="category" class="form-control erasable"
-                                       value="<c:if test="${not empty category}">${category.getId()}</c:if>"></input>
+                                </spring:bind>
+                                    <%--Конец имени сущности--%>
+                                    <%--Товарная группа--%>
+                                <spring:bind path="productId">
+                                    <spring:message code="label.page-amount.product" var="label"/>
+                                    <div class="col-xs-12 col-md-12 wam-not-padding-xs">
+                                        <h4><strong>${label}</strong></h4>
+                                    </div>
+                                    <div class="col-xs-12 col-md-12 wam-not-padding-xs">
+                                        <div class="form-group ${status.error ? 'has-error' : ''}">
+                                            <input id="productId" type="hidden" class="erasable"
+                                                   value=<c:if test="${not empty product}">${product.getId()}"></c:if></input>
+											<input id="productName" type="text" name="productName" class="form-control form input-lg erasable"
+                                            placeholder="${label}" onclick="scrollPage($($(this)).offset().top);"
+                                            value=<c:if test="${not empty product}">
+                                            "${product.getName()}"</c:if>>
+                                            </input>
+                                            <form:errors path="productId"></form:errors>
+                                        </div>
+                                    </div>
+                                </spring:bind>
+                                    <%--Конец товарной группы--%>
+                                    <%--Категория--%>
+                                <spring:bind path="categoryId">
+                                    <input id="categoryId" type="hidden" name="category" class="form-control erasable"
+                                           value="<c:if test="${not empty category}">${category.getId()}</c:if>"></input>
 
-
-                                <div class="col-xs-12 col-md-10  catcher-events">
-                                    <h4 class="needToFormat">
-                                        <strong>${selectCategory}</strong>
-                                    </h4>
-                                    <div class="form-group wam-not-padding wam-not-padding-xs ${status.error ? 'has-error' : ''}">
-                                        <button id="btnCategories" class="btn-default btn-lg btn-block dropdown-toggle"
-                                                data-toggle="dropdown" onclick="scrollPage($($(this)).offset().top);"
-                                                value="<c:if test="${not empty category}">${category.getId()}</c:if>">
-                                            <c:choose>
-                                                <c:when test="${not empty category}">
-                                                    ${category.getName()}
-                                                </c:when>
-                                                <c:otherwise>
-                                                    ${selectCategory}
-                                                </c:otherwise>
-                                            </c:choose>
-                                            <span class="caret"></span>
-                                        </button>
-                                        <ul id="dropdownCategories" class="dropdown-menu">
-                                            <li class="wam-text-size-1">
-                                                <a onclick="setDropdownListId(-1, '${selectCategory}', 'categories');return false;" class="needToFormat">
-                                                    <span>${selectCategory}</span>
-                                                </a>
-                                            </li>
-                                            <c:if test="${not empty categories}">
-                                                <li class="divider"></li>
-                                            </c:if>
-                                            <c:forEach items="${categories}" var="list">
+                                    <div class="col-xs-12 col-md-10 catcher-events">
+                                        <h4 class="needToFormat">
+                                            <strong>${selectCategory}</strong>
+                                        </h4>
+                                        <div class="form-group wam-not-padding wam-not-padding-xs ${status.error ? 'has-error' : ''}">
+                                            <button id="btnCategories" class="btn-default btn-lg btn-block dropdown-toggle"
+                                                    data-toggle="dropdown" onclick="scrollPage($($(this)).offset().top);"
+                                                    value="<c:if test="${not empty category}">${category.getId()}</c:if>">
+                                                <c:choose>
+                                                    <c:when test="${not empty category}">
+                                                        ${category.getName()}
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        ${selectCategory}
+                                                    </c:otherwise>
+                                                </c:choose>
+                                                <span class="caret"></span>
+                                            </button>
+                                            <ul id="dropdownCategories" class="dropdown-menu">
                                                 <li class="wam-text-size-1">
-                                                    <a id='${list.getId()}' onclick="setDropdownListId('${list.getId()}','${list.getName()}',
-                                                            'categories');return false;" class="needToFormat">
-                                                        <span>${list.getName()}</span>
+                                                    <a onclick="setDropdownListId(-1, '${selectCategory}', 'categories');return false;" class="needToFormat">
+                                                        <span>${selectCategory}</span>
                                                     </a>
                                                 </li>
-                                            </c:forEach>
-                                        </ul>
-                                        <form:errors path="categoryId"></form:errors>
+                                                <c:if test="${not empty categories}">
+                                                    <li class="divider"></li>
+                                                </c:if>
+                                                <c:forEach items="${categories}" var="list">
+                                                    <li class="wam-text-size-1">
+                                                        <a id='${list.getId()}' onclick="setDropdownListId('${list.getId()}','${list.getName()}',
+                                                                'categories');return false;" class="needToFormat">
+                                                            <span>${list.getName()}</span>
+                                                        </a>
+                                                    </li>
+                                                </c:forEach>
+                                            </ul>
+                                            <form:errors path="categoryId" class="text-danger"></form:errors>
+                                        </div>
                                     </div>
-                                </div>
-                            </spring:bind>
-                                <%--Конец категории--%>
-                                <%--Цена--%>
-                            <spring:bind path="price">
-                                <spring:message code="label.page-amount.price" var="label"/>
-                                <div class="col-xs-12 col-md-2 wam-not-padding-xs">
-                                    <h4><strong>
-                                            ${label}
-                                    </strong></h4>
-                                    <div class="form-group ${status.error ? 'has-error' : ''}">
-                                        <form:input type="number" path="price" class="form-control input-lg erasable"
-                                                    placeholder="${label}" onclick="scrollPage($($(this)).offset().top);"/>
-                                        <form:errors path="price"></form:errors>
+                                </spring:bind>
+                                    <%--Конец категории--%>
+                                    <%--Цена--%>
+                                <spring:bind path="price">
+                                    <spring:message code="label.page-amount.price" var="label"/>
+                                    <div class="col-xs-12 col-md-2 wam-not-padding-xs">
+                                        <h4><strong>
+                                                ${label}
+                                        </strong></h4>
+                                        <div class="form-group ${status.error ? 'has-error' : ''}">
+                                            <form:input type="number" path="price" class="form-control input-lg erasable"
+                                                        placeholder="${label}" onclick="scrollPage($($(this)).offset().top);"/>
+                                            <form:errors path="price"></form:errors>
+                                        </div>
                                     </div>
-                                </div>
-                            </spring:bind>
-                                <%--Конец цены--%>
-                                <%--Описание--%>
+                                </spring:bind>
+                                    <%--Конец цены--%>
+                                    <%--Описание--%>
+                            </div>
                             <spring:bind path="details">
                                 <spring:message code="label.page-amount.details" var="label"/>
-                                <div class="col-xs-12 col-md-12 wam-not-padding-xs">
+
+                                <div class="col-xs-6 col-md-2 wam-not-padding-xs">
                                     <h4><strong>${label}</strong></h4>
                                 </div>
-                                <div class="col-xs-12 col-md-12 wam-not-padding-xs">
+                                <div class="row">
+                                    <div class="col-xs-6 col-md-4 wam-margin-bottom-0-1">
+                                        <button type="button" class="btn btn-default btn-lg btn-block" data-toggle="collapse"
+                                                data-target="#details">
+											<span class="glyphicon glyphicon-align-left" aria-hidden="true">
+											</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div id="details" class="col-xs-12 col-md-12 wam-not-padding-xs collapse">
                                     <div class="form-group ${status.error ? 'has-error' : ''}">
                                         <form:textarea type="text" path="details" class="form-control input-lg erasable" rows="5"
                                                        placeholder='${label}'></form:textarea>
@@ -396,6 +390,173 @@
                                 </div>
                             </spring:bind>
                                 <%--Конец описания--%>
+                            <div class="col-xs-6 col-md-2 wam-not-padding-xs">
+                                <h4><strong>Настройки статистики</strong></h4>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6 col-md-4 wam-margin-bottom-0-1">
+                                    <button type="button" class="btn btn-default btn-lg btn-block" data-toggle="collapse"
+                                            data-target="#analytics">
+										<span class="glyphicon glyphicon-align-left" aria-hidden="true">
+										</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="analytics" class="col-xs-12 col-md-12 wam-not-padding-xs collapse">
+                                <div class="panel panel-default">
+                                    <div class="wam-not-padding panel-body">
+                                        <div class="col-xs-12 col-md-12">
+                                            <spring:bind path="type">
+                                                <div class="col-xs-10 col-md-10 wam-margin-top-1 wam-not-padding-xs">
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            <form:checkbox path="type" value="1"/>
+                                                            <p class="wam-margin-top-1 text-justify">
+                                                                <strong>Игнорировать оборот при прогнозе</strong>
+                                                            </p>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xs-2 col-md-2 wam-margin-top-1 wam-not-padding-xs">
+                                                    <p class="wam-margin-top-1">
+                                                        <img src="/resources/img/help.png" class="img-responsive wam-top-radius center-block"
+                                                             alt="" data-toggle="collapse" data-target="#helpOneTimeAmount">
+                                                    </p>
+                                                </div>
+                                                <div id="helpOneTimeAmount" class="col-xs-12 col-md-12 wam-not-padding-xs collapse">
+                                                    <div class="panel panel-default">
+                                                        <div class="wam-not-padding panel-body">
+                                                            <div class="col-xs-12 col-md-12">
+                                                                <p class="wam-margin-top-2 text-justify">
+                                                                    Если данный оборот единоразовый и не должен быть учтен при расчете статистики при прогнозе результата
+                                                                    месяца - укажите это. Например, если Вы получили денежный приз, то он не должен учитываться при расчете
+                                                                    средних оборотов - ведь иначе система будет считать, что Вы ежемесячно должны будете получать аналогичный доход,
+                                                                    и постоянно будет указывать не невыполнение этого, чем будет вгонять в депресию и крайнюю степень уныния... Нам
+                                                                    ведь этого не надо?
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </spring:bind>
+                                        </div>
+                                        <div class="col-xs-12 col-md-12">
+                                            <spring:bind path="type">
+                                                <div class="col-xs-10 col-md-10 wam-margin-top-1 wam-not-padding-xs">
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            <form:checkbox path="type" value="1"/>
+                                                            <p class="wam-margin-top-1 text-justify">
+                                                                <strong>Единоразовый оборот</strong>
+                                                            </p>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xs-2 col-md-2 wam-margin-top-1 wam-not-padding-xs">
+                                                    <p class="wam-margin-top-1">
+                                                        <img src="/resources/img/help.png" class="img-responsive wam-top-radius center-block"
+                                                             alt="" data-toggle="collapse" data-target="#helpFixed">
+                                                    </p>
+                                                </div>
+                                                <div id="helpFixed" class="col-xs-12 col-md-12 wam-not-padding-xs collapse">
+                                                    <div class="panel panel-default">
+                                                        <div class="wam-not-padding panel-body">
+                                                            <div class="col-xs-12 col-md-12">
+                                                                <p class="wam-margin-top-2 text-justify">
+                                                                    Если оборот носит единовременный характер и не растянут по дням месяца, то следует отметить этот пункт.
+                                                                    Предполагается, что существуют обороты, которые совершаются раз в месяц (например, оплата абоненсткой платы) и
+                                                                    не должны быть при прогнозировании растягиваться до конца месяца. Иными словами, если сегодня оплаченно 500 рублей -
+                                                                    то и в конце по прогнозу должны быть эти же 500 рублей.
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </spring:bind>
+                                        </div>
+
+                                        <div class="col-xs-12 col-md-12">
+                                            <div class="col-xs-10 col-md-10 wam-margin-top-1 wam-not-padding-xs">
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <spring:bind path="periodicalAmount">
+                                                            <p class="wam-margin-top-1">
+                                                                <c:choose>
+                                                                    <c:when test='${empty periodical}'>
+                                                                        <a href="/page-product?isGetRegular=true&id=${id}">
+                                                                            Оборот не привязан к обязательному.
+                                                                        </a>
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        <a href="/page-product?isGetRegular=true&id=${id}&periodicalId=${periodical.getId()}">
+                                                                            <input id="periodicalId" type="hidden" name="periodicalId" value="${periodical.getId()}"/>
+                                                                            Привязан обязательный оборот #${periodical.getId()} на сумму ${periodical.getPrice()} руб.
+                                                                        </a>
+                                                                    </c:otherwise>
+                                                                </c:choose>
+                                                                <form:errors path="periodicalAmount" class="text-danger"></form:errors>
+                                                            </p>
+                                                        </spring:bind>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-2 col-md-2 wam-margin-top-1 wam-not-padding-xs">
+                                                <p class="wam-margin-top-1">
+                                                    <img src="/resources/img/help.png" class="img-responsive wam-top-radius center-block"
+                                                         alt="" data-toggle="collapse" data-target="#helpPeriodicalAmount">
+                                                </p>
+                                            </div>
+                                            <div id="helpPeriodicalAmount" class="col-xs-12 col-md-12 wam-not-padding-xs collapse">
+                                                <div class="panel panel-default">
+                                                    <div class="wam-not-padding panel-body">
+                                                        <div class="col-xs-12 col-md-12">
+                                                            <p class="wam-margin-top-2 text-justify">
+                                                                Выберите ранее созданный обязательный оборот, указав тме самым его исполнение в этом месяце.
+                                                                Тогда при прогнозе результатов месята вместо обязательного оборота будет учитываться данный.
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-xs-12 col-md-12">
+                                            <div class="col-xs-10 col-md-10 wam-margin-top-1 wam-not-padding-xs">
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <button class="btn-default btn-lg btn-block" onclick="createRegular();return false;">
+                                                            <spring:message code="label.page-amount.regular.create"/>
+                                                        </button>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-2 col-md-2 wam-margin-top-1 wam-not-padding-xs">
+                                                <p class="wam-margin-top-1">
+                                                    <img src="/resources/img/help.png" class="img-responsive wam-top-radius center-block"
+                                                         alt="" data-toggle="collapse" data-target="#helpCreateRegular">
+                                                </p>
+                                            </div>
+                                            <div id="helpCreateRegular" class="col-xs-12 col-md-12 wam-not-padding-xs collapse">
+                                                <div class="panel panel-default">
+                                                    <div class="wam-not-padding panel-body">
+                                                        <div class="col-xs-12 col-md-12">
+                                                            <p class="wam-margin-top-2 text-justify">
+                                                                Обязательный обороты используются для анализа результата средних цен- их суммы учитываются
+                                                                при расчете прогноза на конец месяца, тем самым помагая учитывать планируемые обороты. </p>
+                                                            <p class="text-justify">Например, Вы достоверно знаете, что каждый месяц будут существовать обязательные обороты: заработная плата,
+                                                                погашение кредита, плата за коммунальные услуги, стоимость которых ориентировочно известна.
+                                                                Задав по этим данным обязательные обороты, Вы сможете сразу увидеть ожидаемый результат месяца,
+                                                                хотя фактических оборотов еще не было.</p>
+                                                            <p class="text-justify">Вы можете использовать текущий оборот в качестве шаблона для создания нового обязательного.
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </form:form>

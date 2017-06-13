@@ -17,8 +17,8 @@ import ru.hd.olaf.mvc.service.AmountService;
 import ru.hd.olaf.mvc.service.CategoryService;
 import ru.hd.olaf.mvc.service.ProductService;
 import ru.hd.olaf.mvc.service.SecurityService;
-import ru.hd.olaf.util.LogUtil;
 import ru.hd.olaf.util.DateUtil;
+import ru.hd.olaf.util.LogUtil;
 import ru.hd.olaf.util.json.JsonResponse;
 import ru.hd.olaf.util.json.ResponseType;
 
@@ -85,6 +85,31 @@ public class ProductController {
                 modelAndView.addObject("name", product.getName());
             }
         }
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/page-product", method = RequestMethod.GET)
+    public ModelAndView getPeriodicalAmounts(@RequestParam(value = "isGetRegular") Boolean isGetRegular,
+                                             @RequestParam(value = "id", required = false) Integer id,
+                                             @RequestParam(value = "periodicalId", required = false) Integer periodicalId){
+        logger.debug(LogUtil.getMethodName());
+        ModelAndView modelAndView = new ModelAndView("/data/page-product");
+        modelAndView.addObject("isGetRegular", true);
+
+        if (periodicalId != null)
+            modelAndView.addObject("periodicalId", periodicalId);
+
+        modelAndView.addObject("id", id);
+
+        User currentUser = securityService.findLoggedUser();
+
+        List<Amount> amounts = amountService.getAllRegular(currentUser);
+
+        logger.debug("Список обязательных оборотов:");
+        LogUtil.logList(logger, amounts);
+
+        modelAndView.addObject("amounts", amounts);
 
         return modelAndView;
     }

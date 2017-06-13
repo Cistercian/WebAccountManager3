@@ -200,11 +200,12 @@ public class DataController {
     public String getViewAmount(@RequestHeader(value = "Referer", required = false) String refererHeader,
                                 @RequestParam(value = "referer", required = false) String refererParam,
                                 @RequestParam(value = "id", required = false) Integer id,
+                                @RequestParam(value = "periodicalId", required = false) Integer periodicalId,
                                 Model model) {
         logger.debug(LogUtil.getMethodName());
 
         Amount amount;
-        JsonResponse response = amountService.getById(id);
+        JsonResponse response = utilService.getById(Amount.class, id);
 
         if (response.getEntity() != null) {
 
@@ -221,6 +222,16 @@ public class DataController {
             amount.setDate(new Date());
 
             logger.debug(String.format("Категория с id = %d не найдена. Создаем новую.", id));
+        }
+
+        if (periodicalId != null) {
+            response = utilService.getById(Amount.class, periodicalId);
+            if (response.getEntity() != null)
+                model.addAttribute("periodical", (Amount) response.getEntity());
+        } else {
+            if (amount.getPeriodicalAmount() != null) {
+                model.addAttribute("periodical", amount.getPeriodicalAmount());
+            }
         }
 
         model.addAttribute("className", "amount");
@@ -288,12 +299,13 @@ public class DataController {
     public ModelAndView saveAmount(@ModelAttribute("amountForm") Amount amountForm,
                                    @RequestParam(value = "productName") String productName,
                                    @RequestParam(value = "category") Integer categoryId,
+                                   @RequestParam(value = "periodicalId", required = false) Integer periodicalId,
                                    @RequestParam(value = "referer", required = false) String refererParam,
                                    BindingResult bindingResult) {
         logger.debug(LogUtil.getMethodName());
 
         //вычисляем категорию
-        JsonResponse response = categoryService.getById(categoryId);
+        JsonResponse response = utilService.getById(Category.class, categoryId);
 
         if (response.getType() == ResponseType.SUCCESS) {
             Category category = (Category) response.getEntity();
@@ -314,11 +326,18 @@ public class DataController {
         amountForm.setUserId(currentUser);
         //указываем тип (0 - обычный оборот, 1 - непереодический (следует игнорировать при прогнозе))
         if (amountForm.getType() == null) amountForm.setType((byte)0);
+        //указываем привязанный обязательный оборот
+        if (periodicalId != null) {
+            response = utilService.getById(Amount.class, periodicalId);
+            if (response.getEntity() != null)
+                amountForm.setPeriodicalAmount((Amount) response.getEntity());
+        }
 
-        logger.debug(String.format("Обрабатываемая сущность: %s, category: %s, product: %s",
+        logger.debug(String.format("Обрабатываемая сущность: %s, category: %s, product: %s, periodical amount: %s",
                 amountForm.toString(),
                 amountForm.getCategoryId() != null ? amountForm.getCategoryId() : "",
-                amountForm.getProductId() != null ? amountForm.getProductId() : ""));
+                amountForm.getProductId() != null ? amountForm.getProductId() : "",
+                amountForm.getPeriodicalAmount() != null ? amountForm.getPeriodicalAmount() : ""));
 
         ModelAndView modelAndView = new ModelAndView("/data/data");
 
@@ -332,10 +351,12 @@ public class DataController {
         }
         checkErrorsAndSave(amountForm, url, bindingResult, modelAndView);
 
+        modelAndView.addObject("id", amountForm.getId());
         modelAndView.addObject("product", amountForm.getProductId());
         modelAndView.addObject("category", amountForm.getCategoryId());
         modelAndView.addObject("type", amountForm.getType());
         modelAndView.addObject("categories", categoryService.getAll());
+        modelAndView.addObject("periodical", amountForm.getPeriodicalAmount());
 
 
         if (amountForm.getType() != 2) {

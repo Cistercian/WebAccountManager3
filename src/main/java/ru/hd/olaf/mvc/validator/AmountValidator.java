@@ -60,5 +60,11 @@ public class AmountValidator implements Validator {
             errors.rejectValue("price", "Validation.amount.price");
         }
 
+        //валидация привязанного обязательного оборота
+        if (amount.getPeriodicalAmount() != null && amount.getCategoryId() != null &&
+                amount.getCategoryId().getType() != amount.getPeriodicalAmount().getCategoryId().getType()) {
+            logger.debug("Validation.amount.periodical.categoryType");
+            errors.rejectValue("periodicalAmount", "Validation.amount.periodical.categoryType");
+        }
     }
 }

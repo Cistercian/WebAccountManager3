@@ -26,6 +26,7 @@ public class Amount {
     private Product productId;
     private Limit limit;
     private Byte type;
+    private Amount periodicalAmount;
 
     @Id
     @Column(name = "ID", nullable = false)
@@ -120,6 +121,17 @@ public class Amount {
 
     public void setType(Byte type) {
         this.type = type;
+    }
+
+    @ManyToOne()
+    @JoinColumn(name = "periodical_amount")
+    @JsonBackReference
+    public Amount getPeriodicalAmount() {
+        return periodicalAmount;
+    }
+
+    public void setPeriodicalAmount(Amount periodicalAmount) {
+        this.periodicalAmount = periodicalAmount;
     }
 
     @Transient

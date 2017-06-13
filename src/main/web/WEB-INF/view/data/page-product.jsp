@@ -100,6 +100,15 @@
             table.search( this.value ).draw();
         } );
     });
+    function setPeriodicalId(id, periodicalId){
+        if ($('#checkbox').prop('checked') == true) {
+            $('#checkbox').prop('checked', false);
+            $('#btnOk').attr('onclick', 'location.href=\'amount?id=' + id + '&periodicalId=0\'');
+        } else {
+            $('#checkbox').prop('checked', true);
+            $('#btnOk').attr('onclick', 'location.href=\'amount?id=' + id + '&periodicalId=' + periodicalId +'\'');
+        }
+    }
 </script>
 
 <div class="content container-fluid wam-radius wam-min-height-0 wow fadeInDown" data-wow-duration="1000ms"
@@ -128,45 +137,102 @@
                         </div>
                         </c:when>
                         <c:otherwise>
-                        <h4 class="wam-margin-bottom-0 wam-margin-top-0">Просмотр движений за дату</h4>
+                        <c:choose>
+                        <c:when test='${not empty isGetRegular}'>
+                        <h4 class="wam-margin-bottom-0 wam-margin-top-0">Привязка постоянных оборотов</h4>
                     </div>
-                    <div class='col-xs-12'>
-                        <p class='lead'>
-                        <h3 class='wam-margin-top-1'><strong class='pull-right'>${date}</strong></h3></p>
-                    </div>
-                    </c:otherwise>
-                    </c:choose>
+                    </c:when>
+                    <c:otherwise>
+                    <h4 class="wam-margin-bottom-0 wam-margin-top-0">Просмотр движений за дату</h4>
                 </div>
-            </div>
-            <div class="panel-body">
-                <table id="amounts" class="table table-striped table-bordered table-text  wam-font-size wam-margin-top-2" cellspacing="0"
-                       width="100%">
-                    <thead class="">
-                    <tr>
-                        <th style="display : none;"><spring:message code="label.page-product.table.id"/></th>
-                        <th><spring:message code="label.page-product.table.date"/></th>
-                        <th><spring:message code="label.page-product.table.name"/></th>
-                        <th><spring:message code="label.page-product.table.price"/></th>
-                        <th style="display : none;"><spring:message code="label.page-product.table.category"/></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-
-                    <c:forEach items="${amounts}" var="amount">
-                        <tr class="wam-cursor" onclick="location.href='/amount?id=${amount.getId()}';">
-                            <td style="display : none;">${amount.getId()}</td>
-                            <td class="wam-no-wrap">${amount.getDate()}</td>
-                            <td>${amount.getName()}</td>
-                            <td>${amount.getPrice()}</td>
-                            <td style="display : none;">${amount.getCategoryId().getName()}</td>
-                        </tr>
-                    </c:forEach>
-                    </tbody>
-                </table>
+                <div class='col-xs-12'>
+                    <p class='lead'>
+                    <h3 class='wam-margin-top-1'><strong class='pull-right'>${date}</strong></h3></p>
+                </div>
+                </c:otherwise>
+                </c:choose>
+                </c:otherwise>
+                </c:choose>
             </div>
         </div>
+        <div class="panel-body">
+            <table id="amounts" class="table table-striped table-bordered table-text  wam-font-size wam-margin-top-2" cellspacing="0"
+                   width="100%">
+                <thead class="">
+                <tr>
+                    <c:choose>
+                        <c:when test='${not empty isGetRegular}'>
+                            <th>Выбрано</th>
+                            <th><spring:message code="label.page-product.table.id"/></th>
+                            <th><spring:message code="label.page-product.table.name"/></th>
+                            <th><spring:message code="label.page-product.table.category"/></th>
+                            <th><spring:message code="label.page-product.table.price"/></th>
+                        </c:when>
+                        <c:otherwise>
+                            <th style="display : none;"><spring:message code="label.page-product.table.id"/></th>
+                            <th><spring:message code="label.page-product.table.date"/></th>
+                            <th><spring:message code="label.page-product.table.name"/></th>
+                            <th><spring:message code="label.page-product.table.price"/></th>
+                            <th style="display : none;"><spring:message code="label.page-product.table.category"/></th>
+                        </c:otherwise>
+                    </c:choose>
+                </tr>
+                </thead>
+                <tbody>
+
+                <c:forEach items="${amounts}" var="amount">
+                    <tr class="wam-cursor">
+                        <c:choose>
+                            <c:when test='${not empty isGetRegular}'>
+                                <td onclick="setPeriodicalId(${id}, ${amount.getId()})">
+                                    <p data-placement="top">
+                                        <c:choose>
+                                            <c:when test='${amount.getId() == periodicalId}'>
+                                                <label class="checkbox-inline"><input id="checkbox" type="checkbox" value="" checked></label>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <label class="checkbox-inline"><input id="checkbox" type="checkbox" value=""></label>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </p>
+                                </td>
+                                <td onclick="location.href='/amount?id=${amount.getId()}';">${amount.getId()}</td>
+                                <td onclick="location.href='/amount?id=${amount.getId()}';">${amount.getName()}</td>
+                                <td onclick="location.href='/amount?id=${amount.getId()}';">${amount.getCategoryId().getName()}</td>
+                                <td onclick="location.href='/amount?id=${amount.getId()}';">${amount.getPrice()}</td>
+                            </c:when>
+                            <c:otherwise>
+                                <td style="display : none;">${amount.getId()}</td>
+                                <td class="wam-no-wrap" onclick="location.href='/amount?id=${amount.getId()}';">${amount.getDate()}</td>
+                                <td onclick="location.href='/amount?id=${amount.getId()}';">${amount.getName()}</td>
+                                <td onclick="location.href='/amount?id=${amount.getId()}';">${amount.getPrice()}</td>
+                                <td style="display : none;">${amount.getCategoryId().getName()}</td>
+                            </c:otherwise>
+                        </c:choose>
+                    </tr>
+                </c:forEach>
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
+    <c:if test='${not empty isGetRegular}'>
+        <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-0">
+            <div class="wam-not-padding panel-body">
+                <div class="col-xs-12 col-md-6 wam-not-padding-xs">
+                    <button id="btnOk" type="submit" class="btn btn-primary btn-lg btn-block wam-btn-1"
+                            onclick="location.href='amount?id=${id}&periodicalId=${periodicalId}'">
+                        <spring:message code="label.page-amount.btnOk"/>
+                    </button>
+                </div>
+                <div class="col-xs-12 col-md-6 wam-not-padding-xs">
+                    <button type="submit" class="btn-default btn-lg btn-block wam-btn-1 return"
+                            onclick="location.href='amount?id=${id}'">
+                        <spring:message code="label.page-amount.btnCancel"/>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </c:if>
 </div>
 
 
