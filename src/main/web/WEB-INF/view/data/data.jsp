@@ -406,6 +406,7 @@
                                         <img src="/resources/img/expand.png" class="img-responsive wam-top-radius center-block" alt="">
                                     </button>
                                 </div>
+                                <form:errors path="regularId" class="text-danger"></form:errors>
                             </div>
                             <div id="analytics" class="col-xs-12 col-md-12 wam-not-padding-xs collapse">
                                 <div class="panel panel-default">
@@ -413,11 +414,11 @@
                                         <div class="col-xs-12 col-md-12">
                                             <spring:bind path="type">
                                                 <div class="col-xs-10 col-md-10 wam-margin-top-1 wam-not-padding-xs">
-                                                    <div class="checkbox">
+                                                    <div class="radio">
                                                         <label>
-                                                            <form:checkbox path="type" value="1"/>
+                                                            <form:radiobutton path="type" name="type" value="0"/>
                                                             <p class="wam-margin-top-1 text-justify">
-                                                                <strong>Игнорировать оборот при прогнозе</strong>
+                                                                <strong>Стандартный оборот</strong>
                                                             </p>
                                                         </label>
                                                     </div>
@@ -425,19 +426,15 @@
                                                 <div class="col-xs-2 col-md-2 wam-margin-top-1 wam-not-padding-xs">
                                                     <p class="wam-margin-top-1">
                                                         <img src="/resources/img/help.png" class="img-responsive wam-top-radius center-block"
-                                                             alt="" data-toggle="collapse" data-target="#helpOneTimeAmount">
+                                                             alt="" data-toggle="collapse" data-target="#helpDefault">
                                                     </p>
                                                 </div>
-                                                <div id="helpOneTimeAmount" class="col-xs-12 col-md-12 wam-not-padding-xs collapse">
+                                                <div id="helpDefault" class="col-xs-12 col-md-12 wam-not-padding-xs collapse">
                                                     <div class="panel panel-default">
                                                         <div class="wam-not-padding panel-body">
                                                             <div class="col-xs-12 col-md-12">
                                                                 <p class="wam-margin-top-2 text-justify">
-                                                                    Если данный оборот единоразовый и не должен быть учтен при расчете статистики при прогнозе результата
-                                                                    месяца - укажите это. Например, если Вы получили денежный приз, то он не должен учитываться при расчете
-                                                                    средних оборотов - ведь иначе система будет считать, что Вы ежемесячно должны будете получать аналогичный доход,
-                                                                    и постоянно будет указывать не невыполнение этого, чем будет вгонять в депресию и крайнюю степень уныния... Нам
-                                                                    ведь этого не надо?
+                                                                    Обычный постоянный прогнозируемый оборот. Статистика за ранние месяцы вычисляется как среднемесячная сумма за месяцы, предшествующие текущему. Результат по данному месяцу будет прогнозироваться по принципу "в том случае, если динамика оборотов сохранится такой же, то их сумма составит ...".
                                                                 </p>
                                                             </div>
                                                         </div>
@@ -445,12 +442,13 @@
                                                 </div>
                                             </spring:bind>
                                         </div>
+
                                         <div class="col-xs-12 col-md-12">
                                             <spring:bind path="type">
                                                 <div class="col-xs-10 col-md-10 wam-margin-top-1 wam-not-padding-xs">
-                                                    <div class="checkbox">
+                                                    <div class="radio">
                                                         <label>
-                                                            <form:checkbox path="type" value="1"/>
+                                                            <form:radiobutton path="type" name="type" value="1"/>
                                                             <p class="wam-margin-top-1 text-justify">
                                                                 <strong>Единоразовый оборот</strong>
                                                             </p>
@@ -481,25 +479,61 @@
                                         </div>
 
                                         <div class="col-xs-12 col-md-12">
+                                            <spring:bind path="type">
+                                                <div class="col-xs-10 col-md-10 wam-margin-top-1 wam-not-padding-xs">
+                                                    <div class="radio">
+                                                        <label>
+                                                            <form:radiobutton path="type" name="type" value="2"/>
+                                                            <p class="wam-margin-top-1 text-justify">
+                                                                <strong>Единоразовый оборот и исключенный из расчета среднего за предыдущие месяцы</strong>
+                                                            </p>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xs-2 col-md-2 wam-margin-top-1 wam-not-padding-xs">
+                                                    <p class="wam-margin-top-1">
+                                                        <img src="/resources/img/help.png" class="img-responsive wam-top-radius center-block"
+                                                             alt="" data-toggle="collapse" data-target="#helpOneTimeAmount">
+                                                    </p>
+                                                </div>
+                                                <div id="helpOneTimeAmount" class="col-xs-12 col-md-12 wam-not-padding-xs collapse">
+                                                    <div class="panel panel-default">
+                                                        <div class="wam-not-padding panel-body">
+                                                            <div class="col-xs-12 col-md-12">
+                                                                <p class="wam-margin-top-2 text-justify">
+                                                                    Если данный оборот единоразовый и не должен быть учтен при расчете статистики при прогнозе результата
+                                                                    месяца - укажите это. Например, если Вы получили денежный приз, то он не должен учитываться при расчете
+                                                                    средних оборотов - ведь иначе система будет считать, что Вы ежемесячно должны будете получать аналогичный доход,
+                                                                    и постоянно будет указывать не невыполнение этого, чем будет вгонять в депресию и крайнюю степень уныния... Нам
+                                                                    ведь этого не надо?
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </spring:bind>
+                                        </div>
+
+                                        <div class="col-xs-12 col-md-12">
                                             <div class="col-xs-10 col-md-10 wam-margin-top-1 wam-not-padding-xs">
                                                 <div class="checkbox">
                                                     <label>
-                                                        <spring:bind path="periodicalAmount">
+                                                        <spring:bind path="regularId">
                                                             <p class="wam-margin-top-1">
                                                                 <c:choose>
-                                                                    <c:when test='${empty periodical}'>
+                                                                    <c:when test='${empty regular}'>
                                                                         <a href="/page-product?isGetRegular=true&id=${id}">
                                                                             Оборот не привязан к обязательному.
                                                                         </a>
                                                                     </c:when>
                                                                     <c:otherwise>
-                                                                        <a href="/page-product?isGetRegular=true&id=${id}&periodicalId=${periodical.getId()}">
-                                                                            <input id="periodicalId" type="hidden" name="periodicalId" value="${periodical.getId()}"/>
-                                                                            Привязан обязательный оборот #${periodical.getId()} на сумму ${periodical.getPrice()} руб.
+                                                                        <a href="/page-product?isGetRegular=true&id=${id}&regularId=${regular.getId()}">
+                                                                            <input id="regular" type="hidden" name="regular" value="${regular.getId()}"/>
+                                                                            Привязан обязательный оборот #${regular.getId()} на сумму ${regular.getPrice()} руб.
                                                                         </a>
                                                                     </c:otherwise>
                                                                 </c:choose>
-                                                                <form:errors path="periodicalAmount" class="text-danger"></form:errors>
+                                                                <form:errors path="regularId" class="text-danger"></form:errors>
                                                             </p>
                                                         </spring:bind>
                                                     </label>
@@ -508,16 +542,16 @@
                                             <div class="col-xs-2 col-md-2 wam-margin-top-1 wam-not-padding-xs">
                                                 <p class="wam-margin-top-1">
                                                     <img src="/resources/img/help.png" class="img-responsive wam-top-radius center-block"
-                                                         alt="" data-toggle="collapse" data-target="#helpPeriodicalAmount">
+                                                         alt="" data-toggle="collapse" data-target="#helpRegularAmount">
                                                 </p>
                                             </div>
-                                            <div id="helpPeriodicalAmount" class="col-xs-12 col-md-12 wam-not-padding-xs collapse">
+                                            <div id="helpRegularAmount" class="col-xs-12 col-md-12 wam-not-padding-xs collapse">
                                                 <div class="panel panel-default">
                                                     <div class="wam-not-padding panel-body">
                                                         <div class="col-xs-12 col-md-12">
                                                             <p class="wam-margin-top-2 text-justify">
-                                                                Выберите ранее созданный обязательный оборот, указав тме самым его исполнение в этом месяце.
-                                                                Тогда при прогнозе результатов месята вместо обязательного оборота будет учитываться данный.
+                                                                Выберите ранее созданный обязательный оборот, указав тем самым его исполнение в этом месяце.
+                                                                Тогда при прогнозе результатов месяца вместо обязательного оборота будет учитываться данный.
                                                             </p>
                                                         </div>
                                                     </div>

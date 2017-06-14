@@ -292,9 +292,10 @@ public class CategoryServiceImpl implements CategoryService {
                 DateUtil.getDate(before),
                 true,   //isNeedAvgSum
                 false,  //isNeedRealSum
-                false,  //isNeedOneTimeSum
-                false   //isNeedRegularSum
+                false  //isNeedOneTimeSum
         );
+        logger.debug("Список со средними ценами:");
+        LogUtil.logList(logger, list);
         //если запрос по определенной категории, то необходимо отдельно собрать данные по группам
         if (category != null)
             list.addAll(categoryRepository.getAnalyticDataByProduct(
@@ -303,7 +304,6 @@ public class CategoryServiceImpl implements CategoryService {
                     beginOfEra,
                     DateUtil.getDate(before),
                     true,
-                    false,
                     false,
                     false
             ));
@@ -321,9 +321,11 @@ public class CategoryServiceImpl implements CategoryService {
                 today,
                 false,  //isNeedAvgSum
                 true,   //isNeedRealSum
-                false,  //isNeedOneTimeSum
-                false   //isNeedRegularSum
+                false   //isNeedOneTimeSum
         );
+        logger.debug("Список со ценами за текущий месяц:");
+        LogUtil.logList(logger, listThisMonth);
+
         if (category != null)
             listThisMonth.addAll(categoryRepository.getAnalyticDataByProduct(
                     user,
@@ -332,7 +334,6 @@ public class CategoryServiceImpl implements CategoryService {
                     today,
                     false,
                     true,
-                    false,
                     false
             ));
 
@@ -363,10 +364,13 @@ public class CategoryServiceImpl implements CategoryService {
                 beginOfMonth,
                 today,
                 false,  //isNeedAvgSum
-                false,   //isNeedRealSum
-                true,  //isNeedOneTimeSum
-                false   //isNeedRegularSum
+                false,  //isNeedRealSum
+                true    //isNeedOneTimeSum
         );
+
+        logger.debug("Список с единоразовыми оборотами:");
+        LogUtil.logList(logger, listThisMonth);
+
         if (category != null)
             listThisMonth.addAll(categoryRepository.getAnalyticDataByProduct(
                     user,
@@ -375,8 +379,7 @@ public class CategoryServiceImpl implements CategoryService {
                     today,
                     false,
                     false,
-                    true,
-                    false
+                    true
             ));
         for (AnalyticEntity entity : listThisMonth){
             if (list.contains(entity)){
@@ -391,26 +394,21 @@ public class CategoryServiceImpl implements CategoryService {
             }
         }
         //учет обязательных (периодических) оборотов
-        listThisMonth = categoryRepository.getAnalyticDataByCategory(
+        listThisMonth = categoryRepository.getAnalyticDataOfRegularByCategory(
                 user,
                 category,
-                beginOfEra,
-                beginOfEra,
-                false,  //isNeedAvgSum
-                false,   //isNeedRealSum
-                false,  //isNeedOneTimeSum
-                true   //isNeedRegularSum
+                beginOfMonth,
+                today
         );
+        logger.debug("Список с обязательными оборотами:");
+        LogUtil.logList(logger, listThisMonth);
+
         if (category != null)
-            listThisMonth.addAll(categoryRepository.getAnalyticDataByProduct(
+            listThisMonth.addAll(categoryRepository.getAnalyticDataOfRegularByProduct(
                     user,
                     category,
-                    beginOfEra,
-                    beginOfEra,
-                    false,
-                    false,
-                    false,
-                    true
+                    beginOfMonth,
+                    today
             ));
         for (AnalyticEntity entity : listThisMonth){
             if (list.contains(entity)){

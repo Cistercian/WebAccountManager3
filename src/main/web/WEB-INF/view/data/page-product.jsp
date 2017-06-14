@@ -100,13 +100,13 @@
             table.search( this.value ).draw();
         } );
     });
-    function setPeriodicalId(id, periodicalId){
+    function setRegularId(id, regularId){
         if ($('#checkbox').prop('checked') == true) {
             $('#checkbox').prop('checked', false);
-            $('#btnOk').attr('onclick', 'location.href=\'amount?id=' + id + '&periodicalId=0\'');
+            $('#btnOk').attr('onclick', 'location.href=\'amount?id=' + id + '&regularId=0\'');
         } else {
             $('#checkbox').prop('checked', true);
-            $('#btnOk').attr('onclick', 'location.href=\'amount?id=' + id + '&periodicalId=' + periodicalId +'\'');
+            $('#btnOk').attr('onclick', 'location.href=\'amount?id=' + id + '&regularId=' + regularId +'\'');
         }
     }
 </script>
@@ -184,10 +184,10 @@
                     <tr class="wam-cursor">
                         <c:choose>
                             <c:when test='${not empty isGetRegular}'>
-                                <td onclick="setPeriodicalId(${id}, ${amount.getId()})">
+                                <td onclick="setRegularId(${id}, ${amount.getId()})">
                                     <p data-placement="top">
                                         <c:choose>
-                                            <c:when test='${amount.getId() == periodicalId}'>
+                                            <c:when test='${amount.getId() == regularId}'>
                                                 <label class="checkbox-inline"><input id="checkbox" type="checkbox" value="" checked></label>
                                             </c:when>
                                             <c:otherwise>
@@ -220,7 +220,7 @@
             <div class="wam-not-padding panel-body">
                 <div class="col-xs-12 col-md-6 wam-not-padding-xs">
                     <button id="btnOk" type="submit" class="btn btn-primary btn-lg btn-block wam-btn-1"
-                            onclick="location.href='amount?id=${id}&periodicalId=${periodicalId}'">
+                            onclick="location.href='amount?id=${id}&regularId=${regularId}'">
                         <spring:message code="label.page-amount.btnOk"/>
                     </button>
                 </div>

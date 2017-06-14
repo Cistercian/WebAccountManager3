@@ -92,13 +92,13 @@ public class ProductController {
     @RequestMapping(value = "/page-product", method = RequestMethod.GET)
     public ModelAndView getPeriodicalAmounts(@RequestParam(value = "isGetRegular") Boolean isGetRegular,
                                              @RequestParam(value = "id", required = false) Integer id,
-                                             @RequestParam(value = "periodicalId", required = false) Integer periodicalId){
+                                             @RequestParam(value = "regularId", required = false) Integer regularId){
         logger.debug(LogUtil.getMethodName());
         ModelAndView modelAndView = new ModelAndView("/data/page-product");
         modelAndView.addObject("isGetRegular", true);
 
-        if (periodicalId != null)
-            modelAndView.addObject("periodicalId", periodicalId);
+        if (regularId != null)
+            modelAndView.addObject("regularId", regularId);
 
         if (id == null) id = 0;
         modelAndView.addObject("id", id);

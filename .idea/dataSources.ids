@@ -45,7 +45,7 @@
       <column id="17" parent="2" name="product_id">
         <data-type>int(11)</data-type>
       </column>
-      <column id="18" parent="2" name="periodical_amount">
+      <column id="18" parent="2" name="regular_id">
         <data-type>int(11)</data-type>
       </column>
       <key id="19" parent="2" name="PRIMARY">

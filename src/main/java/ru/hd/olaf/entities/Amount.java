@@ -25,8 +25,15 @@ public class Amount {
     private User userId;
     private Product productId;
     private Limit limit;
+    /**
+     * type - тип оборота
+     * 0 - default;
+     * 1 - единоразовый (не прогнозируемый на конец месяца - берется просто сумма на текущее число);
+     * 2 - единоразовый (не прогнозируемый на конец месяца) и исключенный из подсчета среднего зха предыдущие месяца;
+     * 3 - обязательный (будущий, запланированный) оборот (берется при расчете прогнозируемой суммы за месяц).
+     */
     private Byte type;
-    private Amount periodicalAmount;
+    private Amount regularId;
 
     @Id
     @Column(name = "ID", nullable = false)
@@ -124,14 +131,14 @@ public class Amount {
     }
 
     @ManyToOne()
-    @JoinColumn(name = "periodical_amount")
+    @JoinColumn(name = "regular_id")
     @JsonBackReference
-    public Amount getPeriodicalAmount() {
-        return periodicalAmount;
+    public Amount getRegularId() {
+        return regularId;
     }
 
-    public void setPeriodicalAmount(Amount periodicalAmount) {
-        this.periodicalAmount = periodicalAmount;
+    public void setRegularId(Amount regularId) {
+        this.regularId = regularId;
     }
 
     @Transient

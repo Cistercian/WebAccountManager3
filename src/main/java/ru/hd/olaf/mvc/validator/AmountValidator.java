@@ -11,7 +11,6 @@ import ru.hd.olaf.entities.Amount;
 import ru.hd.olaf.mvc.service.AmountService;
 import ru.hd.olaf.mvc.service.CategoryService;
 import ru.hd.olaf.util.LogUtil;
-import ru.hd.olaf.util.json.JsonResponse;
 
 import java.math.BigDecimal;
 
@@ -61,10 +60,10 @@ public class AmountValidator implements Validator {
         }
 
         //валидация привязанного обязательного оборота
-        if (amount.getPeriodicalAmount() != null && amount.getCategoryId() != null &&
-                amount.getCategoryId().getType() != amount.getPeriodicalAmount().getCategoryId().getType()) {
+        if (amount.getRegularId() != null && amount.getCategoryId() != null &&
+                amount.getCategoryId().getType() != amount.getRegularId().getCategoryId().getType()) {
             logger.debug("Validation.amount.periodical.categoryType");
-            errors.rejectValue("periodicalAmount", "Validation.amount.periodical.categoryType");
+            errors.rejectValue("regularId", "Validation.amount.periodical.categoryType");
         }
     }
 }

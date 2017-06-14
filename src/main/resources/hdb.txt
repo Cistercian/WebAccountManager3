@@ -85,6 +85,8 @@ CREATE TABLE persistent_logins (
 ALTER TABLE amounts ADD type TINYINT(1) DEFAULT 0;
 UPDATE amounts SET type = 0;
 ALTER TABLE amounts ADD periodical_amount int DEFAULT NULL;
+ALTER TABLE amounts CHANGE periodical_amount regular_amount int DEFAULT NULL;
+ALTER TABLE amounts CHANGE regular_amount regular_id int DEFAULT NULL;
 
 INSERT INTO categories (parent_id, user_id, name, details, type) VALUES (0, 1, 'Категория 1', 'Описание 1', 0);
 INSERT INTO categories (parent_id, user_id, name, details, type) VALUES (1, 1, 'Категория 2', 'Описание 2', 1);

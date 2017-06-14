@@ -102,7 +102,6 @@ public class AnalyticController {
 
         User currentUser = securityService.findLoggedUser();
 
-
         List<AnalyticEntity> analyticData = categoryService.getAnalyticData(
                 currentUser,
                 null,

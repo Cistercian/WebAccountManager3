@@ -200,7 +200,7 @@ public class DataController {
     public String getViewAmount(@RequestHeader(value = "Referer", required = false) String refererHeader,
                                 @RequestParam(value = "referer", required = false) String refererParam,
                                 @RequestParam(value = "id", required = false) Integer id,
-                                @RequestParam(value = "periodicalId", required = false) Integer periodicalId,
+                                @RequestParam(value = "regularId", required = false) Integer regularId,
                                 Model model) {
         logger.debug(LogUtil.getMethodName());
 
@@ -224,13 +224,13 @@ public class DataController {
             logger.debug(String.format("Категория с id = %d не найдена. Создаем новую.", id));
         }
 
-        if (periodicalId != null) {
-            response = utilService.getById(Amount.class, periodicalId);
+        if (regularId != null) {
+            response = utilService.getById(Amount.class, regularId);
             if (response.getEntity() != null)
-                model.addAttribute("periodical", (Amount) response.getEntity());
+                model.addAttribute("regular", (Amount) response.getEntity());
         } else {
-            if (amount.getPeriodicalAmount() != null) {
-                model.addAttribute("periodical", amount.getPeriodicalAmount());
+            if (amount.getRegularId() != null) {
+                model.addAttribute("regular", amount.getRegularId());
             }
         }
 
@@ -299,7 +299,7 @@ public class DataController {
     public ModelAndView saveAmount(@ModelAttribute("amountForm") Amount amountForm,
                                    @RequestParam(value = "productName") String productName,
                                    @RequestParam(value = "category") Integer categoryId,
-                                   @RequestParam(value = "periodicalId", required = false) Integer periodicalId,
+                                   @RequestParam(value = "regular", required = false) Integer regularId,
                                    @RequestParam(value = "referer", required = false) String refererParam,
                                    BindingResult bindingResult) {
         logger.debug(LogUtil.getMethodName());
@@ -327,17 +327,17 @@ public class DataController {
         //указываем тип (0 - обычный оборот, 1 - непереодический (следует игнорировать при прогнозе))
         if (amountForm.getType() == null) amountForm.setType((byte)0);
         //указываем привязанный обязательный оборот
-        if (periodicalId != null) {
-            response = utilService.getById(Amount.class, periodicalId);
+        if (regularId != null) {
+            response = utilService.getById(Amount.class, regularId);
             if (response.getEntity() != null)
-                amountForm.setPeriodicalAmount((Amount) response.getEntity());
+                amountForm.setRegularId((Amount) response.getEntity());
         }
 
-        logger.debug(String.format("Обрабатываемая сущность: %s, category: %s, product: %s, periodical amount: %s",
+        logger.debug(String.format("Обрабатываемая сущность: %s, category: %s, product: %s, regular amount: %s",
                 amountForm.toString(),
                 amountForm.getCategoryId() != null ? amountForm.getCategoryId() : "",
                 amountForm.getProductId() != null ? amountForm.getProductId() : "",
-                amountForm.getPeriodicalAmount() != null ? amountForm.getPeriodicalAmount() : ""));
+                amountForm.getRegularId() != null ? amountForm.getRegularId() : ""));
 
         ModelAndView modelAndView = new ModelAndView("/data/data");
 
@@ -356,7 +356,7 @@ public class DataController {
         modelAndView.addObject("category", amountForm.getCategoryId());
         modelAndView.addObject("type", amountForm.getType());
         modelAndView.addObject("categories", categoryService.getAll());
-        modelAndView.addObject("periodical", amountForm.getPeriodicalAmount());
+        modelAndView.addObject("regular", amountForm.getRegularId());
 
 
         if (amountForm.getType() != 2) {
