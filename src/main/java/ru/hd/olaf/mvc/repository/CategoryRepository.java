@@ -71,7 +71,7 @@ public interface CategoryRepository extends CrudRepository<Category, Integer> {
             "FROM Amount a " +
             "LEFT JOIN a.categoryId c LEFT JOIN c.parentId p " +
             "WHERE c.userId = ?1  AND " +
-            "((?2 = null AND p IS NULL) OR (a.categoryId = ?2)) AND " +
+            "((?2 = NULL AND p IS NULL) OR (?2 != NULL AND p = ?2)) AND " +
             "a.date BETWEEN ?3 AND ?4 AND " +
             "((?5 = true AND (a.type = 0 OR a.type = 1)) OR " +
             "(?6 = true AND a.type != 3) OR " +
@@ -88,23 +88,21 @@ public interface CategoryRepository extends CrudRepository<Category, Integer> {
 
     @Query("SELECT new ru.hd.olaf.util.json.AnalyticEntity(" +
             "CASE " +
-            "WHEN c.parentId IS NOT NULL THEN 'CategoryChild' " +
-            "WHEN (c.type = 0) THEN 'CategoryIncome' " +
+            "WHEN c.type = 0 THEN 'CategoryIncome' " +
             "WHEN c.type = 1 THEN 'CategoryExpense' " +
             "END " +
             ", c.id, " +
-            "SUM(a.price), " +
+            "SUM(r.price), " +
             "c.name," +
-            "MAX(a.date)," +
-            "MIN(a.date)) " +
+            "MAX(r.date)," +
+            "MIN(r.date)) " +
             "FROM Amount a " +
-            "LEFT JOIN a.regularId r " +
-            "LEFT JOIN a.categoryId c " +
+            "RIGHT JOIN a.regularId r ON a.date BETWEEN ?3 AND ?4 " +
+            "LEFT JOIN r.categoryId c " +
             "WHERE c.userId = ?1 AND " +
             "(?2 = null OR c.parentId = ?2) AND " +
-            "a.type = 3 AND " +
-            "r.date BETWEEN ?3 AND ?4 AND " +
-            "r.id IS NULL  " +
+            "r.type = 3 AND " +
+            "a.id IS NULL  " +
             "GROUP BY c.id " +
             "HAVING COUNT(c.id) > 0")
     List<AnalyticEntity> getAnalyticDataOfRegularByCategory(User user,

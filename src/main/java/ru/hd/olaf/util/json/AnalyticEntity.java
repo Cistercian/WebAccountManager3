@@ -146,11 +146,13 @@ public class AnalyticEntity implements DBData {
         return "AnalyticEntity{" +
                 "type='" + type + '\'' +
                 ", id=" + id +
-                ", avgSum=" + avgSum +
+                ", avgSum=" + (avgSum != null ? avgSum : "") +
                 ", name='" + name + '\'' +
                 ", maxDate=" + maxDate +
                 ", minDate=" + minDate +
-                ", currentSum=" + currentSum +
+                ", currentSum=" + (currentSum != null ? currentSum : "") +
+                ", oneTimeSum=" + (oneTimeSum != null ? oneTimeSum : "") +
+                ", regularSum=" + (regularSum != null ? regularSum : "") +
                 '}';
     }
 }

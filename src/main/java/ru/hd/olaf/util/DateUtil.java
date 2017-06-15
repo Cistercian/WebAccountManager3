@@ -40,6 +40,12 @@ public class DateUtil {
         return date.format(formatter);
     }
 
+    public static String getFormattedForFullCalendar(LocalDate date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        return date.format(formatter);
+    }
+
     public static String getString(LocalDate date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, d MMM yyyy");
 

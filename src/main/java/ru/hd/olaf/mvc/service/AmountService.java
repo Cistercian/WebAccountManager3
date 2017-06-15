@@ -55,5 +55,5 @@ public interface AmountService {
 
     BigDecimal getCompareAvgPrice(User user, String query, LocalDate after, LocalDate before);
 
-    List<CalendarEntity> getCalendarEntities(User user, LocalDate after, LocalDate before);
+    List<CalendarEntity> getCalendarEntities(User user, LocalDate after, LocalDate before, Category category, Product product);
 }

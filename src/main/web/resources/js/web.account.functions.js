@@ -664,3 +664,8 @@ function getMonday(date) {
         date.setHours(-24 * (day - 1));
     return date;
 }
+function scrollPage(destination){
+    $('html, body').stop().animate({
+        scrollTop: destination - 50
+    }, 1000, 'easeInOutExpo');
+}

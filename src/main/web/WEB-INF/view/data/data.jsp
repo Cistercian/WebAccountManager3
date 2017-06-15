@@ -173,11 +173,6 @@
         elem.val(categoryId);
         elem.append("\<span class=\"caret\">\<\/span>");
     }
-    function scrollPage(destination){
-        $('html, body').stop().animate({
-            scrollTop: destination - 50
-        }, 1000, 'easeInOutExpo');
-    }
     function displayMessage(type, message, Url) {
         ClearModalPanel();
         $('#modalBody').append(
@@ -1024,8 +1019,6 @@
                             <spring:bind path="categoryId">
                                 <input id="categoryId" type="hidden" name="category" class="form-control erasable"
                                        value="<c:if test="${not empty category}">${category.getId()}</c:if>"></input>
-
-
                                 <div class="col-xs-12 col-md-10  catcher-events">
                                     <h4 class="needToFormat">
                                         <strong>${selectCategory}</strong>

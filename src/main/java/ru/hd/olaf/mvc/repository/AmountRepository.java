@@ -7,6 +7,7 @@ import ru.hd.olaf.entities.Category;
 import ru.hd.olaf.entities.Product;
 import ru.hd.olaf.entities.User;
 import ru.hd.olaf.util.json.BarEntity;
+import ru.hd.olaf.util.json.CalendarEntity;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -57,6 +58,19 @@ public interface AmountRepository extends CrudRepository<Amount, Integer> {
             "a.date BETWEEN ?3 AND ?4 " +
             "AND a.type != 3")
     BigDecimal getSumByTypeAndUserIdAndDate(Byte type, User userId, Date after, Date before);
+
+    @Query("SELECT new ru.hd.olaf.util.json.CalendarEntity(" +
+            "SUM( CASE WHEN c.type = 0 THEN a.price ELSE -a.price END ) ," +
+            "a.date )" +
+            "FROM Amount a " +
+            "JOIN a.categoryId c " +
+            "WHERE a.userId = ?1 AND " +
+            "a.date BETWEEN ?2 AND ?3 AND " +
+            "a.type != 3 AND " +
+            "((?4 != NULL AND c = ?4) OR (?4 = NULL)) AND " +
+            "((?5 != NULL AND a.productId = ?5) OR (?5 = NULL)) " +
+            "GROUP BY a.date")
+    List<CalendarEntity> getCalendarData(User userId, Date after, Date before, Category category, Product product);
 
     @Query("Select a from Amount a " +
             "LEFT JOIN a.productId p " +

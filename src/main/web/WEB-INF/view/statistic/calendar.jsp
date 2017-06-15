@@ -126,18 +126,43 @@
 
                 drawBarsByParentId(false, null, date, date);
             },
-            events : '/statistic/calendar/getCalendarData',
+            //events : '/statistic/calendar/getCalendarData?categoryID=' +  + '&productID=' + $('#productId').val(),
+            eventSources: [
+                // your event source
+                {
+                    url: '/statistic/calendar/getCalendarData',
+                    type: 'GET',
+                    data: function() { // a function that returns an object
+                        return {
+                            productID: $('#productID').val(),
+                            categoryID: $('#categoryID').val()
+                        }
+                    }
+                }],
             viewRender: function(view, element) {
                 var after = $.fullCalendar.formatDate(view.intervalStart, "DD-MM-YYYY");
                 var before = $.fullCalendar.formatDate(view.intervalEnd, "DD-MM-YYYY");
-            },
-            /*eventAfterRender: function (event, element, view) {
-             var dataHoje = new Date();
-             event.color = "#FFB347"; //Em andamento
-             element.css('background-color', '#FFB347');
-             }*/
-            //eventColor: '#378006'
+            }
         });
+    }
+    function setDropdownListId(id, name, type){
+        var elem;
+        switch (type) {
+            case 'categories':
+                elem = $('#btnCategories');
+                $('#categoryID').val(id);
+                break;
+            case 'products':
+                elem = $('#btnProducts');
+                $('#productID').val(id);
+                break;
+        }
+
+        elem.text(name + "  ");
+        elem.val(id);
+        elem.append("\<span class=\"caret\">\<\/span>");
+
+        $('#calendar').fullCalendar('refetchEvents');
     }
 </script>
 
@@ -156,6 +181,98 @@
 						<span class="wam-text text-justify">
 							<spring:message code="label.calendar.details" />
 						</span>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1">
+                <div class="wam-not-padding panel-body">
+                    <div class="col-xs-12 col-md-12">
+						<span class="wam-text text-justify">
+							Вы можете задать фильтр по выводимым данным - отображать ли все обороты или только те, что относятся к нужной категории и группе товаров.
+						</span>
+                    </div>
+                    <div class="col-xs-12 col-md-12 wam-margin-top-2">
+                        <p class="wam-text text-justify">
+                            Показывать данные по категории:
+                        </p>
+                    </div>
+                    <div class="col-xs-12 col-md-6">
+                        <input id="categoryID" type="hidden" name="category" class="form-control erasable"/>
+                        <div class="form-group wam-not-padding wam-not-padding-xs ">
+                            <button id="btnCategories" class="btn-default btn-lg btn-block dropdown-toggle"
+                                    data-toggle="dropdown" onclick="scrollPage($($(this)).offset().top);">
+                                <c:choose>
+                                    <c:when test="${not empty category}">
+                                        ${category.getName()}
+                                    </c:when>
+                                    <c:otherwise>
+                                        Все
+                                    </c:otherwise>
+                                </c:choose>
+                                <span class="caret"></span>
+                            </button>
+                            <ul id="dropdownCategories" class="dropdown-menu">
+                                <li class="wam-text-size-1">
+                                    <a onclick="setDropdownListId(-1, 'Все', 'categories');return false;" class="needToFormat">
+                                        <span>Все</span>
+                                    </a>
+                                </li>
+                                <c:if test="${not empty categories}">
+                                    <li class="divider"></li>
+                                </c:if>
+                                <c:forEach items="${categories}" var="list">
+                                    <li class="wam-text-size-1">
+                                        <a id='${list.getId()}' onclick="setDropdownListId('${list.getId()}','${list.getName()}',
+                                                'categories');return false;" class="needToFormat">
+                                            <span>${list.getName()}</span>
+                                        </a>
+                                    </li>
+                                </c:forEach>
+                            </ul>
+                            <form:errors path="categoryId"></form:errors>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-md-12 wam-margin-top-2">
+                        <p class="wam-text text-justify">
+                            Группа товаров:
+                        </p>
+                    </div>
+                    <div class="col-xs-12 col-md-6">
+                        <input id="productID" type="hidden" name="category" class="form-control erasable"/>
+                        <div class="form-group wam-not-padding wam-not-padding-xs ">
+                            <button id="btnProducts" class="btn-default btn-lg btn-block dropdown-toggle"
+                                    data-toggle="dropdown" onclick="scrollPage($($(this)).offset().top);">
+                                <c:choose>
+                                    <c:when test="${not empty product}">
+                                        ${product.getName()}
+                                    </c:when>
+                                    <c:otherwise>
+                                        Все
+                                    </c:otherwise>
+                                </c:choose>
+                                <span class="caret"></span>
+                            </button>
+                            <ul id="dropdownCategories" class="dropdown-menu">
+                                <li class="wam-text-size-1">
+                                    <a onclick="setDropdownListId(-1, 'Все', 'products');return false;" class="needToFormat">
+                                        <span>Все</span>
+                                    </a>
+                                </li>
+                                <c:if test="${not empty products}">
+                                    <li class="divider"></li>
+                                </c:if>
+                                <c:forEach items="${products}" var="list">
+                                    <li class="wam-text-size-1">
+                                        <a id='${list.getId()}' onclick="setDropdownListId('${list.getId()}','${list.getName()}',
+                                                'products');return false;" class="needToFormat">
+                                            <span>${list.getName()}</span>
+                                        </a>
+                                    </li>
+                                </c:forEach>
+                            </ul>
+                            <form:errors path="categoryId"></form:errors>
+                        </div>
                     </div>
                 </div>
             </div>

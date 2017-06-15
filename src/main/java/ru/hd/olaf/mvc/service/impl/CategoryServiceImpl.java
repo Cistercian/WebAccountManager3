@@ -400,16 +400,20 @@ public class CategoryServiceImpl implements CategoryService {
                 beginOfMonth,
                 today
         );
-        logger.debug("Список с обязательными оборотами:");
-        LogUtil.logList(logger, listThisMonth);
+
 
         if (category != null)
+            //TODO: redudant?
             listThisMonth.addAll(categoryRepository.getAnalyticDataOfRegularByProduct(
                     user,
                     category,
                     beginOfMonth,
                     today
             ));
+
+        logger.debug("Список с обязательными оборотами:");
+        LogUtil.logList(logger, listThisMonth);
+
         for (AnalyticEntity entity : listThisMonth){
             if (list.contains(entity)){
                 int index = list.indexOf(entity);

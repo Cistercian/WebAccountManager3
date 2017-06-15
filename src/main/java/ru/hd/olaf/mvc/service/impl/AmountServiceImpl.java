@@ -16,14 +16,13 @@ import ru.hd.olaf.mvc.repository.AmountRepository;
 import ru.hd.olaf.mvc.service.*;
 import ru.hd.olaf.util.DateUtil;
 import ru.hd.olaf.util.LogUtil;
-import ru.hd.olaf.util.json.CalendarEntity;
-import ru.hd.olaf.util.json.ResponseType;
 import ru.hd.olaf.util.json.BarEntity;
+import ru.hd.olaf.util.json.CalendarEntity;
 import ru.hd.olaf.util.json.JsonResponse;
+import ru.hd.olaf.util.json.ResponseType;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
@@ -321,49 +320,45 @@ public class AmountServiceImpl implements AmountService {
      * @param before конечная дата отсечки
      * @return список CalendarEntity
      */
-    public List<CalendarEntity> getCalendarEntities(User user, LocalDate after, LocalDate before) {
+    public List<CalendarEntity> getCalendarEntities(User user,
+                                                    LocalDate after,
+                                                    LocalDate before,
+                                                    Category category,
+                                                    Product product) {
         logger.debug(LogUtil.getMethodName());
 
         List<CalendarEntity> calendarEntities = new ArrayList<CalendarEntity>();
 
         long countOfDays = after.until(before, ChronoUnit.DAYS);
 
-        boolean isNullNeeded = false;
-        if (countOfDays < 8)
-            isNullNeeded = true;
-
         logger.debug(String.format("Интервал календаря: %s - %s. Кол-во дней в периоде: %d",
                 after, before, countOfDays));
 
-        while (after.compareTo(before) <= 0) {
-            logger.debug(String.format("Обрабатываемая дата: %s", after));
-            BigDecimal sumIncome = amountRepository.getSumByTypeAndUserIdAndDate((byte) 0,
-                    user,
-                    DateUtil.getDate(after),
-                    DateUtil.getDate(after));
-            BigDecimal sumExpense = amountRepository.getSumByTypeAndUserIdAndDate((byte) 1,
-                    user,
-                    DateUtil.getDate(after),
-                    DateUtil.getDate(after));
+        calendarEntities = amountRepository.getCalendarData(
+                user,
+                DateUtil.getDate(after),
+                DateUtil.getDate(before),
+                category,
+                product);
 
-            logger.debug(String.format("Сумма поступлений: %s, сумма расходов: %s", sumIncome, sumExpense));
+        //если период просмотра неделя, то добавляем нулевые даты
+        if (countOfDays < 8) {
+            logger.debug("Период просмотра - неделя, значит нам необходимо добавить даты с нулевой суммой");
+            while (after.compareTo(before) <= 0) {
+                logger.debug(String.format("Обрабатываем дату %s", after.toString()));
 
-            if (!isNullNeeded &&
-                    sumExpense.compareTo(new BigDecimal("0")) == 0 &&
-                    sumIncome.compareTo(new BigDecimal("0")) == 0) {
-                logger.debug("В календарной дате не было движения - игнорируем запись.");
+                CalendarEntity empty = new CalendarEntity("0", DateUtil.getFormattedForFullCalendar(after));
+                if (!calendarEntities.contains(empty)) {
+                    logger.debug("Данные за дату не найдены - создаем строку с нулевой суммой.");
+                    calendarEntities.add(empty);
+                }
 
                 after = after.plusDays(1);
-                continue;
             }
-
-            BigDecimal sumTotal = sumIncome.subtract(sumExpense);
-            calendarEntities.add(new CalendarEntity(sumTotal.toString(),
-                    after.toString(),
-                    sumTotal.compareTo(new BigDecimal("0")) < 0 ? true : false));
-
-            after = after.plusDays(1);
         }
+
+        logger.debug("Список данных календаря:");
+        LogUtil.logList(logger, calendarEntities);
 
         return calendarEntities;
     }

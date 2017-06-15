@@ -82,6 +82,8 @@
             autoclose: true,
             todayHighlight: true
         });
+
+        $("[data-toggle='tooltip']").tooltip();
     });
 
     function displayMessage(type, message, Url) {
@@ -176,7 +178,20 @@
                                 <c:set var="sum" value="${(list.getSum() - list.getOneTimeSum()) * rate + list.getOneTimeSum() + list.getRegularSum()}" scope="page"/>
                                 <div class="row">
                                     <div class="col-xs-9 col-md-6 wam-padding-right-0">
-                                        <h4>${list.getName()}</h4>
+                                        <h4>
+                                                ${list.getName()}
+                                            <c:if test="${(list.getOneTimeSum() + list.getRegularSum()) > 0}">
+                                                <c:set var="tooltip" value="В категории есть нестандартные обороты:" scope="page"/>
+                                                <c:if test="${list.getOneTimeSum() > 0}">
+                                                    <c:set var="tooltip" value="${tooltip} единоразовые обороты" scope="page"/>
+                                                </c:if>
+                                                <c:if test="${list.getRegularSum() > 0}">
+                                                    <c:set var="tooltip" value="${tooltip} обязательные обороты" scope="page"/>
+                                                </c:if>
+                                                <img src="/resources/img/warning.png" data-toggle="tooltip" data-placement="top"
+                                                     title="${tooltip}">
+                                            </c:if>
+                                        </h4>
                                     </div>
                                     <div class="col-xs-3 col-md-1 col-md-push-5 wam-padding-right-0 wam-padding-left-0">
                                         <h4>
@@ -218,7 +233,19 @@
                                 <c:set var="sum" value="${(list.getSum() - list.getOneTimeSum()) * rate + list.getOneTimeSum() + list.getRegularSum()}" scope="page"/>
                                 <div class="row">
                                     <div class="col-xs-9 col-md-6 wam-padding-right-0">
-                                        <h4>${list.getName()}</h4>
+                                        <h4>${list.getName()}
+                                            <c:if test="${(list.getOneTimeSum() + list.getRegularSum()) > 0}">
+                                                <c:set var="tooltip" value="В категории есть нестандартные обороты:" scope="page"/>
+                                                <c:if test="${list.getOneTimeSum() > 0}">
+                                                    <c:set var="tooltip" value="${tooltip} единоразовые обороты" scope="page"/>
+                                                </c:if>
+                                                <c:if test="${list.getRegularSum() > 0}">
+                                                    <c:set var="tooltip" value="${tooltip} обязательные обороты" scope="page"/>
+                                                </c:if>
+                                                <img src="/resources/img/warning.png" data-toggle="tooltip" data-placement="top"
+                                                     title="${tooltip}">
+                                            </c:if>
+                                        </h4>
                                     </div>
                                     <div class="col-xs-3 col-md-1 col-md-push-5 wam-padding-right-0 wam-padding-left-0">
                                         <h4>

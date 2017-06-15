@@ -359,7 +359,7 @@ public class DataController {
         modelAndView.addObject("regular", amountForm.getRegularId());
 
 
-        if (amountForm.getType() != 2) {
+        if (amountForm.getType() != 3) {
             modelAndView.addObject("className", "amount");
             modelAndView.addObject("amountForm", amountForm);
         } else {
@@ -523,9 +523,6 @@ public class DataController {
         User currentUser = securityService.findLoggedUser();
 
         Amount regular = new Amount();
-        regular.setUserId(currentUser);
-        regular.setType((byte)2);
-        regular.setDate(DateUtil.getDateOfStartOfEra());
 
         if (amountId != null) {
             logger.debug("Формируем запись об обязательном обороте на основании существующего");
@@ -557,6 +554,9 @@ public class DataController {
             }
         }
 
+        regular.setDate(DateUtil.getDateOfStartOfEra());
+        regular.setUserId(currentUser);
+        regular.setType((byte)3);
         modelAndView.addObject("categories", categoryService.getAll());
         modelAndView.addObject("regulars", amountService.getAllRegular(currentUser));
 

@@ -101,11 +101,19 @@
         } );
     });
     function setRegularId(id, regularId){
-        if ($('#checkbox').prop('checked') == true) {
-            $('#checkbox').prop('checked', false);
+        if ($('#checkbox' + regularId).prop('checked') == true) {
+            $('[id^="checkbox"]').each(function () {
+                $(this).prop('checked', false);
+            });
+
+            $('#checkbox' + regularId).prop('checked', false);
             $('#btnOk').attr('onclick', 'location.href=\'amount?id=' + id + '&regularId=0\'');
         } else {
-            $('#checkbox').prop('checked', true);
+            $('[id^="checkbox"]').each(function () {
+                $(this).prop('checked', false);
+            });
+
+            $('#checkbox' + regularId).prop('checked', true);
             $('#btnOk').attr('onclick', 'location.href=\'amount?id=' + id + '&regularId=' + regularId +'\'');
         }
     }
@@ -188,10 +196,10 @@
                                     <p data-placement="top">
                                         <c:choose>
                                             <c:when test='${amount.getId() == regularId}'>
-                                                <label class="checkbox-inline"><input id="checkbox" type="checkbox" value="" checked></label>
+                                                <label class="checkbox-inline"><input id="checkbox${amount.getId()}" type="checkbox" value="" checked></label>
                                             </c:when>
                                             <c:otherwise>
-                                                <label class="checkbox-inline"><input id="checkbox" type="checkbox" value=""></label>
+                                                <label class="checkbox-inline"><input id="checkbox${amount.getId()}" type="checkbox" value=""></label>
                                             </c:otherwise>
                                         </c:choose>
                                     </p>

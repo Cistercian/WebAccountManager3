@@ -10,12 +10,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import ru.hd.olaf.entities.Amount;
+import ru.hd.olaf.entities.Category;
+import ru.hd.olaf.entities.Product;
 import ru.hd.olaf.entities.User;
-import ru.hd.olaf.mvc.service.AmountService;
-import ru.hd.olaf.mvc.service.SecurityService;
+import ru.hd.olaf.mvc.service.*;
 import ru.hd.olaf.util.DateUtil;
 import ru.hd.olaf.util.LogUtil;
 import ru.hd.olaf.util.json.CalendarEntity;
+import ru.hd.olaf.util.json.JsonResponse;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -28,6 +30,12 @@ public class CalendarController {
 
     @Autowired
     private AmountService amountService;
+    @Autowired
+    private CategoryService categoryService;
+    @Autowired
+    private ProductService productService;
+    @Autowired
+    private UtilService utilService;
     @Autowired
     private SecurityService securityService;
 
@@ -43,6 +51,9 @@ public class CalendarController {
 
         ModelAndView modelAndView = new ModelAndView("/statistic/calendar");
 
+        modelAndView.addObject("categories", categoryService.getAll());
+        modelAndView.addObject("products", productService.getAll());
+
         return modelAndView;
     }
 
@@ -53,7 +64,9 @@ public class CalendarController {
      * @return список CalendarData
      */
     @RequestMapping(value = "/statistic/calendar/getCalendarData", method = RequestMethod.GET)
-    public @ResponseBody List<CalendarEntity> getCalendarData(@RequestParam (value = "start") String startDate,
+    public @ResponseBody List<CalendarEntity> getCalendarData(@RequestParam (value = "categoryID") Integer categoryID,
+                                                              @RequestParam (value = "productID") Integer productID,
+                                                              @RequestParam (value = "start") String startDate,
                                                               @RequestParam (value = "end") String endDate) {
         logger.debug(LogUtil.getMethodName() + String.format(". Интервал: %s - %s", startDate, endDate));
 
@@ -64,7 +77,12 @@ public class CalendarController {
         LocalDate after = DateUtil.getParsedDate(startDate);
         LocalDate before = DateUtil.getParsedDate(endDate);
 
-        calendarEntities = amountService.getCalendarEntities(currentUser, after, before);
+        JsonResponse response = utilService.getById(Category.class, categoryID);
+        Category category = response.getEntity() != null ? (Category) response.getEntity() : null;
+        response = utilService.getById(Product.class, productID);
+        Product product = response.getEntity() != null ? (Product) response.getEntity() : null;
+
+        calendarEntities = amountService.getCalendarEntities(currentUser, after, before, category, product);
 
         return calendarEntities;
     }
