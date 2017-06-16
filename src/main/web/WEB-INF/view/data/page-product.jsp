@@ -147,7 +147,14 @@
                         <c:otherwise>
                         <c:choose>
                         <c:when test='${not empty isGetRegular}'>
-                        <h4 class="wam-margin-bottom-0 wam-margin-top-0">Привязка постоянных оборотов</h4>
+                        <c:choose>
+                            <c:when test='${isGetAll == false}'>
+                                <h4 class="wam-margin-bottom-0 wam-margin-top-0">Привязка постоянных оборотов</h4>
+                            </c:when>
+                            <c:otherwise>
+                                <h4 class="wam-margin-bottom-0 wam-margin-top-0">Просмотр постоянных оборотов</h4>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                     </c:when>
                     <c:otherwise>
@@ -170,7 +177,9 @@
                 <tr>
                     <c:choose>
                         <c:when test='${not empty isGetRegular}'>
-                            <th>Выбрано</th>
+                            <c:if test='${isGetAll == false}'>
+                                <th>Выбрано</th>
+                            </c:if>
                             <th><spring:message code="label.page-product.table.id"/></th>
                             <th><spring:message code="label.page-product.table.name"/></th>
                             <th><spring:message code="label.page-product.table.category"/></th>
@@ -192,18 +201,24 @@
                     <tr class="wam-cursor">
                         <c:choose>
                             <c:when test='${not empty isGetRegular}'>
-                                <td onclick="setRegularId(${id}, ${amount.getId()})">
-                                    <p data-placement="top">
-                                        <c:choose>
-                                            <c:when test='${amount.getId() == regularId}'>
-                                                <label class="checkbox-inline"><input id="checkbox${amount.getId()}" type="checkbox" value="" checked></label>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <label class="checkbox-inline"><input id="checkbox${amount.getId()}" type="checkbox" value=""></label>
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </p>
-                                </td>
+                                <c:choose>
+                                    <c:when test='${isGetAll == false}'>
+                                        <td onclick="setRegularId(${id}, ${amount.getId()})">
+                                            <p data-placement="top">
+                                                <c:choose>
+                                                    <c:when test='${amount.getId() == regularId}'>
+                                                        <label class="checkbox-inline"><input id="checkbox${amount.getId()}" type="checkbox" value="" checked></label>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <label class="checkbox-inline"><input id="checkbox${amount.getId()}" type="checkbox" value=""></label>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </p>
+                                        </td>
+                                    </c:when>
+                                    <c:otherwise>
+                                    </c:otherwise>
+                                </c:choose>
                                 <td onclick="location.href='/amount?id=${amount.getId()}';">${amount.getId()}</td>
                                 <td onclick="location.href='/amount?id=${amount.getId()}';">${amount.getName()}</td>
                                 <td onclick="location.href='/amount?id=${amount.getId()}';">${amount.getCategoryId().getName()}</td>
@@ -224,22 +239,38 @@
         </div>
     </div>
     <c:if test='${not empty isGetRegular}'>
-        <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-0">
-            <div class="wam-not-padding panel-body">
-                <div class="col-xs-12 col-md-6 wam-not-padding-xs">
-                    <button id="btnOk" type="submit" class="btn btn-primary btn-lg btn-block wam-btn-1"
-                            onclick="location.href='amount?id=${id}&regularId=${regularId}'">
-                        <spring:message code="label.page-amount.btnOk"/>
-                    </button>
+        <c:choose>
+            <c:when test='${isGetAll == false}'>
+                <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-0">
+                    <div class="wam-not-padding panel-body">
+                        <div class="col-xs-12 col-md-6 wam-not-padding-xs">
+                            <button id="btnOk" type="submit" class="btn btn-primary btn-lg btn-block wam-btn-1"
+                                    onclick="location.href='amount?id=${id}&regularId=${regularId}'">
+                                <spring:message code="label.page-amount.btnOk"/>
+                            </button>
+                        </div>
+                        <div class="col-xs-12 col-md-6 wam-not-padding-xs">
+                            <button type="submit" class="btn-default btn-lg btn-block wam-btn-1 return"
+                                    onclick="location.href='amount?id=${id}'">
+                                <spring:message code="label.page-amount.btnCancel"/>
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-xs-12 col-md-6 wam-not-padding-xs">
-                    <button type="submit" class="btn-default btn-lg btn-block wam-btn-1 return"
-                            onclick="location.href='amount?id=${id}'">
-                        <spring:message code="label.page-amount.btnCancel"/>
-                    </button>
+            </c:when>
+            <c:otherwise>
+                <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-0">
+                    <div class="wam-not-padding panel-body">
+                        <div class="col-xs-12 col-md-6 wam-not-padding-xs">
+                            <button id="btnOk" type="submit" class="btn btn-primary btn-lg btn-block wam-btn-1"
+                                    onclick="location.href='/amounts/regular';">
+                                <spring:message code="label.page-amount.btnNew"/>
+                            </button>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
+            </c:otherwise>
+        </c:choose>
     </c:if>
 </div>
 

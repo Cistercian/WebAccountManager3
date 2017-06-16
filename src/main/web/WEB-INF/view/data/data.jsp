@@ -517,12 +517,12 @@
                                                             <p class="wam-margin-top-1">
                                                                 <c:choose>
                                                                     <c:when test='${empty regular}'>
-                                                                        <a href="/page-product?isGetRegular=true&id=${id}">
+                                                                        <a href="/page-product/regulars?isGetAll=false&id=${id}">
                                                                             Оборот не привязан к обязательному.
                                                                         </a>
                                                                     </c:when>
                                                                     <c:otherwise>
-                                                                        <a href="/page-product?isGetRegular=true&id=${id}&regularId=${regular.getId()}">
+                                                                        <a href="/page-product/regulars?isGetAll=false&id=${id}&regularId=${regular.getId()}">
                                                                             <input id="regular" type="hidden" name="regular" value="${regular.getId()}"/>
                                                                             Привязан обязательный оборот #${regular.getId()} на сумму ${regular.getPrice()} руб.
                                                                         </a>

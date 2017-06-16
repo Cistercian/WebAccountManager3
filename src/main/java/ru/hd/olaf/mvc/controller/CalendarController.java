@@ -54,7 +54,7 @@ public class CalendarController {
         User currentUser = securityService.findLoggedUser();
 
         modelAndView.addObject("categories", categoryService.getAll());
-        modelAndView.addObject("products", productService.getByCategory(currentUser, null));
+        modelAndView.addObject("products", productService.getAll());
 
         return modelAndView;
     }
@@ -111,5 +111,21 @@ public class CalendarController {
         modelAndView.addObject("date", DateUtil.getString(after));
 
         return modelAndView;
+    }
+
+    @RequestMapping(value = "/statistic/calendar/getProducts", method = RequestMethod.GET)
+    public @ResponseBody List<Product> getProducts(@RequestParam(value = "categoryID") Integer categoryID){
+        logger.debug(LogUtil.getMethodName());
+
+        List<Product> products;
+        User currentUser = securityService.findLoggedUser();
+
+        Category category = (Category) utilService.getById(Category.class, categoryID).getEntity();
+        if (category != null)
+            products = productService.getByCategory(currentUser, category);
+        else
+            products = productService.getAll();
+
+        return products;
     }
 }

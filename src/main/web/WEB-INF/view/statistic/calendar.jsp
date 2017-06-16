@@ -151,6 +151,7 @@
             case 'categories':
                 elem = $('#btnCategories');
                 $('#categoryID').val(id);
+                getProducts();
                 break;
             case 'products':
                 elem = $('#btnProducts');
@@ -163,6 +164,41 @@
         elem.append("\<span class=\"caret\">\<\/span>");
 
         $('#calendar').fullCalendar('refetchEvents');
+    }
+    function getProducts(){
+        $.ajax({
+            url: '/statistic/calendar/getProducts',
+            type: "GET",
+            data: {
+                'categoryID': $('#categoryID').val()
+            },
+            dataType: 'json',
+            success: function (data) {
+                $('#dropdownProducts').empty();
+                $('#dropdownProducts').append(
+                        "<li class='wam-text-size-1'>" +
+                        "<a onclick=\"setDropdownListId('-1', 'Все', 'products');return false;\" class='needToFormat'>" +
+                        "<span>Все</span>" +
+                        "</a>" +
+                        "</li>" +
+                        "<li class='divider'></li>"
+                );
+                data.forEach(function (product, index, data) {
+                    var ID = product.id;
+                    var name = product.name;
+
+                    $('#dropdownProducts').append(
+                            "<li class='wam-text-size-1'>" +
+                            "<a id='${list.getId()}' onclick=\"setDropdownListId('" + ID + "','" + name + "'," +
+                            "'products');return false;\" class='needToFormat'>" +
+                            "<span>" + name + "</span>" +
+                            "</a>" +
+                            "</li>"
+                    );
+                });
+                $('#dropdownProducts').append("</ul>");
+            }
+        });
     }
 </script>
 
@@ -253,7 +289,7 @@
                                 </c:choose>
                                 <span class="caret"></span>
                             </button>
-                            <ul id="dropdownCategories" class="dropdown-menu">
+                            <ul id="dropdownProducts" class="dropdown-menu">
                                 <li class="wam-text-size-1">
                                     <a onclick="setDropdownListId(-1, 'Все', 'products');return false;" class="needToFormat">
                                         <span>Все</span>

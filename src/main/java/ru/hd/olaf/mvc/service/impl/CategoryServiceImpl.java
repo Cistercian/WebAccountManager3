@@ -302,8 +302,6 @@ public class CategoryServiceImpl implements CategoryService {
                 false,  //isNeedRealSum
                 false  //isNeedOneTimeSum
         );
-        logger.debug("Список со средними ценами:");
-        LogUtil.logList(logger, list);
         //если запрос по определенной категории, то необходимо отдельно собрать данные по группам
         if (category != null)
             list.addAll(categoryRepository.getAnalyticDataByProduct(
@@ -316,7 +314,7 @@ public class CategoryServiceImpl implements CategoryService {
                     false
             ));
 
-        logger.debug("Список анализируемых данных:");
+        logger.debug("Список анализируемых данных со средними ценами:");
         LogUtil.logList(logger, list);
 
         logger.debug("Сбор данных по оборотам в текущем месяце.");

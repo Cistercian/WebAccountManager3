@@ -88,6 +88,7 @@ public interface CategoryRepository extends CrudRepository<Category, Integer> {
 
     @Query("SELECT new ru.hd.olaf.util.json.AnalyticEntity(" +
             "CASE " +
+            "WHEN p IS NOT NULL THEN 'CategoryChild' " +
             "WHEN c.type = 0 THEN 'CategoryIncome' " +
             "WHEN c.type = 1 THEN 'CategoryExpense' " +
             "END " +
@@ -99,6 +100,7 @@ public interface CategoryRepository extends CrudRepository<Category, Integer> {
             "FROM Amount a " +
             "RIGHT JOIN a.regularId r ON a.date BETWEEN ?3 AND ?4 " +
             "LEFT JOIN r.categoryId c " +
+            "LEFT JOIN c.parentId p " +
             "WHERE c.userId = ?1 AND " +
             "(?2 = null OR c.parentId = ?2) AND " +
             "r.type = 3 AND " +

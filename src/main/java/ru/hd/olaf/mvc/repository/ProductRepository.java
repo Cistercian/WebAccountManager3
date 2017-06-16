@@ -21,7 +21,8 @@ public interface ProductRepository extends CrudRepository<Product, Integer> {
     @Query("SELECT p FROM Amount a " +
             "LEFT JOIN a.productId p " +
             "WHERE a.userId = ?1 AND " +
-            "a.categoryId = ?2" +
+            "a.categoryId = ?2 " +
+            "GROUP BY p.id " +
             "ORDER BY p.name")
     List<Product> getAllByCategory(User user, Category category);
 

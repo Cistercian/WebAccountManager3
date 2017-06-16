@@ -163,9 +163,17 @@
 
             <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1">
                 <div class="panel-heading ">
-                    <h3 class="wam-margin-bottom-0 wam-margin-top-0">Суммарная информация</h3>
+                    <h4 class="wam-margin-bottom-0 wam-margin-top-0"><strong>Прогноз на конец месяца</strong></h4>
                 </div>
                 <div class="wam-not-padding panel-body">
+                    <div class="col-xs-12 col-md-6 wam-not-padding-xs bg-warning">
+                        <h4 class="text-justify">Итоговое сальдо:</h4>
+                    </div>
+                    <div class="col-xs-12 col-md-6 wam-not-padding-xs bg-warning">
+                        <h4 class="text-justify"><strong>${total}</strong> (в среднем ${totalAvg}) руб</h4>
+                    </div>
+                    <div class="col-xs-12 wam-margin-bottom-1">
+                    </div>
                     <div class="col-xs-12 col-md-6 wam-not-padding-xs bg-success">
                         <h4 class="text-justify">Ожидаемый доход:</h4>
                     </div>
@@ -208,17 +216,62 @@
                                                         ${FormatUtil.formatToString(sum * 100 / list.getLimit())}</strong> %</h4>
                                         </c:when>
                                         <c:otherwise>
-                                            <strong class="text-danger">>100</strong> %</h4>
+                                            <strong class="text-danger">100</strong> %</h4>
                                         </c:otherwise>
                                         </c:choose>
                                     </div>
                                     <div class="col-xs-12 col-md-5 col-md-pull-1 wam-padding-right-0 wam-padding-left-0 wam-margin-left-xs-2">
-                                        <h4><strong>${FormatUtil.formatToString(sum)}</strong>
-                                            (в среднем ${list.getFormattedLimit()}) руб</h4>
+                                        <h4>
+                                            <img src="/resources/img/expand.png" class="bg-info" data-toggle="collapse"
+                                                 data-target="#details${list.getId()}">
+                                            <strong>
+                                                    ${FormatUtil.formatToString(sum)}
+                                            </strong>
+                                            (в среднем ${list.getFormattedLimit()}) руб
+                                        </h4>
+                                    </div>
+                                    <div id="details${list.getId()}" class="col-xs-12 col-md-12 wam-not-padding-xs collapse">
+                                        <div class="panel panel-default">
+                                            <div class="wam-not-padding panel-body">
+                                                <div class="col-xs-12 col-md-4">
+                                                    <p class="wam-margin-top-2">
+                                                        Обычные обороты:
+                                                    </p>
+                                                </div>
+                                                <div class="col-xs-12 col-md-6">
+                                                    <p class="wam-margin-top-2">
+                                                            ${FormatUtil.formatToString(list.getSum() - list.getOneTimeSum())} руб. * ${rate}
+                                                    </p>
+                                                </div>
+                                                <div class="col-xs-12 col-md-4">
+                                                    <p class="wam-margin-top-2">
+                                                        Единоразовые обороты:
+                                                    </p>
+                                                </div>
+                                                <div class="col-xs-12 col-md-6">
+                                                    <p class="wam-margin-top-2">
+                                                            ${FormatUtil.formatToString(list.getOneTimeSum())} руб.
+                                                    </p>
+                                                </div>
+                                                <div class="col-xs-12 col-md-4">
+                                                    <p class="wam-margin-top-2">
+                                                        Обязательные обороты:
+                                                    </p>
+                                                </div>
+                                                <div class="col-xs-12 col-md-6">
+                                                    <p class="wam-margin-top-2">
+                                                            ${FormatUtil.formatToString(list.getRegularSum())} руб.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </c:if>
                         </c:forEach>
+                    </div>
+
+                    <div class="col-xs-12 wam-margin-bottom-1">
                     </div>
 
                     <div class="col-xs-12 col-md-6 wam-not-padding-xs bg-danger">
@@ -267,8 +320,49 @@
                                         </c:choose>
                                     </div>
                                     <div class="col-xs-12 col-md-5 col-md-pull-1 wam-padding-right-0 wam-padding-left-0 wam-margin-left-xs-2">
-                                        <h4><strong>${FormatUtil.formatToString(sum)}</strong>
-                                            (в среднем ${list.getFormattedLimit()}) руб</h4>
+                                        <h4><img src="/resources/img/expand.png" class="bg-info" data-toggle="collapse"
+                                                 data-target="#details${list.getId()}">
+                                            <strong>
+                                                    ${FormatUtil.formatToString(sum)}
+                                            </strong>
+                                            (в среднем ${list.getFormattedLimit()}) руб
+                                        </h4>
+                                    </div>
+                                    <div id="details${list.getId()}" class="col-xs-12 col-md-12 wam-not-padding-xs collapse">
+                                        <div class="panel panel-default">
+                                            <div class="wam-not-padding panel-body">
+                                                <div class="col-xs-12 col-md-4">
+                                                    <p class="wam-margin-top-2">
+                                                        Обычные обороты:
+                                                    </p>
+                                                </div>
+                                                <div class="col-xs-12 col-md-6">
+                                                    <p class="wam-margin-top-2">
+                                                            ${FormatUtil.formatToString(list.getSum() - list.getOneTimeSum())} руб. * ${rate}
+                                                    </p>
+                                                </div>
+                                                <div class="col-xs-12 col-md-4">
+                                                    <p class="wam-margin-top-2">
+                                                        Единоразовые обороты:
+                                                    </p>
+                                                </div>
+                                                <div class="col-xs-12 col-md-6">
+                                                    <p class="wam-margin-top-2">
+                                                            ${FormatUtil.formatToString(list.getOneTimeSum())} руб.
+                                                    </p>
+                                                </div>
+                                                <div class="col-xs-12 col-md-4">
+                                                    <p class="wam-margin-top-2">
+                                                        Обязательные обороты:
+                                                    </p>
+                                                </div>
+                                                <div class="col-xs-12 col-md-6">
+                                                    <p class="wam-margin-top-2">
+                                                            ${FormatUtil.formatToString(list.getRegularSum())} руб.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </c:if>
@@ -280,7 +374,7 @@
             <c:set var="styles" value="${['success', 'info', 'warning', 'danger']}" scope="page" />
             <div id="categoryBars" class="panel panel-default wam-margin-left-1 wam-margin-right-1 ">
                 <div class="panel-heading ">
-                    <h3 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.index.categoryBars.income" /></h3>
+                    <h4 class="wam-margin-bottom-0 wam-margin-top-0"><strong>Информация по доходным категориям на текущий момент</strong></h4>
                 </div>
                 <div class="wam-not-padding panel-body">
                     <div id="dropDownCategoryBarsIncome">
@@ -315,14 +409,14 @@
                                 <li class="list-unstyled">
                                     <a href="javascript:drawBarsByParentId(false, '${id}', '${after}', '${before}', true)">
                                         <div class="row">
-                                            <div class="col-xs-12 col-md-8">
+                                            <div class="col-xs-12 col-md-6">
                                                 <h4 class="needToFormat wam-not-padding-xs">
                                                     <strong id="categoryBarName${id}" value="${name}">
                                                             ${name}
                                                     </strong>
                                                 </h4>
                                             </div>
-                                            <div class="col-xs-12 col-md-4 wam-margin-top-xs-0">
+                                            <div class="col-xs-12 col-md-6 wam-margin-top-xs-0">
                                                 <h4 class="needToFormat">
 													<span id="categoryBarSum${id}" class="pull-right text-muted"
                                                           value="${sum}">
@@ -354,7 +448,7 @@
             </div>
             <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 ">
                 <div class="panel-heading ">
-                    <h3 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.index.categoryBars.expense" /></h3>
+                    <h4 class="wam-margin-bottom-0 wam-margin-top-0"><strong>Информация по расходным категориям на текущий момент</strong></h4>
                 </div>
                 <div class="wam-not-padding panel-body ">
                     <div id="dropDownCategoryBarsExpense">
@@ -387,14 +481,14 @@
                                 <li class="list-unstyled">
                                     <a href="javascript:drawBarsByParentId(false, '${id}', '${after}', '${before}', true)">
                                         <div class="row">
-                                            <div class="col-xs-12 col-md-8">
+                                            <div class="col-xs-12 col-md-6">
                                                 <h4 class="needToFormat wam-not-padding-xs">
                                                     <strong id="categoryBarName${id}" value="${name}">
                                                             ${name}
                                                     </strong>
                                                 </h4>
                                             </div>
-                                            <div class="col-xs-12 col-md-4 wam-margin-top-xs-0">
+                                            <div class="col-xs-12 col-md-6 wam-margin-top-xs-0">
                                                 <h4 class="needToFormat">
 													<span id="categoryBarSum${id}" class="pull-right text-muted"
                                                           value="${sum}">

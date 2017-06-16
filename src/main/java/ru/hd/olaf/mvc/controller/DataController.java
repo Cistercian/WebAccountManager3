@@ -220,7 +220,7 @@ public class DataController {
         } else {
             amount = new Amount();
             amount.setDate(new Date());
-
+            amount.setType((byte) 0);
             logger.debug(String.format("Категория с id = %d не найдена. Создаем новую.", id));
         }
 
@@ -228,15 +228,21 @@ public class DataController {
             response = utilService.getById(Amount.class, regularId);
             if (response.getEntity() != null)
                 model.addAttribute("regular", (Amount) response.getEntity());
-        } else {
+        } else if (amount.getType() != 3){
             if (amount.getRegularId() != null) {
                 model.addAttribute("regular", amount.getRegularId());
             }
         }
 
-        model.addAttribute("className", "amount");
+        if (amount.getType() != 3) {
+            model.addAttribute("className", "amount");
+            model.addAttribute("amountForm", amount);
+        } else {
+            model.addAttribute("className", "regular");
+            model.addAttribute("regularForm", amount);
+        }
         model.addAttribute("categories", categoryService.getAll());
-        model.addAttribute("amountForm", amount);
+
 
         addRef(refererHeader, refererParam, model);
 
@@ -324,7 +330,7 @@ public class DataController {
         //указываем владельца
         User currentUser = securityService.findLoggedUser();
         amountForm.setUserId(currentUser);
-        //указываем тип (0 - обычный оборот, 1 - непереодический (следует игнорировать при прогнозе))
+        //указываем тип
         if (amountForm.getType() == null) amountForm.setType((byte)0);
         //указываем привязанный обязательный оборот
         if (regularId != null) {

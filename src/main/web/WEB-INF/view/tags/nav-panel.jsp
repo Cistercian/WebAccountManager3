@@ -43,8 +43,10 @@
                 </li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><spring:message code="menu.nav.data" /> <b class="caret"></b></a>
-                    <ul class="dropdown-menu">
+                    <ul class="dropdown-menu wam-dropdown-menu">
                         <li><a href="/amount"><spring:message code="menu.nav.amounts" /></a></li>
+                        <li class="divider"></li>
+                        <li><a href="/page-product/regulars?isGetAll=true"><spring:message code="menu.nav.regulars" /></a></li>
                         <li class="divider"></li>
                         <li><a href="/category"><spring:message code="menu.nav.categories" /></a></li>
                         <li class="divider"></li>
