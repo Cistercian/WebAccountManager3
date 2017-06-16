@@ -51,8 +51,10 @@ public class CalendarController {
 
         ModelAndView modelAndView = new ModelAndView("/statistic/calendar");
 
+        User currentUser = securityService.findLoggedUser();
+
         modelAndView.addObject("categories", categoryService.getAll());
-        modelAndView.addObject("products", productService.getAll());
+        modelAndView.addObject("products", productService.getByCategory(currentUser, null));
 
         return modelAndView;
     }

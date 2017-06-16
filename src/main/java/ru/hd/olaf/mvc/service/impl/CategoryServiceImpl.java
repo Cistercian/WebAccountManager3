@@ -57,7 +57,15 @@ public class CategoryServiceImpl implements CategoryService {
     public List<Category> getAllByCurrentUser() {
         logger.debug(LogUtil.getMethodName());
 
-        return categoryRepository.findByUserId(securityService.findLoggedUser());
+        List<Category> categories = categoryRepository.findByUserId(securityService.findLoggedUser());
+
+        Collections.sort(categories, new Comparator<Category>() {
+            public int compare(Category o1, Category o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
+
+        return categories;
     }
 
     /**

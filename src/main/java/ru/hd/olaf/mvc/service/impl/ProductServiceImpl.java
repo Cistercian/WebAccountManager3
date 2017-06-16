@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.hd.olaf.entities.Category;
 import ru.hd.olaf.entities.Product;
 import ru.hd.olaf.entities.User;
 import ru.hd.olaf.exception.AuthException;
@@ -20,6 +21,8 @@ import ru.hd.olaf.util.LogUtil;
 import ru.hd.olaf.util.json.JsonResponse;
 import ru.hd.olaf.util.json.ResponseType;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -45,7 +48,22 @@ public class ProductServiceImpl implements ProductService {
      */
     public List<Product> getAll() {
         logger.debug(LogUtil.getMethodName());
-        return Lists.newArrayList(productRepository.findByUserId(securityService.findLoggedUser()));
+        List<Product> products = productRepository.findByUserId(securityService.findLoggedUser());
+
+        Collections.sort(products, new Comparator<Product>() {
+            public int compare(Product o1, Product o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
+
+        return products;
+    }
+
+    public List<Product> getByCategory(User user, Category category) {
+        logger.debug(LogUtil.getMethodName());
+        List<Product> products = productRepository.getAllByCategory(user, category);
+
+        return products;
     }
 
     public JsonResponse getById(Integer id) {
