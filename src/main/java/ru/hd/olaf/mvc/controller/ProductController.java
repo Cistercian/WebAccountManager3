@@ -213,6 +213,9 @@ public class ProductController {
         modelAndView.addObject("title", "Привязка оборотов по категории");
         modelAndView.addObject("details", "Категория: " + (category != null ? category.getName() : "отсутствует"));
         modelAndView.addObject("footer", "");
+        modelAndView.addObject("isBinding", true);
+        modelAndView.addObject("onclickOk", true);
+        modelAndView.addObject("onclickCancel", true);
         modelAndView.addObject("amounts", amounts);
 
         return modelAndView;

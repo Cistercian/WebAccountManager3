@@ -84,6 +84,13 @@
         });
 
         $("[data-toggle='tooltip']").tooltip();
+
+        $(".wam-collapse").click(function() {
+            if ($(this).attr('src').indexOf('expand') !== -1)
+                $(this).attr('src', '/resources/img/collapse.png');
+            else
+                $(this).attr('src', '/resources/img/expand.png');
+        });
     });
 
     function displayMessage(type, message, Url) {
@@ -193,7 +200,7 @@
                                     </div>
                                     <div class="col-xs-12 col-md-5 col-md-pull-1 wam-padding-right-0 wam-padding-left-0 wam-margin-left-xs-2">
                                         <h4>
-                                            <img src="/resources/img/expand.png" class="bg-info" data-toggle="collapse"
+                                            <img src="/resources/img/expand.png" class="wam-collapse" data-toggle="collapse"
                                                  data-target="#details${list.getId()}">
                                             <strong>
                                                     ${FormatUtil.numberToString(sum)}
@@ -291,7 +298,7 @@
                                         </c:choose>
                                     </div>
                                     <div class="col-xs-12 col-md-5 col-md-pull-1 wam-padding-right-0 wam-padding-left-0 wam-margin-left-xs-2">
-                                        <h4><img src="/resources/img/expand.png" class="bg-info" data-toggle="collapse"
+                                        <h4><img src="/resources/img/expand.png" class="wam-collapse" data-toggle="collapse"
                                                  data-target="#details${list.getId()}">
                                             <strong>
                                                     ${FormatUtil.numberToString(sum)}

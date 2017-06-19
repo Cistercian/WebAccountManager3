@@ -190,7 +190,7 @@
                                                 <c:set var="onclick" value="setComboBox(${id}, ${amount.getId()}, true)"/>
                                             </c:when>
                                             <c:otherwise>
-                                                <c:set var="onclick" value="setComboBox(${id}, ${amount.getId()}, false)"/>
+                                                <c:set var="onclick" value="setComboBox(0, ${amount.getId()}, false)"/>
                                             </c:otherwise>
                                         </c:choose>
 
@@ -248,21 +248,44 @@
                     <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-0">
                         <div class="wam-not-padding panel-body">
                             <div class="col-xs-12 col-md-6 wam-not-padding-xs">
-                                <button id="btnOk" type="submit" class="btn btn-primary btn-lg btn-block wam-btn-1"
-                                        onclick="location.href='/amount?id=${id}&regularId=${regularId}'">
-                                    Применить
-                                </button>
+                                <c:choose>
+                                    <c:when test="${empty onclickOk}">
+                                        <c:set var="onclickOk" value="location.href='/amount?id=${id}&regularId=${regularId}';"/>
+                                        <button id="btnOk" type="submit" class="btn btn-primary btn-lg btn-block wam-btn-1"
+                                                onclick="${onclickOk}">
+                                            Применить
+                                        </button>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <button id="btnOk" type="submit" class="btn btn-primary btn-lg btn-block wam-btn-1 disabled"
+                                                onclick="return false;">
+                                            Применить
+                                        </button>
+                                    </c:otherwise>
+                                </c:choose>
+
                             </div>
                             <div class="col-xs-12 col-md-6 wam-not-padding-xs">
-                                <button type="submit" class="btn-default btn-lg btn-block wam-btn-1 return"
-                                        onclick="location.href='/amount?id=${id}&regularId=${regularId}'">
-                                    Отмена
-                                </button>
+                                <c:choose>
+                                    <c:when test="${empty onclickCancel}">
+                                        <c:set var="onclickCancel" value="location.href='/amount?id=${id}&regularId=${regularId}';"/>
+                                        <button type="submit" class="btn-default btn-lg btn-block wam-btn-1 return"
+                                                onclick="${onclickCancel}">
+                                            Отмена
+                                        </button>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <button type="submit" class="btn-default btn-lg btn-block wam-btn-1 return disabled"
+                                                onclick="return false;">
+                                            Отмена
+                                        </button>
+                                    </c:otherwise>
+                                </c:choose>
                             </div>
                         </div>
                     </div>
                 </c:when>
-                <c:when test="${isBinding != true && empty type}">
+                <c:when test="${isGetRegulars == true}">
                     <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-0">
                         <div class="wam-not-padding panel-body">
                             <div class="col-xs-12 col-md-6 wam-not-padding-xs">
@@ -275,7 +298,7 @@
                     </div>
                 </c:when>
             </c:choose>
-            <c:if test="${not empty type}">
+            <c:if test="${isBinding != true && not empty type}">
                 <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-0">
                     <div class="wam-not-padding panel-body">
                         <div class="col-xs-12 col-md-6 wam-not-padding-xs">
@@ -289,6 +312,7 @@
             </c:if>
         </div>
     </div>
+</div>
 </body>
 </html>
 
