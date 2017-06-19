@@ -10,6 +10,7 @@ import ru.hd.olaf.util.json.BarEntity;
 import ru.hd.olaf.util.json.CalendarEntity;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -92,4 +93,22 @@ public interface AmountRepository extends CrudRepository<Amount, Integer> {
             "AND a.type != 3")
     BigDecimal getAvgPriceByUserIdAndMatchingNameAndDateBetween(User userId, String query, Date after, Date before);
 
+
+    @Query("Select a FROM Amount a " +
+            "LEFT JOIN a.categoryId c " +
+            "WHERE a.userId = ?1 AND " +
+            "(?2 = NULL OR (?2 != NULL AND c = ?2)) AND " +
+            "((?5 != 3 AND a.date BETWEEN ?3 AND ?4) OR (?5 = 3))AND " +
+            "((?5 != 1 AND ?5 != 2 AND ?5 != NULL AND a.type = ?5) OR" +
+            "((?5 = 1 OR ?5 = 2) AND (a.type = 1 OR a.type = 2)) OR " +
+            "(?5 = NULL))")
+    List<Amount> getByType(User user, Category category, Date after, Date before, Integer type);
+
+    @Query("Select a FROM Amount a " +
+            "LEFT JOIN a.categoryId c WHERE " +
+            "a.userId = ?1 AND " +
+            "c = ?2 AND " +
+            "a.date BETWEEN ?3 AND ?4 AND " +
+            "a.type != ?5")
+    List<Amount> getAmountsForBinding(User user, Category category, Date after, Date before, Byte type);
 }

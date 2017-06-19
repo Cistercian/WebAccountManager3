@@ -46,7 +46,7 @@
                     <ul class="dropdown-menu wam-dropdown-menu">
                         <li><a href="/amount"><spring:message code="menu.nav.amounts" /></a></li>
                         <li class="divider"></li>
-                        <li><a href="/page-product/regulars?isGetAll=true"><spring:message code="menu.nav.regulars" /></a></li>
+                        <li><a href="/page-product/regulars"><spring:message code="menu.nav.regulars" /></a></li>
                         <li class="divider"></li>
                         <li><a href="/category"><spring:message code="menu.nav.categories" /></a></li>
                         <li class="divider"></li>

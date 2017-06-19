@@ -102,11 +102,11 @@ public class BarEntity implements DBData {
     }
 
     public String getFormattedSum(){
-        return FormatUtil.formatToString(limit);
+        return FormatUtil.numberToString(limit);
     }
 
     public String getFormattedLimit(){
-        return FormatUtil.formatToString(limit);
+        return FormatUtil.numberToString(limit);
     }
 
     public BigDecimal getOneTimeSum() {

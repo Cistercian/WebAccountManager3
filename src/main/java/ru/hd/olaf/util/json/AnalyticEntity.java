@@ -115,11 +115,11 @@ public class AnalyticEntity implements DBData {
     }
 
     public String getFormattedSum() {
-        return FormatUtil.formatToString(getCurrentSum());
+        return FormatUtil.numberToString(getCurrentSum());
     }
 
     public String getFormattedLimit() {
-        return FormatUtil.formatToString(getAvgSum());
+        return FormatUtil.numberToString(getAvgSum());
     }
 
     @Override

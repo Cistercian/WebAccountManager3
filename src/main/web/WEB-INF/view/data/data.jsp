@@ -213,6 +213,7 @@
                     $('#currentCategory').text('${newEntity}');
                     $('#currentCategory').append("<span class='caret'></span>");
                 }
+                $('#type1').prop('checked', true);
             });
         } else {
             $('.has-error').each(function (){
@@ -517,12 +518,12 @@
                                                             <p class="wam-margin-top-1">
                                                                 <c:choose>
                                                                     <c:when test='${empty regular}'>
-                                                                        <a href="/page-product/regulars?isGetAll=false&id=${id}">
+                                                                        <a href="/page-product/regulars?isBinding=true&isSingle=true&id=${id}">
                                                                             Оборот не привязан к обязательному.
                                                                         </a>
                                                                     </c:when>
                                                                     <c:otherwise>
-                                                                        <a href="/page-product/regulars?isGetAll=false&id=${id}&regularId=${regular.getId()}">
+                                                                        <a href="/page-product/regulars?isBinding=true&isSingle=true&id=${id}&regularId=${regular.getId()}">
                                                                             <input id="regular" type="hidden" name="regular" value="${regular.getId()}"/>
                                                                             Привязан обязательный оборот #${regular.getId()} на сумму ${regular.getPrice()} руб.
                                                                         </a>
@@ -931,14 +932,14 @@
                         <div class="panel-heading ">
                             <div class="row ">
                                 <div class='col-xs-12 col-md-6 wam-margin-bottom-2'>
-                                    <h3 class="wam-margin-bottom-0 wam-margin-top-0">Редактирование записи ежемесячного оборота</h3>
+                                    <h3 class="wam-margin-bottom-0 wam-margin-top-0">Редактирование записи обязательного оборота</h3>
                                 </div>
                                 <c:if test="${empty name}">
                                     <c:set var="name" value="${newEntity}" scope="page"/>
                                 </c:if>
 
                                 <div class='col-xs-12 col-md-6 wam-margin-top-1 catcher-events'>
-                                    <button id="currentCategory" class="btn-default btn-lg btn-block dropdown-toggle "
+                                    <button id="currentRegular" class="btn-default btn-lg btn-block dropdown-toggle "
                                             data-toggle="dropdown" value="${name}">
                                             ${name}
                                         <span class="caret"></span>
@@ -1018,7 +1019,7 @@
                                 <%--Категория--%>
                             <spring:bind path="categoryId">
                                 <input id="categoryId" type="hidden" name="category" class="form-control erasable"
-                                       value="<c:if test="${not empty category}">${category.getId()}</c:if>"></input>
+                                       value="<c:if test="${not empty category}">${category.getId()}</c:if>" />
                                 <div class="col-xs-12 col-md-10  catcher-events">
                                     <h4 class="needToFormat">
                                         <strong>${selectCategory}</strong>

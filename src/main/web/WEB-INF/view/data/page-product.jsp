@@ -100,21 +100,25 @@
             table.search( this.value ).draw();
         } );
     });
-    function setRegularId(id, regularId){
+    function setComboBox(id, regularId, isSingleSelect){
         if ($('#checkbox' + regularId).prop('checked') == true) {
-            $('[id^="checkbox"]').each(function () {
-                $(this).prop('checked', false);
-            });
+            if (isSingleSelect) {
+                $('[id^="checkbox"]').each(function () {
+                    $(this).prop('checked', false);
+                });
+            }
 
             $('#checkbox' + regularId).prop('checked', false);
-            $('#btnOk').attr('onclick', 'location.href=\'amount?id=' + id + '&regularId=0\'');
+            $('#btnOk').attr('onclick', 'location.href=\'\/amount?id=' + id + '&regularId=0\'');
         } else {
-            $('[id^="checkbox"]').each(function () {
-                $(this).prop('checked', false);
-            });
+            if (isSingleSelect) {
+                $('[id^="checkbox"]').each(function () {
+                    $(this).prop('checked', false);
+                });
+            }
 
             $('#checkbox' + regularId).prop('checked', true);
-            $('#btnOk').attr('onclick', 'location.href=\'amount?id=' + id + '&regularId=' + regularId +'\'');
+            $('#btnOk').attr('onclick', 'location.href=\'\/amount?id=' + id + '&regularId=' + regularId +'\'');
         }
     }
 </script>
@@ -127,154 +131,164 @@
 
         <div class="container-fluid wam-not-padding-xs">
             <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1 ">
-                <div class="panel-heading ">
-                    <div class='row '>
+                <div class="panel-heading">
+                    <div class="row">
                         <div class='col-xs-12'>
-                            <c:choose>
-                            <c:when test="${not empty name}">
-                            <h4 class="wam-margin-bottom-0 wam-margin-top-0">Просмотр группы товаров</h4>
+                            <h4 class="wam-margin-bottom-0 wam-margin-top-0">
+                                ${title}
+                            </h4>
                         </div>
                         <div class='col-xs-12'>
-                            <p class='lead'>
-                            <h3 class='wam-margin-top-1'><strong class='pull-right'>${name}</strong></h3></p>
+                            <p class='lead'><h3 class='wam-margin-top-1'><strong class='pull-right'>
+                            ${details}
+                        </strong></h3></p>
                         </div>
                         <div class='col-xs-12'>
                             <p class='wam-font-size pull-right wam-margin-bottom-0'>
-                                <a href='/product?id=${id}'>(редактировать)</a>
+                                ${footer}
                             </p>
                         </div>
-                        </c:when>
-                        <c:otherwise>
-                        <c:choose>
-                        <c:when test='${not empty isGetRegular}'>
-                        <c:choose>
-                            <c:when test='${isGetAll == false}'>
-                                <h4 class="wam-margin-bottom-0 wam-margin-top-0">Привязка постоянных оборотов</h4>
-                            </c:when>
-                            <c:otherwise>
-                                <h4 class="wam-margin-bottom-0 wam-margin-top-0">Просмотр постоянных оборотов</h4>
-                            </c:otherwise>
-                        </c:choose>
                     </div>
-                    </c:when>
-                    <c:otherwise>
-                    <h4 class="wam-margin-bottom-0 wam-margin-top-0">Просмотр движений за дату</h4>
                 </div>
-                <div class='col-xs-12'>
-                    <p class='lead'>
-                    <h3 class='wam-margin-top-1'><strong class='pull-right'>${date}</strong></h3></p>
-                </div>
-                </c:otherwise>
-                </c:choose>
-                </c:otherwise>
-                </c:choose>
-            </div>
-        </div>
-        <div class="panel-body">
-            <table id="amounts" class="table table-striped table-bordered table-text  wam-font-size wam-margin-top-2" cellspacing="0"
-                   width="100%">
-                <thead class="">
-                <tr>
-                    <c:choose>
-                        <c:when test='${not empty isGetRegular}'>
-                            <c:if test='${isGetAll == false}'>
-                                <th>Выбрано</th>
-                            </c:if>
-                            <th><spring:message code="label.page-product.table.id"/></th>
-                            <th><spring:message code="label.page-product.table.name"/></th>
-                            <th><spring:message code="label.page-product.table.category"/></th>
-                            <th><spring:message code="label.page-product.table.price"/></th>
-                        </c:when>
-                        <c:otherwise>
-                            <th style="display : none;"><spring:message code="label.page-product.table.id"/></th>
-                            <th><spring:message code="label.page-product.table.date"/></th>
-                            <th><spring:message code="label.page-product.table.name"/></th>
-                            <th><spring:message code="label.page-product.table.price"/></th>
-                            <th style="display : none;"><spring:message code="label.page-product.table.category"/></th>
-                        </c:otherwise>
-                    </c:choose>
-                </tr>
-                </thead>
-                <tbody>
+                <div class="panel-body">
+                    <table id="amounts" class="table table-striped table-bordered table-text  wam-font-size wam-margin-top-2" cellspacing="0"
+                           width="100%">
+                        <thead class="">
+                        <tr>
+                            <c:choose>
+                                <c:when test='${isBinding == true}'>
+                                    <th>Выбрано</th>
+                                    <th><spring:message code="label.page-product.table.id"/></th>
+                                    <th><spring:message code="label.page-product.table.name"/></th>
+                                    <th><spring:message code="label.page-product.table.category"/></th>
+                                    <th><spring:message code="label.page-product.table.price"/></th>
+                                </c:when>
+                                <c:when test='${isGetRegulars == true}'>
+                                    <th><spring:message code="label.page-product.table.id"/></th>
+                                    <th><spring:message code="label.page-product.table.name"/></th>
+                                    <th><spring:message code="label.page-product.table.category"/></th>
+                                    <th><spring:message code="label.page-product.table.price"/></th>
+                                </c:when>
+                                <c:otherwise>
+                                    <th style="display : none;"><spring:message code="label.page-product.table.id"/></th>
+                                    <th><spring:message code="label.page-product.table.date"/></th>
+                                    <th><spring:message code="label.page-product.table.name"/></th>
+                                    <th><spring:message code="label.page-product.table.price"/></th>
+                                    <th style="display : none;"><spring:message code="label.page-product.table.category"/></th>
+                                </c:otherwise>
+                            </c:choose>
+                        </tr>
+                        </thead>
+                        <tbody>
 
-                <c:forEach items="${amounts}" var="amount">
-                    <tr class="wam-cursor">
-                        <c:choose>
-                            <c:when test='${not empty isGetRegular}'>
+                        <c:forEach items="${amounts}" var="amount">
+                            <tr class="wam-cursor">
                                 <c:choose>
-                                    <c:when test='${isGetAll == false}'>
-                                        <td onclick="setRegularId(${id}, ${amount.getId()})">
+                                    <c:when test='${isBinding == true}'>
+                                        <c:choose>
+                                            <c:when test='${isSingle == true}'>
+                                                <c:set var="onclick" value="setComboBox(${id}, ${amount.getId()}, true)"/>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <c:set var="onclick" value="setComboBox(${id}, ${amount.getId()}, false)"/>
+                                            </c:otherwise>
+                                        </c:choose>
+
+                                        <td onclick="${onclick}">
                                             <p data-placement="top">
                                                 <c:choose>
                                                     <c:when test='${amount.getId() == regularId}'>
-                                                        <label class="checkbox-inline"><input id="checkbox${amount.getId()}" type="checkbox" value="" checked></label>
+                                                        <label class="checkbox-inline">
+                                                            <input id="checkbox${amount.getId()}" type="checkbox" value="" checked
+                                                                   onclick="${onclick}" style="cursor: pointer;">
+                                                        </label>
                                                     </c:when>
                                                     <c:otherwise>
-                                                        <label class="checkbox-inline"><input id="checkbox${amount.getId()}" type="checkbox" value=""></label>
+                                                        <label class="checkbox-inline">
+                                                            <input id="checkbox${amount.getId()}" type="checkbox" value=""
+                                                                   onclick="${onclick}" style="cursor: pointer;">
+                                                        </label>
                                                     </c:otherwise>
                                                 </c:choose>
                                             </p>
                                         </td>
+                                        <td onclick="${onclick}">${amount.getId()}</td>
+                                        <td onclick="${onclick}">${amount.getName()}</td>
+                                        <td onclick="${onclick}">${amount.getCategoryId().getName()}</td>
+                                        <td onclick="${onclick}">${amount.getPrice()}</td>
                                     </c:when>
                                     <c:otherwise>
+                                        <c:choose>
+                                            <c:when test='${isGetRegulars == true}'>
+                                                <c:set var="onclick" value="location.href='/amounts/regular?id=${amount.getId()}';"/>
+                                                <td onclick="${onclick}">${amount.getId()}</td>
+                                                <td onclick="${onclick}">${amount.getName()}</td>
+                                                <td onclick="${onclick}">${amount.getCategoryId().getName()}</td>
+                                                <td onclick="${onclick}">${amount.getPrice()}</td>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <c:set var="onclick" value="location.href='/amount?id=${amount.getId()}';"/>
+                                                <td style="display : none;">${amount.getId()}</td>
+                                                <td class="wam-no-wrap" onclick="${onclick}">${amount.getDate()}</td>
+                                                <td onclick="${onclick}">${amount.getName()}</td>
+                                                <td onclick="${onclick}">${amount.getPrice()}</td>
+                                                <td style="display : none;">${amount.getCategoryId().getName()}</td>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </c:otherwise>
                                 </c:choose>
-                                <td onclick="location.href='/amount?id=${amount.getId()}';">${amount.getId()}</td>
-                                <td onclick="location.href='/amount?id=${amount.getId()}';">${amount.getName()}</td>
-                                <td onclick="location.href='/amount?id=${amount.getId()}';">${amount.getCategoryId().getName()}</td>
-                                <td onclick="location.href='/amount?id=${amount.getId()}';">${amount.getPrice()}</td>
-                            </c:when>
-                            <c:otherwise>
-                                <td style="display : none;">${amount.getId()}</td>
-                                <td class="wam-no-wrap" onclick="location.href='/amount?id=${amount.getId()}';">${amount.getDate()}</td>
-                                <td onclick="location.href='/amount?id=${amount.getId()}';">${amount.getName()}</td>
-                                <td onclick="location.href='/amount?id=${amount.getId()}';">${amount.getPrice()}</td>
-                                <td style="display : none;">${amount.getCategoryId().getName()}</td>
-                            </c:otherwise>
-                        </c:choose>
-                    </tr>
-                </c:forEach>
-                </tbody>
-            </table>
+                            </tr>
+                        </c:forEach>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <c:choose>
+                <c:when test="${isBinding == true}">
+                    <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-0">
+                        <div class="wam-not-padding panel-body">
+                            <div class="col-xs-12 col-md-6 wam-not-padding-xs">
+                                <button id="btnOk" type="submit" class="btn btn-primary btn-lg btn-block wam-btn-1"
+                                        onclick="location.href='/amount?id=${id}&regularId=${regularId}'">
+                                    Применить
+                                </button>
+                            </div>
+                            <div class="col-xs-12 col-md-6 wam-not-padding-xs">
+                                <button type="submit" class="btn-default btn-lg btn-block wam-btn-1 return"
+                                        onclick="location.href='/amount?id=${id}&regularId=${regularId}'">
+                                    Отмена
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </c:when>
+                <c:when test="${isBinding != true && empty type}">
+                    <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-0">
+                        <div class="wam-not-padding panel-body">
+                            <div class="col-xs-12 col-md-6 wam-not-padding-xs">
+                                <button type="submit" class="btn btn-primary btn-lg btn-block wam-btn-1"
+                                        onclick="location.href='/amounts/regular';">
+                                    <spring:message code="label.page-amount.btnNew"/>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </c:when>
+            </c:choose>
+            <c:if test="${not empty type}">
+                <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-0">
+                    <div class="wam-not-padding panel-body">
+                        <div class="col-xs-12 col-md-6 wam-not-padding-xs">
+                            <button type="submit" class="btn btn-primary btn-lg btn-block wam-btn-1"
+                                    onclick="location.href='/page-product/binding?type=${type}&categoryID=${categoryID}&after=${after}&before=${before}';">
+                                Добавить
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </c:if>
         </div>
     </div>
-    <c:if test='${not empty isGetRegular}'>
-        <c:choose>
-            <c:when test='${isGetAll == false}'>
-                <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-0">
-                    <div class="wam-not-padding panel-body">
-                        <div class="col-xs-12 col-md-6 wam-not-padding-xs">
-                            <button id="btnOk" type="submit" class="btn btn-primary btn-lg btn-block wam-btn-1"
-                                    onclick="location.href='amount?id=${id}&regularId=${regularId}'">
-                                <spring:message code="label.page-amount.btnOk"/>
-                            </button>
-                        </div>
-                        <div class="col-xs-12 col-md-6 wam-not-padding-xs">
-                            <button type="submit" class="btn-default btn-lg btn-block wam-btn-1 return"
-                                    onclick="location.href='amount?id=${id}'">
-                                <spring:message code="label.page-amount.btnCancel"/>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </c:when>
-            <c:otherwise>
-                <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-0">
-                    <div class="wam-not-padding panel-body">
-                        <div class="col-xs-12 col-md-6 wam-not-padding-xs">
-                            <button id="btnOk" type="submit" class="btn btn-primary btn-lg btn-block wam-btn-1"
-                                    onclick="location.href='/amounts/regular';">
-                                <spring:message code="label.page-amount.btnNew"/>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </c:otherwise>
-        </c:choose>
-    </c:if>
-</div>
-
-
 </body>
 </html>
 

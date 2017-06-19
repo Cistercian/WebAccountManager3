@@ -45,6 +45,14 @@ public interface AmountService {
                                              LocalDate after,
                                              LocalDate before);
 
+    List<Amount> getByType(User user, Category category, LocalDate after, LocalDate before, Integer type);
+
+    List<Amount> getAmountsForBindingByType(User user,
+                                            Category category,
+                                            LocalDate after,
+                                            LocalDate before,
+                                            Byte type);
+
     Amount save(Amount amount) throws CrudException;
 
     JsonResponse delete(Amount amount) throws CrudException;

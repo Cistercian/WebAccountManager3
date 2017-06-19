@@ -16,8 +16,6 @@ import ru.hd.olaf.util.DateUtil;
 import ru.hd.olaf.util.FormatUtil;
 import ru.hd.olaf.util.LogUtil;
 import ru.hd.olaf.util.json.AnalyticEntity;
-import ru.hd.olaf.util.json.BarEntity;
-import ru.hd.olaf.util.json.DBData;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -49,8 +47,8 @@ public class AnalyticController {
         LogUtil.logList(logger, analyticData);
 
         modelAndView.addObject("analyticData", analyticData);
-        modelAndView.addObject("after", getAfter(beginDate));
-        modelAndView.addObject("before", getBefore(null));
+        modelAndView.addObject("after", DateUtil.getStartOfMonth());
+        modelAndView.addObject("before", LocalDate.now());
 
         //данные для Суммарной информации
         int currentDay = LocalDate.now().getDayOfMonth();
@@ -79,14 +77,14 @@ public class AnalyticController {
         logger.debug(String.format("Итоговые суммы: средний доход: %s, средний расход: %s, текущая сумма доходов: %s, " +
                 "текущая сумма расходов: %s", incomeAvg, expenseAvg, incomeSum, expenseSum));
 
-        modelAndView.addObject("incomeLimit", FormatUtil.formatToString(incomeAvg));
-        modelAndView.addObject("expenseLimit", FormatUtil.formatToString(expenseAvg));
+        modelAndView.addObject("incomeLimit", FormatUtil.numberToString(incomeAvg));
+        modelAndView.addObject("expenseLimit", FormatUtil.numberToString(expenseAvg));
 
-        modelAndView.addObject("incomeSum", FormatUtil.formatToString(incomeSum));
-        modelAndView.addObject("expenseSum", FormatUtil.formatToString(expenseSum));
+        modelAndView.addObject("incomeSum", FormatUtil.numberToString(incomeSum));
+        modelAndView.addObject("expenseSum", FormatUtil.numberToString(expenseSum));
 
-        modelAndView.addObject("total", FormatUtil.formatToString(incomeSum.subtract(expenseSum)));
-        modelAndView.addObject("totalAvg", FormatUtil.formatToString(incomeAvg.subtract(expenseAvg)));
+        modelAndView.addObject("total", FormatUtil.numberToString(incomeSum.subtract(expenseSum)));
+        modelAndView.addObject("totalAvg", FormatUtil.numberToString(incomeAvg.subtract(expenseAvg)));
 
         logger.debug(String.format("Анализ прогнозируемых данных. Текущее число месяца: %d из %d, коэффициент одного " +
                 "дня: %s прогнозируемый доход: %s, прогнозируемый расход %s", currentDay, countDays, rate,

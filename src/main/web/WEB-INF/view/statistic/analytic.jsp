@@ -107,35 +107,6 @@
         );
         $('#modal').modal('show');
     }
-
-    function refreshData(){
-        var after = $('#date').val();
-        after = after.replace(/\./g, '-');
-
-        var before = $('#periodWeek').prop('checked') ?
-                moment(getMonday(new Date())).format('YYYY-MM-DD') :
-                moment(new Date().setDate(1)).format('YYYY-MM-DD');
-
-        $.ajax({
-            url: '/statistic/analytic/getData',
-            type: "GET",
-            data: {
-                'after' : after,
-                'before' : before,
-                'averagingPeriod' : $('#periodWeek').prop('checked') ? 0 : 1
-            },
-            dataType: 'json',
-            beforeSend: function(){
-                displayLoader();
-            },
-            success: function (data) {
-                hideLoader();
-
-                refreshBars(data, after, before);
-            }
-        });
-    }
-
 </script>
 
 <div class="content container-fluid wam-radius wam-min-height-0 wow fadeInDown " data-wow-duration="1000ms" data-wow-delay="300ms">
@@ -213,7 +184,7 @@
                                                 <strong class="text-right">
                                                     </c:otherwise>
                                                     </c:choose>
-                                                        ${FormatUtil.formatToString(sum * 100 / list.getLimit())}</strong> %</h4>
+                                                        ${FormatUtil.numberToString(sum * 100 / list.getLimit())}</strong> %</h4>
                                         </c:when>
                                         <c:otherwise>
                                             <strong class="text-danger">100</strong> %</h4>
@@ -225,7 +196,7 @@
                                             <img src="/resources/img/expand.png" class="bg-info" data-toggle="collapse"
                                                  data-target="#details${list.getId()}">
                                             <strong>
-                                                    ${FormatUtil.formatToString(sum)}
+                                                    ${FormatUtil.numberToString(sum)}
                                             </strong>
                                             (в среднем ${list.getFormattedLimit()}) руб
                                         </h4>
@@ -235,32 +206,32 @@
                                             <div class="wam-not-padding panel-body">
                                                 <div class="col-xs-12 col-md-4">
                                                     <p class="wam-margin-top-2">
-                                                        Обычные обороты:
+                                                        <a href="/page-product?categoryID=${list.getId()}&after=${after}&before=${before}&type=0">Обычные обороты:</a>
                                                     </p>
                                                 </div>
                                                 <div class="col-xs-12 col-md-6">
                                                     <p class="wam-margin-top-2">
-                                                            ${FormatUtil.formatToString(list.getSum() - list.getOneTimeSum())} руб. * ${rate}
+                                                            ${FormatUtil.numberToString(list.getSum() - list.getOneTimeSum())} руб. * ${rate}
                                                     </p>
                                                 </div>
                                                 <div class="col-xs-12 col-md-4">
                                                     <p class="wam-margin-top-2">
-                                                        Единоразовые обороты:
+                                                        <a href="/page-product?categoryID=${list.getId()}&after=${after}&before=${before}&type=1">Единоразовые обороты:</a>
                                                     </p>
                                                 </div>
                                                 <div class="col-xs-12 col-md-6">
                                                     <p class="wam-margin-top-2">
-                                                            ${FormatUtil.formatToString(list.getOneTimeSum())} руб.
+                                                            ${FormatUtil.numberToString(list.getOneTimeSum())} руб.
                                                     </p>
                                                 </div>
                                                 <div class="col-xs-12 col-md-4">
                                                     <p class="wam-margin-top-2">
-                                                        Обязательные обороты:
+                                                        <a href="/page-product?categoryID=${list.getId()}&after=${after}&before=${before}&type=3">Обязательные обороты:</a>
                                                     </p>
                                                 </div>
                                                 <div class="col-xs-12 col-md-6">
                                                     <p class="wam-margin-top-2">
-                                                            ${FormatUtil.formatToString(list.getRegularSum())} руб.
+                                                            ${FormatUtil.numberToString(list.getRegularSum())} руб.
                                                     </p>
                                                 </div>
                                             </div>
@@ -312,7 +283,7 @@
                                                 <strong class="text-right">
                                                     </c:otherwise>
                                                     </c:choose>
-                                                        ${FormatUtil.formatToString(sum * 100 / list.getLimit())}</strong> %</h4>
+                                                        ${FormatUtil.numberToString(sum * 100 / list.getLimit())}</strong> %</h4>
                                         </c:when>
                                         <c:otherwise>
                                             <strong class="text-danger">>100</strong> %</h4>
@@ -323,7 +294,7 @@
                                         <h4><img src="/resources/img/expand.png" class="bg-info" data-toggle="collapse"
                                                  data-target="#details${list.getId()}">
                                             <strong>
-                                                    ${FormatUtil.formatToString(sum)}
+                                                    ${FormatUtil.numberToString(sum)}
                                             </strong>
                                             (в среднем ${list.getFormattedLimit()}) руб
                                         </h4>
@@ -333,32 +304,32 @@
                                             <div class="wam-not-padding panel-body">
                                                 <div class="col-xs-12 col-md-4">
                                                     <p class="wam-margin-top-2">
-                                                        Обычные обороты:
+                                                        <a href="/page-product?categoryID=${list.getId()}&after=${after}&before=${before}&type=0">Обычные обороты:</a>
                                                     </p>
                                                 </div>
                                                 <div class="col-xs-12 col-md-6">
                                                     <p class="wam-margin-top-2">
-                                                            ${FormatUtil.formatToString(list.getSum() - list.getOneTimeSum())} руб. * ${rate}
+                                                            ${FormatUtil.numberToString(list.getSum() - list.getOneTimeSum())} руб. * ${rate}
                                                     </p>
                                                 </div>
                                                 <div class="col-xs-12 col-md-4">
                                                     <p class="wam-margin-top-2">
-                                                        Единоразовые обороты:
+                                                        <a href="/page-product?categoryID=${list.getId()}&after=${after}&before=${before}&type=1">Единоразовые обороты:</a>
                                                     </p>
                                                 </div>
                                                 <div class="col-xs-12 col-md-6">
                                                     <p class="wam-margin-top-2">
-                                                            ${FormatUtil.formatToString(list.getOneTimeSum())} руб.
+                                                            ${FormatUtil.numberToString(list.getOneTimeSum())} руб.
                                                     </p>
                                                 </div>
                                                 <div class="col-xs-12 col-md-4">
                                                     <p class="wam-margin-top-2">
-                                                        Обязательные обороты:
+                                                        <a href="/page-product?categoryID=${list.getId()}&after=${after}&before=${before}&type=3">Обязательные обороты:</a>
                                                     </p>
                                                 </div>
                                                 <div class="col-xs-12 col-md-6">
                                                     <p class="wam-margin-top-2">
-                                                            ${FormatUtil.formatToString(list.getRegularSum())} руб.
+                                                            ${FormatUtil.numberToString(list.getRegularSum())} руб.
                                                     </p>
                                                 </div>
                                             </div>

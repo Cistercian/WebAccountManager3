@@ -15,6 +15,7 @@ import ru.hd.olaf.entities.Product;
 import ru.hd.olaf.entities.User;
 import ru.hd.olaf.mvc.service.*;
 import ru.hd.olaf.util.DateUtil;
+import ru.hd.olaf.util.FormatUtil;
 import ru.hd.olaf.util.LogUtil;
 import ru.hd.olaf.util.json.CalendarEntity;
 import ru.hd.olaf.util.json.JsonResponse;
@@ -108,7 +109,9 @@ public class CalendarController {
         List<Amount> amounts = amountService.getByDate(user, after, before);
 
         modelAndView.addObject("amounts", amounts);
-        modelAndView.addObject("date", DateUtil.getString(after));
+        modelAndView.addObject("title", "Просмотр оборотов за дату");
+        modelAndView.addObject("details", FormatUtil.localDateToString(after));
+        modelAndView.addObject("footer", "");
 
         return modelAndView;
     }

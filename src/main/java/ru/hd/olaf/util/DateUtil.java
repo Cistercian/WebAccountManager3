@@ -46,12 +46,6 @@ public class DateUtil {
         return date.format(formatter);
     }
 
-    public static String getString(LocalDate date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, d MMM yyyy");
-
-        return formatter.format(date);
-    }
-
     public static Date getDate(LocalDate date){
         return Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant());
     }

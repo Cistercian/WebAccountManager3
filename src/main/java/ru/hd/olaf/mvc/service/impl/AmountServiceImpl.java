@@ -180,6 +180,40 @@ public class AmountServiceImpl implements AmountService {
         return barEntities;
     }
 
+    public List<Amount> getByType(User user,
+                                  Category category,
+                                  LocalDate after,
+                                  LocalDate before,
+                                  Integer type) {
+        logger.debug(LogUtil.getMethodName());
+
+        List<Amount> amounts = amountRepository.getByType(
+                user,
+                category,
+                DateUtil.getDate(after),
+                DateUtil.getDate(before),
+                type);
+
+        return amounts;
+    }
+
+    public List<Amount> getAmountsForBindingByType(User user,
+                                                   Category category,
+                                                   LocalDate after,
+                                                   LocalDate before,
+                                                   Byte type) {
+        logger.debug(LogUtil.getMethodName());
+
+        List<Amount> amounts = amountRepository.getAmountsForBinding(
+                user,
+                category,
+                DateUtil.getDate(after),
+                DateUtil.getDate(before),
+                type);
+
+        return amounts;
+    }
+
     /**
      * Функция возвращает общую сумму по всем amount, относящимся к данной категории, продукту и попадающим
      * в указанный временной интервал
