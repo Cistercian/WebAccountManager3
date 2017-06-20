@@ -4,16 +4,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import ru.hd.olaf.entities.Amount;
 import ru.hd.olaf.entities.Category;
 import ru.hd.olaf.entities.Product;
 import ru.hd.olaf.entities.User;
-import ru.hd.olaf.mvc.service.*;
+import ru.hd.olaf.mvc.service.AmountService;
+import ru.hd.olaf.mvc.service.ProductService;
+import ru.hd.olaf.mvc.service.SecurityService;
+import ru.hd.olaf.mvc.service.UtilService;
 import ru.hd.olaf.util.DateUtil;
 import ru.hd.olaf.util.FormatUtil;
 import ru.hd.olaf.util.LogUtil;
@@ -214,10 +217,41 @@ public class ProductController {
         modelAndView.addObject("details", "Категория: " + (category != null ? category.getName() : "отсутствует"));
         modelAndView.addObject("footer", "");
         modelAndView.addObject("isBinding", true);
-        modelAndView.addObject("onclickOk", true);
-        modelAndView.addObject("onclickCancel", true);
+        modelAndView.addObject("onclickOk", "setTypes(" + type + ");");
+        modelAndView.addObject("onclickCancel", "location.href=document.referrer;");
         modelAndView.addObject("amounts", amounts);
 
         return modelAndView;
+    }
+
+    @RequestMapping (value = "/page-product/binding", method = RequestMethod.POST)
+    public @ResponseBody JsonResponse setTypes(@RequestParam (value = "ids[]") Integer ids[],
+                                               @RequestParam (value = "type") Byte type){
+        logger.debug(LogUtil.getMethodName());
+
+        JsonResponse response = new JsonResponse();
+        StringBuilder message = new StringBuilder();
+
+        for (Integer id : ids) {
+            logger.debug(String.format("Обработка id %s", id));
+
+            JsonResponse response1 = utilService.getById(Amount.class, id);
+            if (response1.getType() == ResponseType.SUCCESS) {
+                Amount amount = (Amount) response1.getEntity();
+
+                amount.setType(type);
+
+                response1 = utilService.saveEntity(amount);
+                message.append(("Оборот #" + id + ": смена типа: " + response1.getMessage()) + "<p>");
+            } else
+                message.append("Оборот #" + id + ": ошибка захвата объекта: " + response.getMessage() + "<p>");
+        }
+
+        logger.debug(message.toString());
+
+        response.setType(ResponseType.INFO);
+        response.setMessage(message.toString());
+
+        return response;
     }
 }

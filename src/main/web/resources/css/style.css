@@ -13,7 +13,6 @@
 	font-size : 20px;
 }
 
-
 .wam-btn-1 {
 	margin-top: 10px;
 }
@@ -388,4 +387,7 @@ div.dataTables_filter {
 }
 .wam-dropdown-menu {
 	min-width: 190px;
+}
+.wam-img-xs-3 {
+	width: 8px;
 }

@@ -71,10 +71,13 @@ public class DateUtil {
     }
 
     public static int getCountDaysInMonth(LocalDate date){
+        logger.debug(LogUtil.getMethodName());
+
         Calendar calendar = GregorianCalendar.getInstance();
         calendar.clear();
+
         calendar.set(Calendar.YEAR, date.getYear());
-        calendar.set(Calendar.MONTH, date.getMonthValue());
+        calendar.set(Calendar.MONTH, date.getMonthValue() - 1);
 
         return calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
     }

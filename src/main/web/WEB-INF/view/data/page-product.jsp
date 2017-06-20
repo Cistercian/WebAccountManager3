@@ -106,20 +106,68 @@
                 $('[id^="checkbox"]').each(function () {
                     $(this).prop('checked', false);
                 });
+                $('#btnOk').attr('onclick', 'location.href=\'\/amount?id=' + id + '&regularId=0\'');
             }
 
             $('#checkbox' + regularId).prop('checked', false);
-            $('#btnOk').attr('onclick', 'location.href=\'\/amount?id=' + id + '&regularId=0\'');
         } else {
             if (isSingleSelect) {
                 $('[id^="checkbox"]').each(function () {
                     $(this).prop('checked', false);
                 });
+                $('#btnOk').attr('onclick', 'location.href=\'\/amount?id=' + id + '&regularId=' + regularId +'\'');
             }
 
             $('#checkbox' + regularId).prop('checked', true);
-            $('#btnOk').attr('onclick', 'location.href=\'\/amount?id=' + id + '&regularId=' + regularId +'\'');
         }
+    }
+    function setTypes(type){
+        var ids = new Array();
+        $('[id^="checkbox"]').each(function () {
+            if ($(this).prop('checked') == true) {
+                ids.push($(this).attr('id').replace(/checkbox/g, ''));
+            }
+        });
+
+        $.ajax({
+            url: '/page-product/binding',
+            type: "POST",
+            data: {
+                'ids' : ids,
+                'type' : type
+            },
+            dataType: 'json',
+            beforeSend: function () {
+                displayLoader();
+            },
+            success: function (data) {
+                hideLoader();
+
+                var type = data.type;
+                var message = data.message;
+
+                displayMessage(type, message, "/index");
+            }
+        });
+    }
+    function displayMessage(type, message, Url) {
+        ClearModalPanel();
+        $('#modalBody').append(
+                "<div class='col-xs-12'>" +
+                "<h4 class='text-center'><strong>" + message + "</strong></h4>" +
+                "</div>"
+        );
+        var onclick = "location.href=document.referrer;";
+
+
+        $('#modalFooter').append(
+                "<div class='col-xs-12 col-md-6 col-md-offset-6'>" +
+                "<button id='modalSubmit' type='button' class='btn btn-primary btn-lg btn-block wam-margin-top-2 ' data-dismiss='modal' " +
+                "onclick='" + onclick + "'>Закрыть</button>" +
+                "</div>"
+        );
+
+        $('#modal').modal('show');
     }
 </script>
 
@@ -158,9 +206,9 @@
                             <c:choose>
                                 <c:when test='${isBinding == true}'>
                                     <th>Выбрано</th>
-                                    <th><spring:message code="label.page-product.table.id"/></th>
+                                    <th class="hidden-xs"><spring:message code="label.page-product.table.id"/></th>
                                     <th><spring:message code="label.page-product.table.name"/></th>
-                                    <th><spring:message code="label.page-product.table.category"/></th>
+                                    <th class="hidden-xs"><spring:message code="label.page-product.table.category"/></th>
                                     <th><spring:message code="label.page-product.table.price"/></th>
                                 </c:when>
                                 <c:when test='${isGetRegulars == true}'>
@@ -212,18 +260,18 @@
                                                 </c:choose>
                                             </p>
                                         </td>
-                                        <td onclick="${onclick}">${amount.getId()}</td>
+                                        <td class="hidden-xs" onclick="${onclick}">${amount.getId()}</td>
                                         <td onclick="${onclick}">${amount.getName()}</td>
-                                        <td onclick="${onclick}">${amount.getCategoryId().getName()}</td>
+                                        <td class="hidden-xs" onclick="${onclick}">${amount.getCategoryId().getName()}</td>
                                         <td onclick="${onclick}">${amount.getPrice()}</td>
                                     </c:when>
                                     <c:otherwise>
                                         <c:choose>
                                             <c:when test='${isGetRegulars == true}'>
                                                 <c:set var="onclick" value="location.href='/amounts/regular?id=${amount.getId()}';"/>
-                                                <td onclick="${onclick}">${amount.getId()}</td>
+                                                <td class="hidden-xs" onclick="${onclick}">${amount.getId()}</td>
                                                 <td onclick="${onclick}">${amount.getName()}</td>
-                                                <td onclick="${onclick}">${amount.getCategoryId().getName()}</td>
+                                                <td class="hidden-xs" onclick="${onclick}">${amount.getCategoryId().getName()}</td>
                                                 <td onclick="${onclick}">${amount.getPrice()}</td>
                                             </c:when>
                                             <c:otherwise>
@@ -251,36 +299,23 @@
                                 <c:choose>
                                     <c:when test="${empty onclickOk}">
                                         <c:set var="onclickOk" value="location.href='/amount?id=${id}&regularId=${regularId}';"/>
-                                        <button id="btnOk" type="submit" class="btn btn-primary btn-lg btn-block wam-btn-1"
-                                                onclick="${onclickOk}">
-                                            Применить
-                                        </button>
                                     </c:when>
-                                    <c:otherwise>
-                                        <button id="btnOk" type="submit" class="btn btn-primary btn-lg btn-block wam-btn-1 disabled"
-                                                onclick="return false;">
-                                            Применить
-                                        </button>
-                                    </c:otherwise>
                                 </c:choose>
-
+                                <button id="btnOk" class="btn btn-primary btn-lg btn-block wam-btn-1"
+                                        onclick="${onclickOk}">
+                                    Применить
+                                </button>
                             </div>
                             <div class="col-xs-12 col-md-6 wam-not-padding-xs">
                                 <c:choose>
                                     <c:when test="${empty onclickCancel}">
                                         <c:set var="onclickCancel" value="location.href='/amount?id=${id}&regularId=${regularId}';"/>
-                                        <button type="submit" class="btn-default btn-lg btn-block wam-btn-1 return"
-                                                onclick="${onclickCancel}">
-                                            Отмена
-                                        </button>
                                     </c:when>
-                                    <c:otherwise>
-                                        <button type="submit" class="btn-default btn-lg btn-block wam-btn-1 return disabled"
-                                                onclick="return false;">
-                                            Отмена
-                                        </button>
-                                    </c:otherwise>
                                 </c:choose>
+                                <button class="btn-default btn-lg btn-block wam-btn-1 return"
+                                        onclick="${onclickCancel}">
+                                    Отмена
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -305,6 +340,12 @@
                             <button type="submit" class="btn btn-primary btn-lg btn-block wam-btn-1"
                                     onclick="location.href='/page-product/binding?type=${type}&categoryID=${categoryID}&after=${after}&before=${before}';">
                                 Добавить
+                            </button>
+                        </div>
+                        <div class="col-xs-12 col-md-6 wam-not-padding-xs">
+                            <button class="btn-default btn-lg btn-block wam-btn-1 return"
+                                    onclick="location.href='/statistic/analytic';">
+                                Назад
                             </button>
                         </div>
                     </div>

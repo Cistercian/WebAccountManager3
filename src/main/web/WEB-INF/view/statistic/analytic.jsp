@@ -212,34 +212,93 @@
                                         <div class="panel panel-default">
                                             <div class="wam-not-padding panel-body">
                                                 <div class="col-xs-12 col-md-4">
-                                                    <p class="wam-margin-top-2">
+                                                    <h4>
                                                         <a href="/page-product?categoryID=${list.getId()}&after=${after}&before=${before}&type=0">Обычные обороты:</a>
+                                                    </h4>
+                                                </div>
+                                                <div class="col-xs-10 col-md-6">
+                                                    <h4>
+                                                            ${FormatUtil.numberToString(list.getSum() - list.getOneTimeSum())} руб.
+                                                        <img src="/resources/img/multiply.png" class="wam-img-xs-3">
+                                                            ${rate}
+                                                    </h4>
+                                                </div>
+                                                <div class="col-xs-2 col-md-2">
+                                                    <p class="wam-margin-top-1">
+                                                        <img src="/resources/img/help.png" class="img-responsive wam-top-radius center-block"
+                                                             alt="" data-toggle="collapse" data-target="#helpFixed${list.getId()}">
                                                     </p>
                                                 </div>
-                                                <div class="col-xs-12 col-md-6">
-                                                    <p class="wam-margin-top-2">
-                                                            ${FormatUtil.numberToString(list.getSum() - list.getOneTimeSum())} руб. * ${rate}
-                                                    </p>
+                                                <div id="helpFixed${list.getId()}" class="col-xs-12 col-md-12 wam-not-padding-xs collapse">
+                                                    <div class="panel panel-default">
+                                                        <div class="wam-not-padding panel-body">
+                                                            <div class="col-xs-12 col-md-12">
+                                                                <p class="wam-margin-top-2 text-justify">
+                                                                    Значение показывает итоговую сумму за весь текущий месяц по стандартным оборотам данной категории при условии сохранения текущей динамики оборотов.
+                                                                    Т.е., если на сегодня (напр., 15 июня) Вы потратили 5 000 рублей, то к концу июня, сумма затрат будет 10 000 руб (т.е. делается допущение,
+                                                                    что за оставшиеся дни месяца Вы будете тратить так же, как и до этого).
+                                                                </p>
+                                                                <p>
+                                                                    <strong>${rate}</strong> - коэффициент, который расчитался по формуле "Текущее число месяца" / "Общее число дней в месяце".
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                                 <div class="col-xs-12 col-md-4">
-                                                    <p class="wam-margin-top-2">
+                                                    <h4>
                                                         <a href="/page-product?categoryID=${list.getId()}&after=${after}&before=${before}&type=1">Единоразовые обороты:</a>
+                                                    </h4>
+                                                </div>
+                                                <div class="col-xs-10 col-md-6">
+                                                    <h4>
+                                                            ${FormatUtil.numberToString(list.getOneTimeSum())} руб.
+                                                    </h4>
+                                                </div>
+                                                <div class="col-xs-2 col-md-2">
+                                                    <p class="wam-margin-top-1">
+                                                        <img src="/resources/img/help.png" class="img-responsive wam-top-radius center-block"
+                                                             alt="" data-toggle="collapse" data-target="#helpOneTimed${list.getId()}">
                                                     </p>
                                                 </div>
-                                                <div class="col-xs-12 col-md-6">
-                                                    <p class="wam-margin-top-2">
-                                                            ${FormatUtil.numberToString(list.getOneTimeSum())} руб.
-                                                    </p>
+                                                <div id="helpOneTimed${list.getId()}" class="col-xs-12 col-md-12 wam-not-padding-xs collapse">
+                                                    <div class="panel panel-default">
+                                                        <div class="wam-not-padding panel-body">
+                                                            <div class="col-xs-12 col-md-12">
+                                                                <p class="wam-margin-top-2 text-justify">
+                                                                    Сюда попали суммы единоразовых оборотов (простых и исключаемых из статистики).
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                                 <div class="col-xs-12 col-md-4">
-                                                    <p class="wam-margin-top-2">
+                                                    <h4>
                                                         <a href="/page-product?categoryID=${list.getId()}&after=${after}&before=${before}&type=3">Обязательные обороты:</a>
+                                                    </h4>
+                                                </div>
+                                                <div class="col-xs-10 col-md-6">
+                                                    <h4>
+                                                            ${FormatUtil.numberToString(list.getRegularSum())} руб.
+                                                    </h4>
+                                                </div>
+                                                <div class="col-xs-2 col-md-2">
+                                                    <p class="wam-margin-top-1">
+                                                        <img src="/resources/img/help.png" class="img-responsive wam-top-radius center-block"
+                                                             alt="" data-toggle="collapse" data-target="#helpRegular${list.getId()}">
                                                     </p>
                                                 </div>
-                                                <div class="col-xs-12 col-md-6">
-                                                    <p class="wam-margin-top-2">
-                                                            ${FormatUtil.numberToString(list.getRegularSum())} руб.
-                                                    </p>
+                                                <div id="helpRegular${list.getId()}" class="col-xs-12 col-md-12 wam-not-padding-xs collapse">
+                                                    <div class="panel panel-default">
+                                                        <div class="wam-not-padding panel-body">
+                                                            <div class="col-xs-12 col-md-12">
+                                                                <p class="wam-margin-top-2 text-justify">
+                                                                    Здесь представлена сумма обязательных оборотов, которые не привязаны к фактическим.
+                                                                    После привязки оборота он будет исключен из данного пункта и в расчет попадет сумма фактического.
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -310,34 +369,93 @@
                                         <div class="panel panel-default">
                                             <div class="wam-not-padding panel-body">
                                                 <div class="col-xs-12 col-md-4">
-                                                    <p class="wam-margin-top-2">
+                                                    <h4>
                                                         <a href="/page-product?categoryID=${list.getId()}&after=${after}&before=${before}&type=0">Обычные обороты:</a>
+                                                    </h4>
+                                                </div>
+                                                <div class="col-xs-10 col-md-6">
+                                                    <h4>
+                                                            ${FormatUtil.numberToString(list.getSum() - list.getOneTimeSum())} руб.
+                                                        <img src="/resources/img/multiply.png" class="wam-img-xs-3">
+                                                            ${rate}
+                                                    </h4>
+                                                </div>
+                                                <div class="col-xs-2 col-md-2">
+                                                    <p class="wam-margin-top-1">
+                                                        <img src="/resources/img/help.png" class="img-responsive wam-top-radius center-block"
+                                                             alt="" data-toggle="collapse" data-target="#helpFixed${list.getId()}">
                                                     </p>
                                                 </div>
-                                                <div class="col-xs-12 col-md-6">
-                                                    <p class="wam-margin-top-2">
-                                                            ${FormatUtil.numberToString(list.getSum() - list.getOneTimeSum())} руб. * ${rate}
-                                                    </p>
+                                                <div id="helpFixed${list.getId()}" class="col-xs-12 col-md-12 wam-not-padding-xs collapse">
+                                                    <div class="panel panel-default">
+                                                        <div class="wam-not-padding panel-body">
+                                                            <div class="col-xs-12 col-md-12">
+                                                                <p class="wam-margin-top-2 text-justify">
+                                                                    Значение показывает итоговую сумму за весь текущий месяц по стандартным оборотам данной категории при условии сохранения текущей динамики оборотов.
+                                                                    Т.е., если на сегодня (напр., 15 июня) Вы потратили 5 000 рублей, то к концу июня, сумма затрат будет 10 000 руб (т.е. делается допущение,
+                                                                    что за оставшиеся дни месяца Вы будете тратить так же, как и до этого).
+                                                                </p>
+                                                                <p>
+                                                                    <strong>${rate}</strong> - коэффициент, который расчитался по формуле "Текущее число месяца" / "Общее число дней в месяце".
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                                 <div class="col-xs-12 col-md-4">
-                                                    <p class="wam-margin-top-2">
+                                                    <h4>
                                                         <a href="/page-product?categoryID=${list.getId()}&after=${after}&before=${before}&type=1">Единоразовые обороты:</a>
+                                                    </h4>
+                                                </div>
+                                                <div class="col-xs-10 col-md-6">
+                                                    <h4>
+                                                            ${FormatUtil.numberToString(list.getOneTimeSum())} руб.
+                                                    </h4>
+                                                </div>
+                                                <div class="col-xs-2 col-md-2">
+                                                    <p class="wam-margin-top-1">
+                                                        <img src="/resources/img/help.png" class="img-responsive wam-top-radius center-block"
+                                                             alt="" data-toggle="collapse" data-target="#helpOneTimed${list.getId()}">
                                                     </p>
                                                 </div>
-                                                <div class="col-xs-12 col-md-6">
-                                                    <p class="wam-margin-top-2">
-                                                            ${FormatUtil.numberToString(list.getOneTimeSum())} руб.
-                                                    </p>
+                                                <div id="helpOneTimed${list.getId()}" class="col-xs-12 col-md-12 wam-not-padding-xs collapse">
+                                                    <div class="panel panel-default">
+                                                        <div class="wam-not-padding panel-body">
+                                                            <div class="col-xs-12 col-md-12">
+                                                                <p class="wam-margin-top-2 text-justify">
+                                                                    Сюда попали суммы единоразовых оборотов (простых и исключаемых из статистики).
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                                 <div class="col-xs-12 col-md-4">
-                                                    <p class="wam-margin-top-2">
+                                                    <h4>
                                                         <a href="/page-product?categoryID=${list.getId()}&after=${after}&before=${before}&type=3">Обязательные обороты:</a>
+                                                    </h4>
+                                                </div>
+                                                <div class="col-xs-10 col-md-6">
+                                                    <h4>
+                                                            ${FormatUtil.numberToString(list.getRegularSum())} руб.
+                                                    </h4>
+                                                </div>
+                                                <div class="col-xs-2 col-md-2">
+                                                    <p class="wam-margin-top-1">
+                                                        <img src="/resources/img/help.png" class="img-responsive wam-top-radius center-block"
+                                                             alt="" data-toggle="collapse" data-target="#helpRegular${list.getId()}">
                                                     </p>
                                                 </div>
-                                                <div class="col-xs-12 col-md-6">
-                                                    <p class="wam-margin-top-2">
-                                                            ${FormatUtil.numberToString(list.getRegularSum())} руб.
-                                                    </p>
+                                                <div id="helpRegular${list.getId()}" class="col-xs-12 col-md-12 wam-not-padding-xs collapse">
+                                                    <div class="panel panel-default">
+                                                        <div class="wam-not-padding panel-body">
+                                                            <div class="col-xs-12 col-md-12">
+                                                                <p class="wam-margin-top-2 text-justify">
+                                                                    Здесь представлена сумма обязательных оборотов, которые не привязаны к фактическим.
+                                                                    После привязки оборота он будет исключен из данного пункта и в расчет попадет сумма фактического.
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>

@@ -249,7 +249,9 @@ public class DataController {
         return "data/data";
     }
 
-    private void addRef(@RequestHeader(value = "Referer", required = false) String refererHeader, @RequestParam(value = "referer", required = false) String refererParam, Model model) {
+    private void addRef(@RequestHeader(value = "Referer", required = false) String refererHeader,
+                        @RequestParam(value = "referer", required = false) String refererParam,
+                        Model model) {
         String referer = "";
         if (refererParam == null) {
             try {
