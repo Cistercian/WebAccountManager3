@@ -159,8 +159,7 @@
     }
 </script>
 
-<div class="content container-fluid wam-radius wam-min-height-0 wow fadeInDown wam-not-padding-xs"
-     data-wow-duration="1000ms" data-wow-delay="300ms">
+<div class="content container-fluid wam-radius wam-min-height-0 wam-not-padding-xs">
     <div class="slider wam-top-radius">
         <div id="about-slider" >
             <div id="carousel-slider" class="carousel slide" data-ride="carousel">
