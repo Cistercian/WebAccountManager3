@@ -47,13 +47,13 @@ public class AccountController {
                           @RequestParam(value = "text") String text){
         logger.debug(LogUtil.getMethodName());
 
-        if (title == null || text == null || "".equals(title) || "".equals(text))
+        if (title == null || text == null || title.length() == 0 || text.length() == 0)
             return new JsonResponse(ResponseType.ERROR, "Переданы некоррекные параметры.");
 
         JsonResponse response = new JsonResponse();
         User currentUser = securityService.findLoggedUser();
         if (currentUser != null && "ROLE_ADMIN".equalsIgnoreCase(currentUser.getRole())) {
-            if (username.equalsIgnoreCase("ALL")) {
+            if ("ALL".equalsIgnoreCase(username)) {
                 for (User user : userService.getAll()) {
                     Mail mail = new Mail("Admin", title, text, user);
                     JsonResponse response1 = utilService.saveEntity(mail);
@@ -84,7 +84,7 @@ public class AccountController {
     }
 
     /**
-     * Функция отрисовки окна профиля (меня пароля)
+     * Функция отрисовки окна профиля
      * @param model model
      * @return наименование view (account)
      */
