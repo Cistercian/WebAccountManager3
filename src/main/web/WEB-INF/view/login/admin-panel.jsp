@@ -172,7 +172,7 @@
             );
             $('#modalFooter').append(
                     "<div class='col-xs-12 col-md-4 col-md-offset-8 wam-not-padding'>" +
-                    "<button type='button' class='btn btn-primary btn-lg btn-block' data-dismiss='modal'>Закрыть</button>" +
+                    "<button type='button' class='btn-primary btn-lg btn-block' data-dismiss='modal'>Закрыть</button>" +
                     "</div>"
             );
         } else {
@@ -183,7 +183,7 @@
             );
             $('#modalFooter').append(
                     "<div class='col-xs-12 col-md-4 col-md-offset-8 wam-not-padding'>" +
-                    "<button type='button' class='btn btn-primary btn-lg btn-block' onclick='location.reload();'>Закрыть</button>" +
+                    "<button type='button' class='btn-primary btn-lg btn-block' onclick='location.reload();'>Закрыть</button>" +
                     "</div>"
             );
             //alert("должен быть показ");
@@ -207,7 +207,7 @@
             </div>
 
             <div class="col-xs-12 col-md-6 col-md-offset-6">
-                <button class="btn btn-lg btn-primary btn-block wam-btn-2" type="submit" onclick="refreshLimits();return false;">
+                <button class="btn-lg btn-primary btn-block wam-btn-2" type="submit" onclick="refreshLimits();return false;">
                     <spring:message code="label.admin.limits.refresh"/>
                 </button>
             </div>
@@ -285,7 +285,7 @@
                           placeholder="text"></textarea>
             </div>
             <div class="col-xs-12 col-md-6 col-md-offset-6">
-                <button type="submit" class="btn btn-primary btn-lg btn-block wam-btn-1"
+                <button type="submit" class="btn-primary btn-lg btn-block wam-btn-1"
                         onclick="sendMail();">
                     <spring:message code="label.admin.mail.submit"/>
                 </button>

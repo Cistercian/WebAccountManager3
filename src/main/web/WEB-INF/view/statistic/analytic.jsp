@@ -109,7 +109,7 @@
         }
         $('#modalFooter').append(
                 "<div class='col-xs-12 col-md-4 col-md-offset-8 wam-not-padding'>" +
-                "<button type='button' class='btn btn-primary btn-lg btn-block' data-dismiss='modal' onclick='" + onclick + "'>Закрыть</button>" +
+                "<button type='button' class='btn-primary btn-lg btn-block' data-dismiss='modal' onclick='" + onclick + "'>Закрыть</button>" +
                 "</div>"
         );
         $('#modal').modal('show');
@@ -124,7 +124,7 @@
 
         <div id=limits class="container-fluid wam-not-padding-xs">
             <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1">
-                <div class="panel-heading ">
+                <div class="panel-heading wam-page-title">
                     <h3 class="wam-margin-bottom-0 wam-margin-top-0">Прогнозирование движений</h3>
                 </div>
                 <div class="wam-not-padding panel-body">
@@ -239,7 +239,7 @@
                                                                     что за оставшиеся дни месяца Вы будете тратить так же, как и до этого).
                                                                 </p>
                                                                 <p>
-                                                                    <strong>${rate}</strong> - коэффициент, который расчитался по формуле "Текущее число месяца" / "Общее число дней в месяце".
+                                                                    <strong>${rate}</strong> - коэффициент, который расчитался по формуле "Общее число дней в месяце"/"Текущее число месяца".
                                                                 </p>
                                                             </div>
                                                         </div>
@@ -396,7 +396,7 @@
                                                                     что за оставшиеся дни месяца Вы будете тратить так же, как и до этого).
                                                                 </p>
                                                                 <p>
-                                                                    <strong>${rate}</strong> - коэффициент, который расчитался по формуле "Текущее число месяца" / "Общее число дней в месяце".
+                                                                    <strong>${rate}</strong> - коэффициент, который расчитался по формуле "Общее число дней в месяце"/"Текущее число месяца".
                                                                 </p>
                                                             </div>
                                                         </div>

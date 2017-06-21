@@ -72,7 +72,7 @@
     <div class="row">
         <form:form method="POST" modelAttribute="limitForm" class="form-signin">
             <div class="login-panel panel panel-default wam-not-padding wam-margin-left-2 wam-margin-right-2">
-                <div class="panel-heading">
+                <div class="panel-heading wam-page-title">
                     <h3 class="wam-margin-bottom-0 wam-margin-top-0">
                         <spring:message code="label.account.limit.create.title"/>
                     </h3>

@@ -162,7 +162,7 @@
 
         $('#modalFooter').append(
                 "<div class='col-xs-12 col-md-6 col-md-offset-6'>" +
-                "<button id='modalSubmit' type='button' class='btn btn-primary btn-lg btn-block wam-margin-top-2 ' data-dismiss='modal' " +
+                "<button id='modalSubmit' type='button' class='btn-primary btn-lg btn-block wam-margin-top-2 ' data-dismiss='modal' " +
                 "onclick='" + onclick + "'>Закрыть</button>" +
                 "</div>"
         );
@@ -178,8 +178,8 @@
         <input id="id" type="hidden" name="id" value="${id}"/>
 
         <div class="container-fluid wam-not-padding-xs">
-            <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1 ">
-                <div class="panel-heading">
+            <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1 wam-margin-bottom-0-1">
+                <div class="panel-heading wam-page-title">
                     <div class="row">
                         <div class='col-xs-12'>
                             <h4 class="wam-margin-bottom-0 wam-margin-top-0">
@@ -199,7 +199,7 @@
                     </div>
                 </div>
                 <div class="panel-body">
-                    <table id="amounts" class="table table-striped table-bordered table-text  wam-font-size wam-margin-top-2" cellspacing="0"
+                    <table id="amounts" class="table table-striped table-bordered table-text  wam-font-size wam-margin-top-2 " cellspacing="0"
                            width="100%">
                         <thead class="">
                         <tr>
@@ -212,9 +212,9 @@
                                     <th><spring:message code="label.page-product.table.price"/></th>
                                 </c:when>
                                 <c:when test='${isGetRegulars == true}'>
-                                    <th><spring:message code="label.page-product.table.id"/></th>
+                                    <th class="hidden-xs"><spring:message code="label.page-product.table.id"/></th>
                                     <th><spring:message code="label.page-product.table.name"/></th>
-                                    <th><spring:message code="label.page-product.table.category"/></th>
+                                    <th class="hidden-xs"><spring:message code="label.page-product.table.category"/></th>
                                     <th><spring:message code="label.page-product.table.price"/></th>
                                 </c:when>
                                 <c:otherwise>
@@ -291,9 +291,10 @@
                     </table>
                 </div>
             </div>
+
             <c:choose>
                 <c:when test="${isBinding == true}">
-                    <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-0">
+                    <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-0 wam-margin-bottom-0-1">
                         <div class="wam-not-padding panel-body">
                             <div class="col-xs-12 col-md-6 wam-not-padding-xs">
                                 <c:choose>
@@ -301,7 +302,7 @@
                                         <c:set var="onclickOk" value="location.href='/amount?id=${id}&regularId=${regularId}';"/>
                                     </c:when>
                                 </c:choose>
-                                <button id="btnOk" class="btn btn-primary btn-lg btn-block wam-btn-1"
+                                <button id="btnOk" class="btn-primary btn-lg btn-block wam-btn-1"
                                         onclick="${onclickOk}">
                                     Применить
                                 </button>
@@ -321,10 +322,10 @@
                     </div>
                 </c:when>
                 <c:when test="${isGetRegulars == true}">
-                    <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-0">
+                    <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-0 wam-margin-bottom-0-1">
                         <div class="wam-not-padding panel-body">
                             <div class="col-xs-12 col-md-6 wam-not-padding-xs">
-                                <button type="submit" class="btn btn-primary btn-lg btn-block wam-btn-1"
+                                <button type="submit" class="btn-primary btn-lg btn-block wam-btn-1"
                                         onclick="location.href='/amounts/regular';">
                                     <spring:message code="label.page-amount.btnNew"/>
                                 </button>
@@ -334,10 +335,10 @@
                 </c:when>
             </c:choose>
             <c:if test="${isBinding != true && not empty type}">
-                <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-0">
+                <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-0 wam-margin-bottom-0-1">
                     <div class="wam-not-padding panel-body">
                         <div class="col-xs-12 col-md-6 wam-not-padding-xs">
-                            <button type="submit" class="btn btn-primary btn-lg btn-block wam-btn-1"
+                            <button type="submit" class="btn-primary btn-lg btn-block wam-btn-1"
                                     onclick="location.href='/page-product/binding?type=${type}&categoryID=${categoryID}&after=${after}&before=${before}';">
                                 Добавить
                             </button>

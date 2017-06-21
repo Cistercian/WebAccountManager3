@@ -212,7 +212,7 @@
 
         <div class="container-fluid wam-not-padding-xs">
             <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1">
-                <div class="panel-heading ">
+                <div class="panel-heading wam-page-title">
                     <h3 class="wam-margin-bottom-0 wam-margin-top-0">Сравнение цен</h3>
                 </div>
                 <div class="wam-not-padding panel-body">
@@ -237,7 +237,7 @@
                             </div>
                         </div>
                         <div class="col-xs-12 col-md-6 col-md-offset-6">
-                            <button class="btn btn-primary btn-lg btn-block wam-btn-2"
+                            <button class="btn-primary btn-lg btn-block wam-btn-2"
                                     onclick="getAmounts()">
                                 <spring:message code="label.index.refresh" />
                             </button>

@@ -47,7 +47,7 @@ function drawBarsByParentId(isChildren, categoryId, after, before, isGetAnalytic
                     if (categoryId != null)
                         categoryName = "<div class='row'>" +
                             "<div class='col-xs-12'>" +
-                            "<p class='wam-font-size text-muted'>Детализация категории</p>" +
+                            "<p class='wam-font-size'><strong>Детализация категории</strong></p>" +
                             "</div>" +
                             "<div class='col-xs-12'>" +
                             "<p class=' wam-margin-bottom-0'><h3 class='wam-margin-top-1'><strong class='pull-right'>" +
@@ -63,7 +63,7 @@ function drawBarsByParentId(isChildren, categoryId, after, before, isGetAnalytic
                     else
                         categoryName = "<div class='row'>" +
                             "<div class='col-xs-12'>" +
-                            "<p class='wam-font-size text-muted'>Детализация за дату</p>" +
+                            "<p class='wam-font-size'><strong>Детализация за дату</strong></p>" +
                             "</div>" +
                             "<div class='col-xs-12'>" +
                             "<p class=' wam-margin-bottom-0'><h3 class='wam-margin-top-1'><strong class='pull-right'>" +
@@ -339,7 +339,7 @@ function hideLoader() {
 }
 /**
  * Функция очистки модального окна bootstrap
- * @constructor
+ *
  */
 function ClearModalPanel() {
     //$('#modal').modal('hide');

@@ -71,6 +71,13 @@
 
         //fullcalendar
         drawCalendar();
+
+        $(".wam-collapse").click(function() {
+            if ($(this).attr('src').indexOf('expand') !== -1)
+                $(this).attr('src', '/resources/img/collapse.png');
+            else
+                $(this).attr('src', '/resources/img/expand.png');
+        });
     });
 
     function displayMessage(type, message, Url) {
@@ -90,7 +97,7 @@
         }
         $('#modalFooter').append(
                 "<div class='col-xs-12 col-md-4 col-md-offset-8 wam-not-padding'>" +
-                "<button type='button' class='btn btn-primary btn-lg btn-block' data-dismiss='modal' onclick='" + onclick + "'>Закрыть</button>" +
+                "<button type='button' class='btn-primary btn-lg btn-block' data-dismiss='modal' onclick='" + onclick + "'>Закрыть</button>" +
                 "</div>"
         );
         $('#modal').modal('show');
@@ -209,7 +216,7 @@
 
         <div class="container-fluid wam-not-padding-xs">
             <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1">
-                <div class="panel-heading ">
+                <div class="panel-heading wam-page-title">
                     <h3 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.calendar.title"/></h3>
                 </div>
                 <div class="wam-not-padding panel-body">
@@ -221,7 +228,14 @@
                 </div>
             </div>
             <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1">
-                <div class="wam-not-padding panel-body">
+                <div class="panel-heading ">
+                    <h4 class="panel-title">
+                        Настройка фильтрации
+                        <img src="/resources/img/expand.png" class="wam-collapse" data-toggle="collapse"
+                             data-target="#filterSettings">
+                    </h4>
+                </div>
+                <div id="filterSettings" class="wam-not-padding panel-body collapse">
                     <div class="col-xs-12 col-md-12">
 						<span class="wam-text text-justify">
 							Вы можете задать фильтр по выводимым данным - отображать ли все обороты или только те, что относятся к нужной категории и группе товаров.

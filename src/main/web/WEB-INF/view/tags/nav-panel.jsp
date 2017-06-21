@@ -98,7 +98,7 @@
             </div>
             <div id='modalFooter' class="modal-footer wam-margin-top-1">
                 <div class="col-xs-12 col-md-4 col-md-offset-8">
-                    <button type="button" class="btn btn-primary btn-lg btn-block" data-dismiss="modal">Закрыть</button>
+                    <button type="button" class="btn-primary btn-lg btn-block" data-dismiss="modal">Закрыть</button>
                 </div>
             </div>
         </div>

@@ -71,7 +71,7 @@
                                 </div>
                             </spring:bind>
 
-                            <button class="btn btn-lg btn-primary btn-block" type="submit">
+                            <button class="btn-lg btn-primary btn-block" type="submit">
                                 <spring:message code="label.registration.submit"/>
                             </button>
                         </form:form>

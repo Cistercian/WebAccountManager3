@@ -130,13 +130,13 @@
         setModalSize('auto');
         var modalBody = "<div class='row'>" +
                 "<div class=\"col-xs-12 col-md-12\">" +
-                "<button type='button' class='btn btn-primary btn-lg btn-block wam-btn-1' " +
+                "<button type='button' class='btn-primary btn-lg btn-block wam-btn-1' " +
                 "onclick = \"javascript:getLimitWindow(" + id + ");\">" +
                 "${btnlimitLabelEdit}" +
                 "</button>" +
                 "</div>" +
                 "<div class=\"col-xs-12 col-md-12\">" +
-                "<button type='button' class='btn btn-danger btn-lg btn-block wam-btn-2' " +
+                "<button type='button' class='btn-danger btn-lg btn-block wam-btn-2' " +
                 "onclick = \"javascript:Delete('Limit', " + id + ");\">" +
                 "${btnlimitLabelDelete}" +
                 "</button>" +
@@ -160,7 +160,7 @@
             );
             $('#modalFooter').append(
                     "<div class='col-xs-12 col-md-4 col-md-offset-8 wam-not-padding'>" +
-                    "<button type='button' class='btn btn-primary btn-lg btn-block' data-dismiss='modal'>Закрыть</button>" +
+                    "<button type='button' class='btn-primary btn-lg btn-block' data-dismiss='modal'>Закрыть</button>" +
                     "</div>"
             );
         } else if (type == 'SUCCESS') {
@@ -171,7 +171,7 @@
             );
             $('#modalFooter').append(
                     "<div class='col-xs-12 col-md-4 col-md-offset-8 wam-not-padding'>" +
-                    "<button type='button' class='btn btn-primary btn-lg btn-block' onclick='location.reload();'>Закрыть</button>" +
+                    "<button type='button' class='btn-primary btn-lg btn-block' onclick='location.reload();'>Закрыть</button>" +
                     "</div>"
             );
 
@@ -184,7 +184,7 @@
             $('#modalFooter').append(
                     "<div class=\"row\">" +
                     "<div class=\"col-xs-12 col-md-12\">" +
-                    "<button type='button' class='btn btn-default btn-lg btn-block wam-btn-2' " +
+                    "<button type='button' class='btn-default btn-lg btn-block wam-btn-2' " +
                     "data-dismiss='modal'>" +
                     "${btnlimitLabelCancel}" +
                     "</button>" +
@@ -195,12 +195,12 @@
             $('#modalBody').append(message);
             $('#modalFooter').append(
                     "<div class='col-xs-12 col-md-4 col-md-offset-4 wam-not-padding '>" +
-                    "<button type='button' class='btn btn-primary btn-lg btn-block' onclick='sendLimitSubmit();return false;'>" +
+                    "<button type='button' class='btn-primary btn-lg btn-block' onclick='sendLimitSubmit();return false;'>" +
                     "Сохранить" +
                     "</button>" +
                     "</div>" +
                     "<div class='col-xs-12 col-md-4 wam-not-padding'>" +
-                    "<button type='button' class='btn btn-default btn-lg btn-block' data-dismiss='modal'>" +
+                    "<button type='button' class='btn-default btn-lg btn-block' data-dismiss='modal'>" +
                     "${btnlimitLabelCancel}" +
                     "</button>" +
                     "</div>"
@@ -256,7 +256,7 @@
         <textarea id="response" name="response" style="display: none;">${response}</textarea>
         <div class="container-fluid wam-not-padding-xs">
             <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1">
-                <div class="panel-heading ">
+                <div class="panel-heading wam-page-title">
                     <h3 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.limits.title"/></h3>
                 </div>
                 <div class="wam-not-padding panel-body">
@@ -268,7 +268,7 @@
                 </div>
             </div>
             <div class="col-xs-12 col-md-4 ">
-                <button class="btn btn-lg btn-primary btn-block wam-btn-2" type="submit"
+                <button class="btn-lg btn-primary btn-block wam-btn-2" type="submit"
                         onclick="getLimitWindow();return false;">
                     <spring:message code="label.limits.create"/>
                 </button>
@@ -299,7 +299,7 @@
 
                                     <td class="hidden-xs"  style="display : none;">
                                         <p data-placement="top" data-toggle="tooltip" title="Edit">
-                                            <button class="btn btn-primary btn-xs" data-title="Edit"
+                                            <button class="btn-primary btn-xs" data-title="Edit"
                                                     onclick="getLimitWindow(${limits.getId()});">
                                                 <span class="glyphicon glyphicon-pencil"></span>
                                             </button>
@@ -307,7 +307,7 @@
                                     </td>
                                     <td class="hidden-xs"  style="display : none;">
                                         <p data-placement="top" data-toggle="tooltip" title="Delete">
-                                            <button class="btn btn-danger btn-xs" data-title="Delete"
+                                            <button class="btn-danger btn-xs" data-title="Delete"
                                                     onclick="Delete('Limit', ${limits.getId()})">
                                                 <span class="glyphicon glyphicon-trash"></span>
                                             </button>

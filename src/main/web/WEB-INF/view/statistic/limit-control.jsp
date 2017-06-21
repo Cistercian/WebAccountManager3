@@ -78,7 +78,7 @@
         }
         $('#modalFooter').append(
                 "<div class='col-xs-12 col-md-4 col-md-offset-8 wam-not-padding'>" +
-                "<button type='button' class='btn btn-primary btn-lg btn-block' data-dismiss='modal' onclick='" + onclick + "'>Закрыть</button>" +
+                "<button type='button' class='btn-primary btn-lg btn-block' data-dismiss='modal' onclick='" + onclick + "'>Закрыть</button>" +
                 "</div>"
         );
         $('#modal').modal('show');
@@ -89,11 +89,9 @@
     <div class='row'>
         <input id="_csrf_token" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         <textarea id="response" name="response" style="display: none;">${response}</textarea>
-
-
         <div id=limits class="container-fluid wam-not-padding-xs">
             <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1">
-                <div class="panel-heading ">
+                <div class="panel-heading wam-page-title">
                     <h3 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.limit.control.title"/></h3>
                 </div>
                 <div class="wam-not-padding panel-body">
@@ -253,7 +251,7 @@
                     </c:if>
                 </div>
             </div>
-            <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1">
+            <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1 wam-margin-bottom-0-1">
                 <div class="panel-heading ">
                     <h4 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.limit.monthly.title"/></h4>
                 </div>

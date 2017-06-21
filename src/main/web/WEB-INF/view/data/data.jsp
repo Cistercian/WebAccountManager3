@@ -195,7 +195,7 @@
 
         $('#modalFooter').append(
                 "<div class='col-xs-12 col-md-6 col-md-offset-6'>" +
-                "<button id='modalSubmit' type='button' class='btn btn-primary btn-lg btn-block wam-margin-top-2 ' data-dismiss='modal' " +
+                "<button id='modalSubmit' type='button' class='btn-primary btn-lg btn-block wam-margin-top-2 ' data-dismiss='modal' " +
                 "onclick='" + onclick + "'>Закрыть</button>" +
                 "</div>"
         );
@@ -242,7 +242,7 @@
                 <form:form id="amountForm" method="POST" modelAttribute="amountForm" action="/amount/save">
                     <input type="hidden" name="referer" class="form-control" value="${previousPage}"/>
                     <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1">
-                        <div class="panel-heading ">
+                        <div class="panel-heading wam-page-title">
                             <div class="row ">
                                 <div class='col-xs-12 col-md-6'>
                                     <h3 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.page-amount.title"/></h3>
@@ -377,7 +377,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-6 col-md-4 wam-margin-bottom-0-1">
-                                        <button type="button" class="btn btn-default btn-lg btn-block wam-collapse" data-toggle="collapse"
+                                        <button type="button" class="btn-default btn-lg btn-block wam-collapse" data-toggle="collapse"
                                                 data-target="#details">
                                             <img src="/resources/img/expand.png" class="img-responsive wam-top-radius center-block" alt="">
                                         </button>
@@ -397,7 +397,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-xs-6 col-md-4 wam-margin-bottom-0-1">
-                                    <button type="button" class="btn btn-default btn-lg btn-block wam-collapse" data-toggle="collapse"
+                                    <button type="button" class="btn-default btn-lg btn-block wam-collapse" data-toggle="collapse"
                                             data-target="#analytics">
                                         <img src="/resources/img/expand.png" class="img-responsive wam-top-radius center-block" alt="">
                                     </button>
@@ -595,10 +595,10 @@
                         </div>
                     </div>
                 </form:form>
-                <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-0">
+                <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-0 wam-margin-bottom-0-1">
                     <div class="wam-not-padding panel-body">
                         <div class="col-xs-12 col-md-6 wam-not-padding-xs">
-                            <button type="submit" class="btn btn-primary btn-lg btn-block wam-btn-1" onclick="amountForm.submit();">
+                            <button type="submit" class="btn-primary btn-lg btn-block wam-btn-1" onclick="amountForm.submit();">
                                 <spring:message code="label.page-amount.btnOk"/>
                             </button>
                         </div>
@@ -614,7 +614,7 @@
                             </button>
                         </div>
                         <div class="col-xs-12 col-md-6 col-md-pull-6 wam-not-padding-xs">
-                            <button type="submit"class="btn btn-danger btn-lg btn-block wam-btn-2"
+                            <button type="submit"class="btn-danger btn-lg btn-block wam-btn-2"
                                     onclick="Delete('amount', '${id}');return false;">
                                 <spring:message code="label.page-amount.btnDelete"/>
                             </button>
@@ -628,7 +628,7 @@
                 <form:form id="categoryForm" method="POST" modelAttribute="categoryForm" action="/category/save">
                     <input type="hidden" name="referer" class="form-control" value="${previousPage}"/>
                     <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1">
-                        <div class="panel-heading ">
+                        <div class="panel-heading wam-page-title">
                             <div class="row ">
                                 <div class='col-xs-12 col-md-6 wam-margin-bottom-2'>
                                     <h3 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.page-category.title"/></h3>
@@ -758,10 +758,16 @@
                             <!-- Описание -->
                             <spring:bind path="details">
                                 <spring:message code="label.page-category.details" var="label"/>
-                                <div class="col-md-12 wam-not-padding-xs ">
+                                <div class="col-xs-6 col-md-4 wam-not-padding-xs ">
                                     <h4><strong>${label}</strong></h4>
                                 </div>
-                                <div class="col-md-12 wam-not-padding-xs">
+                                <div class="col-xs-6 col-md-4 wam-margin-bottom-0-1">
+                                    <button type="button" class="btn-default btn-lg btn-block wam-collapse" data-toggle="collapse"
+                                            data-target="#detailsCategory">
+                                        <img src="/resources/img/expand.png" class="img-responsive wam-top-radius center-block" alt="">
+                                    </button>
+                                </div>
+                                <div id="detailsCategory" class="col-xs-12 wam-not-padding-xs collapse">
                                     <div class="form-group ${status.error ? 'has-error' : ''}">
                                         <form:textarea type="text" path="details" class="form-control input-lg erasable" rows="5"
                                                        placeholder="${label}"></form:textarea>
@@ -772,11 +778,11 @@
                         </div>
                     </div>
                 </form:form>
-                <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1">
+                <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1 wam-margin-bottom-0-1">
                     <div class="wam-not-padding panel-body">
                         <div class="col-xs-12 col-md-6 wam-not-padding-xs">
                             <button type="submit" name="btnOk"
-                                    class="btn btn-primary btn-lg btn-block wam-btn-1" onclick="categoryForm.submit();">
+                                    class="btn-primary btn-lg btn-block wam-btn-1" onclick="categoryForm.submit();">
                                 <spring:message code="label.page-amount.btnOk"/>
                             </button>
                         </div>
@@ -794,7 +800,7 @@
                         </div>
                         <div class="col-xs-12 col-md-6 col-md-pull-6 wam-not-padding-xs">
                             <button type="submit" name="btnDelete"
-                                    class="btn btn-danger btn-lg btn-block wam-btn-2" onclick="Delete('category', '${id}');return false;">
+                                    class="btn-danger btn-lg btn-block wam-btn-2" onclick="Delete('category', '${id}');return false;">
                                 <spring:message code="label.page-amount.btnDelete"/>
                             </button>
                         </div>
@@ -808,7 +814,7 @@
                     <input type="hidden" name="referer" class="form-control" value="${previousPage}"/>
 
                     <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1">
-                        <div class="panel-heading ">
+                        <div class="panel-heading wam-page-title">
                             <div class="row ">
                                 <div class='col-xs-12 col-md-6 wam-margin-bottom-2'>
                                     <h3 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.page-data.product.title"/></h3>
@@ -901,10 +907,10 @@
                         </div>
                     </div>
                 </form:form>
-                <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1">
+                <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1 wam-margin-bottom-0-1">
                     <div class="wam-not-padding panel-body">
                         <div class="col-xs-12 col-md-6 wam-not-padding-xs">
-                            <button type="submit" class="btn btn-primary btn-lg btn-block wam-btn-1"
+                            <button type="submit" class="btn-primary btn-lg btn-block wam-btn-1"
                                     onclick="productForm.submit();">
                                 <spring:message code="label.page-amount.btnOk"/>
                             </button>
@@ -915,7 +921,7 @@
                             </button>
                         </div>
                         <div class="col-xs-12 col-md-6 wam-not-padding-xs">
-                            <button type="submit" class="btn btn-danger btn-lg btn-block wam-btn-2"
+                            <button type="submit" class="btn-danger btn-lg btn-block wam-btn-2"
                                     onclick="Delete('product', ${id});return false;">
                                 <spring:message code="label.page-amount.btnDelete"/>
                             </button>
@@ -929,7 +935,7 @@
                 <form:form id="regularForm" method="POST" modelAttribute="regularForm" action="/amount/save">
                     <input type="hidden" name="referer" class="form-control" value="${previousPage}"/>
                     <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1">
-                        <div class="panel-heading ">
+                        <div class="panel-heading wam-page-title">
                             <div class="row ">
                                 <div class='col-xs-12 col-md-6 wam-margin-bottom-2'>
                                     <h3 class="wam-margin-bottom-0 wam-margin-top-0">Редактирование записи обязательного оборота</h3>
@@ -1079,10 +1085,16 @@
                                 <%--Описание--%>
                             <spring:bind path="details">
                                 <spring:message code="label.page-amount.details" var="label"/>
-                                <div class="col-xs-12 col-md-12 wam-not-padding-xs">
+                                <div class="col-xs-6 col-md-4 wam-not-padding-xs ">
                                     <h4><strong>${label}</strong></h4>
                                 </div>
-                                <div class="col-xs-12 col-md-12 wam-not-padding-xs">
+                                <div class="col-xs-6 col-md-4 wam-margin-bottom-0-1">
+                                    <button type="button" class="btn-default btn-lg btn-block wam-collapse" data-toggle="collapse"
+                                            data-target="#detailsRegular">
+                                        <img src="/resources/img/expand.png" class="img-responsive wam-top-radius center-block" alt="">
+                                    </button>
+                                </div>
+                                <div id="detailsRegular" class="col-xs-12 wam-not-padding-xs collapse">
                                     <div class="form-group ${status.error ? 'has-error' : ''}">
                                         <form:textarea type="text" path="details" class="form-control input-lg erasable" rows="5"
                                                        placeholder='${label}'></form:textarea>
@@ -1094,10 +1106,10 @@
                         </div>
                     </div>
                 </form:form>
-                <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-0">
+                <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-0 wam-margin-bottom-0-1">
                     <div class="wam-not-padding panel-body">
                         <div class="col-xs-12 col-md-6 wam-not-padding-xs">
-                            <button type="submit" class="btn btn-primary btn-lg btn-block wam-btn-1" onclick="regularForm.submit();">
+                            <button type="submit" class="btn-primary btn-lg btn-block wam-btn-1" onclick="regularForm.submit();">
                                 <spring:message code="label.page-amount.btnOk"/>
                             </button>
                         </div>
@@ -1113,7 +1125,7 @@
                             </button>
                         </div>
                         <div class="col-xs-12 col-md-6 col-md-pull-6 wam-not-padding-xs">
-                            <button type="submit"class="btn btn-danger btn-lg btn-block wam-btn-2"
+                            <button type="submit"class="btn-danger btn-lg btn-block wam-btn-2"
                                     onclick="Delete('amount', '${id}');return false;">
                                 <spring:message code="label.page-amount.btnDelete"/>
                             </button>

@@ -129,7 +129,7 @@
             );
             $('#modalFooter').append(
                     "<div class='col-xs-12 col-md-4 col-md-offset-8 wam-not-padding'>" +
-                    "<button type='button' class='btn btn-primary btn-lg btn-block' data-dismiss='modal'>Закрыть</button>" +
+                    "<button type='button' class='btn-primary btn-lg btn-block' data-dismiss='modal'>Закрыть</button>" +
                     "</div>"
             );
         } else if (type == 'NEWMAIL') {
@@ -138,12 +138,12 @@
             );
             $('#modalFooter').append(
                     "<div class='col-xs-12 col-md-4 col-md-offset-4 wam-not-padding'>" +
-                    "<button href='#' type='button' class='btn btn-primary btn-lg btn-block' data-dismiss='modal' onclick='sendMail();return false;'>" +
+                    "<button href='#' type='button' class='btn-primary btn-lg btn-block' data-dismiss='modal' onclick='sendMail();return false;'>" +
                     "${mailSubmit}" +
                     "</button>" +
                     "</div>" +
                     "<div class='col-xs-12 col-md-4 wam-not-padding'>" +
-                    "<button type='button' class='btn btn-default btn-lg btn-block' data-dismiss='modal'>" +
+                    "<button type='button' class='btn-default btn-lg btn-block' data-dismiss='modal'>" +
                     "${mailCancel}" +
                     "</button>" +
                     "</div>"
@@ -156,7 +156,7 @@
             );
             $('#modalFooter').append(
                     "<div class='col-xs-12 col-md-4 col-md-offset-8 wam-not-padding'>" +
-                    "<button type='button' class='btn btn-primary btn-lg btn-block' data-dismiss='modal'>Закрыть</button>" +
+                    "<button type='button' class='btn-primary btn-lg btn-block' data-dismiss='modal'>Закрыть</button>" +
                     "</div>"
             );
         }
@@ -189,7 +189,7 @@
     <div class='row'>
         <div class="container-fluid wam-not-padding-xs">
             <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1 ">
-                <div class="panel-heading ">
+                <div class="panel-heading wam-page-title">
                     <h3 class="wam-margin-bottom-0 wam-margin-top-0"><spring:message code="label.account.title"/></h3>
                 </div>
             </div>
@@ -239,7 +239,7 @@
                             <p class='text-justify'><spring:message code="label.account.feedback.details"/></p>
                         </div>
                         <div class="col-xs-12 col-md-6 col-md-offset-6">
-                            <button class="btn btn-lg btn-primary btn-block wam-btn-2" type="submit"
+                            <button class="btn-lg btn-primary btn-block wam-btn-2" type="submit"
                                     onclick="getMailForm();return false;">
                                 <span class='wam-font-size-2'><spring:message code="label.account.feedback"/></span>
                             </button>
@@ -250,9 +250,9 @@
         </div>
     </div>
     <div class='row'>
-        <div class="container-fluid wam-not-padding-xs">
-            <form:form method="POST" modelAttribute="passwordForm" class="form-signin">
-                <div class="panel panel-default wam-margin-left-1 wam-margin-right-1">
+        <div class="container-fluid wam-not-padding-xs ">
+            <form:form method="POST" modelAttribute="passwordForm" class="form-signin wam-margin-bottom-0-1">
+                <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-bottom-0-1">
                     <div class="panel-heading">
                         <h4 class="panel-title"><strong><spring:message code="label.account.password.title"/></strong></h4>
                     </div>
@@ -295,7 +295,7 @@
                                 </div>
                             </spring:bind>
                             <div class="col-xs-12 col-md-6 col-md-offset-0">
-                                <button class="btn btn-lg btn-primary btn-block wam-btn-2" type="submit">
+                                <button class="btn-lg btn-primary btn-block wam-btn-2" type="submit">
                                     <spring:message code="label.account.password.submit"/>
                                 </button>
                             </div>
