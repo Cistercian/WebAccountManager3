@@ -95,6 +95,7 @@
         elemAfter.val(after);
         elemBefore.val(before);
         $('#btnPeriod').text($('#' + idElem).text());
+        $('#btnPeriod').append('<span class="caret"></span>');
         var distance = document.body.clientHeight % $(document).height();
 
         if (!hasDates) {
@@ -219,10 +220,10 @@
                                     <div class="col-xs-12 col-md-6 wam-not-padding-xs">
                                         <div class="row">
                                             <div class="col-xs-6 col-md-6 ">
-                                                <h3><span class="glyphicon glyphicon-stop wam-color-income"></span><spring:message code="label.index.total.income" /></h3>
+                                                <h3 class="wam-not-padding-xs wam-margin-bottom-1"><span class="glyphicon glyphicon-stop wam-color-income"></span><spring:message code="label.index.total.income" /></h3>
                                             </div>
                                             <div class="col-xs-6 col-md-6 ">
-                                                <h3 id="textTotalIncome">
+                                                <h3 id="textTotalIncome" class="wam-not-padding-xs wam-margin-bottom-1">
                                                     <c:if test="${not empty sumIncome}">
 														<span class="pull-right">
 															<strong id="sumIncome" >
@@ -236,10 +237,10 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-xs-6 col-md-6 ">
-                                                <h3><span class="glyphicon glyphicon-stop wam-color-expense"></span><spring:message code="label.index.total.expense" /></h3>
+                                                <h3 class="wam-not-padding-xs"><span class="glyphicon glyphicon-stop wam-color-expense"></span><spring:message code="label.index.total.expense" /></h3>
                                             </div>
-                                            <div class="col-xs-6 col-md-6 ">
-                                                <h3 id="textTotalExpense">
+                                            <div class="col-xs-6 col-md-6 " class="wam-not-padding-xs">
+                                                <h3 id="textTotalExpense" class="wam-not-padding-xs">
                                                     <c:if test="${not empty sumExpense}">
                                                         <span class="pull-right">
 															<strong id="sumExpense" >
@@ -260,7 +261,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-xs-6 col-md-6 ">
-                                                <h3 class="wam-margin-top-0">
+                                                <h3 class="wam-margin-top-0 ">
                                                     ИТОГО
                                                 </h3>
                                             </div>
@@ -300,16 +301,17 @@
     </div>
 
     <c:if test="${not empty pageContext.request.userPrincipal}">
-        <div class="container-fluid">
+        <div class="container-fluid wam-margin-top-0">
             <div class="row">
                 <div class="col-xs-12 col-md-8 ">
-                    <h2><spring:message code="label.index.categories.title" /></h2>
+                    <h3 class="wam-margin-top-0"><spring:message code="label.index.categories.title" /></h3>
                 </div>
                 <div class="col-xs-12 col-md-4 dropup ">
                     <spring:message code="label.index.categories.period.default" var="periodDefault" />
-                    <button id="btnPeriod" class="btn-default btn-lg btn-block dropdown-toggle wam-btn-2"
+                    <button id="btnPeriod" class="btn-default btn-lg btn-block dropdown-toggle wam-margin-bottom-2"
                             data-toggle="dropdown" value="month">
                             ${periodDefault}
+                        <span class="caret"></span>
                     </button>
                     <ul id="dropdownPeriods" class="dropdown-menu dropup dropdown-period wam-text-size-1">
                         <li><a id="day" onclick="selectPeriod(true, '${curDate}', '${curDate}', 'day');">

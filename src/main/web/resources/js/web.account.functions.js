@@ -250,7 +250,6 @@ function drawChartOfTypes(data, elementId) {
     var parent = $('#' + elementId).parent();
     parent.empty();
     parent.append(
-        "<h2><spring:message code='label.index.chartIncomeExpense.title' /></h2>" +
         "<canvas id='typeChart' style=''></canvas>" +
         "<img id='chartNaN' src='/resources/img/web.png' class='img-responsive' alt='' style='display: none;'>");
 
@@ -661,6 +660,7 @@ function refreshBars(data, after, before){
         drawChartOfTypes("Доход=" + totalIncomeSum + "," +
             "Расход=" + totalExpenseSum + "",
             "typeChart");
+
     }
 }
 function getMonday(date) {

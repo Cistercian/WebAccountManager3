@@ -181,6 +181,10 @@
 	.wam-margin-bottom-1 {
 		margin-bottom: 5px;
 	}
+	.wam-margin-bottom-2 {
+		margin-bottom: 10px;
+	}
+
 	.fc-event-dot {
 		display: inline-block;
 		width: 20px;
