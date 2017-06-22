@@ -50,7 +50,7 @@ function drawBarsByParentId(isChildren, categoryId, after, before, isGetAnalytic
                             "<p class='wam-font-size'><strong>Детализация категории</strong></p>" +
                             "</div>" +
                             "<div class='col-xs-12'>" +
-                            "<p class=' wam-margin-bottom-0'><h3 class='wam-margin-top-1'><strong class='pull-right'>" +
+                            "<p class=' wam-margin-bottom-0'><h3 class='wam-margin-top-1'><strong class='pull-right text-right'>" +
                             $('#' + idNameElem).attr('value') +
                             "</h3></strong></p>" +
                             "</div>" +
@@ -572,8 +572,9 @@ function freezeBody(){
 /**Функция очищает данные по категориям
  */
 function removeStatistics(){
-    $('#textTotalIncome').empty();
-    $('#textTotalExpense').empty();
+    $('#sumIncome').text('0.00');
+    $('#sumExpense').text('0.00');
+    $('#sumTotal').text('0.00');
 
     $('#dropDownCategoryBarsIncome').empty();
     $('#dropDownCategoryBarsExpense').empty();
@@ -649,8 +650,12 @@ function refreshBars(data, after, before){
         );
 
     if ($('*').is('#textTotalIncome')) {
-        $('#textTotalIncome').append("<span class='pull-right'><strong>" + numberToString(totalIncomeSum.toFixed(2)) + "</strong> руб.</span>");
-        $('#textTotalExpense').append("<span class='pull-right'><strong>" + numberToString(totalExpenseSum.toFixed(2)) + "</strong> руб.</span>");
+        $('#sumIncome').text(numberToString(totalIncomeSum.toFixed(2)));
+        $('#sumExpense').text(numberToString(totalExpenseSum.toFixed(2)));
+        $('#sumTotal').text(numberToString((totalIncomeSum - totalExpenseSum).toFixed(2)));
+
+        /*$('#textTotalIncome').append("<span class='pull-right'><strong>" + numberToString(totalIncomeSum.toFixed(2)) + "</strong> руб.</span>");
+         $('#textTotalExpense').append("<span class='pull-right'><strong>" + numberToString(totalExpenseSum.toFixed(2)) + "</strong> руб.</span>");*/
 
         //рисуем диаграмму
         drawChartOfTypes("Доход=" + totalIncomeSum + "," +

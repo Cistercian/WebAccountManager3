@@ -76,10 +76,12 @@
         $('.btn-primary').each(function () {
             $(this).addClass('disabled');
             $(this).click('');
+            $(this).attr('onclick', '');
         });
         $('.btn-danger').each(function () {
             $(this).addClass('disabled');
             $(this).click('');
+            $(this).attr('onclick', '');
         });
         </c:if>
 
@@ -311,7 +313,7 @@
                                     <input id="categoryId" type="hidden" name="category" class="form-control erasable"
                                            value="<c:if test="${not empty category}">${category.getId()}</c:if>"></input>
 
-                                    <div class="col-xs-12 col-md-10 catcher-events">
+                                    <div class="col-xs-12 col-md-10 catcher-events wam-not-padding-left-right-xs">
                                         <h4 class="needToFormat">
                                             <strong>${selectCategory}</strong>
                                         </h4>
@@ -359,9 +361,10 @@
                                         <h4><strong>
                                                 ${label}
                                         </strong></h4>
-                                        <div class="form-group ${status.error ? 'has-error' : ''}">
+                                        <div class="form-group wam-not-padding wam-not-padding-xs wam-margin-bottom-1
+												${status.error ? 'has-error' : ''}">
                                             <form:input type="number" path="price" class="form-control input-lg erasable"
-                                                        placeholder="${label}" onclick="scrollPage($($(this)).offset().top);"/>
+                                                        placeholder="0.00" onclick="scrollPage($($(this)).offset().top);"/>
                                             <form:errors path="price"></form:errors>
                                         </div>
                                     </div>
@@ -375,8 +378,8 @@
                                 <div class="col-xs-6 col-md-4 wam-not-padding-xs">
                                     <h4><strong>${label}</strong></h4>
                                 </div>
-                                <div class="row">
-                                    <div class="col-xs-6 col-md-4 wam-margin-bottom-0-1">
+                                <div class="wam-not-margin-left-right-xs row">
+                                    <div class="col-xs-6 col-md-4 wam-margin-bottom-0-1 wam-not-padding-left-right-xs">
                                         <button type="button" class="btn-default btn-lg btn-block wam-collapse" data-toggle="collapse"
                                                 data-target="#details">
                                             <img src="/resources/img/expand.png" class="img-responsive wam-top-radius center-block" alt="">
@@ -395,9 +398,9 @@
                             <div class="col-xs-6 col-md-4 wam-not-padding-xs">
                                 <h4><strong>Настройки статистики</strong></h4>
                             </div>
-                            <div class="row">
-                                <div class="col-xs-6 col-md-4 wam-margin-bottom-0-1">
-                                    <button type="button" class="btn-default btn-lg btn-block wam-collapse" data-toggle="collapse"
+                            <div class="wam-not-margin-left-right-xs row ">
+                                <div class="col-xs-6 col-md-4 wam-margin-bottom-0-1 wam-not-padding-left-right-xs">
+                                    <button type="button" class="btn-default btn-lg btn-block wam-collapse " data-toggle="collapse"
                                             data-target="#analytics">
                                         <img src="/resources/img/expand.png" class="img-responsive wam-top-radius center-block" alt="">
                                     </button>
@@ -576,7 +579,7 @@
                                                     <div class="wam-not-padding panel-body">
                                                         <div class="col-xs-12 col-md-12">
                                                             <p class="wam-margin-top-2 text-justify">
-                                                                Обязательный обороты используются для анализа результата средних цен- их суммы учитываются
+                                                                Обязательные обороты используются для анализа результата средних цен- их суммы учитываются
                                                                 при расчете прогноза на конец месяца, тем самым помагая учитывать планируемые обороты. </p>
                                                             <p class="text-justify">Например, Вы достоверно знаете, что каждый месяц будут существовать обязательные обороты: заработная плата,
                                                                 погашение кредита, плата за коммунальные услуги, стоимость которых ориентировочно известна.
@@ -761,7 +764,7 @@
                                 <div class="col-xs-6 col-md-4 wam-not-padding-xs ">
                                     <h4><strong>${label}</strong></h4>
                                 </div>
-                                <div class="col-xs-6 col-md-4 wam-margin-bottom-0-1">
+                                <div class="col-xs-6 col-md-4 wam-margin-bottom-0-1 wam-not-padding-left-right-xs">
                                     <button type="button" class="btn-default btn-lg btn-block wam-collapse" data-toggle="collapse"
                                             data-target="#detailsCategory">
                                         <img src="/resources/img/expand.png" class="img-responsive wam-top-radius center-block" alt="">
@@ -1026,7 +1029,7 @@
                             <spring:bind path="categoryId">
                                 <input id="categoryId" type="hidden" name="category" class="form-control erasable"
                                        value="<c:if test="${not empty category}">${category.getId()}</c:if>" />
-                                <div class="col-xs-12 col-md-10  catcher-events">
+                                <div class="col-xs-12 col-md-10  catcher-events wam-not-padding-left-right-xs">
                                     <h4 class="needToFormat">
                                         <strong>${selectCategory}</strong>
                                     </h4>
@@ -1070,7 +1073,7 @@
                                 <%--Цена--%>
                             <spring:bind path="price">
                                 <spring:message code="label.page-amount.price" var="label"/>
-                                <div class="col-xs-12 col-md-2 wam-not-padding-xs">
+                                <div class="col-xs-12 col-md-2 wam-not-padding-xs wam-margin-bottom-1">
                                     <h4><strong>
                                             ${label}
                                     </strong></h4>
@@ -1088,8 +1091,8 @@
                                 <div class="col-xs-6 col-md-4 wam-not-padding-xs ">
                                     <h4><strong>${label}</strong></h4>
                                 </div>
-                                <div class="col-xs-6 col-md-4 wam-margin-bottom-0-1">
-                                    <button type="button" class="btn-default btn-lg btn-block wam-collapse" data-toggle="collapse"
+                                <div class="col-xs-6 col-md-4 wam-margin-bottom-0-1 wam-not-padding-left-right-xs">
+                                    <button type="button" class="btn-default btn-lg btn-block wam-collapse " data-toggle="collapse"
                                             data-target="#detailsRegular">
                                         <img src="/resources/img/expand.png" class="img-responsive wam-top-radius center-block" alt="">
                                     </button>

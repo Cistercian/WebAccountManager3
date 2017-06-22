@@ -162,8 +162,8 @@
                                     ${label}
                             </strong></h4>
                             <div class="form-group wam-not-padding-xs ${status.error ? 'has-error' : ''}">
-                                <form:input type="number" path="sum" class="form-control input wam-font-size"
-                                            placeholder="${label}"/>
+                                <form:input type="number" path="sum" class="form-control input input-lg wam-font-size"
+                                            placeholder="0.00"/>
                                 <form:errors path="sum"></form:errors>
                             </div>
                         </div>

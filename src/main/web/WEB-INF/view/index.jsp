@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@page import="ru.hd.olaf.util.FormatUtil"%>
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-gb" lang="en-gb" dir="ltr">
 <head>
@@ -62,8 +63,6 @@
 <script language="javascript" type="text/javascript">
     $(document).ready(function () {
         //formatting sums
-        $('#sumIncome').append('<strong>' + numberToString('${sumIncome}') + "</strong> руб.");
-        $('#sumExpense').append('<strong>' + numberToString('${sumExpense}') + "</strong> руб.");
 
         $('[id ^= "categoryBarSum"]').each(function () {
             $(this).text(numberToString(Math.abs($(this).attr('value'))) + " руб.");
@@ -145,13 +144,10 @@
 
                 refreshBars(data, after, before);
 
-                $('#textTotalIncome').append("<span class='pull-right'><strong>" + numberToString(totalIncomeSum.toFixed(2)) + "</strong> руб.</span>");
-                $('#textTotalExpense').append("<span class='pull-right'><strong>" + numberToString(totalExpenseSum.toFixed(2)) + "</strong> руб.</span>");
-
                 //рисуем диаграмму
-                drawChartOfTypes("<spring:message code='label.index.chart.income.label' />=" + totalIncomeSum + "," +
-                        "<spring:message code='label.index.chart.expense.label' />=" + totalExpenseSum + "",
-                        "typeChart");
+                /*drawChartOfTypes("<spring:message code='label.index.chart.income.label' />=" + totalIncomeSum + "," +
+                 "<spring:message code='label.index.chart.expense.label' />=" + totalExpenseSum + "",
+                 "typeChart");*/
 
                 formatTooLongText();
             }
@@ -183,11 +179,15 @@
                 </div>
 
                 <a class="left carousel-control hidden-xs" href="#carousel-slider" data-slide="prev">
-                    <i class="fa fa-angle-left"></i>
+                    <i class="fa fa-angle-left">
+                        <img src="/resources/img/left.png" class="img-responsive wam-top-radius" alt="">
+                    </i>
                 </a>
 
                 <a class=" right carousel-control hidden-xs" href="#carousel-slider" data-slide="next">
-                    <i class="fa fa-angle-right"></i>
+                    <i class="fa fa-angle-right">
+                        <img src="/resources/img/right.png" class="img-responsive wam-top-radius" alt="">
+                    </i>
                 </a>
             </div> <!--/#carousel-slider-->
         </div><!--/#about-slider-->
@@ -224,7 +224,12 @@
                                             <div class="col-xs-6 col-md-6 ">
                                                 <h3 id="textTotalIncome">
                                                     <c:if test="${not empty sumIncome}">
-                                                        <span id="sumIncome" class="pull-right "></span>
+														<span class="pull-right">
+															<strong id="sumIncome" >
+                                                                    ${FormatUtil.numberToString(sumIncome)}
+                                                            </strong>
+															руб.
+														</span>
                                                     </c:if>
                                                 </h3>
                                             </div>
@@ -236,8 +241,37 @@
                                             <div class="col-xs-6 col-md-6 ">
                                                 <h3 id="textTotalExpense">
                                                     <c:if test="${not empty sumExpense}">
-                                                        <span id="sumExpense" class="pull-right "></span>
+                                                        <span class="pull-right">
+															<strong id="sumExpense" >
+                                                                    ${FormatUtil.numberToString(sumExpense)}
+                                                            </strong>
+															руб.
+														</span>
                                                     </c:if>
+                                                </h3>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-xs-12">
+												<span class="pull-right">
+													&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;
+												</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-xs-6 col-md-6 ">
+                                                <h3 class="wam-margin-top-0">
+                                                    ИТОГО
+                                                </h3>
+                                            </div>
+                                            <div class="col-xs-6 col-md-6 ">
+                                                <h3 id="textTotalExpense" class="wam-margin-top-0">
+													<span class="pull-right">
+														<strong id="sumTotal" >
+                                                                ${FormatUtil.numberToString(sumIncome - sumExpense)}
+                                                        </strong>
+														руб.
+													</span>
                                                 </h3>
                                             </div>
                                         </div>

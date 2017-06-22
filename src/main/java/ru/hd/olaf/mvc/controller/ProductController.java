@@ -78,20 +78,30 @@ public class ProductController {
                 if (response.getType() == ResponseType.SUCCESS) {
                     Category category = (Category) response.getEntity();
 
-                    amounts = amountService.getByProductAndCategoryAndDate(currentUser,
-                                product,
-                                category,
-                                after,
-                                before);
-
-                    modelAndView.addObject("amounts", amounts);
-
-                    modelAndView.addObject("id", product.getId());
-                    title = "Просмотр содержимого группы товаров";
-                    details = product.getName();
-                    footer = "<a href='/product?productID=" + product.getId() + "'>(редактировать)</a>";
+                    amounts = amountService.getByProductAndCategoryAndDate(
+                            currentUser,
+                            product,
+                            category,
+                            after,
+                            before);
+                } else {
+                    amounts = amountService.getByProductAndDate(
+                            currentUser,
+                            product,
+                            after,
+                            before
+                    );
                 }
-            }
+
+                modelAndView.addObject("amounts", amounts);
+
+                modelAndView.addObject("id", product.getId());
+                title = "Просмотр содержимого группы товаров";
+                details = product.getName();
+                footer = "<a href='/product?id=" + product.getId() + "'>(редактировать)</a>";
+
+            } else
+                logger.debug(String.format("Не найдена товарная граппа с id %d", productID));
         } else if (categoryID != null){
             Category category = (Category) utilService.getById(Category.class, categoryID).getEntity();
 

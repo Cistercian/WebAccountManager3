@@ -46,17 +46,18 @@
             headers: {'X-CSRF-TOKEN': document.getElementById('_csrf_token').value}
         });
 
-        $('.modal')
-                .on('show.bs.modal', function (){
-                    $('body').css('overflow', 'hidden');
-                })
-                .on('hide.bs.modal', function (){
-                    // Also if you are using multiple modals (cascade) - additional check
-                    if ($('.modal.in').length == 1) {
-                        $('body').css('overflow', 'auto');
-                    }
-                });
-
+        /*
+         $('.modal')
+         .on('show.bs.modal', function (){
+         $('body').css('overflow', 'hidden');
+         })
+         .on('hide.bs.modal', function (){
+         // Also if you are using multiple modals (cascade) - additional check
+         if ($('.modal.in').length == 1) {
+         $('body').css('overflow', 'auto');
+         }
+         });
+         */
         //показываем модальное окно при получении ошибки в момент загрузки страницы
         if ($('#response').val() != '') {
             displayMessage('info', $('#response').val());

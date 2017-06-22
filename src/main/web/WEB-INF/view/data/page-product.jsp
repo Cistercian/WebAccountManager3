@@ -182,7 +182,9 @@
                     <div class="row">
                         <div class='col-xs-12'>
                             <h4 class="wam-margin-bottom-0 wam-margin-top-0">
-                                ${title}
+                                <p class="wam-font-size"><strong>
+                                    ${title}
+                                </strong></p>
                             </h4>
                         </div>
                         <div class='col-xs-12'>
@@ -191,9 +193,9 @@
                         </strong></h3></p>
                         </div>
                         <div class='col-xs-12'>
-                            <p class='wam-font-size pull-right wam-margin-bottom-0'>
+                            <h4 class='wam-margin-top-0 pull-right'>
                                 ${footer}
-                            </p>
+                            </h4>
                         </div>
                     </div>
                 </div>

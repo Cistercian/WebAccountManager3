@@ -138,7 +138,7 @@
                             <a href="javascript:drawBarsByParentId(false, '${id}', '${dateDaily}', '${curDate}')">
                                 </c:when>
                                 <c:otherwise>
-                                <a href="/page-product?id=${id}&after=${dateDaily}&before=${curDate}">
+                                <a href="/page-product?productID=${id}&after=${dateDaily}&before=${curDate}">
                                     </c:otherwise>
                                     </c:choose>
                                     <div class="col-xs-12 col-md-12">
@@ -212,7 +212,7 @@
                             <a href="javascript:drawBarsByParentId(false, '${id}', '${dateWeekly}', '${curDate}')">
                                 </c:when>
                                 <c:otherwise>
-                                <a href="/page-product?id=${id}&after=${dateWeekly}&before=${curDate}">
+                                <a href="/page-product?productID=${id}&after=${dateWeekly}&before=${curDate}">
                                     </c:otherwise>
                                     </c:choose>
                                     <div class="col-xs-12 col-md-12">
@@ -285,7 +285,7 @@
                             <a href="javascript:drawBarsByParentId(false, '${id}', '${dateMonthly}', '${curDate}')">
                                 </c:when>
                                 <c:otherwise>
-                                <a href="/page-product?id=${id}&after=${dateMonthly}&before=${curDate}">
+                                <a href="/page-product?productID=${id}&after=${dateMonthly}&before=${curDate}">
                                     </c:otherwise>
                                     </c:choose>
                                     <div class="col-xs-12 col-md-12">
