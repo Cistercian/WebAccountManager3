@@ -1,5 +1,6 @@
 package ru.hd.olaf.mvc.controller;
 
+import org.dom4j.rule.Mode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -239,7 +240,7 @@ public class DataController {
             model.addAttribute("amountForm", amount);
         } else {
             model.addAttribute("className", "regular");
-            model.addAttribute("regularForm", amount);
+            model.addAttribute("amountForm", amount);
         }
         model.addAttribute("categories", categoryService.getAll());
 
@@ -248,6 +249,42 @@ public class DataController {
 
         return "data/data";
     }
+
+    @RequestMapping(value = "/amount", method = RequestMethod.POST)
+    public ModelAndView getFillAmountView(@ModelAttribute("amountForm") Amount amount,
+                                          @RequestParam(value = "id") Integer id,
+                                          @RequestParam(value = "productName") String productName,
+                                          @RequestParam(value = "category") Integer categoryId,
+                                          @RequestParam(value = "regular", required = false) Integer regularId,
+                                          @RequestParam(value = "referer", required = false) String refererParam){
+        logger.debug(LogUtil.getMethodName());
+
+        ModelAndView modelAndView = new ModelAndView("/data/data");
+
+        modelAndView.addObject("id", id);
+        modelAndView.addObject("type", amount.getType());
+        modelAndView.addObject("categories", categoryService.getAll());
+        modelAndView.addObject("className", "amount");
+        modelAndView.addObject("amountForm", amount);
+
+
+        JsonResponse response = utilService.getById(Category.class, categoryId);
+        if (response.getType() == ResponseType.SUCCESS) {
+            Category category = (Category) response.getEntity();
+            modelAndView.addObject("category", category);
+        }
+        productName = productName != null ? productName.trim() : "";
+        if (productName.length() > 0) {
+            Product product = productService.getExistedOrCreated(productName);
+            modelAndView.addObject("product", product);
+        }
+
+        Amount regular = (Amount) utilService.getById(Amount.class, regularId).getEntity();
+        modelAndView.addObject("regular", regular);
+
+        return modelAndView;
+    }
+
 
     private void addRef(@RequestHeader(value = "Referer", required = false) String refererHeader,
                         @RequestParam(value = "referer", required = false) String refererParam,
@@ -568,7 +605,7 @@ public class DataController {
         modelAndView.addObject("categories", categoryService.getAll());
         modelAndView.addObject("regulars", amountService.getAllRegular(currentUser));
 
-        modelAndView.addObject("regularForm", regular);
+        modelAndView.addObject("amountForm", regular);
 
         return modelAndView;
     }

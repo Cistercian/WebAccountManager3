@@ -318,6 +318,15 @@ public class AmountServiceImpl implements AmountService {
     public JsonResponse delete(Amount amount) throws CrudException {
         logger.debug(LogUtil.getMethodName());
 
+        //в том случае, если удаляемая сущность привязана к другим как постоянный оборот, то сначала необходимо снять привязку
+        //TODO: transaction;
+        if (amount.getType() == 3) {
+            for (Amount child : amountRepository.findByRegularId(amount)){
+                child.setRegularId(null);
+                amountRepository.save(child);
+            }
+        }
+
         try {
             amountRepository.delete(amount.getId());
             return new JsonResponse(ResponseType.SUCCESS, "Удаление успешно завершено.");

@@ -122,7 +122,7 @@
         <textarea id="response" name="response" style="display: none;">${response}</textarea>
 
 
-        <div id=limits class="container-fluid wam-not-padding-xs">
+        <div class="container-fluid wam-not-padding-xs">
             <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1">
                 <div class="panel-heading wam-page-title">
                     <h3 class="wam-margin-bottom-0 wam-margin-top-0">Прогнозирование движений</h3>
@@ -144,18 +144,18 @@
                     <h4 class="wam-margin-bottom-0 wam-margin-top-0"><strong>Прогноз на конец месяца</strong></h4>
                 </div>
                 <div class="wam-not-padding panel-body">
-                    <div class="col-xs-12 col-md-6 wam-not-padding-xs bg-warning">
+                    <div class="col-xs-12 col-md-6 bg-warning">
                         <h4 class="text-justify">Итоговое сальдо:</h4>
                     </div>
-                    <div class="col-xs-12 col-md-6 wam-not-padding-xs bg-warning">
+                    <div class="col-xs-12 col-md-6 bg-warning">
                         <h4 class="text-justify"><strong>${total}</strong> (в среднем ${totalAvg}) руб</h4>
                     </div>
                     <div class="col-xs-12 wam-margin-bottom-1">
                     </div>
-                    <div class="col-xs-12 col-md-6 wam-not-padding-xs bg-success">
+                    <div class="col-xs-12 col-md-6 bg-success">
                         <h4 class="text-justify">Ожидаемый доход:</h4>
                     </div>
-                    <div class="col-xs-12 col-md-6 wam-not-padding-xs bg-success">
+                    <div class="col-xs-12 col-md-6 bg-success">
                         <h4 class="text-justify"><strong>${incomeSum}</strong> (в среднем ${incomeLimit}) руб</h4>
                     </div>
                     <div class="col-xs-12 col-md-12 bg-info">
@@ -311,10 +311,10 @@
                     <div class="col-xs-12 wam-margin-bottom-1">
                     </div>
 
-                    <div class="col-xs-12 col-md-6 wam-not-padding-xs bg-danger">
+                    <div class="col-xs-12 col-md-6 bg-danger">
                         <h4 class="text-justify">Ожидаемый расход:</h4>
                     </div>
-                    <div class="col-xs-12 col-md-6 wam-not-padding-xs bg-danger">
+                    <div class="col-xs-12 col-md-6 bg-danger">
                         <h4 class="text-justify"><strong>${expenseSum}</strong> (в среднем ${expenseLimit}) руб</h4>
                     </div>
                     <div class="col-xs-12 col-md-12 bg-info">
@@ -504,15 +504,15 @@
 
                                 <li class="list-unstyled">
                                     <a href="javascript:drawBarsByParentId(false, '${id}', '${after}', '${before}', true)">
-                                        <div class="row">
-                                            <div class="col-xs-12 col-md-6">
+                                        <div>
+                                            <div class="col-xs-12 col-md-6 wam-not-padding-xs">
                                                 <h4 class="needToFormat wam-not-padding-xs">
                                                     <strong id="categoryBarName${id}" value="${name}">
                                                             ${name}
                                                     </strong>
                                                 </h4>
                                             </div>
-                                            <div class="col-xs-12 col-md-6 wam-margin-top-xs-0">
+                                            <div class="col-xs-12 col-md-6 wam-margin-top-xs-0 wam-not-padding-xs">
                                                 <h4 class="needToFormat">
 													<span id="categoryBarSum${id}" class="pull-right text-muted"
                                                           value="${sum}">
@@ -520,7 +520,7 @@
 													</span>
                                                 </h4>
                                             </div>
-                                            <div class="col-xs-12 col-md-12">
+                                            <div class="col-xs-12 col-md-12 wam-not-padding-xs">
                                                 <div class="progress progress-striped active">
                                                     <div class="progress-bar progress-bar-${styles[step]}" role="progressbar"
                                                          aria-valuenow="${sum}" aria-valuemin="0" aria-valuemax="100"
@@ -576,15 +576,15 @@
                                 </c:choose>
                                 <li class="list-unstyled">
                                     <a href="javascript:drawBarsByParentId(false, '${id}', '${after}', '${before}', true)">
-                                        <div class="row">
-                                            <div class="col-xs-12 col-md-6">
+                                        <div>
+                                            <div class="col-xs-12 col-md-6 wam-not-padding-xs">
                                                 <h4 class="needToFormat wam-not-padding-xs">
                                                     <strong id="categoryBarName${id}" value="${name}">
                                                             ${name}
                                                     </strong>
                                                 </h4>
                                             </div>
-                                            <div class="col-xs-12 col-md-6 wam-margin-top-xs-0">
+                                            <div class="col-xs-12 col-md-6 wam-margin-top-xs-0 wam-not-padding-xs">
                                                 <h4 class="needToFormat">
 													<span id="categoryBarSum${id}" class="pull-right text-muted"
                                                           value="${sum}">
@@ -592,7 +592,7 @@
 													</span>
                                                 </h4>
                                             </div>
-                                            <div class="col-xs-12 col-md-12">
+                                            <div class="col-xs-12 col-md-12 wam-not-padding-xs">
                                                 <div class="progress progress-striped active">
                                                     <div class="progress-bar progress-bar-${styles[step]}" role="progressbar"
                                                          aria-valuenow="${sum}" aria-valuemin="0" aria-valuemax="100"

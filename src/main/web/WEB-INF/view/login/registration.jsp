@@ -31,17 +31,16 @@
     <script src="${js}"></script>
 
 </head>
-<body>
+<body class="wam-body-login wam-body-freeze">
 
-<div class="content wam-radius wam-min-height-0 wow fadeInDown wam-content-login wam-margin-top-3" data-wow-duration="1000ms" data-wow-delay="300ms">
-    <div class="row wam-login ">
-        <div class="container-fluid wam-not-padding-xs">
-            <div class="col-md-4 col-md-offset-4">
-                <div class="login-panel panel panel-default">
-                    <div class="panel-heading">
-                        <spring:message code="label.registration.page" var="title"/>
-                        <h3 class="wam-margin-bottom-0 wam-margin-top-0">${title}</h3>
-                    </div>
+<div class="wam-radius wam-min-height-0 wow fadeInDown wam-content-login wam-margin-top-3" data-wow-duration="1000ms" data-wow-delay="300ms">
+    <div class="container-fluid wam-not-padding-xs">
+        <div class="col-md-4 col-md-offset-4">
+            <div class="login-panel panel panel-default wam-panel-login">
+                <div class="panel-heading">
+                    <spring:message code="label.login.page" var="title"/>
+                    <h4 class="wam-margin-bottom-0 wam-margin-top-0"><strong>${title}</strong></h4>
+                </div>
                     <div class="panel-body">
                         <form:form method="POST" modelAttribute="userForm" class="form-signin">
                             <spring:bind path="username">

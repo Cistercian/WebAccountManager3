@@ -24,6 +24,8 @@ public interface AmountRepository extends CrudRepository<Amount, Integer> {
 
     List<Amount> findByUserId(User user);
 
+    List<Amount> findByRegularId(Amount regularId);
+
     @Query("Select a from Amount a where a.userId = ?1 and a.date between ?2 and ?3 and a.type != 3")
     List<Amount> findByUserIdAndDateBetween(User userId, Date after, Date before);
 

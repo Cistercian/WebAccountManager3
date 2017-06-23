@@ -253,10 +253,8 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-xs-12">
-												<span class="pull-right">
-													&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;&oline;
-												</span>
+                                            <div class="col-xs-12 wam-margin-top-1 wam-margin-bottom-0-1">
+                                                <img src="/resources/img/line.png" class="img-responsive wam-width-1 wam-height-1 pull-right" alt="">
                                             </div>
                                         </div>
                                         <div class="row">

@@ -54,6 +54,7 @@ public class CompareController {
         User currentUser = securityService.findLoggedUser();
         LocalDate after = DateUtil.getStartOfEra();
         LocalDate before = LocalDate.now();
+        query = query != null ? query.trim() : "";
 
         List<Amount> amounts = amountService.getByMatchingName(currentUser, query, after, before);
         BigDecimal avgPrice = amountService.getCompareAvgPrice(currentUser, query, after, before);

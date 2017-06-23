@@ -241,51 +241,66 @@
                                 <spring:message code="label.index.refresh" />
                             </button>
                         </div>
-                        <div class="col-xs-12 col-md-12">
-                            <h3 class='wam-margin-top-2'>Статистика:</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1">
+                <div class="panel-heading ">
+                    <h4 class="wam-margin-bottom-0 wam-margin-top-0">Статистика:</h4>
+                </div>
+                <div class="wam-not-padding panel-body">
+                    <div class="col-xs-12 bg-warning">
+                        <div class="col-xs-12 col-md-3">
+                            <h4 class="text-justify ">Средняя цена</h4>
+                        </div>
+                        <div class="col-xs-12 col-md-9">
+                            <h4 class="text-justify wam-not-padding-xs">
+                                <strong id="avgSum">0</strong><span> руб.</span>
+                            </h4>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="col-xs-12 wam-margin-bottom-1">
+                    </div>
+                    <div class="col-xs-12 bg-success">
                         <div class="col-xs-12 col-md-3">
-                            <h4 class="wam-font-size-2 text-justify ">Средняя цена</h4>
+                            <h4 class="text-justify">Минимальная цена</h4>
                         </div>
-                        <div class="col-xs-12 col-md-3">
-                            <h4 class="wam-font-size-2 text-justify wam-not-padding-xs"><strong id="avgSum">0</strong><span class="wam-font-size-2"> руб.</span></h4>
+                        <div class="col-xs-6 col-md-3">
+                            <h4 class="text-justify wam-not-padding-xs">
+                                <strong id="minSum" >0</strong><span> руб.</span>
+                            </h4>
                         </div>
-                        <div class="col-xs-12 col-md-2">
+                        <div class="col-xs-6 col-md-6">
+                            <h4 id="minDate" class="text-justify wam-not-padding-xs">
+                            </h4>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="col-xs-12 bg-success">
                         <div class="col-xs-12 col-md-3">
-                            <h4 class="wam-font-size-2 text-justify ">Минимальная цена</h4>
+                            <h4 class="text-justify">Максимальная цена</h4>
                         </div>
                         <div class="col-xs-6 col-md-3">
-                            <h4 class="wam-font-size-2 text-justify wam-not-padding-xs"><strong id="minSum" >0</strong><span class="wam-font-size-2"> руб.</span></h4>
+                            <h4 class="text-justify wam-not-padding-xs">
+                                <strong id="maxSum" >0</strong><span> руб.</span>
+                            </h4>
                         </div>
-                        <div class="col-xs-6 col-md-3">
-                            <h4 id="minDate" class="wam-font-size-2 text-justify wam-not-padding-xs"></h4>
+                        <div class="col-xs-6 col-md-6">
+                            <h4 id="maxDate" class="text-justify wam-not-padding-xs"></h4>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-xs-12 col-md-3">
-                            <h4 class="wam-font-size-2 text-justify">Максимальная цена</h4>
-                        </div>
-                        <div class="col-xs-6 col-md-3">
-                            <h4 class="wam-font-size-2 text-justify wam-not-padding-xs"><strong id="maxSum" >0</strong><span class="wam-font-size-2"> руб.</span></h4>
-                        </div>
-                        <div class="col-xs-6 col-md-3">
-                            <h4 id="maxDate" class="wam-font-size-2 text-justify wam-not-padding-xs"></h4>
-                        </div>
+                    <div class="col-xs-12 wam-margin-bottom-1">
                     </div>
-                    <div class="row">
+                    <div class="col-xs-12 bg-warning">
                         <div class="col-xs-12 col-md-3">
-                            <h4 class="wam-font-size-2 text-justify">Последняя цена</h4>
+                            <h4 class="text-justify">Последняя цена</h4>
                         </div>
                         <div class="col-xs-6 col-md-3">
-                            <h4 class="wam-font-size-2 text-justify wam-not-padding-xs"><strong id="lastSum" >0</strong><span class="wam-font-size-2"> руб.</span></h4>
+                            <h4 class="text-justify wam-not-padding-xs">
+                                <strong id="lastSum" >0</strong><span> руб.</span>
+                            </h4>
                         </div>
                         <div class="col-xs-6 col-md-3">
-                            <h4 id="lastDate" class="wam-font-size-2 text-justify wam-not-padding-xs"></h4>
+                            <h4 id="lastDate" class="text-justify wam-not-padding-xs"></h4>
                         </div>
                     </div>
                 </div>
@@ -300,7 +315,6 @@
             </div>
         </div>
     </div>
-</div>
 </div>
 
 

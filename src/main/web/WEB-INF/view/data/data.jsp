@@ -187,7 +187,7 @@
             if (document.location.href.indexOf("save") !== -1) {
                 onclick = "clearForm(false);history.pushState({}, null, document.referrer);";
             } else {
-                onclick = "location.href=\"\/index\"";
+                onclick = "location.href=document.referrer";
             }
         } else if (type == 'SUCCESS_CREATE_NEW_ENTITY') {
             onclick = "clearForm(true);history.pushState({}, null, document.referrer);";
@@ -228,6 +228,27 @@
     }
     function createRegular(){
         location.href='/amounts/regular?amountId=${id}';
+    }
+    function bindingRegular(regularID){
+
+        $('#amountForm').attr('action', '/page-product/regulars');
+        $('#amountForm').submit();
+        /*$.ajax({
+         type: "GET",
+         url: "/page-product/regulars",
+         data: {
+         'isBinding' : true,
+         'regularId' : regularID,
+         'id' : $('#id').val(),
+         'name' : $('#name').val(),
+         'productName' : $('#productName').val(),
+         'categoryId' : $('#categoryId').val(),
+         'price' : $('#price').val(),
+         'details' : $('#details').val(),
+         'type' : $('#type').val()
+         }
+         });
+         */
     }
 </script>
 
@@ -297,11 +318,11 @@
                                     <div class="col-xs-12 col-md-12 wam-not-padding-xs">
                                         <div class="form-group ${status.error ? 'has-error' : ''}">
                                             <input id="productId" type="hidden" class="erasable"
-                                                   value=<c:if test="${not empty product}">${product.getId()}"></c:if></input>
-											<input id="productName" type="text" name="productName" class="form-control form input-lg erasable"
-                                            placeholder="${label}" onclick="scrollPage($($(this)).offset().top);"
-                                            value=<c:if test="${not empty product}">
-                                            "${product.getName()}"</c:if>>
+                                                   value="<c:if test="${not empty product}">${product.getId()}</c:if>"</input>
+                                            <input id="productName" type="text" name="productName" class="form-control form input-lg erasable"
+                                                   placeholder="${label}" onclick="scrollPage($($(this)).offset().top);"
+                                                   value="<c:if test="${not empty product}">
+                                            ${product.getName()}</c:if>">
                                             </input>
                                             <form:errors path="productId"></form:errors>
                                         </div>
@@ -521,12 +542,12 @@
                                                             <p class="wam-margin-top-1">
                                                                 <c:choose>
                                                                     <c:when test='${empty regular}'>
-                                                                        <a href="/page-product/regulars?isBinding=true&isSingle=true&id=${id}">
+                                                                        <a href="javascript:bindingRegular(null);">
                                                                             Оборот не привязан к обязательному.
                                                                         </a>
                                                                     </c:when>
                                                                     <c:otherwise>
-                                                                        <a href="/page-product/regulars?isBinding=true&isSingle=true&id=${id}&regularId=${regular.getId()}">
+                                                                        <a href="javascript:bindingRegular(${regular.getId()});">
                                                                             <input id="regular" type="hidden" name="regular" value="${regular.getId()}"/>
                                                                             Привязан обязательный оборот #${regular.getId()} на сумму ${regular.getPrice()} руб.
                                                                         </a>
@@ -935,7 +956,7 @@
         </c:if>
         <c:if test="${className=='regular'}">
             <div class="container-fluid wam-not-padding-xs">
-                <form:form id="regularForm" method="POST" modelAttribute="regularForm" action="/amount/save">
+                <form:form id="regularForm" method="POST" modelAttribute="amountForm" action="/amount/save">
                     <input type="hidden" name="referer" class="form-control" value="${previousPage}"/>
                     <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1">
                         <div class="panel-heading wam-page-title">

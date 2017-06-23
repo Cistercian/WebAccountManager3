@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-gb" lang="en-gb" dir="ltr">
 <head>
@@ -106,7 +107,7 @@
                 $('[id^="checkbox"]').each(function () {
                     $(this).prop('checked', false);
                 });
-                $('#btnOk').attr('onclick', 'location.href=\'\/amount?id=' + id + '&regularId=0\'');
+                $('#btnOk').attr('onclick', 'submitBinding(0);');
             }
 
             $('#checkbox' + regularId).prop('checked', false);
@@ -115,7 +116,7 @@
                 $('[id^="checkbox"]').each(function () {
                     $(this).prop('checked', false);
                 });
-                $('#btnOk').attr('onclick', 'location.href=\'\/amount?id=' + id + '&regularId=' + regularId +'\'');
+                $('#btnOk').attr('onclick', 'submitBinding(' + regularId + ');');
             }
 
             $('#checkbox' + regularId).prop('checked', true);
@@ -129,26 +130,30 @@
             }
         });
 
-        $.ajax({
-            url: '/page-product/binding',
-            type: "POST",
-            data: {
-                'ids' : ids,
-                'type' : type
-            },
-            dataType: 'json',
-            beforeSend: function () {
-                displayLoader();
-            },
-            success: function (data) {
-                hideLoader();
+        if (ids.length == 0) {
+            location.href=document.referrer;
+        } else {
+            $.ajax({
+                url: '/page-product/binding',
+                type: "POST",
+                data: {
+                    'ids' : ids,
+                    'type' : type
+                },
+                dataType: 'json',
+                beforeSend: function () {
+                    displayLoader();
+                },
+                success: function (data) {
+                    hideLoader();
 
-                var type = data.type;
-                var message = data.message;
+                    var type = data.type;
+                    var message = data.message;
 
-                displayMessage(type, message, "/index");
-            }
-        });
+                    displayMessage(type, message, "/index");
+                }
+            });
+        }
     }
     function displayMessage(type, message, Url) {
         ClearModalPanel();
@@ -169,12 +174,44 @@
 
         $('#modal').modal('show');
     }
+    function submitBinding(regularId){
+
+        $('#regular').val(regularId);
+
+        $('#amountForm').submit();
+    }
 </script>
 
 <div class="content container-fluid wam-radius wam-min-height-0">
     <div class='row'>
         <input id="_csrf_token" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         <input id="id" type="hidden" name="id" value="${id}"/>
+
+        <c:if test="${not empty amountForm}">
+            <form:form id="amountForm" method="POST" modelAttribute="amountForm" action="/amount">
+
+                <spring:bind path="date">
+                    <form:input id="date" type="hidden" path="date"></form:input>
+                </spring:bind>
+                <spring:bind path="name">
+                    <form:input type="hidden" path="name"></form:input>
+                </spring:bind>
+                <spring:bind path="price">
+                    <form:input type="hidden" path="price"></form:input>
+                </spring:bind>
+                <spring:bind path="details">
+                    <form:input type="hidden" path="details"></form:input>
+                </spring:bind>
+                <spring:bind path="type">
+                    <form:input type="hidden" path="type"></form:input>
+                </spring:bind>
+                <input id="productName" type="hidden" name="productName" value="${productName}"/>
+                <input id="id" type="hidden" name="id" value="${id}"/>
+                <input id="regular" type="hidden" name="regular" value="${regular}"/>
+                <input id="category" type="hidden" name="category" value="${category}"/>
+
+            </form:form>
+        </c:if>
 
         <div class="container-fluid wam-not-padding-xs">
             <div class="panel panel-default wam-margin-left-1 wam-margin-right-1 wam-margin-top-1 wam-margin-bottom-0-1">
@@ -246,7 +283,7 @@
                                         <td onclick="${onclick}">
                                             <p data-placement="top">
                                                 <c:choose>
-                                                    <c:when test='${amount.getId() == regularId}'>
+                                                    <c:when test='${amount.getId() == regular}'>
                                                         <label class="checkbox-inline">
                                                             <input id="checkbox${amount.getId()}" type="checkbox" value="" checked
                                                                    onclick="${onclick}" style="cursor: pointer;">
@@ -300,7 +337,7 @@
                             <div class="col-xs-12 col-md-6 wam-not-padding-xs">
                                 <c:choose>
                                     <c:when test="${empty onclickOk}">
-                                        <c:set var="onclickOk" value="location.href='/amount?id=${id}&regularId=${regularId}';"/>
+                                        <c:set var="onclickOk" value="submitBinding(${regular});"/>
                                     </c:when>
                                 </c:choose>
                                 <button id="btnOk" class="btn-primary btn-lg btn-block wam-btn-1"
@@ -311,7 +348,7 @@
                             <div class="col-xs-12 col-md-6 wam-not-padding-xs">
                                 <c:choose>
                                     <c:when test="${empty onclickCancel}">
-                                        <c:set var="onclickCancel" value="location.href='/amount?id=${id}&regularId=${regularId}';"/>
+                                        <c:set var="onclickCancel" value="submitBinding(${regular});"/>
                                     </c:when>
                                 </c:choose>
                                 <button class="btn-default btn-lg btn-block wam-btn-1 return"

@@ -3,11 +3,10 @@ package ru.hd.olaf.mvc.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import ru.hd.olaf.entities.Amount;
 import ru.hd.olaf.entities.Category;
@@ -23,7 +22,10 @@ import ru.hd.olaf.util.LogUtil;
 import ru.hd.olaf.util.json.JsonResponse;
 import ru.hd.olaf.util.json.ResponseType;
 
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -143,7 +145,7 @@ public class ProductController {
     @RequestMapping(value = "/page-product/regulars", method = RequestMethod.GET)
     public ModelAndView getRegularAmounts(@RequestParam(value = "isBinding", required = false) Boolean isBinding,
                                           @RequestParam(value = "productID", required = false) Integer id,
-                                          @RequestParam(value = "regularId", required = false) Integer regularId){
+                                          @RequestParam(value = "regularId", required = false) Integer regularId) {
         logger.debug(LogUtil.getMethodName());
         ModelAndView modelAndView = new ModelAndView("/data/page-product");
 
@@ -152,7 +154,7 @@ public class ProductController {
 
         if (isBinding == null) isBinding = false;
 
-        if (isBinding){
+        if (isBinding) {
             title = "Привязка обязательного оборота";
             details = "Обрабатываемый оборот: новая запись";
             modelAndView.addObject("isSingle", true);
@@ -169,7 +171,7 @@ public class ProductController {
         else {
             JsonResponse response = utilService.getById(Amount.class, id);
 
-            if (response.getType() == ResponseType.SUCCESS){
+            if (response.getType() == ResponseType.SUCCESS) {
                 Amount amount = (Amount) response.getEntity();
 
                 details = "Обрабатываемый оборот: #" + amount.getId() + " на сумму " +
@@ -191,6 +193,64 @@ public class ProductController {
         modelAndView.addObject("details", details);
         modelAndView.addObject("footer", "");
         modelAndView.addObject("isBinding", isBinding);
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/page-product/regulars", method = RequestMethod.POST)
+    public ModelAndView getRegulars(@ModelAttribute("amountForm") Amount amount,
+                                    @RequestParam(value = "productName") String productName,
+                                    @RequestParam(value = "category") Integer categoryId,
+                                    @RequestParam(value = "regular", required = false) Integer regularId,
+                                    @RequestParam(value = "referer", required = false) String referer) {
+        logger.debug(LogUtil.getMethodName());
+        ModelAndView modelAndView = new ModelAndView("/data/page-product");
+
+        if (amount.getPrice() == null)
+            amount.setPrice(new BigDecimal("0"));
+
+        String title;
+        StringBuilder details = new StringBuilder("Обрабатываемый оборот: #");
+
+        title = "Привязка обязательного оборота";
+        details.append(amount.getId() != null ? amount.getId() : "б/н");
+        details.append(" ");
+        details.append("(").append(amount.getName()).append(")</p><p>на сумму ")
+                .append(FormatUtil.numberToString(amount.getPrice())).append(" руб.");
+
+        modelAndView.addObject("isSingle", true);
+
+        if (amount.getRegularId() != null)
+            modelAndView.addObject("regularId", amount.getRegularId().getId());
+
+        Integer id = (amount != null && amount.getId() != null) ? amount.getId() : 0;
+
+        if (amount != null) {
+            logger.debug(String.format("Переданная сущность: %s", amount));
+        } else
+            logger.debug("Не удается прочитать переданную сущность.");
+
+        User currentUser = securityService.findLoggedUser();
+        List<Amount> regulars = amountService.getAllRegular(currentUser);
+
+        logger.debug("Список обязательных оборотов:");
+        LogUtil.logList(logger, regulars);
+
+        if (categoryId != null) {
+            modelAndView.addObject("category", categoryId);
+        }
+        if (regularId != null) {
+            modelAndView.addObject("regular", regularId);
+        }
+        modelAndView.addObject("amounts", regulars);
+        modelAndView.addObject("amountForm", amount);
+        modelAndView.addObject("id", id);
+        modelAndView.addObject("title", title);
+        modelAndView.addObject("details", details);
+        modelAndView.addObject("footer", "");
+        modelAndView.addObject("isBinding", "true");
+        modelAndView.addObject("referer", referer);
+        modelAndView.addObject("productName", productName);
 
         return modelAndView;
     }
@@ -263,5 +323,12 @@ public class ProductController {
         response.setMessage(message.toString());
 
         return response;
+    }
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+        sdf.setLenient(true);
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(sdf, true));
     }
 }
