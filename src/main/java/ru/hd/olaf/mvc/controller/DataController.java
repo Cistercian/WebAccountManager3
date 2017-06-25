@@ -327,7 +327,7 @@ public class DataController {
         String link = "/index";
         if (referer == null) return link;
 
-        return referer.contains("save") ? link : referer;
+        return (referer.contains("save") || referer.contains("regulars")) ? link : referer;
     }
 
     /**

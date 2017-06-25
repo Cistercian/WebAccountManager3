@@ -321,8 +321,7 @@
                                                    value="<c:if test="${not empty product}">${product.getId()}</c:if>"</input>
                                             <input id="productName" type="text" name="productName" class="form-control form input-lg erasable"
                                                    placeholder="${label}" onclick="scrollPage($($(this)).offset().top);"
-                                                   value="<c:if test="${not empty product}">
-                                            ${product.getName()}</c:if>">
+                                                   value="<c:if test="${not empty product}">${product.getName()}</c:if>">
                                             </input>
                                             <form:errors path="productId"></form:errors>
                                         </div>

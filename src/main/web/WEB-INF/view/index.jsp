@@ -405,7 +405,7 @@
                                                               value="${classPrice}">
 																${classPrice} руб.
 														</span></h4>
-                                                    <div class="progress progress-striped active">
+                                                    <div class="progress progress-striped">
                                                         <div class="progress-bar progress-bar-${styles[0]}" role="progressbar"
                                                              aria-valuenow="${classPrice}" aria-valuemin="0" aria-valuemax="100"
                                                              style="width: ${normalPrice}%" value="${className}">
@@ -466,7 +466,7 @@
 																${classPrice} руб.
 														</span>
                                                     </h4>
-                                                    <div class="progress progress-striped active">
+                                                    <div class="progress progress-striped">
                                                         <div class="progress-bar progress-bar-${styles[2]}" role="progressbar"
                                                              aria-valuenow="${classPrice}" aria-valuemin="0" aria-valuemax="100"
                                                              style="width: ${normalPrice}%" value="${className}">

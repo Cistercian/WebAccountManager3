@@ -185,7 +185,7 @@ function drawBarsByParentId(isChildren, categoryId, after, before, isGetAnalytic
                         numberToString(classSum) + (isGetAnalyticData ? " (в среднем " + numberToString(classLimit) + ") " : "") + " руб." +
                         "</strong>" +
                         "</h4></div></div>" +
-                        "<div class='progress " + tagClassProgress + " progress-striped active wam-margin-bottom-1' >" +
+                        "<div class='progress " + tagClassProgress + " progress-striped  wam-margin-bottom-1' >" +
                         "<div class='progress-bar progress-bar-" + styles[curNumStyle] + "' role='progressbar' " +
                         "aria-valuenow='" + classSum + "'" + "aria-valuemin='0' aria-valuemax='100' " +
                         "style='width: " + Math.abs(normalSum) + "%' " + "value='" + className +
@@ -623,7 +623,7 @@ function refreshBars(data, after, before){
             "value='" + sum + "'>" +
             numberToString(sum) + " руб." +
             "</span></h4>" +
-            "<div class='progress progress-striped active'> " +
+            "<div class='progress progress-striped '> " +
             "<div class='progress-bar progress-bar-" + styles[curNumStyle] + "' role='progressbar' " +
             "aria-valuenow='" + sum + "' aria-valuemin='0' aria-valuemax='100' " +
             "style='width: " + normalSum + "%' value='" + name + "'>" +
