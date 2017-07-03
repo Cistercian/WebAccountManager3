@@ -6,7 +6,6 @@ import ru.hd.olaf.exception.AuthException;
 import ru.hd.olaf.exception.CrudException;
 import ru.hd.olaf.util.json.AnalyticEntity;
 import ru.hd.olaf.util.json.BarEntity;
-import ru.hd.olaf.util.json.DBData;
 import ru.hd.olaf.util.json.JsonResponse;
 
 import java.time.LocalDate;

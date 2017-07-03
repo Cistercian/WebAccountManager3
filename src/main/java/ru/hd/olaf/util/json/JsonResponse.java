@@ -1,4 +1,5 @@
 package ru.hd.olaf.util.json;
+
 import javax.persistence.Transient;
 
 /**

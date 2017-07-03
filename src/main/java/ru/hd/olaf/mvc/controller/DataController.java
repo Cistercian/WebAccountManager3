@@ -1,6 +1,5 @@
 package ru.hd.olaf.mvc.controller;
 
-import org.dom4j.rule.Mode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +58,13 @@ public class DataController {
 
     private static final Logger logger = LoggerFactory.getLogger(DataController.class);
 
+    /**
+     * Функция удаления объекта БД
+     *
+     * @param className класс удаляемого объекта
+     * @param id        id удаляемой сущности
+     * @return JsonResponse с результатом операции
+     */
     @RequestMapping(value = "/page-data/delete", method = RequestMethod.POST)
     public
     @ResponseBody
@@ -69,7 +75,7 @@ public class DataController {
     }
 
     /**
-     * Функция возвращает список товарных групп для автозаполнения поля
+     * Функция возвращает список товарных групп для автозаполнения поля (всплывающая подсказка по совпадению)
      *
      * @param query строка для поиска
      * @return лист продуктов
@@ -148,8 +154,8 @@ public class DataController {
     /**
      * Функция просмотра страницы редактирования категории
      *
-     * @param refererHeader адрес предыдущей страницы ()
-     * @param refererParam  адрес предыдущей страницы
+     * @param refererHeader адрес предыдущей страницы из заголовка
+     * @param refererParam  адрес предыдущей страницы из поля страницы jsp
      * @param id            id записи (необязательно)
      * @param model         model?
      * @return Наименование view("data")
@@ -192,8 +198,10 @@ public class DataController {
     /**
      * Функция просмотра страницы редактирования amount
      *
-     * @param refererHeader адрес предыдущей страницы
-     * @param id            id записи (необяхательно)
+     * @param refererHeader адрес предыдущей страницы из заголовка
+     * @param refererParam  адрес предыдущей страницы из поля страницы jsp
+     * @param id            id просматриваемой записи (необязательно)
+     * @param regularId     id привязанного обязательного оборота (необязательно)
      * @param model         текущеая модель
      * @return наименование view("data")
      */
@@ -229,7 +237,7 @@ public class DataController {
             response = utilService.getById(Amount.class, regularId);
             if (response.getEntity() != null)
                 model.addAttribute("regular", (Amount) response.getEntity());
-        } else if (amount.getType() != 3){
+        } else if (amount.getType() != 3) {
             if (amount.getRegularId() != null) {
                 model.addAttribute("regular", amount.getRegularId());
             }
@@ -250,13 +258,24 @@ public class DataController {
         return "data/data";
     }
 
+    /**
+     * Redudant?
+     *
+     * @param amount
+     * @param id
+     * @param productName
+     * @param categoryId
+     * @param regularId
+     * @param refererParam
+     * @return
+     */
     @RequestMapping(value = "/amount", method = RequestMethod.POST)
     public ModelAndView getFillAmountView(@ModelAttribute("amountForm") Amount amount,
                                           @RequestParam(value = "id") Integer id,
                                           @RequestParam(value = "productName") String productName,
                                           @RequestParam(value = "category") Integer categoryId,
                                           @RequestParam(value = "regular", required = false) Integer regularId,
-                                          @RequestParam(value = "referer", required = false) String refererParam){
+                                          @RequestParam(value = "referer", required = false) String refererParam) {
         logger.debug(LogUtil.getMethodName());
 
         ModelAndView modelAndView = new ModelAndView("/data/data");
@@ -286,6 +305,14 @@ public class DataController {
     }
 
 
+    /**
+     * Функция сохранения на странице jsp ссылки на предыдущую страницу для кнопки "Назад". Функция предусматривает
+     * игнорирование перехода назад на некоторые страницы (страницы сохранения и просмотра обязательных оборотов)
+     *
+     * @param refererHeader ссылка на предыдущую стрпаницу, переданная в заголовке
+     * @param refererParam  ссылка на предыдущую стрпаницу, переданная в объекте jsp
+     * @param model         заполненная model
+     */
     private void addRef(@RequestHeader(value = "Referer", required = false) String refererHeader,
                         @RequestParam(value = "referer", required = false) String refererParam,
                         Model model) {
@@ -323,7 +350,13 @@ public class DataController {
         }
     }
 
-    private String getRerefLink(String referer){
+    /**
+     * Функция возврата корректной ссылки на предыдущую страницу (исключаются часть ненужных переходов)
+     *
+     * @param referer Обрабатываемая ссылка
+     * @return Корректная строка
+     */
+    private String getRerefLink(String referer) {
         String link = "/index";
         if (referer == null) return link;
 
@@ -370,7 +403,7 @@ public class DataController {
         User currentUser = securityService.findLoggedUser();
         amountForm.setUserId(currentUser);
         //указываем тип
-        if (amountForm.getType() == null) amountForm.setType((byte)0);
+        if (amountForm.getType() == null) amountForm.setType((byte) 0);
         //указываем привязанный обязательный оборот
         if (regularId != null) {
             response = utilService.getById(Amount.class, regularId);
@@ -419,7 +452,14 @@ public class DataController {
         return modelAndView;
     }
 
-    private void addRefAfterSave(@RequestParam(value = "referer", required = false) String refererParam, ModelAndView modelAndView) {
+    /**
+     * функция сохранения параметров ссылок на предыдущую страницу для кнопка "Назад"
+     *
+     * @param refererParam ссылка на предыдущую страницу с поля jsp
+     * @param modelAndView заполненный ModelAndView
+     */
+    private void addRefAfterSave(@RequestParam(value = "referer", required = false) String refererParam,
+                                 ModelAndView modelAndView) {
         String referer = refererParam;
         try {
             referer = URLDecoder.decode(refererParam, "UTF-8");
@@ -541,7 +581,18 @@ public class DataController {
         return modelAndView;
     }
 
-    private void checkErrorsAndSave(Object entity, String url, BindingResult bindingResult, ModelAndView modelAndView) {
+    /**
+     * Функция валидации объекта БД и его дальнешее сохрание при успешном резульате
+     *
+     * @param entity        Обрабатываемый объект БД
+     * @param url           ссылка на страницу для перехода при закрытии всплывающего окна с результатом сохранения (redudant)
+     * @param bindingResult форма валидации
+     * @param modelAndView  заполненный ModelAndView (data)
+     */
+    private void checkErrorsAndSave(Object entity,
+                                    String url,
+                                    BindingResult bindingResult,
+                                    ModelAndView modelAndView) {
         JsonResponse response;
         if (bindingResult.hasErrors()) {
             logger.info("Ошибка валидиации!");
@@ -557,6 +608,13 @@ public class DataController {
         }
     }
 
+    /**
+     * Страница просмотра обязательного оборота
+     *
+     * @param amountId id оборота, данные которого используются при создании нового обязательно путем копирования
+     * @param id       рассмотриваемого обязательно оборота
+     * @return ModelAndView (data)
+     */
     @RequestMapping(value = "/amounts/regular", method = RequestMethod.GET)
     public ModelAndView getViewRegularAmount(@RequestParam(value = "amountId", required = false) Integer amountId,
                                              @RequestParam(value = "id", required = false) Integer id) {
@@ -601,7 +659,7 @@ public class DataController {
 
         regular.setDate(DateUtil.getDateOfStartOfEra());
         regular.setUserId(currentUser);
-        regular.setType((byte)3);
+        regular.setType((byte) 3);
         modelAndView.addObject("categories", categoryService.getAll());
         modelAndView.addObject("regulars", amountService.getAllRegular(currentUser));
 
@@ -610,6 +668,11 @@ public class DataController {
         return modelAndView;
     }
 
+    /**
+     * Служебная функция для корректного парсинга дат
+     *
+     * @param binder WebDataBinder
+     */
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");

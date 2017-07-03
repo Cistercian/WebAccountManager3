@@ -150,12 +150,12 @@ public class Limit {
     public String toString() {
         return "Limit{" +
                 "id=" + id +
-                ", type='" + type != null ? type : "" + '\'' +
-                ", entityId=" + entityId != null ? entityId.toString() : "" +
-                ", entityName='" + entityName != null ? entityName.toString() : "" + '\'' +
+                ", type='" + (type != null ? type : "") + '\'' +
+                ", entityId=" + (entityId != null ? entityId.toString() : "") +
+                ", entityName='" + (entityName != null ? entityName : "") + '\'' +
                 ", sum=" + sum +
-                ", period=" + period != null ? period.toString() : "" +
-                ", userId=" + userId != null ? userId.toString() : "" +
+                ", period=" + (period != null ? period.toString() : "") +
+                ", userId=" + (userId != null ? userId.toString() : "") +
                 '}';
     }
 }

@@ -12,7 +12,6 @@ import ru.hd.olaf.util.json.JsonResponse;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -28,7 +27,11 @@ public interface AmountService {
 
     List<Amount> getByProductAndDate(User user, Product product, LocalDate after, LocalDate before);
 
-    List<Amount> getByProductAndCategoryAndDate(User user, Product product, Category category, LocalDate after, LocalDate before);
+    List<Amount> getByProductAndCategoryAndDate(User user,
+                                                Product product,
+                                                Category category,
+                                                LocalDate after,
+                                                LocalDate before);
 
     List<Amount> getByCategoryAndProduct(Category category, Product product);
 
@@ -63,5 +66,9 @@ public interface AmountService {
 
     BigDecimal getCompareAvgPrice(User user, String query, LocalDate after, LocalDate before);
 
-    List<CalendarEntity> getCalendarEntities(User user, LocalDate after, LocalDate before, Category category, Product product);
+    List<CalendarEntity> getCalendarEntities(User user,
+                                             LocalDate after,
+                                             LocalDate before,
+                                             Category category,
+                                             Product product);
 }

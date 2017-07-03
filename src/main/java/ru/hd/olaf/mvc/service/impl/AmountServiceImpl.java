@@ -35,8 +35,6 @@ public class AmountServiceImpl implements AmountService {
     @Autowired
     private AmountRepository amountRepository;
     @Autowired
-    private ProductService productService;
-    @Autowired
     private SecurityService securityService;
     @Autowired
     private UtilService utilService;
@@ -48,7 +46,7 @@ public class AmountServiceImpl implements AmountService {
     /**
      * Функция возвращает список amount с проверкой на текущего пользователя
      *
-     * @return
+     * @return List<Amount>
      */
     public List<Amount> getAll() {
         logger.debug(LogUtil.getMethodName());
@@ -58,8 +56,8 @@ public class AmountServiceImpl implements AmountService {
     /**
      * Функция возвращает список amount по категории и текущему пользователю
      *
-     * @param category
-     * @return
+     * @param category рассматриваемая категория
+     * @return List<Amount>
      */
     public List<Amount> getByCategory(Category category) {
         logger.debug(LogUtil.getMethodName());
@@ -75,10 +73,13 @@ public class AmountServiceImpl implements AmountService {
     }
 
     /**
-     * Функция возвращает список amount по продукту с учетом текущего пользователя
+     * Функция возвращает список оборотов пользователя по переданной группе товаров и попадающих в заданный интервал
      *
-     * @param product
-     * @return
+     * @param user    рассматриваемый пользователь системы
+     * @param product группа товаров
+     * @param after   начальная дата периода
+     * @param before  конечная дата периода
+     * @return List<Amount>
      */
     public List<Amount> getByProductAndDate(User user, Product product, LocalDate after, LocalDate before) {
         logger.debug(LogUtil.getMethodName());
@@ -91,17 +92,31 @@ public class AmountServiceImpl implements AmountService {
         Date begin = DateUtil.getDate(after);
         Date end = DateUtil.getDate(before);
 
-        List<Amount> amounts = Lists.newArrayList(amountRepository.findByProductIdAndUserIdAndDateBetween(
+        List<Amount> amounts = amountRepository.findByProductIdAndUserIdAndDateBetween(
                 product,
                 user,
                 begin,
                 end
-        ));
+        );
 
         return amounts;
     }
 
-    public List<Amount> getByProductAndCategoryAndDate(User user, Product product, Category category, LocalDate after, LocalDate before) {
+    /**
+     * Функция возвращает список оборотов по пользователю, группе товаров, категории и интервал удат
+     *
+     * @param user     пользователь
+     * @param product  группа товаров
+     * @param category категория
+     * @param after    начальная дата
+     * @param before   конечная дата
+     * @return List<Amount>
+     */
+    public List<Amount> getByProductAndCategoryAndDate(User user,
+                                                       Product product,
+                                                       Category category,
+                                                       LocalDate after,
+                                                       LocalDate before) {
         logger.debug(LogUtil.getMethodName());
 
         after = after == null ? LocalDate.of(1900, 1, 1) : after;
@@ -123,6 +138,14 @@ public class AmountServiceImpl implements AmountService {
         return amounts;
     }
 
+    /**
+     * Функция поиска списка оборотов пользователя за заданный период
+     *
+     * @param user   рассматриваемый пользователь
+     * @param after  начальная дата периода
+     * @param before конечный период
+     * @return List<Amount>
+     */
     public List<Amount> getByDate(User user, LocalDate after, LocalDate before) {
         logger.debug(LogUtil.getMethodName() + String.format(". Интервал: %s - %s", after, before));
 
@@ -134,6 +157,15 @@ public class AmountServiceImpl implements AmountService {
                 end));
     }
 
+    /**
+     * Функция возвращает список оборотов пользователя совпадающих с переданной строкой и за заданный период
+     *
+     * @param user   пользователь
+     * @param query  искомая строка
+     * @param after  начальная дата
+     * @param before конечная дата
+     * @return List<Amount>
+     */
     public List<Amount> getByMatchingName(User user, String query, LocalDate after, LocalDate before) {
         logger.debug(LogUtil.getMethodName() + String.format(". Интервал: %s - %s", after, before));
 
@@ -143,6 +175,15 @@ public class AmountServiceImpl implements AmountService {
         return amountRepository.getByUserIdAndMatchingNameAndDateBetween(user, "%" + query.toUpperCase() + "%", begin, end);
     }
 
+    /**
+     * Функция возвращает среднюю цену оборотов по пользователю, искомой строке и за заданный период
+     *
+     * @param user   пользователь
+     * @param query  строка для фильтрации оборотов
+     * @param after  начальная дата периода
+     * @param before конечная дата
+     * @return средняя цена
+     */
     public BigDecimal getCompareAvgPrice(User user, String query, LocalDate after, LocalDate before) {
         logger.debug(LogUtil.getMethodName() + String.format(". Интервал: %s - %s", after, before));
 
@@ -156,13 +197,13 @@ public class AmountServiceImpl implements AmountService {
     }
 
     /**
-     * Функция возвращает список BarEntity, соответствующий набору amount по заданной категории при совпадении amounts.date
-     * в заданный период с группировкой по amounts.product
+     * Функция возвращает список BarEntity, соответствующий набору amount по заданной категории при совпадении
+     * amounts.date в заданный период с группировкой по amounts.product (группа товаров)
      *
-     * @param category
-     * @param after
-     * @param before
-     * @return
+     * @param category категория
+     * @param after    начальная дата периода
+     * @param before   конечная дата
+     * @return List<BarEntity>
      */
     public List<BarEntity> getBarEntitiesByCategory(User user,
                                                     Category category,
@@ -180,6 +221,16 @@ public class AmountServiceImpl implements AmountService {
         return barEntities;
     }
 
+    /**
+     * Функция вовзвращает список оборотов по пользователю, категории, типу и за заданный период
+     *
+     * @param user     пользователь
+     * @param category категория
+     * @param after    начальная дата
+     * @param before   конечная дата
+     * @param type     тип оборотов
+     * @return List<Amount>
+     */
     public List<Amount> getByType(User user,
                                   Category category,
                                   LocalDate after,
@@ -197,6 +248,16 @@ public class AmountServiceImpl implements AmountService {
         return amounts;
     }
 
+    /**
+     * Поиск списка оборотов по пользователю, категории, датам и типами, не совпадающими с переданным значением.
+     *
+     * @param user     пользователь
+     * @param category категория
+     * @param after    начальная дата
+     * @param before   конечная дата
+     * @param type     тип для исключения. Т.е. при передаче значения 1 будут выведены обороты с типами != 1.
+     * @return List<Amount>
+     */
     public List<Amount> getAmountsForBindingByType(User user,
                                                    Category category,
                                                    LocalDate after,
@@ -218,13 +279,16 @@ public class AmountServiceImpl implements AmountService {
      * Функция возвращает общую сумму по всем amount, относящимся к данной категории, продукту и попадающим
      * в указанный временной интервал
      *
-     * @param category
-     * @param product
-     * @param after
-     * @param before
-     * @return
+     * @param category категория
+     * @param product  группа товаров
+     * @param after    начальная дата
+     * @param before   конечная дата
+     * @return сумма
      */
-    public BigDecimal getSumByCategoryAndProduct(Category category, Product product, LocalDate after, LocalDate before) {
+    public BigDecimal getSumByCategoryAndProduct(Category category,
+                                                 Product product,
+                                                 LocalDate after,
+                                                 LocalDate before) {
         logger.debug(LogUtil.getMethodName());
         List<Amount> amounts = getByCategoryAndProduct(category, product);
 
@@ -243,9 +307,9 @@ public class AmountServiceImpl implements AmountService {
     /**
      * Функция возвращает список amount по категории и продукту с контролем пользователя
      *
-     * @param categoryId
-     * @param productId
-     * @return
+     * @param categoryId категория
+     * @param productId  группа товаров
+     * @return List<Amount>
      */
     public List<Amount> getByCategoryAndProduct(Category categoryId, Product productId) {
         logger.debug(LogUtil.getMethodName());
@@ -257,8 +321,8 @@ public class AmountServiceImpl implements AmountService {
     /**
      * Функция возвращает запись amount  с проверкой на соответствие текущему пользователю
      *
-     * @param id
-     * @return
+     * @param id id рассматриваемой сущности
+     * @return Сущность БД
      */
     public Amount getOne(Integer id) throws AuthException, IllegalArgumentException {
         logger.debug(LogUtil.getMethodName());
@@ -321,7 +385,7 @@ public class AmountServiceImpl implements AmountService {
         //в том случае, если удаляемая сущность привязана к другим как постоянный оборот, то сначала необходимо снять привязку
         //TODO: transaction;
         if (amount.getType() == 3) {
-            for (Amount child : amountRepository.findByRegularId(amount)){
+            for (Amount child : amountRepository.findByRegularId(amount)) {
                 child.setRegularId(null);
                 amountRepository.save(child);
             }
@@ -342,7 +406,7 @@ public class AmountServiceImpl implements AmountService {
      * @param user   Обрабатываемый пользоваль
      * @param after  начальная дата отсечки
      * @param before конечная дата отсечки
-     * @return
+     * @return сумма
      */
     public BigDecimal getSumByCategoryType(Byte type, User user, LocalDate after, LocalDate before) {
         logger.debug(LogUtil.getMethodName());
@@ -358,7 +422,7 @@ public class AmountServiceImpl implements AmountService {
     /**
      * Получение списка CalendarEntity для заполнения FullCalendar
      *
-     * @param user       пользователь
+     * @param user   пользователь
      * @param after  начальная дата отсечки
      * @param before конечная дата отсечки
      * @return список CalendarEntity
@@ -370,7 +434,7 @@ public class AmountServiceImpl implements AmountService {
                                                     Product product) {
         logger.debug(LogUtil.getMethodName());
 
-        List<CalendarEntity> calendarEntities = new ArrayList<CalendarEntity>();
+        List<CalendarEntity> calendarEntities;
 
         long countOfDays = after.until(before, ChronoUnit.DAYS);
 
@@ -408,6 +472,7 @@ public class AmountServiceImpl implements AmountService {
 
     /**
      * Функция возвращает список постоянных оборотов (с типом 2)
+     *
      * @param user рассматриваемый пользователь
      * @return список
      */

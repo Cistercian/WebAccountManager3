@@ -49,18 +49,19 @@ public class LimitsController {
 
     /**
      * Функция отображения страницы просмотра таблицы лимитов
+     *
      * @param model model
      * @return наименование view(limits)
      */
     @RequestMapping(value = "limits", method = RequestMethod.GET)
-    public String getViewLimits(Model model){
+    public String getViewLimits(Model model) {
         logger.debug(LogUtil.getMethodName());
 
         //данные для таблицы лимитов
         Map<Byte, String> periods = new TreeMap<Byte, String>();
-        periods.put((byte)0, "В день");
-        periods.put((byte)1, "В неделю");
-        periods.put((byte)2, "В месяц");
+        periods.put((byte) 0, "В день");
+        periods.put((byte) 1, "В неделю");
+        periods.put((byte) 2, "В месяц");
         model.addAttribute("periods", periods);
 
         Map<String, String> types = new HashMap<String, String>();
@@ -76,11 +77,12 @@ public class LimitsController {
 
     /**
      * Функция просмотра сущности таблицы limits
+     *
      * @param id id сущности (необязательно)
-     * @return  ModelAndView(notification)
+     * @return ModelAndView(notification)
      */
     @RequestMapping(value = "/limits/notification", method = RequestMethod.GET)
-    public ModelAndView getViewNotification(@RequestParam(value = "id", required = false) Integer id){
+    public ModelAndView getViewNotification(@RequestParam(value = "id", required = false) Integer id) {
         logger.debug(LogUtil.getMethodName());
 
         ModelAndView modelAndView = new ModelAndView("/data/notification");
@@ -106,13 +108,16 @@ public class LimitsController {
 
     /**
      * Функция сохранения сущности таблицы limits
-     * @param limitForm html форма с заполненными атрибутами
+     *
+     * @param limitForm     html форма с заполненными атрибутами
      * @param bindingResult для валидации формы
      * @return JsonResponse (результат валидации)
      */
     @RequestMapping(value = "/limits/notification", method = RequestMethod.POST)
-    public @ResponseBody JsonResponse saveNotification(@ModelAttribute("limitForm") Limit limitForm,
-                                                        BindingResult bindingResult){
+    public
+    @ResponseBody
+    JsonResponse saveNotification(@ModelAttribute("limitForm") Limit limitForm,
+                                  BindingResult bindingResult) {
         logger.debug(LogUtil.getMethodName());
 
         JsonResponse response = new JsonResponse();
@@ -120,7 +125,7 @@ public class LimitsController {
         limitForm.setUserId(securityService.findLoggedUser());
 
         logger.debug("Обрабатываем подчиненную сущность");
-        if ("category".equalsIgnoreCase(limitForm.getType())){
+        if ("category".equalsIgnoreCase(limitForm.getType())) {
             response = categoryService.getById(limitForm.getEntityId());
 
             if (response.getEntity() != null) {
@@ -132,7 +137,7 @@ public class LimitsController {
                 logger.debug(String.format("Ошибка определения подчиненной категории по id = %d: %s",
                         limitForm.getEntityId(), response.getMessage()));
             }
-        } else if ("product".equalsIgnoreCase(limitForm.getType())){
+        } else if ("product".equalsIgnoreCase(limitForm.getType())) {
             response = productService.getById(limitForm.getEntityId());
 
             if (response.getEntity() != null) {
@@ -151,10 +156,10 @@ public class LimitsController {
         if (bindingResult.hasErrors()) {
             logger.info("Ошибка валидиации!");
             String message = "";
-            for (Object error : bindingResult.getAllErrors()){
+            for (Object error : bindingResult.getAllErrors()) {
 
-                if(error instanceof FieldError) {
-                    message = message + "<p>" + messageSource.getMessage((FieldError)error, null) + "</p>";
+                if (error instanceof FieldError) {
+                    message = message + "<p>" + messageSource.getMessage((FieldError) error, null) + "</p>";
                 }
             }
 
@@ -171,6 +176,7 @@ public class LimitsController {
 
     /**
      * Функция заполнения modelAndView данными из БД
+     *
      * @param modelAndView используемая ModelAndView
      */
     private void fillModelNotification(ModelAndView modelAndView) {
@@ -188,9 +194,9 @@ public class LimitsController {
         modelAndView.addObject("products", products);
 
         Map<Byte, String> periods = new TreeMap<Byte, String>();
-        periods.put((byte)0, "В день");
-        periods.put((byte)1, "В неделю");
-        periods.put((byte)2, "В месяц");
+        periods.put((byte) 0, "В день");
+        periods.put((byte) 1, "В неделю");
+        periods.put((byte) 2, "В месяц");
 
         modelAndView.addObject("periods", periods);
     }

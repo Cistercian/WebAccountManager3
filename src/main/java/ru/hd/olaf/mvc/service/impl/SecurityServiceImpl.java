@@ -18,8 +18,6 @@ import ru.hd.olaf.util.LogUtil;
 
 /**
  * Created by d.v.hozyashev on 18.04.2017.
- *
- * We create SecurityService to provide current loggedin user and auto login user after resgistering an account.
  */
 @Service
 public class SecurityServiceImpl implements SecurityService {
@@ -34,18 +32,23 @@ public class SecurityServiceImpl implements SecurityService {
 
     private static final Logger logger = LoggerFactory.getLogger(SecurityServiceImpl.class);
 
+    /**
+     * Функция возвращает имя текущего пользователя
+     *
+     * @return username
+     */
     public String findLoggedUsername() {
         logger.debug(LogUtil.getMethodName());
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        //TODO: Exception
+        //TODO: AuthException
         if (null == auth) {
             throw new RuntimeException("NotFoundException: current auth");
         }
 
         Object principal = auth.getPrincipal();
-        String username = "";
+        String username;
 
         if (principal instanceof UserDetails) {
             username = ((UserDetails) principal).getUsername();
@@ -57,6 +60,11 @@ public class SecurityServiceImpl implements SecurityService {
         return username;
     }
 
+    /**
+     * Функция возвращает текущего пользователя
+     *
+     * @return Сущность БД User
+     */
     public User findLoggedUser() {
         logger.debug(LogUtil.getMethodName());
 
@@ -67,12 +75,24 @@ public class SecurityServiceImpl implements SecurityService {
         return userRepository.findByUsername(userName);
     }
 
+    /**
+     * Функция проверки пароля
+     *
+     * @param password переданный для проверки пароль
+     * @return true при совпадении
+     */
     public boolean isPasswordMatches(String password) {
         logger.debug(LogUtil.getMethodName());
 
         return userService.isPasswordMatches(password, findLoggedUser());
     }
 
+    /**
+     * Функция автологина пользователя после успешной регистрации (для новых пользоватей).
+     *
+     * @param username Имя пользователя
+     * @param password Пароль
+     */
     public void autologin(String username, String password) {
         logger.debug(LogUtil.getMethodName());
 
@@ -84,7 +104,7 @@ public class SecurityServiceImpl implements SecurityService {
 
         if (usernamePasswordAuthenticationToken.isAuthenticated()) {
             SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-            System.out.println("autologin succesfull!" + username);
+            logger.debug(String.format("autologin succesfull: %s", username));
         }
     }
 }

@@ -25,7 +25,7 @@ import java.util.List;
  * Created by Olaf on 08.05.2017.
  */
 @Service
-public class UtilServiceImpl implements UtilService{
+public class UtilServiceImpl implements UtilService {
     @Autowired
     private AmountService amountService;
     @Autowired
@@ -41,11 +41,12 @@ public class UtilServiceImpl implements UtilService{
 
     /**
      * Функция поиска объекта с форматированным отвветом в виде объекта JsonResponse
+     *
      * @param classez Класс искомого объекта
-     * @param id id сущности
+     * @param id      id сущности
      * @return JsonResponse
      */
-    public JsonResponse getById(Class classez, Integer id){
+    public JsonResponse getById(Class classez, Integer id) {
         logger.debug(LogUtil.getMethodName());
 
         JsonResponse jsonResponse = new JsonResponse();
@@ -99,8 +100,9 @@ public class UtilServiceImpl implements UtilService{
 
     /**
      * Функция сохранение сущностей БД
-     * @param entity
-     * @return
+     *
+     * @param entity обрабатываемая сущность
+     * @return JsonResponse с результатом
      */
     public JsonResponse saveEntity(Object entity) {
         logger.debug(LogUtil.getMethodName());
@@ -110,7 +112,7 @@ public class UtilServiceImpl implements UtilService{
             if (entity.getClass().isAssignableFrom(Category.class)) {
                 Category category = (Category) entity;
                 //Проверяем редактируем ли мы запись или создаем новую
-                if (category.getId() ==  null) {
+                if (category.getId() == null) {
                     logger.debug("Создается новая запись.");
                     response.setType(ResponseType.SUCCESS_CREATE_NEW_ENTITY);
                 }
@@ -118,7 +120,7 @@ public class UtilServiceImpl implements UtilService{
             } else if (entity.getClass().isAssignableFrom(Amount.class)) {
                 Amount amount = (Amount) entity;
 
-                if (amount.getId() ==  null) {
+                if (amount.getId() == null) {
                     logger.debug("Создается новая запись.");
                     response.setType(ResponseType.SUCCESS_CREATE_NEW_ENTITY);
                 }
@@ -157,8 +159,9 @@ public class UtilServiceImpl implements UtilService{
 
     /**
      * функция удаления сущности БД
+     *
      * @param className наименование класса сущности (string)
-     * @param id id сущности
+     * @param id        id сущности
      * @return JsonResponse
      */
     public JsonResponse deleteEntity(String className, Integer id) {
@@ -220,16 +223,17 @@ public class UtilServiceImpl implements UtilService{
 
     /**
      * Функция возвращает переданный список с расчитанными средними значения суммы.
+     *
      * @param barEntities список BarEntity
-     * @param after Дата начала периода
-     * @param before Дата конца периода
+     * @param after       Дата начала периода
+     * @param before      Дата конца периода
      * @return Список
      */
     public List<BarEntity> calcAvgSum(List<BarEntity> barEntities, LocalDate after, LocalDate before, byte averagingPeriod) {
         logger.debug(LogUtil.getMethodName());
 
         ChronoUnit chronoUnit;
-        switch (averagingPeriod){
+        switch (averagingPeriod) {
             case 0:
                 chronoUnit = ChronoUnit.WEEKS;
                 break;
@@ -243,7 +247,7 @@ public class UtilServiceImpl implements UtilService{
         distance = distance == 0 ? 1 : distance;
         logger.debug(String.format("Период усреднения: %s, кол-во периодов: %s", chronoUnit.toString(), distance));
 
-        for (BarEntity entity : barEntities){
+        for (BarEntity entity : barEntities) {
             entity.setSum(entity.getSum().abs().divide(new BigDecimal(distance), 2, BigDecimal.ROUND_HALF_UP));
         }
 
@@ -252,19 +256,18 @@ public class UtilServiceImpl implements UtilService{
 
     /**
      * Функция сортирует список по полю type и дале по полю Sum
-     * @param entities Список
-     * @return Список
+     *
+     * @param entities Список DBData
+     * @return отсортированный список
      */
     public <T extends DBData> List<T> sortListByTypeAndSum(List<T> entities) {
         logger.debug(LogUtil.getMethodName());
 
         Collections.sort(entities, new Comparator<T>() {
             public int compare(T o1, T o2) {
-                DBData entity1 = (DBData) o1;
-                DBData entity2 = (DBData) o2;
-                int result = entity1.getType().compareTo(entity2.getType());
+                int result = o1.getType().compareTo(o2.getType());
                 if (result == 0)
-                    result = entity2.getSum().abs().compareTo(entity1.getSum().abs());
+                    result = o2.getSum().abs().compareTo(o1.getSum().abs());
 
                 return result;
             }
@@ -273,6 +276,13 @@ public class UtilServiceImpl implements UtilService{
         return entities;
     }
 
+    /**
+     * Функция сортировки списка сначала по соотношению Сумма/лимит, затем просто по сумме.
+     *
+     * @param entities список сущностей
+     * @param <T>      классы, реализующие интерфейс DBData
+     * @return отсортированный список
+     */
     public <T extends DBData> List<T> sortByLimit(List<T> entities) {
         Collections.sort(entities, new Comparator<T>() {
             public int compare(T o1, T o2) {

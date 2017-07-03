@@ -1,6 +1,5 @@
 package ru.hd.olaf.mvc.service.impl;
 
-import com.google.common.collect.Lists;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +10,6 @@ import ru.hd.olaf.entities.Product;
 import ru.hd.olaf.entities.User;
 import ru.hd.olaf.exception.AuthException;
 import ru.hd.olaf.exception.CrudException;
-import ru.hd.olaf.mvc.controller.LoginController;
 import ru.hd.olaf.mvc.repository.ProductRepository;
 import ru.hd.olaf.mvc.service.AmountService;
 import ru.hd.olaf.mvc.service.ProductService;
@@ -44,7 +42,8 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * Функция возвращает список всех Product текущего пользователя
-     * @return
+     *
+     * @return List<Product>
      */
     public List<Product> getAll() {
         logger.debug(LogUtil.getMethodName());
@@ -59,6 +58,13 @@ public class ProductServiceImpl implements ProductService {
         return products;
     }
 
+    /**
+     * Возврат списка групп товаров по пользоватедю и категории
+     *
+     * @param user     текущий пользователь
+     * @param category категория
+     * @return List<Product>
+     */
     public List<Product> getByCategory(User user, Category category) {
         logger.debug(LogUtil.getMethodName());
         List<Product> products = productRepository.getAllByCategory(user, category);
@@ -66,6 +72,12 @@ public class ProductServiceImpl implements ProductService {
         return products;
     }
 
+    /**
+     * Функция возвращает сущность БД
+     *
+     * @param id id искомой сущности
+     * @return JsonResponse с результатом
+     */
     public JsonResponse getById(Integer id) {
         logger.debug(LogUtil.getMethodName());
 
@@ -74,8 +86,9 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * Функция возвращает product по id с проверкой на пользователя
-     * @param id
-     * @return
+     *
+     * @param id id сущности БД
+     * @return сущность
      */
     public Product getOne(Integer id) throws AuthException, IllegalArgumentException {
         logger.debug(LogUtil.getMethodName());
@@ -93,8 +106,9 @@ public class ProductServiceImpl implements ProductService {
     /**
      * Функция возвращает список Product текущего пользователя по маске наименования
      * (реализация быстрого поиска для выпадающего меню)
-     * @param name
-     * @return
+     *
+     * @param name строка для поиска по совпадению
+     * @return List<Product>
      */
     public List<Product> getByContainedName(String name) {
         logger.debug(LogUtil.getMethodName());
@@ -104,11 +118,12 @@ public class ProductServiceImpl implements ProductService {
     /**
      * Функция возврата записи product по его имени
      * (предполагаем, что поле product.name уникально для каждого пользователя)
-     * @param name
-     * @return
-     * @throws NullPointerException
+     *
+     * @param name Наименование группы товаров
+     * @return сущность БД
+     * @throws NullPointerException ошибка некорректных входных данных
      */
-    public Product getByName(String name) throws NullPointerException{
+    public Product getByName(String name) throws NullPointerException {
         logger.debug(LogUtil.getMethodName());
         Product product =
                 productRepository.findByNameAndUserId(name, securityService.findLoggedUser()).get(0);
@@ -118,10 +133,11 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * Сохранение записи
-     * @param product
-     * @return
+     *
+     * @param product обрабатываемая сущность
+     * @return сущность
      */
-    public Product save(Product product) throws CrudException{
+    public Product save(Product product) throws CrudException {
         logger.debug(LogUtil.getMethodName());
 
         Product entity;
@@ -137,7 +153,8 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * Функция возвращает запись по ее имени (поле name) либо создает новую и возвращает ее.
-     * @param productName product.name
+     *
+     * @param productName наименование группы
      * @return product
      */
     public Product getExistedOrCreated(String productName) {
@@ -168,8 +185,9 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * Функция удаления записи из БД
-     * @param product
-     * @return JsonResponse
+     *
+     * @param product обрабатываемая сущность
+     * @return JsonResponse с результатом
      */
     public JsonResponse delete(Product product) throws CrudException {
         try {

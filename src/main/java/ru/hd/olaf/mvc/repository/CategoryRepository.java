@@ -45,7 +45,7 @@ public interface CategoryRepository extends CrudRepository<Category, Integer> {
             "END " +
             ", c.id, " +
             "CASE " +
-            "WHEN (c.type = 0) THEN SUM(a.price) "+
+            "WHEN (c.type = 0) THEN SUM(a.price) " +
             "ELSE SUM(-a.price) " +
             "END, " +
             "c.name) " +
@@ -108,9 +108,9 @@ public interface CategoryRepository extends CrudRepository<Category, Integer> {
             "GROUP BY c.id " +
             "HAVING COUNT(c.id) > 0")
     List<AnalyticEntity> getAnalyticDataOfRegularByCategory(User user,
-                                                           Category category,
-                                                           Date after,
-                                                           Date before);
+                                                            Category category,
+                                                            Date after,
+                                                            Date before);
 
     @Query("SELECT new ru.hd.olaf.util.json.AnalyticEntity(" +
             "'Product' " +
@@ -153,8 +153,8 @@ public interface CategoryRepository extends CrudRepository<Category, Integer> {
             "r.id IS NULL  " +
             "GROUP BY p.id " +
             "HAVING COUNT(p.id) > 0")
-    List<AnalyticEntity> getAnalyticDataOfRegularByProduct( User user,
-                                                            Category category,
-                                                            Date after,
-                                                            Date before );
+    List<AnalyticEntity> getAnalyticDataOfRegularByProduct(User user,
+                                                           Category category,
+                                                           Date after,
+                                                           Date before);
 }

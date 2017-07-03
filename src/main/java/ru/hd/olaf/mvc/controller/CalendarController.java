@@ -44,15 +44,14 @@ public class CalendarController {
 
     /**
      * Функция прорисовки окна просмотра календаря
+     *
      * @return ModelAndView (calendar)
      */
     @RequestMapping(value = "/statistic/calendar", method = RequestMethod.GET)
-    public ModelAndView getViewCalendar(){
+    public ModelAndView getViewCalendar() {
         logger.debug(LogUtil.getMethodName());
 
         ModelAndView modelAndView = new ModelAndView("/statistic/calendar");
-
-        User currentUser = securityService.findLoggedUser();
 
         modelAndView.addObject("categories", categoryService.getAll());
         modelAndView.addObject("products", productService.getAll());
@@ -62,15 +61,19 @@ public class CalendarController {
 
     /**
      * Функция заполнения календаря FullCalendar данными
+     * @param categoryID id просматриваемой категории (при пустом значении - обрабатываме "Все")
+     * @param productID id просматриваемой группы товаров (при пустом значении - обрабатываме "Все")
      * @param startDate начальная дата отсечки периода
-     * @param endDate конечная дата отсечки
+     * @param endDate   конечная дата отсечки
      * @return список CalendarData
      */
     @RequestMapping(value = "/statistic/calendar/getCalendarData", method = RequestMethod.GET)
-    public @ResponseBody List<CalendarEntity> getCalendarData(@RequestParam (value = "categoryID") Integer categoryID,
-                                                              @RequestParam (value = "productID") Integer productID,
-                                                              @RequestParam (value = "start") String startDate,
-                                                              @RequestParam (value = "end") String endDate) {
+    public
+    @ResponseBody
+    List<CalendarEntity> getCalendarData(@RequestParam(value = "categoryID") Integer categoryID,
+                                         @RequestParam(value = "productID") Integer productID,
+                                         @RequestParam(value = "start") String startDate,
+                                         @RequestParam(value = "end") String endDate) {
         logger.debug(LogUtil.getMethodName() + String.format(". Интервал: %s - %s", startDate, endDate));
 
         List<CalendarEntity> calendarEntities;
@@ -92,13 +95,14 @@ public class CalendarController {
 
     /**
      * Функция возвращает ModelAndView с таблицей amount за заданную дату
+     *
      * @param startDate дата начала (строка)
-     * @param endDate дата конца периода (строка)
+     * @param endDate   дата конца периода (строка)
      * @return ModelAndView /data/page-product
      */
-    @RequestMapping(value="/statistic/calendar/getAmountsByDate", method = RequestMethod.GET)
-    public ModelAndView getAmountsByDate(@RequestParam (value = "start") String startDate,
-                                         @RequestParam (value = "end") String endDate) {
+    @RequestMapping(value = "/statistic/calendar/getAmountsByDate", method = RequestMethod.GET)
+    public ModelAndView getAmountsByDate(@RequestParam(value = "start") String startDate,
+                                         @RequestParam(value = "end") String endDate) {
         logger.debug(LogUtil.getMethodName() + String.format("Интервал: %s - %s", startDate, endDate));
 
         ModelAndView modelAndView = new ModelAndView("/data/page-product");
@@ -116,8 +120,15 @@ public class CalendarController {
         return modelAndView;
     }
 
+    /**
+     * Функция возвращает список групп товаров по переданной категории
+     * @param categoryID id обрабатываемой категории, при null - "все"
+     * @return List<Product>
+     */
     @RequestMapping(value = "/statistic/calendar/getProducts", method = RequestMethod.GET)
-    public @ResponseBody List<Product> getProducts(@RequestParam(value = "categoryID") Integer categoryID){
+    public
+    @ResponseBody
+    List<Product> getProducts(@RequestParam(value = "categoryID") Integer categoryID) {
         logger.debug(LogUtil.getMethodName());
 
         List<Product> products;

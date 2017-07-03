@@ -7,19 +7,16 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
-import ru.hd.olaf.entities.Mail;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import ru.hd.olaf.entities.User;
-import ru.hd.olaf.mvc.service.MailService;
 import ru.hd.olaf.mvc.service.SecurityService;
 import ru.hd.olaf.mvc.service.UserService;
-import ru.hd.olaf.mvc.service.UtilService;
 import ru.hd.olaf.mvc.validator.UserValidator;
 import ru.hd.olaf.util.LogUtil;
-import ru.hd.olaf.util.json.JsonResponse;
 
-import java.util.*;
+import java.util.Locale;
 
 /**
  * Created by d.v.hozyashev on 18.04.2017.
@@ -57,7 +54,9 @@ public class LoginController {
      * @return наименование view (registration при ошибках или index при успехе)
      */
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
-    public String registration(@ModelAttribute("userForm") User userForm, BindingResult bindingResult, Model model) {
+    public String registration(@ModelAttribute("userForm") User userForm,
+                               BindingResult bindingResult,
+                               Model model) {
         logger.debug(LogUtil.getMethodName());
 
         userValidator.validate(userForm, bindingResult);
@@ -88,7 +87,6 @@ public class LoginController {
     public String login(Model model, String error, String logout){
         logger.debug(LogUtil.getMethodName());
 
-        //TODO: link to message.properties
         if (error != null){
             model.addAttribute("error", messageSource.getMessage("label.login.error", null, new Locale("RU")));
         }

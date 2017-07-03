@@ -47,9 +47,10 @@ public class ProductController {
 
     /**
      * Прорисовка страницы просмотра состава товарной группы
+     *
      * @param productID productID сущности
      * @param beginDate начальная дата отсечки
-     * @param endDate конечная дата отсечки
+     * @param endDate   конечная дата отсечки
      * @return ModelAndView (page-product)
      */
     @RequestMapping(value = "/page-product", method = RequestMethod.GET)
@@ -104,7 +105,7 @@ public class ProductController {
 
             } else
                 logger.debug(String.format("Не найдена товарная граппа с id %d", productID));
-        } else if (categoryID != null){
+        } else if (categoryID != null) {
             Category category = (Category) utilService.getById(Category.class, categoryID).getEntity();
 
             amounts = amountService.getByType(
@@ -115,7 +116,7 @@ public class ProductController {
                     type);
 
             modelAndView.addObject("amounts", amounts);
-            switch (type){
+            switch (type) {
                 case 0:
                     title = "Просмотр стандартных оборотов по категории";
                     break;
@@ -142,6 +143,14 @@ public class ProductController {
         return modelAndView;
     }
 
+    /**
+     * Страница просмотра таблицы обязательных оборотов
+     *
+     * @param isBinding флаг находимся ли мы на странице привзяки оборота
+     * @param id        id оборота, к которому осуществляется привязка
+     * @param regularId id текущего привязанного оборота
+     * @return ModelAndView page-product
+     */
     @RequestMapping(value = "/page-product/regulars", method = RequestMethod.GET)
     public ModelAndView getRegularAmounts(@RequestParam(value = "isBinding", required = false) Boolean isBinding,
                                           @RequestParam(value = "productID", required = false) Integer id,
@@ -197,6 +206,16 @@ public class ProductController {
         return modelAndView;
     }
 
+    /**
+     * Функция сохранения привязки обязательного оборота
+     *
+     * @param amount      обрабатываемая сущность оборота
+     * @param productName имя группы товаров
+     * @param categoryId  id категории
+     * @param regularId   id текущего привязанного обязательного оборота
+     * @param referer     ссылка на предыдущую стрианицу для кнопки "Назад"
+     * @return ModelAndView page-product
+     */
     @RequestMapping(value = "/page-product/regulars", method = RequestMethod.POST)
     public ModelAndView getRegulars(@ModelAttribute("amountForm") Amount amount,
                                     @RequestParam(value = "productName") String productName,
@@ -255,9 +274,18 @@ public class ProductController {
         return modelAndView;
     }
 
-    @RequestMapping (value = "/page-product/binding", method = RequestMethod.GET)
-    public ModelAndView getBindingTable(@RequestParam (value = "type") Byte type,
-                                        @RequestParam (value = "categoryID") Integer categoryID,
+    /**
+     * Страница просмотра привязанных оборотов для ознакомления на странице просмотра статистики
+     *
+     * @param type       тип просматриваемых оборотов
+     * @param categoryID id просматриваемой категории
+     * @param beginDate  начальная дата периода, за который просматриваем обороты
+     * @param endDate    конечная дата периода
+     * @return ModelAndView page-product
+     */
+    @RequestMapping(value = "/page-product/binding", method = RequestMethod.GET)
+    public ModelAndView getBindingTable(@RequestParam(value = "type") Byte type,
+                                        @RequestParam(value = "categoryID") Integer categoryID,
                                         @RequestParam(value = "after") String beginDate,
                                         @RequestParam(value = "before") String endDate) {
         logger.debug(LogUtil.getMethodName());
@@ -294,13 +322,23 @@ public class ProductController {
         return modelAndView;
     }
 
-    @RequestMapping (value = "/page-product/binding", method = RequestMethod.POST)
-    public @ResponseBody JsonResponse setTypes(@RequestParam (value = "ids[]") Integer ids[],
-                                               @RequestParam (value = "type") Byte type){
+    /**
+     * Функция групповой смены типа у оборотов
+     *
+     * @param ids  массив id обрабатываемых оборотов
+     * @param type тип, к которому привязываются обороты
+     * @return JsonResponse с результатом привязки
+     */
+    @RequestMapping(value = "/page-product/binding", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    JsonResponse setTypes(@RequestParam(value = "ids[]") Integer ids[],
+                          @RequestParam(value = "type") Byte type) {
         logger.debug(LogUtil.getMethodName());
 
         JsonResponse response = new JsonResponse();
         StringBuilder message = new StringBuilder();
+        String text;
 
         for (Integer id : ids) {
             logger.debug(String.format("Обработка id %s", id));
@@ -312,9 +350,11 @@ public class ProductController {
                 amount.setType(type);
 
                 response1 = utilService.saveEntity(amount);
-                message.append(("Оборот #" + id + ": смена типа: " + response1.getMessage()) + "<p>");
-            } else
-                message.append("Оборот #" + id + ": ошибка захвата объекта: " + response.getMessage() + "<p>");
+                text = "Оборот #" + id + ": смена типа: " + response1.getMessage() + "<p>";
+            } else {
+                text = "Оборот #" + id + ": ошибка захвата объекта: " + response.getMessage() + "<p>";
+            }
+            message.append(text);
         }
 
         logger.debug(message.toString());
@@ -325,6 +365,10 @@ public class ProductController {
         return response;
     }
 
+    /**
+     * Служеная функция для парсинга дат
+     * @param binder WebDataBinder
+     */
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");

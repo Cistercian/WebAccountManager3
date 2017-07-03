@@ -1,6 +1,5 @@
 package ru.hd.olaf.mvc.service.impl;
 
-import com.google.common.collect.Lists;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +23,6 @@ import ru.hd.olaf.util.json.JsonResponse;
 import ru.hd.olaf.util.json.ResponseType;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
@@ -45,6 +43,14 @@ public class LimitServiceImpl implements LimitService {
 
     private static final Logger logger = LoggerFactory.getLogger(LimitServiceImpl.class);
 
+    /**
+     * Функция получения сущности БД
+     *
+     * @param id id запрошенной сущности
+     * @return Сущность БД
+     * @throws AuthException            Ошибка авторизации (запрошен непринадлежащий объект)
+     * @throws IllegalArgumentException Ошибка переданного параметра
+     */
     public Limit getOne(Integer id) throws AuthException, IllegalArgumentException {
         logger.debug(LogUtil.getMethodName());
 
@@ -59,11 +65,22 @@ public class LimitServiceImpl implements LimitService {
         return limit;
     }
 
+    /**
+     * Функция возврата сущности через служебный класс UtilService
+     *
+     * @param id id запрашиваемой сущности
+     * @return JsonResponse c результатом
+     */
     public JsonResponse getById(Integer id) {
         logger.debug(LogUtil.getMethodName());
         return utilService.getById(Limit.class, id);
     }
 
+    /**
+     * Функция возврата полного списка лимитов с проверкой на текущего пользователя
+     *
+     * @return List<Limit>
+     */
     public List<Limit> getAll() {
         logger.debug(LogUtil.getMethodName());
         User user = securityService.findLoggedUser();
@@ -71,6 +88,13 @@ public class LimitServiceImpl implements LimitService {
         return limitRepository.findByUserId(user);
     }
 
+    /**
+     * Функция сохранения сущности в БД
+     *
+     * @param limit обрабатываемая сущность
+     * @return сущность
+     * @throws CrudException ошибка операций в БД
+     */
     public Limit save(Limit limit) throws CrudException {
         logger.debug(LogUtil.getMethodName());
 
@@ -93,6 +117,13 @@ public class LimitServiceImpl implements LimitService {
         return entity;
     }
 
+    /**
+     * Функция удаления сущности БД
+     *
+     * @param limit обрабатываемая сущность
+     * @return сущность
+     * @throws CrudException ошибка операций в БД
+     */
     public JsonResponse delete(Limit limit) throws CrudException {
         logger.debug(LogUtil.getMethodName());
 
@@ -106,9 +137,10 @@ public class LimitServiceImpl implements LimitService {
 
     /**
      * Функция возвращает BarEntity для прорисовки прогресс баров по таблице лимитов
-     * @param user пользователь
+     *
+     * @param user   пользователь
      * @param period период (0 - день, 1 - неделя, 2 - месяц)
-     * @param after начальная дата отсечки
+     * @param after  начальная дата отсечки
      * @param before конечная дата отсечки
      * @return список BarEntity
      */
@@ -129,6 +161,7 @@ public class LimitServiceImpl implements LimitService {
 
     /**
      * Функция возвращает запись таблицы limit по периоду и подчиненной сущности (используется валидаторов)
+     *
      * @param period Byte period
      * @param entity Object
      * @return Limit or null
@@ -149,7 +182,8 @@ public class LimitServiceImpl implements LimitService {
 
     /**
      * Функция возвращает список объектов BarEntity с информацией по текущему расходу лимитов по отдельно взятой группе
-     * @param user Пользователь
+     *
+     * @param user    Пользователь
      * @param product Рассматриваемая товарная группа
      * @return Список
      */
@@ -166,7 +200,8 @@ public class LimitServiceImpl implements LimitService {
     /**
      * Функция возвращает список объектов BarEntity с информацией по текущему расходу лимитов по отдельно взятой
      * категории
-     * @param user Пользователь
+     *
+     * @param user     Пользователь
      * @param category Рассматриваемая категория
      * @return Список
      */

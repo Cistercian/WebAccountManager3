@@ -1,10 +1,8 @@
 package ru.hd.olaf.util.json;
 
 import ru.hd.olaf.entities.Amount;
-import ru.hd.olaf.util.DateUtil;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -21,7 +19,12 @@ public class CompareEntity {
     private BigDecimal lastSum;
     private List<Amount> amounts;
 
-    public CompareEntity(BigDecimal minSum, Date minDate, BigDecimal maxSum, Date maxDate, BigDecimal avgSum, List<Amount> amounts) {
+    public CompareEntity(BigDecimal minSum,
+                         Date minDate,
+                         BigDecimal maxSum,
+                         Date maxDate,
+                         BigDecimal avgSum,
+                         List<Amount> amounts) {
         this.minSum = minSum;
         this.minDate = minDate;
         this.maxSum = maxSum;

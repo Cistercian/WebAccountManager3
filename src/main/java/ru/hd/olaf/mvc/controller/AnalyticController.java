@@ -36,8 +36,14 @@ public class AnalyticController {
 
     private static final Logger logger = LoggerFactory.getLogger(AnalyticController.class);
 
+    /**
+     * Функция прорисовки окна статистики
+     * @param beginDate начальная дата с которой собирается информация по оборотам (в настоящий момент
+     * предуастанавливается на первое число текущего месяца
+     * @return ModelAndView analytic
+     */
     @RequestMapping(value = "/statistic/analytic", method = RequestMethod.GET)
-    public ModelAndView getViewCompare(@RequestParam(value = "after", required = false) String beginDate){
+    public ModelAndView getViewCompare(@RequestParam(value = "after", required = false) String beginDate) {
         logger.debug(LogUtil.getMethodName());
         ModelAndView modelAndView = new ModelAndView("/statistic/analytic");
 
@@ -65,7 +71,7 @@ public class AnalyticController {
         for (AnalyticEntity entity : analyticData) {
             if (entity.getType().endsWith("Income")) {
                 incomeSum = incomeSum.add(entity.getSum().subtract(entity.getOneTimeSum()).multiply(rate)
-                    .add(entity.getOneTimeSum()).add(entity.getRegularSum()));
+                        .add(entity.getOneTimeSum()).add(entity.getRegularSum()));
                 incomeAvg = incomeAvg.add(entity.getAvgSum());
             } else {
                 expenseSum = expenseSum.add(entity.getSum().subtract(entity.getOneTimeSum()).multiply(rate)
@@ -87,15 +93,24 @@ public class AnalyticController {
         modelAndView.addObject("totalAvg", FormatUtil.numberToString(incomeAvg.subtract(expenseAvg)));
 
         logger.debug(String.format("Анализ прогнозируемых данных. Текущее число месяца: %d из %d, коэффициент одного " +
-                "дня: %s прогнозируемый доход: %s, прогнозируемый расход %s", currentDay, countDays, rate,
+                        "дня: %s прогнозируемый доход: %s, прогнозируемый расход %s", currentDay, countDays, rate,
                 incomeSum, expenseSum));
 
         return modelAndView;
     }
 
+    /**
+     * Функция сбора данных для статистики. В планах перевод функционала на перерасчет данных ajax запросом, поэтому
+     * функционал паблик.
+     * @param beginDate Начальная дата периода
+     * @param endDate Конечная дата периода
+     * @return List<AnalyticEntity>
+     */
     @RequestMapping(value = "/statistic/analytic/getData", method = RequestMethod.GET)
-    public @ResponseBody List<AnalyticEntity> getData(@RequestParam(value = "after", required = false) String beginDate,
-                                              @RequestParam(value = "before", required = false) String endDate) {
+    public
+    @ResponseBody
+    List<AnalyticEntity> getData(@RequestParam(value = "after", required = false) String beginDate,
+                                 @RequestParam(value = "before", required = false) String endDate) {
         logger.debug(LogUtil.getMethodName());
 
         LocalDate after = getAfter(beginDate);
@@ -129,14 +144,24 @@ public class AnalyticController {
         return analyticData;
     }
 
-    private LocalDate getAfter(String date){
+    /**
+     * Функция парсинга начальной даты. При пустом входном значениии возвращает "за все время"
+     * @param date Дата строкой
+     * @return LocalDate
+     */
+    private LocalDate getAfter(String date) {
         if (date != null && !"".equals(date))
             return DateUtil.getParsedDate(date);
         else
             return DateUtil.getStartOfEra();
     }
 
-    private LocalDate getBefore(String date){
+    /**
+     * Функция парсинга конечной даты. При пустом входном значениии возвращает конец предыдущего месяца
+     * @param date Дата строкой
+     * @return LocalDate
+     */
+    private LocalDate getBefore(String date) {
         if (date != null && !"".equals(date))
             return DateUtil.getParsedDate(date);
         else

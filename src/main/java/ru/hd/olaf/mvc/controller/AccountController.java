@@ -40,11 +40,21 @@ public class AccountController {
 
     private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
 
+
+    /**
+     * Функция создания сообщения (псевдоотправка письма)
+     *
+     * @param username Имя получателя
+     * @param title    Тема письма
+     * @param text     Текст письмо
+     * @return JsonResponse
+     */
     @RequestMapping(value = "/account/sendMail", method = RequestMethod.POST)
-    public @ResponseBody
+    public
+    @ResponseBody
     JsonResponse sendMail(@RequestParam(value = "username", required = false) String username,
                           @RequestParam(value = "title") String title,
-                          @RequestParam(value = "text") String text){
+                          @RequestParam(value = "text") String text) {
         logger.debug(LogUtil.getMethodName());
 
         if (title == null || text == null || title.length() == 0 || text.length() == 0)
@@ -85,11 +95,12 @@ public class AccountController {
 
     /**
      * Функция отрисовки окна профиля
+     *
      * @param model model
      * @return наименование view (account)
      */
     @RequestMapping(value = "account", method = RequestMethod.GET)
-    public String getViewAccount(Model model){
+    public String getViewAccount(Model model) {
         logger.debug(LogUtil.getMethodName());
 
         model.addAttribute("passwordForm", new User());
@@ -102,13 +113,14 @@ public class AccountController {
 
     /**
      * Функция смены пароля
-     * @param userForm html форма с атрибутами User
+     *
+     * @param userForm      html форма с атрибутами User
      * @param bindingResult для валидации
-     * @param model model
+     * @param model         model
      * @return наименование view (account)
      */
     @RequestMapping(value = "account", method = RequestMethod.POST)
-    public String setPassword(@ModelAttribute("passwordForm") User userForm, BindingResult bindingResult, Model model){
+    public String setPassword(@ModelAttribute("passwordForm") User userForm, BindingResult bindingResult, Model model) {
         logger.debug(LogUtil.getMethodName());
 
         User currentUser = securityService.findLoggedUser();
@@ -124,7 +136,7 @@ public class AccountController {
         List<Mail> list = mailService.getAll();
         model.addAttribute("mail", list);
 
-        if (bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             logger.debug("Валидация не пройдена");
             return "login/account";
         }
@@ -142,20 +154,26 @@ public class AccountController {
         return "login/account";
     }
 
+    /**
+     * Функция прорисовка содержимого сообщения
+     *
+     * @param id id сообщения
+     * @return ModelAndView mail
+     */
     @RequestMapping(value = "/account/getMail", method = RequestMethod.GET)
-    public ModelAndView getMail(@RequestParam(value = "id") Integer id){
+    public ModelAndView getMail(@RequestParam(value = "id") Integer id) {
         logger.debug(LogUtil.getMethodName());
 
         ModelAndView modelAndView = new ModelAndView("/login/mail/mail");
 
         JsonResponse response = utilService.getById(Mail.class, id);
-        if (response.getEntity() != null){
+        if (response.getEntity() != null) {
             Mail mail = (Mail) response.getEntity();
             logger.debug(String.format("Обрабатываемый объект: %s", mail));
 
             modelAndView.addObject("mail", mail);
 
-            mail.setIsRead((byte)1);
+            mail.setIsRead((byte) 1);
             response = utilService.saveEntity(mail);
 
             logger.debug(String.format("Уведомление прочитано. Результат сохранения: %s", response.getMessage()));
@@ -164,8 +182,13 @@ public class AccountController {
         return modelAndView;
     }
 
+    /**
+     * Функция прорисовки пустого окна сообщения (для отправки)
+     *
+     * @return ModelAndView sendMailForm
+     */
     @RequestMapping(value = "/account/getMailForm", method = RequestMethod.GET)
-    public ModelAndView viewMailForm(){
+    public ModelAndView viewMailForm() {
         logger.debug(LogUtil.getMethodName());
 
         ModelAndView modelAndView = new ModelAndView("/login/mail/sendMailForm");
@@ -173,8 +196,14 @@ public class AccountController {
         return modelAndView;
     }
 
+    /**
+     * Функция прорисовки окна справки
+     *
+     * @param pageNum номер отображаемой страницы
+     * @return ModelAndView page + pageNum
+     */
     @RequestMapping(value = "/account/getManualForm", method = RequestMethod.GET)
-    public ModelAndView viewMailForm(@RequestParam(value = "page") Integer pageNum){
+    public ModelAndView viewMailForm(@RequestParam(value = "page") Integer pageNum) {
         logger.debug(LogUtil.getMethodName());
 
         if (pageNum == null) pageNum = 1;

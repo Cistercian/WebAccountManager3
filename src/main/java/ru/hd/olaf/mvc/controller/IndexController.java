@@ -20,8 +20,9 @@ import ru.hd.olaf.util.json.ResponseType;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.temporal.TemporalAdjusters;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Olaf on 11.04.2017.
@@ -42,7 +43,7 @@ public class IndexController {
     private static final Logger logger = LoggerFactory.getLogger(IndexController.class);
 
     /**
-     * Функция возврата favicon.ico (иконка сайта для умных браузеров...)
+     * Функция возврата favicon.ico
      *
      * @return ico-файл
      */
@@ -99,7 +100,6 @@ public class IndexController {
         modelAndView.addObject("sumIncome", sumIncome);
         modelAndView.addObject("sumExpense", sumExpense);
 
-        //TODO: jpa query, devidebyzero?
         BigDecimal maxIncome = new BigDecimal("0");
         BigDecimal maxExpense = new BigDecimal("0");
 
@@ -107,7 +107,9 @@ public class IndexController {
             if ("CategoryIncome".equalsIgnoreCase(barEntity.getType())) {
                 maxIncome = maxIncome.compareTo(barEntity.getSum()) > 0 ? maxIncome : barEntity.getSum();
             } else {
-                maxExpense = maxExpense.abs().compareTo(barEntity.getSum().abs()) > 0 ? maxExpense : barEntity.getSum();
+                maxExpense = maxExpense.abs().compareTo(barEntity.getSum().abs()) > 0 ?
+                        maxExpense :
+                        barEntity.getSum();
             }
         }
 
@@ -121,8 +123,8 @@ public class IndexController {
     }
 
     /**
-     * Функция возврата json данных для прорисовки прогресс баров на главной странице по корневым категориям доход/расход
-     * с сортировкой по типу (CategoryIncome\CategoryExpense) и сумме по убыванию
+     * Функция возврата json данных для прорисовки прогресс баров на главной странице по корневым категориям
+     * доход/расход с сортировкой по типу (CategoryIncome\CategoryExpense) и сумме по убыванию
      *
      * @param beginDate начальная дата отсечки
      * @param endDate   конечная дата отсечки
@@ -154,13 +156,22 @@ public class IndexController {
     }
 
 
+    /**
+     * Функция просмотра содержимого рассматриваемой категории
+     *
+     * @param categoryId        id категории
+     * @param beginDate         Начальная дата периода, за который учитываются обороты
+     * @param endDate           Конечная дата периода
+     * @param isGetAnalyticData флаг прасматриваем ли мы данные на странице статистики
+     * @return List<DBData>
+     */
     @RequestMapping(value = "/getContentByCategoryId", method = RequestMethod.GET)
     public
     @ResponseBody
     List<DBData> getCategoryContentByCategoryId(@RequestParam(value = "categoryId") Integer categoryId,
-                                                   @RequestParam(value = "after") String beginDate,
-                                                   @RequestParam(value = "before") String endDate,
-                                                   @RequestParam(value = "isGetAnalyticData", required = false) boolean isGetAnalyticData) {
+                                                @RequestParam(value = "after") String beginDate,
+                                                @RequestParam(value = "before") String endDate,
+                                                @RequestParam(value = "isGetAnalyticData", required = false) boolean isGetAnalyticData) {
         logger.debug(LogUtil.getMethodName());
         logger.debug(String.format("Выводятся ли среднемесячные данные: %s", isGetAnalyticData));
 
@@ -209,6 +220,11 @@ public class IndexController {
         return categoryContent;
     }
 
+    /**
+     * Функция возврата списка с темами непрочтеных уведомлений (писем)
+     *
+     * @return List<String>
+     */
     @RequestMapping(value = "/index/getAlerts", method = RequestMethod.GET)
     public
     @ResponseBody
@@ -220,6 +236,11 @@ public class IndexController {
         return mailService.getUnreadTitle(currentUser);
     }
 
+    /**
+     * Служебная функция для корректного парсинга дат
+     *
+     * @param binder WebDataBinder
+     */
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");

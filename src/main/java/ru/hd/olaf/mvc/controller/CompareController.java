@@ -36,6 +36,11 @@ public class CompareController {
 
     private static final Logger logger = LoggerFactory.getLogger(CompareController.class);
 
+    /**
+     * Функция возвращает страницу сравнения цен
+     *
+     * @return ModelAndView compare
+     */
     @RequestMapping(value = "/statistic/compare", method = RequestMethod.GET)
     public ModelAndView getViewCompare() {
         logger.debug(LogUtil.getMethodName());
@@ -44,6 +49,12 @@ public class CompareController {
         return modelAndView;
     }
 
+    /**
+     * Функция возращает объект CompareEntity со средними данными (цена и дата)
+     *
+     * @param query строка фильтрации
+     * @return CompareEntity
+     */
     @RequestMapping(value = "/statistic/compare/getCompareData", method = RequestMethod.GET)
     public
     @ResponseBody

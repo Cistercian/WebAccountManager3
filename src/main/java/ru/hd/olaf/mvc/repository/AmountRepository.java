@@ -10,7 +10,6 @@ import ru.hd.olaf.util.json.BarEntity;
 import ru.hd.olaf.util.json.CalendarEntity;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -39,10 +38,10 @@ public interface AmountRepository extends CrudRepository<Amount, Integer> {
     List<Amount> findByProductIdAndCategoryIdAndUserIdAndDateBetween(Product product, Category category, User user, Date after, Date before);
 
     @Query("SELECT new ru.hd.olaf.util.json.BarEntity(" +
-                "'Product', " +
-                "p.id, " +
-                "SUM(a.price), " +
-                "p.name) " +
+            "'Product', " +
+            "p.id, " +
+            "SUM(a.price), " +
+            "p.name) " +
             "FROM Amount a LEFT JOIN a.productId p WHERE " +
             "a.userId = ?1 AND a.categoryId = ?2 AND " +
             "a.date BETWEEN ?3 AND ?4 " +

@@ -15,7 +15,6 @@ import ru.hd.olaf.util.LogUtil;
 import ru.hd.olaf.util.json.BarEntity;
 
 import java.time.LocalDate;
-import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
 /**
@@ -33,10 +32,11 @@ public class LimitControlController {
 
     /**
      * Функция возвращает страницу просмотра исполнения лимитов
-     * @return ModelAndView(limit-control)
+     *
+     * @return ModelAndView(limit control)
      */
     @RequestMapping(value = "/statistic/limit-control", method = RequestMethod.GET)
-    public ModelAndView getViewLimit(){
+    public ModelAndView getViewLimit() {
         logger.debug(LogUtil.getMethodName());
 
         ModelAndView modelAndView = new ModelAndView("/statistic/limit-control");

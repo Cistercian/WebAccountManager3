@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 
 /**
  * class for export raw data from db
- *
+ * <p>
  * Created by d.v.hozyashev on 20.04.2017.
  */
 public class BarEntity implements DBData {
@@ -18,6 +18,7 @@ public class BarEntity implements DBData {
 
     //added 06/06/17
     //поля для аналитики прогнозирования
+    //TODO: redudant
     private BigDecimal oneTimeSum;
     private BigDecimal regularSum;
 
@@ -46,7 +47,8 @@ public class BarEntity implements DBData {
         this.id = id;
         this.sum = sum == null ? new BigDecimal("0") : sum;
         this.name = name;
-        this.limit = limit == null ? new BigDecimal("0") : limit;;
+        this.limit = limit == null ? new BigDecimal("0") : limit;
+        ;
         this.oneTimeSum = new BigDecimal("0");
         this.regularSum = new BigDecimal("0");
     }
@@ -56,7 +58,8 @@ public class BarEntity implements DBData {
         this.id = id;
         this.sum = sum == null ? new BigDecimal("0") : sum;
         this.name = name;
-        this.limit = limit == null ? new BigDecimal("0") : limit;;
+        this.limit = limit == null ? new BigDecimal("0") : limit;
+        ;
         this.oneTimeSum = oneTimeSum == null ? new BigDecimal("0") : oneTimeSum;
         this.regularSum = regularSum == null ? new BigDecimal("0") : regularSum;
     }
@@ -101,11 +104,11 @@ public class BarEntity implements DBData {
         this.limit = limit;
     }
 
-    public String getFormattedSum(){
+    public String getFormattedSum() {
         return FormatUtil.numberToString(limit);
     }
 
-    public String getFormattedLimit(){
+    public String getFormattedLimit() {
         return FormatUtil.numberToString(limit);
     }
 

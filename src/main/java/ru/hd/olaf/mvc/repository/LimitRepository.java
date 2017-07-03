@@ -18,6 +18,7 @@ public interface LimitRepository extends JpaRepository<Limit, Integer> {
     List<Limit> findByUserId(User user);
 
     Limit findByUserIdAndPeriodAndCategoryId(User user, Byte period, Category categoryId);
+
     Limit findByUserIdAndPeriodAndProductId(User user, Byte period, Product productId);
 
     @Query("SELECT new ru.hd.olaf.util.json.BarEntity(l.type, p.id, SUM(a.price), l.entityName, l.sum) " +
@@ -43,12 +44,12 @@ public interface LimitRepository extends JpaRepository<Limit, Integer> {
             "LEFT JOIN l.productId p " +
             "LEFT JOIN p.amounts a " +
             "WHERE  a.productId = p AND " +
-                "l.type = 'product' AND " +
-                "l.userId = ?1 AND " +
-                "l.productId = ?2  AND " +
-                "((l.period = 0 and a.date BETWEEN ?3 AND ?6) OR " +
-                "(l.period = 1 and a.date BETWEEN ?4 AND ?6) OR " +
-                "(l.period = 2 and a.date BETWEEN ?5 AND ?6)) " +
+            "l.type = 'product' AND " +
+            "l.userId = ?1 AND " +
+            "l.productId = ?2  AND " +
+            "((l.period = 0 and a.date BETWEEN ?3 AND ?6) OR " +
+            "(l.period = 1 and a.date BETWEEN ?4 AND ?6) OR " +
+            "(l.period = 2 and a.date BETWEEN ?5 AND ?6)) " +
             "GROUP BY l.period " +
             "HAVING l.sum > 0 ")
     List<BarEntity> findLimitAndSumAmountsByProduct(User user,
@@ -63,13 +64,13 @@ public interface LimitRepository extends JpaRepository<Limit, Integer> {
             "LEFT JOIN l.categoryId c " +
             "LEFT JOIN c.amounts a " +
             "WHERE  a.categoryId = c AND " +
-                "l.categoryId = c AND " +
-                "l.type = 'category' AND " +
-                "l.userId = ?1 AND " +
-                "l.categoryId = ?2 AND " +
-                "((l.period = 0 and a.date BETWEEN ?3 AND ?6) OR " +
-                "(l.period = 1 and a.date BETWEEN ?4 AND ?6) OR " +
-                "(l.period = 2 and a.date BETWEEN ?5 AND ?6)) " +
+            "l.categoryId = c AND " +
+            "l.type = 'category' AND " +
+            "l.userId = ?1 AND " +
+            "l.categoryId = ?2 AND " +
+            "((l.period = 0 and a.date BETWEEN ?3 AND ?6) OR " +
+            "(l.period = 1 and a.date BETWEEN ?4 AND ?6) OR " +
+            "(l.period = 2 and a.date BETWEEN ?5 AND ?6)) " +
             "GROUP BY l.period " +
             "HAVING l.sum > 0 ")
     List<BarEntity> findLimitAndSumAmountsByCategory(User user,

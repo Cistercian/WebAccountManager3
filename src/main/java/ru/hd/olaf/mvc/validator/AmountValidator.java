@@ -2,14 +2,11 @@ package ru.hd.olaf.mvc.validator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 import ru.hd.olaf.entities.Amount;
-import ru.hd.olaf.mvc.service.AmountService;
-import ru.hd.olaf.mvc.service.CategoryService;
 import ru.hd.olaf.util.LogUtil;
 
 import java.math.BigDecimal;
@@ -19,11 +16,6 @@ import java.math.BigDecimal;
  */
 @Component
 public class AmountValidator implements Validator {
-
-    @Autowired
-    private AmountService amountService;
-    @Autowired
-    private CategoryService categoryService;
 
     private static final Logger logger = LoggerFactory.getLogger(AmountValidator.class);
 

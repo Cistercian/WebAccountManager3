@@ -46,8 +46,9 @@ public class MailServiceImpl implements MailService {
 
     /**
      * Функция возвращает product по id с проверкой на пользователя
-     * @param id
-     * @return
+     *
+     * @param id id запрошенной сущности
+     * @return сущность БД
      */
     public Mail getOne(Integer id) throws AuthException, IllegalArgumentException {
         logger.debug(LogUtil.getMethodName());
@@ -62,6 +63,12 @@ public class MailServiceImpl implements MailService {
         return mail;
     }
 
+    /**
+     * Функция возврата сущности через служебный класс
+     *
+     * @param id id запрошенной сущности
+     * @return JsonResponse с результатом
+     */
     public JsonResponse getById(Integer id) {
         logger.debug(LogUtil.getMethodName());
 
@@ -70,7 +77,8 @@ public class MailServiceImpl implements MailService {
 
     /**
      * Функция возвращает список всех Product текущего пользователя
-     * @return
+     *
+     * @return List<Mail>
      */
     public List<Mail> getAll() {
         logger.debug(LogUtil.getMethodName());
@@ -116,6 +124,7 @@ public class MailServiceImpl implements MailService {
 
     /**
      * Функция проверяет нарушения лимитов и при их существовании создает запись в таблице mail
+     *
      * @param user текущий пользователь
      * @return объект JsonResponse
      */
@@ -126,16 +135,23 @@ public class MailServiceImpl implements MailService {
         List<BarEntity> list = new ArrayList<BarEntity>();
         LocalDate today = LocalDate.now();
 
-        list.addAll(limitService.getLimits(user, (byte)0, LocalDate.now(), today));
-        list.addAll(limitService.getLimits(user, (byte)1, DateUtil.getStartOfWeek(), today));
-        list.addAll(limitService.getLimits(user, (byte)2, DateUtil.getStartOfMonth(), today));
+        list.addAll(limitService.getLimits(user, (byte) 0, LocalDate.now(), today));
+        list.addAll(limitService.getLimits(user, (byte) 1, DateUtil.getStartOfWeek(), today));
+        list.addAll(limitService.getLimits(user, (byte) 2, DateUtil.getStartOfMonth(), today));
 
         createMailLimit(user, list);
 
         return response;
     }
 
-    public void checkLimit(User user, Object entity){
+    /**
+     * Провека превышения ранее установленных лимитов. При превышении функция создает соответствующее уведомление
+     * (письмо)
+     *
+     * @param user   пользователь
+     * @param entity сущность, по которой проверяется превышение (группа товаров или категория)
+     */
+    public void checkLimit(User user, Object entity) {
         logger.debug(LogUtil.getMethodName());
 
         List<BarEntity> list = new ArrayList<BarEntity>();
@@ -158,6 +174,12 @@ public class MailServiceImpl implements MailService {
         createMailLimit(user, list);
     }
 
+    /**
+     * Функция создания почтового уведомления о превышении лимита
+     *
+     * @param user текущий пользователь
+     * @param list список, на основании которого создается письма (один элемент - одно письмо)
+     */
     private void createMailLimit(User user, List<BarEntity> list) {
         logger.debug(LogUtil.getMethodName());
 
@@ -191,6 +213,7 @@ public class MailServiceImpl implements MailService {
 
     /**
      * Функция возвращает список из тем непрочтенных писем
+     *
      * @param user польователь
      * @return list
      */

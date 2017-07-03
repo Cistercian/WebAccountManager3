@@ -41,7 +41,7 @@ public class CategoryServiceImpl implements CategoryService {
     /**
      * Функция возвращает список category  с проверкой на текущего пользователя
      *
-     * @return
+     * @return List<Category>
      */
     public List<Category> getAll() {
         logger.debug(LogUtil.getMethodName());
@@ -52,7 +52,7 @@ public class CategoryServiceImpl implements CategoryService {
     /**
      * Функция возвращает список Category по текущему пользователю
      *
-     * @return
+     * @return List<Category>
      */
     public List<Category> getAllByCurrentUser() {
         logger.debug(LogUtil.getMethodName());
@@ -73,7 +73,7 @@ public class CategoryServiceImpl implements CategoryService {
      *
      * @param parent      Родительская категория
      * @param currentUser рассматриваемый пользователь
-     * @return List
+     * @return List<Category>
      */
     public List<Category> getByParent(Category parent, User currentUser) {
         logger.debug(LogUtil.getMethodName());
@@ -82,13 +82,15 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     /**
-     * Функция возвращает коллекцию служебного класса BarEntity, элемент которой - дочерняя категория, указанной родительской
-     * с итоговой по ней суммой за заданный период с исключением нулевых сумм.
+     * Функция возвращает коллекцию служебного класса BarEntity, элемент которой - дочерняя категория,
+     * указанной родительской с итоговой по ней суммой за заданный период с исключением нулевых сумм.
      *
-     * @param parent
-     * @param after
-     * @param before
-     * @return
+     * @param user   пользователь
+     * @param parent рассматриваемая родительская категория. При передачи null данные будут сформированы только по
+     *               родительским категориям
+     * @param after  начальный период
+     * @param before конечная дата периода
+     * @return List<BarEntity>
      */
     public List<BarEntity> getBarEntityOfSubCategories(User user,
                                                        Category parent,
@@ -138,6 +140,13 @@ public class CategoryServiceImpl implements CategoryService {
         return bars;
     }
 
+    /**
+     * Функция "разворачивания" дочерних категорий до конечной родитеслькой
+     *
+     * @param entity       обрабатываемая сущность
+     * @param rootCategory категория, на которой останавливается "развертывание"
+     * @return DBData
+     */
     private DBData getParentBar(DBData entity, Category rootCategory) {
         logger.debug(LogUtil.getMethodName());
 
@@ -173,8 +182,8 @@ public class CategoryServiceImpl implements CategoryService {
     /**
      * Функция возвращает список дочерних категорий
      *
-     * @param parentId
-     * @return
+     * @param parentId родительская категория
+     * @return List<Category>
      */
     private List<Category> getByParentId(Category parentId) {
         logger.debug(LogUtil.getMethodName());
@@ -187,8 +196,8 @@ public class CategoryServiceImpl implements CategoryService {
     /**
      * Функция возвращения записи category с проверкой на текущего пользователя
      *
-     * @param id
-     * @return
+     * @param id обрабатываемая сущность
+     * @return сущность БД
      */
     public Category getOne(Integer id) throws AuthException, IllegalArgumentException {
         logger.debug(LogUtil.getMethodName());
@@ -226,8 +235,8 @@ public class CategoryServiceImpl implements CategoryService {
     /**
      * Функция создания/обновления записи
      *
-     * @param category
-     * @return
+     * @param category обрабатываемая категория
+     * @return категория
      */
     public Category save(Category category) throws CrudException {
         logger.debug(LogUtil.getMethodName());
@@ -246,23 +255,23 @@ public class CategoryServiceImpl implements CategoryService {
     /**
      * Функция удаления записи Category
      *
-     * @param category
-     * @return
+     * @param category обрабатываемая категория
+     * @return JsonResponse  с результатом
      */
     public JsonResponse delete(Category category) throws CrudException {
         logger.debug(LogUtil.getMethodName());
 
         //Проверка существуют ли записи amount с данной категорией
         if (category.getAmounts().size() > 0) {
-            String message = String.format("Удаление невозможно: к данной категории привязаны " +
-                    "один или несколько оборотов ");
+            String message = "Удаление невозможно: к данной категории привязаны " +
+                    "один или несколько оборотов ";
             logger.debug(message);
 
             throw new CrudException(message);
         }
         if (getByParentId(category).size() > 0) {
-            String message = String.format("Удаление невозможно: данная запись числится " +
-                    "родительской для других категорий");
+            String message = "Удаление невозможно: данная запись числится " +
+                    "родительской для других категорий";
             logger.debug(message);
 
             throw new CrudException(message);
@@ -278,16 +287,17 @@ public class CategoryServiceImpl implements CategoryService {
 
     /**
      * Функция получения аналитических данных (средние расходы и доходы)
-     * @param user Текущий пользователь
+     *
+     * @param user     Текущий пользователь
      * @param category Текущая рассматриваемая категория
-     * @param after Дата начала периода
-     * @param before Дата окночания периода
+     * @param after    Дата начала периода
+     * @param before   Дата окночания периода
      * @return Список баров
      */
     public List<AnalyticEntity> getAnalyticData(User user,
-                                        Category category,
-                                        LocalDate after,
-                                        LocalDate before) {
+                                                Category category,
+                                                LocalDate after,
+                                                LocalDate before) {
         logger.debug(LogUtil.getMethodName());
 
         Date beginOfEra = DateUtil.getDateOfStartOfEra();
@@ -343,8 +353,8 @@ public class CategoryServiceImpl implements CategoryService {
                     false
             ));
 
-        for (AnalyticEntity entity : listThisMonth){
-            if (list.contains(entity)){
+        for (AnalyticEntity entity : listThisMonth) {
+            if (list.contains(entity)) {
                 int index = list.indexOf(entity);
                 AnalyticEntity data = list.get(index);
 
@@ -387,8 +397,8 @@ public class CategoryServiceImpl implements CategoryService {
                     false,
                     true
             ));
-        for (AnalyticEntity entity : listThisMonth){
-            if (list.contains(entity)){
+        for (AnalyticEntity entity : listThisMonth) {
+            if (list.contains(entity)) {
                 int index = list.indexOf(entity);
                 AnalyticEntity data = list.get(index);
 
@@ -420,8 +430,8 @@ public class CategoryServiceImpl implements CategoryService {
         logger.debug("Список с обязательными оборотами:");
         LogUtil.logList(logger, listThisMonth);
 
-        for (AnalyticEntity entity : listThisMonth){
-            if (list.contains(entity)){
+        for (AnalyticEntity entity : listThisMonth) {
+            if (list.contains(entity)) {
                 int index = list.indexOf(entity);
                 AnalyticEntity data = list.get(index);
 
@@ -468,7 +478,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         logger.debug("Формируем данные для отправки на страницу.");
         list = new ArrayList<AnalyticEntity>();
-        for (AnalyticEntity data : map.values()){
+        for (AnalyticEntity data : map.values()) {
             long distance = DateUtil.getParsedDate(data.getMinDate().toString()).until(
                     DateUtil.getParsedDate(data.getMaxDate().toString()), ChronoUnit.MONTHS
             ) + 1;
@@ -480,7 +490,7 @@ public class CategoryServiceImpl implements CategoryService {
             list.add(data);
 
             logger.debug(String.format("Расчет среднего значения для %s: Общая сумма %s, кол-во месяцев, на которое делим: %s, " +
-                    "сумма единоразовых оборотов: %s, ИТОГО: %s", (data.getType().startsWith("Category") ? "категории " : "группы ") + data.getName(),
+                            "сумма единоразовых оборотов: %s, ИТОГО: %s", (data.getType().startsWith("Category") ? "категории " : "группы ") + data.getName(),
                     data.getAvgSum(), distance, data.getOneTimeSum(), avgSum));
         }
 

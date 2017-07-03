@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import ru.hd.olaf.entities.Limit;
-import ru.hd.olaf.entities.Product;
 import ru.hd.olaf.mvc.service.CategoryService;
 import ru.hd.olaf.mvc.service.LimitService;
 import ru.hd.olaf.mvc.service.ProductService;
@@ -65,7 +64,7 @@ public class LimitValidator implements Validator {
 
         if (limit.getPeriod() == null)
             setError("period", "Validation.limit.period", errors);
-        else if (limit.getPeriod() < 0 || limit.getPeriod() > 2){
+        else if (limit.getPeriod() < 0 || limit.getPeriod() > 2) {
             setError("period", "Validation.limit.period", errors);
         }
 

@@ -1,10 +1,6 @@
 package ru.hd.olaf.util.json;
 
-import ru.hd.olaf.util.DateUtil;
-import ru.hd.olaf.util.LogUtil;
-
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.Date;
 
 /**
@@ -40,8 +36,8 @@ public class CalendarEntity {
         isNegativeSum(sum);
     }
 
-    private void isNegativeSum(String sum){
-        if (new BigDecimal(sum.toString()).compareTo(new BigDecimal("0")) < 0){
+    private void isNegativeSum(String sum) {
+        if (new BigDecimal(sum.toString()).compareTo(new BigDecimal("0")) < 0) {
             this.color = "#da8b7e";
             this.textColor = "#631712";
         }

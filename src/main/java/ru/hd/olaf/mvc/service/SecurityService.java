@@ -7,6 +7,7 @@ import ru.hd.olaf.entities.User;
  */
 public interface SecurityService {
     String findLoggedUsername();
+
     boolean isPasswordMatches(String password);
 
     User findLoggedUser();

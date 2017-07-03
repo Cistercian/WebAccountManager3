@@ -15,8 +15,6 @@ import java.util.List;
 
 /**
  * Created by d.v.hozyashev on 18.04.2017.
- *
- * Provide service for registering account
  */
 @Service
 public class UserServiceImpl implements UserService {
@@ -29,7 +27,8 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Функция возвращает список всех пользователей
-     * @return List
+     *
+     * @return List<User>
      */
     public List<User> getAll() {
         logger.debug(LogUtil.getMethodName());
@@ -37,6 +36,11 @@ public class UserServiceImpl implements UserService {
         return Lists.newArrayList(userRepository.findAll());
     }
 
+    /**
+     * Функция сохранения сущности БД
+     *
+     * @param user обрабатываемая сущность
+     */
     public void save(User user) {
         logger.debug(LogUtil.getMethodName());
 
@@ -44,16 +48,34 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    /**
+     * Функция проверки текущего пароля (используется при валидации смены пароля пользователя)
+     *
+     * @param password Переданный пароль
+     * @param user     текущйи пользователь
+     * @return true при равенстве
+     */
     public boolean isPasswordMatches(String password, User user) {
         logger.debug(LogUtil.getMethodName());
         return bCryptPasswordEncoder.matches(password, user.getPassword());
     }
 
+    /**
+     * Поиск пользователя по его имени
+     *
+     * @param username имя пользователя
+     * @return сущность БД
+     */
     public User findByUsername(String username) {
         logger.debug(LogUtil.getMethodName());
         return userRepository.findByUsername(username);
     }
 
+    /**
+     * Возвращает список админов системы (по роли пользователя)
+     *
+     * @return List<User>
+     */
     public List<User> getAdmins() {
         logger.debug(LogUtil.getMethodName());
         return userRepository.findAdmins();

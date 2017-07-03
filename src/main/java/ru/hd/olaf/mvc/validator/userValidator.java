@@ -12,14 +12,10 @@ import ru.hd.olaf.mvc.service.UserService;
 import ru.hd.olaf.util.LogUtil;
 
 /**
- * To provide input-data validation for /registration controller with Spring Validator,
- * we implement org.springframework.validation.Validator. Error codes, e.g. Size.userForm.username,
- * are defined by validation.properties
- *
  * Created by d.v.hozyashev on 18.04.2017.
  */
 @Component
-public class UserValidator implements Validator{
+public class UserValidator implements Validator {
     @Autowired
     private UserService userService;
 
@@ -59,7 +55,7 @@ public class UserValidator implements Validator{
         }
 
         if (!(user.getPasswordOld() == null) &&
-                !userService.isPasswordMatches(user.getPasswordOld(), userService.findByUsername(user.getUsername()))){
+                !userService.isPasswordMatches(user.getPasswordOld(), userService.findByUsername(user.getUsername()))) {
             logger.debug("Wrong.userForm.passwordOld");
             errors.rejectValue("passwordOld", "Wrong.userForm.passwordOld");
         }

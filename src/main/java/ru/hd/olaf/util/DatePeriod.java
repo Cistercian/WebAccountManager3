@@ -17,11 +17,12 @@ public enum DatePeriod {
     ALL;
 
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
+
     /**
      * Функция парсинга переданного в запросе периода (see DatePeriod)
      *
      * @param period see DatePeriod
-     * @param today LocalDate
+     * @param today  LocalDate
      * @return LocalDate value
      */
     public static LocalDate getAfterDate(String period, LocalDate today, Integer countDays) {
