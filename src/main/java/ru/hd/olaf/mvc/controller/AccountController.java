@@ -203,13 +203,13 @@ public class AccountController {
      * @return ModelAndView page + pageNum
      */
     @RequestMapping(value = "/account/getManualForm", method = RequestMethod.GET)
-    public ModelAndView viewMailForm(@RequestParam(value = "page") Integer pageNum) {
+    public ModelAndView viewManualForm(@RequestParam(value = "page") Integer pageNum) {
         logger.debug(LogUtil.getMethodName());
 
         if (pageNum == null) pageNum = 1;
 
         ModelAndView modelAndView;
-        if (pageNum > 0 && pageNum < 10)
+        if (pageNum > 0 && pageNum < 12)
             modelAndView = new ModelAndView("/help/manual/page" + pageNum);
         else
             modelAndView = new ModelAndView("/help/manual/page1");

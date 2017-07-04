@@ -530,7 +530,7 @@ function displayManual(message, pageNum) {
         "</div>"
     );
     var nextNum = pageNum + 1;
-    if (nextNum < 10)
+    if (nextNum < 12)
         $('#modalFooter').append(
             "<div class='col-xs-12 col-md-4 wam-not-padding'>" +
             "<button class='btn btn-primary btn-lg btn-block'  " +

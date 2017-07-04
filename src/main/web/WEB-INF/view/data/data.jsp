@@ -1098,7 +1098,7 @@
                                             ${label}
                                     </strong></h4>
                                     <div class="form-group ${status.error ? 'has-error' : ''}">
-                                        <form:input type="number" path="price" class="form-control input-lg erasable"
+                                        <form:input type="number" path="price" class="form-control input-lg erasable wam-not-padding"
                                                     placeholder="${label}" onclick="scrollPage($($(this)).offset().top);"/>
                                         <form:errors path="price"></form:errors>
                                     </div>

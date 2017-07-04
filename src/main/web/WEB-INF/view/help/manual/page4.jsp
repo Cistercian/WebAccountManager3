@@ -39,6 +39,13 @@
                 <div class="col-xs-12 col-md-12 wam-not-padding">
                     <img src="/resources/img/help/amount_error.png" class="img-responsive wam-top-radius center-block wam-img-xs-2" alt="">
                 </div>
+                <div class="col-xs-12 col-md-12 wam-not-padding">
+                    <p class="wam-margin-top-2 text-justify">Для реализации алгоритма прогнозирования трат, есть возможность указать тип текущего
+                        оборота. Более детальное описание алгоритма и различия типов оборота приведено далее на странице "Прогнозирование движений"</p>
+                </div>
+                <div class="col-xs-12 col-md-12 wam-not-padding">
+                    <img src="/resources/img/help/amount_analytic.png" class="img-responsive wam-top-radius center-block wam-img-xs-2" alt="">
+                </div>
             </div>
         </div>
     </div>

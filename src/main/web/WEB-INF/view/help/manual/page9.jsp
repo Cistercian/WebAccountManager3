@@ -14,30 +14,30 @@
     <div class="row">
         <div class="login-panel panel panel-default wam-not-padding wam-margin-left-2 wam-margin-right-2">
             <div class="panel-heading">
-                <h3 class="wam-margin-bottom-0 wam-margin-top-0">Профиль пользователя</h3>
+                <h3 class="wam-margin-bottom-0 wam-margin-top-0">Сравнение цен</h3>
             </div>
             <div class="panel-body wam-not-padding ">
-                <div class="col-xs-12 col-md-12 wam-not-padding">
-                    <p class="wam-margin-top-2 text-justify">Страница профиля пользователя доступна в пункте меню</p>
+				<div class="col-xs-12 col-md-12 wam-not-padding">
+                    <p class="wam-margin-top-2 text-justify">Вы можете ознакомиться с информацией о стоимости ранее заведенных оборотов 
+					(средняя, минимальная, максимальная и последняя) по заданной маске поиска. Данная функция доступна в меню: </p>
+                </div>
+				<div class="col-xs-12 col-md-12 wam-not-padding">
+                    <img src="/resources/img/help/menu_compare.png" class="img-responsive wam-top-radius center-block wam-img-xs-2" alt="">
                 </div>
                 <div class="col-xs-12 col-md-12 wam-not-padding">
-                    <img src="/resources/img/help/menu_account.png" class="img-responsive wam-top-radius center-block wam-img-xs-2" alt="">
+                    <p class="wam-margin-top-2 text-justify">Система выводит суммарные данные по оборотам, удовлетворяющим условиям поиска, заданных
+					в соответсвующей строке. В статистике отображаются предельные цены найденных оборотов и их даты. Фильтрация осуществляется по 
+					совпадению искомой строки с наименованием оборота или группы товаров или категории, к которым он относится.</p>
                 </div>
                 <div class="col-xs-12 col-md-12 wam-not-padding">
-                    <p class="wam-margin-top-2 text-justify">Здесь Вы можете ознакомиться с полученными сообщениями о превышении лимитов или
-                        с произвольными письмами от администратора системы. Жирным шрифтом отмечены непрочтенные письма, уведомления по которым
-                        будут появляться на других страницах. Учтите, что уведомления будут показываться до тех пор, пока Вы с ними не ознакомитесь.</p>
-                    <p>Для открытия письма достаточно кликнуть по нему.</p>
+                    <img src="/resources/img/help/compare_form.png" class="img-responsive wam-top-radius center-block wam-img-xs-2" alt="">
                 </div>
                 <div class="col-xs-12 col-md-12 wam-not-padding">
-                    <img src="/resources/img/help/account_mail.png" class="img-responsive wam-top-radius center-block wam-img-xs-2" alt="">
+                    <p class="wam-margin-top-2 text-justify">В таблице внизу страницы отображаются все обороты, попавшие в расчет. 
+					Кликнув на строчку таблицы Вы можете просмотреть интересующий оборот.<p>
                 </div>
                 <div class="col-xs-12 col-md-12 wam-not-padding">
-                    <p class="wam-margin-top-2 text-justify">На этой же странице Вы можете обратиться к администратору, ознакомиться с текущей
-                        инструкцией и сменить пароль<p>
-                </div>
-                <div class="col-xs-12 col-md-12 wam-not-padding">
-                    <img src="/resources/img/help/account_other.png" class="img-responsive wam-top-radius center-block wam-img-xs-2" alt="">
+                    <img src="/resources/img/help/compare_table.png" class="img-responsive wam-top-radius center-block wam-img-xs-2" alt="">
                 </div>
             </div>
         </div>
