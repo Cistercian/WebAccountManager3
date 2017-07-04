@@ -333,7 +333,7 @@
                                     <input id="categoryId" type="hidden" name="category" class="form-control erasable"
                                            value="<c:if test="${not empty category}">${category.getId()}</c:if>"></input>
 
-                                    <div class="col-xs-12 col-md-10 catcher-events wam-not-padding-left-right-xs">
+                                    <div class="col-xs-12 col-md-9 catcher-events wam-not-padding-left-right-xs">
                                         <h4 class="needToFormat">
                                             <strong>${selectCategory}</strong>
                                         </h4>
@@ -377,7 +377,7 @@
                                     <%--Цена--%>
                                 <spring:bind path="price">
                                     <spring:message code="label.page-amount.price" var="label"/>
-                                    <div class="col-xs-12 col-md-2 wam-not-padding-xs">
+                                    <div class="col-xs-12 col-md-3 wam-not-padding-xs">
                                         <h4><strong>
                                                 ${label}
                                         </strong></h4>
@@ -1049,7 +1049,7 @@
                             <spring:bind path="categoryId">
                                 <input id="categoryId" type="hidden" name="category" class="form-control erasable"
                                        value="<c:if test="${not empty category}">${category.getId()}</c:if>" />
-                                <div class="col-xs-12 col-md-10  catcher-events wam-not-padding-left-right-xs">
+                                <div class="col-xs-12 col-md-9  catcher-events wam-not-padding-left-right-xs">
                                     <h4 class="needToFormat">
                                         <strong>${selectCategory}</strong>
                                     </h4>
@@ -1093,7 +1093,7 @@
                                 <%--Цена--%>
                             <spring:bind path="price">
                                 <spring:message code="label.page-amount.price" var="label"/>
-                                <div class="col-xs-12 col-md-2 wam-not-padding-xs wam-margin-bottom-1">
+                                <div class="col-xs-12 col-md-3 wam-not-padding-xs wam-margin-bottom-1">
                                     <h4><strong>
                                             ${label}
                                     </strong></h4>
