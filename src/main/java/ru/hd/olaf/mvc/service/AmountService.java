@@ -56,6 +56,10 @@ public interface AmountService {
                                             LocalDate before,
                                             Byte type);
 
+    List<Amount> getAvgOfPrevMonths(User user,
+                                    Product product,
+                                    Category category);
+
     Amount save(Amount amount) throws CrudException;
 
     JsonResponse delete(Amount amount) throws CrudException;

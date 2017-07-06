@@ -143,17 +143,20 @@ function drawBarsByParentId(isChildren, categoryId, after, before, isGetAnalytic
                     if (classType == 'Product') {
                         classTitle = "Группа товаров";
                         if (!isGetAnalyticData) {
-                            elemLink = "<a href='/page-product?productID=" + classId + "&categoryID=" + categoryId + "&after=" + after + "&before=" + before + "'>" +
+                            elemLink = "<a href='/page-product?productID=" + classId + "&categoryID=" + categoryId +
+                                "&after=" + after + "&before=" + before + "'>" +
                                 "<span> (Просмотреть</span>" +
                                 "</a>" + ", " +
                                 "<a href='/product?id=" + classId + "'>" +
                                 "<span>редактировать)</span>" +
                                 "</a>";
                         } else {
-                            elemLink = "<span>(Просмотреть </span><a href='/page-product?productID=" + classId + "&categoryID=" + categoryId + "&after=" + after + "&before=" + before + "'>" +
+                            elemLink = "<span>(Просмотреть </span><a href='/page-product?productID=" + classId +
+                                "&categoryID=" + categoryId + "&after=" + after + "&before=" + before + "&type=3'>" +
                                 "<span>средние обороты</span>" +
                                 "</a>" + ", " +
-                                "<a href='/page-product?productID=" + classId + "&categoryID=" + categoryId + "&after=" + moment(new Date().setDate(1)).format('YYYY-MM-DD') + "&before=" + moment(new Date()).format('YYYY-MM-DD') + "'>" +
+                                "<a href='/page-product?productID=" + classId + "&categoryID=" + categoryId + "&after=" +
+                                moment(new Date().setDate(1)).format('YYYY-MM-DD') + "&before=" + moment(new Date()).format('YYYY-MM-DD') + "'>" +
                                 "<span> текущие обороты</span>" +
                                 "</a>" + " или " +
                                 "<a href='/product?id=" + classId + "'>" +

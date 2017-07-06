@@ -81,12 +81,20 @@ public class ProductController {
                 if (response.getType() == ResponseType.SUCCESS) {
                     Category category = (Category) response.getEntity();
 
-                    amounts = amountService.getByProductAndCategoryAndDate(
-                            currentUser,
-                            product,
-                            category,
-                            after,
-                            before);
+                    if (type == null || type != 3) {
+                        amounts = amountService.getByProductAndCategoryAndDate(
+                                currentUser,
+                                product,
+                                category,
+                                after,
+                                before);
+                    } else {
+                        amounts = amountService.getAvgOfPrevMonths(
+                                currentUser,
+                                product,
+                                category);
+                        LogUtil.logList(logger, amounts);
+                    }
                 } else {
                     amounts = amountService.getByProductAndDate(
                             currentUser,

@@ -112,4 +112,16 @@ public interface AmountRepository extends CrudRepository<Amount, Integer> {
             "a.date BETWEEN ?3 AND ?4 AND " +
             "a.type != ?5")
     List<Amount> getAmountsForBinding(User user, Category category, Date after, Date before, Byte type);
+
+    @Query("Select a FROM Amount a " +
+            "WHERE a.userId = ?1 AND " +
+            "a.productId = ?2 AND " +
+            "a.categoryId = ?3 AND " +
+            "a.type != 3 AND a.type != 2 AND " +
+            "a.date BETWEEN ?4 AND ?5")
+    List<Amount> getAvgOfPrevMonths(User user,
+                                    Product product,
+                                    Category category,
+                                    Date after,
+                                    Date before);
 }

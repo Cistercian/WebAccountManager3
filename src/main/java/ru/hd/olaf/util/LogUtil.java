@@ -26,6 +26,7 @@ public class LogUtil {
      * @param <T>
      */
     public static <T> void logList(Logger logger, List<T> list) {
+        logger.debug("Список данных:");
         for (T T : list) {
             logger.debug(String.format("%s", T));
         }

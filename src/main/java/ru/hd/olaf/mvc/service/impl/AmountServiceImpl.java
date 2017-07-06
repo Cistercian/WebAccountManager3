@@ -479,4 +479,18 @@ public class AmountServiceImpl implements AmountService {
     public List<Amount> getAllRegular(User user) {
         return amountRepository.getAllRegular(user);
     }
+
+    public List<Amount> getAvgOfPrevMonths(User user, Product product, Category category) {
+        logger.debug(LogUtil.getMethodName());
+
+        logger.debug(String.format("Диапазон дат: %s - %s", DateUtil.getDateOfStartOfEra().toString(),
+                DateUtil.getDate(DateUtil.getStartOfMonth().minusDays(1)).toString()));
+
+        return amountRepository.getAvgOfPrevMonths(
+                user,
+                product,
+                category,
+                DateUtil.getDateOfStartOfEra(),
+                DateUtil.getDate(DateUtil.getStartOfMonth().minusDays(1)));
+    }
 }
