@@ -420,4 +420,4 @@ INSERT INTO `limits` (type, entity_id, entity_name, sum, period, user_id, produc
 	;
 
 //--------
-DELETE FROM amounts WHERE user_id = 2 AND date > '2017-07-04';
+DELETE FROM amounts WHERE user_id = 2 AND date > '2017-07-06';

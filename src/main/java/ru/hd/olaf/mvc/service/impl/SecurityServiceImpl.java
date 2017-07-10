@@ -114,6 +114,6 @@ public class SecurityServiceImpl implements SecurityService {
     public void demologin() {
         logger.debug(LogUtil.getMethodName());
 
-        autologin("Demo", "1");
+        autologin("Demo", "123");
     }
 }
