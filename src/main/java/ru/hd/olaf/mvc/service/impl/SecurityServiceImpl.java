@@ -107,4 +107,13 @@ public class SecurityServiceImpl implements SecurityService {
             logger.debug(String.format("autologin succesfull: %s", username));
         }
     }
+
+    /**
+     * Функция автологина для демо доступа к данным
+     */
+    public void demologin() {
+        logger.debug(LogUtil.getMethodName());
+
+        autologin("Demo", "1");
+    }
 }

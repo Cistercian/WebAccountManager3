@@ -10,6 +10,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.hd.olaf.entities.User;
 import ru.hd.olaf.mvc.service.SecurityService;
 import ru.hd.olaf.mvc.service.UserService;
@@ -95,5 +96,18 @@ public class LoginController {
         }
 
         return "/login/login";
+    }
+
+    /**
+     * Автоматический от имени демо пользователя
+     * @return редирект на главную страницу
+     */
+    @RequestMapping(value = "demologin", method = RequestMethod.GET)
+    public String demologin(){
+        logger.debug(LogUtil.getMethodName());
+
+        securityService.demologin();
+
+        return "redirect:/index";
     }
 }

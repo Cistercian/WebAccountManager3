@@ -13,4 +13,6 @@ public interface SecurityService {
     User findLoggedUser();
 
     void autologin(String username, String password);
+
+    void demologin();
 }
