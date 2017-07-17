@@ -219,10 +219,10 @@
                                     </div>
                                     <div class="col-xs-12 col-md-6 wam-not-padding-xs">
                                         <div class="row">
-                                            <div class="col-xs-6 col-md-6 ">
+                                            <div class="col-xs-4 col-md-6 wam-not-padding-xs">
                                                 <h3 class="wam-not-padding-xs wam-margin-bottom-1"><span class="glyphicon glyphicon-stop wam-color-income"></span><spring:message code="label.index.total.income" /></h3>
                                             </div>
-                                            <div class="col-xs-6 col-md-6 ">
+                                            <div class="col-xs-8 col-md-6 ">
                                                 <h3 id="textTotalIncome" class="wam-not-padding-xs wam-margin-bottom-1">
                                                     <c:if test="${not empty sumIncome}">
 														<span class="pull-right">
@@ -236,10 +236,10 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-xs-6 col-md-6 ">
+                                            <div class="col-xs-4 col-md-6 wam-not-padding-xs">
                                                 <h3 class="wam-not-padding-xs"><span class="glyphicon glyphicon-stop wam-color-expense"></span><spring:message code="label.index.total.expense" /></h3>
                                             </div>
-                                            <div class="col-xs-6 col-md-6 " class="wam-not-padding-xs">
+                                            <div class="col-xs-8 col-md-6 " class="wam-not-padding-xs">
                                                 <h3 id="textTotalExpense" class="wam-not-padding-xs">
                                                     <c:if test="${not empty sumExpense}">
                                                         <span class="pull-right">
@@ -258,12 +258,12 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-xs-6 col-md-6 ">
+                                            <div class="col-xs-4 col-md-6 wam-not-padding-xs">
                                                 <h3 class="wam-margin-top-0 ">
                                                     ИТОГО
                                                 </h3>
                                             </div>
-                                            <div class="col-xs-6 col-md-6 ">
+                                            <div class="col-xs-8 col-md-6 ">
                                                 <h3 id="textTotalExpense" class="wam-margin-top-0">
 													<span class="pull-right">
 														<strong id="sumTotal" >
