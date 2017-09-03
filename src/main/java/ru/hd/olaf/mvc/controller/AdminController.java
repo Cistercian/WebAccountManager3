@@ -70,4 +70,28 @@ public class AdminController {
 
         return response;
     }
+
+    /**
+     * наглая функция для ресолва картинки на github'e
+     *
+     */
+    @RequestMapping(value = "/db_structure.png", method = RequestMethod.GET)
+    public String getDbStructure() {
+        logger.debug(LogUtil.getMethodName());
+
+        return "forward:resources/img/xml_parser/db.png";
+    }
+    @RequestMapping(value = "/schema_account_db.png", method = RequestMethod.GET)
+    public String getAccountDbStructure() {
+        logger.debug(LogUtil.getMethodName());
+
+        return "forward:resources/img/xml_parser/schema_account_db.png";
+    }
+
+    @RequestMapping(value = "/TextSearch_schema.png", method = RequestMethod.GET)
+    public String getTextSearchSchema() {
+        logger.debug(LogUtil.getMethodName());
+
+        return "forward:resources/img/xml_parser/TextSearch_schema.png";
+    }
 }
