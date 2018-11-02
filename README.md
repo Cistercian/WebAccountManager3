@@ -10,4 +10,4 @@
 
 ---
 
-Deployed on http://5.189.96.147/
+Deployed on http://82.193.149.253/
